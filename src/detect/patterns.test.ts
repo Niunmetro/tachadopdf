@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { detect, esDniValido, esIbanEsValido, esNieValido, esNussValido, normalizar } from './patterns';
+import type { Hit } from '../types';
+
+function telefonos(hits: Hit[]): string[] {
+  return hits.filter((h) => h.kind === 'telefono').map((h) => h.value);
+}
 
 describe('normalizar', () => {
   it('quita puntos, guiones y espacios y pasa a mayúsculas', () => {
@@ -183,5 +188,78 @@ describe('detect', () => {
   it('no produce falsos positivos en un texto sin datos personales', () => {
     const texto = 'Este documento no contiene ningún dato identificativo relevante.';
     expect(detect(texto)).toEqual([]);
+  });
+
+  describe('teléfonos con separadores (A4)', () => {
+    it.each([
+      ['612 34 56 78', '612 34 56 78'],
+      ['91 234 56 78', '91 234 56 78'],
+      ['612-345-678', '612-345-678'],
+      ['612.345.678', '612.345.678'],
+      ['0034612345678', '0034612345678'],
+      ['+34 612 345 678', '+34 612 345 678'],
+      ['612 345 678', '612 345 678'],
+      ['612345678', '612345678'],
+    ])('detecta el teléfono %s', (entrada, esperado) => {
+      const texto = `Teléfono: ${entrada}.`;
+      const hits = telefonos(detect(texto));
+      expect(hits).toContain(esperado);
+    });
+
+    it('no marca como teléfono más de 9 dígitos pegados', () => {
+      const texto = 'Referencia 6123456789 no es un teléfono.';
+      const hits = telefonos(detect(texto));
+      expect(hits.some((v) => v.replace(/\D/g, '') === '6123456789')).toBe(false);
+    });
+  });
+
+  describe('IBAN con punto/guion (M1)', () => {
+    it('encuentra un IBAN válido con guiones cada 4 caracteres', () => {
+      const texto = 'IBAN: ES91-2100-0418-4502-0005-1332.';
+      const hits = detect(texto);
+      const iban = hits.find((h) => h.kind === 'iban');
+      expect(iban).toBeDefined();
+      expect(iban?.value).toBe('ES91-2100-0418-4502-0005-1332');
+    });
+
+    it('encuentra un IBAN válido con puntos cada 4 caracteres', () => {
+      const texto = 'IBAN: ES91.2100.0418.4502.0005.1332.';
+      const hits = detect(texto);
+      const iban = hits.find((h) => h.kind === 'iban');
+      expect(iban).toBeDefined();
+      expect(iban?.value).toBe('ES91.2100.0418.4502.0005.1332');
+    });
+
+    it('no marca un IBAN con dígito de control mod-97 incorrecto y separadores', () => {
+      const texto = 'IBAN: ES91-2100-0418-4502-0005-1333.';
+      const hits = detect(texto);
+      expect(hits.some((h) => h.kind === 'iban')).toBe(false);
+    });
+  });
+
+  describe('NUSS con barra (M2)', () => {
+    it('encuentra un NUSS válido separado por barras', () => {
+      const texto = 'Nº Seguridad Social: 28/12345678/40.';
+      const hits = detect(texto);
+      const nuss = hits.find((h) => h.kind === 'nuss');
+      expect(nuss).toBeDefined();
+      expect(nuss?.value).toBe('28/12345678/40');
+    });
+
+    it('esNussValido acepta el NUSS separado por barras', () => {
+      expect(esNussValido('28/12345678/40')).toBe(true);
+    });
+
+    it('no marca una fecha (28/12/2024) como NUSS', () => {
+      const texto = 'Fecha: 28/12/2024.';
+      const hits = detect(texto);
+      expect(hits.some((h) => h.kind === 'nuss')).toBe(false);
+    });
+
+    it('sigue aceptando NUSS con espacio, punto y guion', () => {
+      expect(detect('28 12345678 40').some((h) => h.kind === 'nuss')).toBe(true);
+      expect(detect('28.12345678.40').some((h) => h.kind === 'nuss')).toBe(true);
+      expect(detect('28-12345678-40').some((h) => h.kind === 'nuss')).toBe(true);
+    });
   });
 });
