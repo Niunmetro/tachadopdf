@@ -5,6 +5,7 @@ import {
   AVISO_LEGAL,
   AVISO_PRINCIPAL,
   CASOS_USO,
+  LANDING_TITULAR,
   PRIVACIDAD,
   TERMINOS,
 } from './textos';
@@ -51,6 +52,17 @@ describe('textos legales: contenido requerido', () => {
     expect(CASOS_USO).toContain('administradores de fincas');
     expect(CASOS_USO).toContain('gestorías');
     expect(CASOS_USO).toContain('RRHH');
+  });
+
+  it('LANDING_TITULAR NO contiene "ya no esta en el archivo"', () => {
+    expect(LANDING_TITULAR.toLowerCase()).not.toContain('ya no esta en el archivo');
+  });
+
+  it('LANDING_TITULAR NO contiene vocabulario prohibido', () => {
+    const prohibited = ['anonimiz', 'certific', 'rgpd garantizado', 'inteligencia artificial', ' ia '];
+    for (const word of prohibited) {
+      expect(LANDING_TITULAR.toLowerCase()).not.toContain(word);
+    }
   });
 });
 
