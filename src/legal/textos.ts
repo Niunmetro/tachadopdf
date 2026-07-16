@@ -47,7 +47,7 @@ export const CASOS_USO: string[] = [
   'RRHH',
 ];
 
-export const LANDING_TITULAR = 'TachadoPDF: la prueba de que el dato ya no está en el archivo';
+export const LANDING_TITULAR = 'TachadoPDF: la prueba tecnica de que el texto tachado ya no es extraible del PDF';
 
 export const LANDING_SUBTITULO =
   'Elimina de verdad datos personales de tus PDF antes de entregarlos a terceros, y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.';

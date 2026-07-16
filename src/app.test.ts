@@ -1,5 +1,14 @@
-import { describe, expect, it } from 'vitest';
-import { CHECKBOX_LABEL, canBatch, canDownloadReport, canProcess, type AppState } from './app';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  CHECKBOX_LABEL,
+  canBatch,
+  canDownloadBatch,
+  canDownloadReport,
+  canProcess,
+  performBatchDownload,
+  type AppState,
+  type DownloadableFile,
+} from './app';
 import type { LicenseStatus, QuotaStatus, VerifyResult } from './types';
 
 const licensePro: LicenseStatus = { pro: true, reason: 'valid' };
@@ -90,5 +99,46 @@ describe('canBatch', () => {
 
   it('false si license.pro es false', () => {
     expect(canBatch(baseState({ license: licenseFree }))).toBe(false);
+  });
+});
+
+const fileSucio: DownloadableFile = {
+  fileName: 'sucio.pdf',
+  cleanedBytes: new Uint8Array([1]),
+  reportBytes: new Uint8Array([2]),
+  verify: verifyDirty,
+};
+
+const fileLimpio: DownloadableFile = {
+  fileName: 'limpio.pdf',
+  cleanedBytes: new Uint8Array([3]),
+  reportBytes: new Uint8Array([4]),
+  verify: verifyClean,
+};
+
+describe('canDownloadBatch', () => {
+  it('false si hay algún fichero sucio en el lote', () => {
+    expect(canDownloadBatch([fileSucio, fileLimpio], true)).toBe(false);
+  });
+
+  it('true si el único fichero está limpio y el checkbox está marcado', () => {
+    expect(canDownloadBatch([fileLimpio], true)).toBe(true);
+  });
+
+  it('false si el único fichero está sucio', () => {
+    expect(canDownloadBatch([fileSucio], true)).toBe(false);
+  });
+
+  it('false si la lista está vacía', () => {
+    expect(canDownloadBatch([], true)).toBe(false);
+  });
+});
+
+describe('performBatchDownload', () => {
+  it('no invoca download para ningún fichero si el lote tiene uno sucio, aunque el checkbox esté marcado', () => {
+    const download = vi.fn();
+    performBatchDownload([fileSucio, fileLimpio], true, download);
+    expect(download).not.toHaveBeenCalledWith(fileSucio.cleanedBytes, expect.anything());
+    expect(download).not.toHaveBeenCalled();
   });
 });

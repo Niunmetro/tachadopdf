@@ -39,6 +39,7 @@ export interface ReportData {
   metadataRemoved: string[];
   scannedPages: number[];
   freeVersion: boolean;
+  verify?: VerifyResult;
 }
 
 export interface LicenseStatus {

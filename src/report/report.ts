@@ -90,9 +90,29 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
   drawLine(`SHA-256: ${data.sha256}`);
   y -= 8;
 
+  const isClean = data.verify?.clean === true;
+  if (!isClean) {
+    drawLine('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado', {
+      font: bold,
+      color: rgb(0.8, 0, 0),
+    });
+    y -= 8;
+  }
+
+  const residues = data.verify?.residues ?? [];
+
   drawLine('Patrones buscados:', { font: bold });
   for (const kind of data.patternsSearched) {
-    drawLine(`- ${PATTERN_LABELS[kind]}: 0 ocurrencias en el texto extraíble`);
+    const matching = residues.filter((r) => r.kind === kind);
+    if (matching.length === 0) {
+      drawLine(`- ${PATTERN_LABELS[kind]}: 0 ocurrencias en el texto extraíble`);
+    } else {
+      const pages = matching.map((r) => (r.page === null ? '?' : r.page)).join(', ');
+      drawLine(
+        `- ${PATTERN_LABELS[kind]}: ${matching.length} ocurrencia(s) en el texto extraíble (páginas: ${pages})`,
+        { color: rgb(0.8, 0, 0) },
+      );
+    }
   }
   y -= 8;
 
