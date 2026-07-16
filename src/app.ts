@@ -21,3 +21,26 @@ export function canDownloadReport(s: AppState): boolean {
 export function canBatch(s: AppState): boolean {
   return s.license.pro;
 }
+
+export interface DownloadableFile {
+  fileName: string;
+  cleanedBytes: Uint8Array;
+  reportBytes: Uint8Array;
+  verify: VerifyResult;
+}
+
+export function canDownloadBatch(files: DownloadableFile[], checkboxConfirmed: boolean): boolean {
+  return files.length > 0 && files.every((f) => f.verify.clean) && checkboxConfirmed;
+}
+
+export function performBatchDownload(
+  files: DownloadableFile[],
+  checkboxConfirmed: boolean,
+  download: (bytes: Uint8Array, name: string) => void,
+): void {
+  if (!canDownloadBatch(files, checkboxConfirmed)) return;
+  for (const f of files) {
+    download(f.cleanedBytes, f.fileName);
+    download(f.reportBytes, f.fileName);
+  }
+}
