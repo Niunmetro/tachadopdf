@@ -3,9 +3,10 @@ import type { Hit } from '../types';
 const LETRAS_CONTROL = 'TRWAGMYFPDXBNJZSQVHLCKE';
 
 const SEP = '[ .\\-]';
+const SEP_NUSS = '[ ./\\-]';
 
 export function normalizar(raw: string): string {
-  return raw.replace(/[ .\-]/g, '').toUpperCase();
+  return raw.replace(/[ ./\-]/g, '').toUpperCase();
 }
 
 export function esDniValido(v: string): boolean {
@@ -72,17 +73,17 @@ const CANDIDATOS: Candidato[] = [
   },
   {
     kind: 'iban',
-    regex: /(?<![\dA-Za-z])ES[ ]?\d{2}(?:[ ]?\d{4}){5}(?![\dA-Za-z])/gi,
+    regex: new RegExp(`(?<![\\dA-Za-z])ES${SEP}?\\d{2}(?:${SEP}?\\d{4}){5}(?![\\dA-Za-z])`, 'gi'),
     valido: esIbanEsValido,
   },
   {
     kind: 'nuss',
-    regex: new RegExp(`(?<![\\dA-Za-z])\\d{2}${SEP}?\\d{8}${SEP}?\\d{2}(?![\\dA-Za-z])`, 'g'),
+    regex: new RegExp(`(?<![\\dA-Za-z])\\d{2}${SEP_NUSS}?\\d{8}${SEP_NUSS}?\\d{2}(?![\\dA-Za-z])`, 'g'),
     valido: esNussValido,
   },
   {
     kind: 'telefono',
-    regex: /(?<![\d+])(?:\+34[ ]?)?[6789]\d{2}[ ]?\d{3}[ ]?\d{3}(?!\d)/g,
+    regex: /(?<![\d+])(?:(?:\+34|0034)[ .\-]?)?[6-9](?:[ .\-]?\d){8}(?!\d)/g,
   },
   {
     kind: 'email',
