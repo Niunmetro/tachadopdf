@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
+import { GUMROAD_PRODUCT_ID } from '../config';
 import { GUMROAD_VERIFY_URL, verifyLicense } from './gumroad';
 
-function jsonResponse(body: unknown): Response {
+function jsonResponse(body: unknown, ok = true): Response {
   return {
+    ok,
     json: async () => body,
   } as Response;
 }
@@ -80,6 +82,7 @@ describe('verifyLicense', () => {
 
   it('respuesta con JSON inválido → {pro:false, reason:"offline"}', async () => {
     const fetchImpl = vi.fn().mockResolvedValue({
+      ok: true,
       json: async () => {
         throw new Error('invalid json');
       },
@@ -88,6 +91,76 @@ describe('verifyLicense', () => {
     const resultado = await verifyLicense('CUALQUIER-CLAVE', fetchImpl);
 
     expect(resultado).toEqual({ pro: false, reason: 'offline' });
+  });
+
+  it('respuesta ok con success:true pero sin purchase → {pro:false} (fail-closed)', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(jsonResponse({ success: true }));
+
+    const resultado = await verifyLicense('CLAVE-SIN-PURCHASE', fetchImpl);
+
+    expect(resultado.pro).toBe(false);
+  });
+
+  it('respuesta HTTP no-ok (404) aunque el json diga success:true → {pro:false, reason:"invalid"}', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      jsonResponse(
+        {
+          success: true,
+          purchase: {
+            refunded: false,
+            chargebacked: false,
+            subscription_cancelled_at: null,
+            subscription_failed_at: null,
+            subscription_ended_at: null,
+          },
+        },
+        false,
+      ),
+    );
+
+    const resultado = await verifyLicense('CLAVE-404', fetchImpl);
+
+    expect(resultado).toEqual({ pro: false, reason: 'invalid' });
+  });
+
+  it('purchase activa pero de OTRO producto → {pro:false, reason:"invalid"}', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      jsonResponse({
+        success: true,
+        purchase: {
+          refunded: false,
+          chargebacked: false,
+          subscription_cancelled_at: null,
+          subscription_failed_at: null,
+          subscription_ended_at: null,
+        },
+        product_id: 'OTRO',
+      }),
+    );
+
+    const resultado = await verifyLicense('CLAVE-OTRO-PRODUCTO', fetchImpl);
+
+    expect(resultado).toEqual({ pro: false, reason: 'invalid' });
+  });
+
+  it('purchase activa del producto correcto (product_id coincide) → {pro:true, reason:"valid"}', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue(
+      jsonResponse({
+        success: true,
+        purchase: {
+          refunded: false,
+          chargebacked: false,
+          subscription_cancelled_at: null,
+          subscription_failed_at: null,
+          subscription_ended_at: null,
+        },
+        product_id: GUMROAD_PRODUCT_ID,
+      }),
+    );
+
+    const resultado = await verifyLicense('CLAVE-PRODUCTO-CORRECTO', fetchImpl);
+
+    expect(resultado).toEqual({ pro: true, reason: 'valid' });
   });
 
   it('la URL de destino es exactamente api.gumroad.com', async () => {
