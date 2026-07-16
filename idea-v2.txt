@@ -1,0 +1,352 @@
+PRODUCTO: TachadoPDF — ENCARGO RUN V2 (corrección de hallazgos de la revisión adversarial)
+
+Este fichero es el encargo cerrado para el motor FORJA. Corrige los defectos confirmados en la V1 sin
+cambiar el alcance del producto (idea.txt sigue siendo la spec de producto; esto es la lista de arreglos).
+Cada bloque dice: FICHERO(S) que se tocan, QUÉ CAMBIA, y CRITERIO DE ACEPTACIÓN con un TEST NUEVO
+concreto y verificable. El motor lo consume tal cual.
+
+REGLAS NO NEGOCIABLES QUE NINGÚN ARREGLO PUEDE ROMPER (si un cambio las viola, es un BUG, no un avance):
+- El PEOR fallo es un FALSO VERDE: informe "limpio"/verde con un dato aún extraíble. Ante CUALQUIER
+  residuo o duda, se BLOQUEA el verde. Sobre-advertir siempre antes que dejar pasar.
+- Vocabulario PROHIBIDO en UI/landing/informe/README/código de producto: "anonimización/anonimizado",
+  "certifica/certificado", "cumplimiento RGPD garantizado", "IA"/"inteligencia artificial". La detección
+  se describe SIEMPRE como "detección automática por patrones".
+- Privacidad: ningún documento sale del navegador. ÚNICO egress permitido: verificación de licencia con
+  Gumroad (solo viaja la clave). NO tocar la CSP salvo lo que este encargo autorice; cero analítica/CDN/
+  fuentes remotas. connect-src permanece 'self' https://api.gumroad.com.
+- La marca de versión gratuita va SOLO en el informe, JAMÁS en el documento tachado.
+- Nada con apariencia de factura. No prometer plazos ni resultados legales.
+- Verificación de build con exit codes REALES: tsc, biome/lint y vitest deben devolver exit 0 sin canalizar
+  a `| tail` ni enmascarar el código de salida. Un verde falso en CI es tan inaceptable como uno en el informe.
+
+ORDEN DE PRIORIDAD (no negociable): primero TODO lo de severidad ALTA (bloques A1..A7), luego los MEDIA
+(bloques M1..M4). Ningún bloque MEDIA puede mergearse si algún bloque ALTA queda sin su test en verde.
+
+=================================================================================================
+HALLAZGO DESCARTADO (no tocar, ya resuelto)
+=================================================================================================
+CSP sin 'wasm-unsafe-eval': DESCARTADO. El index.html actual (línea 9) YA declara
+`script-src 'self' 'wasm-unsafe-eval'` con comentario justificativo (líneas 6-8), y dist/index.html debe
+heredarlo del build. No hay nada que arreglar aquí. Si el motor detecta que dist/ está desincronizado,
+basta con re-buildear; NO reintroducir la CSP como "cambio". No añadir 'unsafe-eval' (JS arbitrario) bajo
+ninguna circunstancia; solo 'wasm-unsafe-eval' está permitido.
+
+=================================================================================================
+BLOQUE A1 (ALTA) — FALSO VERDE EN LOTE: el veredicto por fichero se pierde (last-write-wins)
+=================================================================================================
+FICHEROS: src/main.ts (interface ProcessedFile ~14-20; processOneFile ~73-111, línea 107; bucle de lote
+~212-229; handler de descarga ~231-237), src/app.ts (canDownloadReport ~17-19).
+
+QUÉ CAMBIA:
+1. `ProcessedFile` gana un campo `verify: VerifyResult` (importar el tipo de ./types). processOneFile
+   deja de escribir `state.verify = verify` (borrar la línea 107) y en su lugar devuelve el VerifyResult
+   dentro del ProcessedFile que retorna.
+2. La puerta de descarga deja de mirar un único global. Introducir en src/app.ts una función
+   `canDownloadBatch(files: ProcessedFile[], checkboxConfirmed: boolean): boolean` (o equivalente) que
+   devuelva true SOLO si `files.length > 0 && files.every(f => f.verify.clean) && checkboxConfirmed`.
+   canDownloadReport (single) puede mantenerse para el caso de 1 fichero, pero el handler de descarga
+   (main.ts) debe usar la comprobación AND sobre TODOS los processedFiles.
+3. El handler de descarga (main.ts ~231-237) NO debe descargar ningún fichero cuyo `verify.clean` sea
+   false. Si algún fichero del lote está sucio, se bloquea la descarga del lote completo y se muestra en
+   rojo qué fichero(s) conservan residuos y qué residuos (kind + página), leyendo verify.residues.
+4. `state.scannedPages` seguía compartido; en lote debe reflejar la UNIÓN de páginas escaneadas de todos
+   los ficheros o mostrarse por fichero. Como mínimo, no puede quedar solo el del último fichero.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/app.test.ts o src/batch.test.ts):
+- Construir dos ProcessedFile de prueba: A con verify={clean:false, residues:[{kind:'dni',...}]} y B con
+  verify={clean:true, residues:[]}. Con checkboxConfirmed=true:
+  * `canDownloadBatch([A,B], true)` === false.
+  * `canDownloadBatch([B], true)` === true.
+  * `canDownloadBatch([A], true)` === false.
+  * `canDownloadBatch([], true)` === false.
+- Test de integración del handler (mockeando downloadBytes): con [A(sucio), B(limpio)] y checkbox marcado,
+  downloadBytes NO se llama para NINGÚN fichero (o al menos no para A). Debe fallar el test si se descarga A.
+
+=================================================================================================
+BLOQUE A2 (ALTA) — INFORME "0 ocurrencias" HARDCODEADO, desacoplado de la verificación
+=================================================================================================
+FICHEROS: src/report/report.ts (línea 95 y sección "Patrones buscados" 93-96), src/types.ts (ReportData
+33-42), src/main.ts (construcción de reportData 95-105), src/report/report.test.ts (fija el hardcode 40-47).
+
+QUÉ CAMBIA:
+1. `ReportData` gana un campo `verify: VerifyResult` (el resultado real de la verificación post-borrado del
+   PDF FINAL de ESE fichero).
+2. buildReport deja de imprimir el literal `0 ocurrencias`. Para cada patrón buscado imprime el recuento
+   REAL derivado de verify.residues (número de residuos de ese kind en el texto extraíble). Si el recuento
+   es 0 para todos → sección en negro/normal. Si hay CUALQUIER residuo:
+   - el patrón afectado se imprime en ROJO con su recuento real y las páginas afectadas, y
+   - buildReport NO puede emitir un informe con apariencia de "limpio": debe incluir una cabecera de estado
+     "RESULTADO: RESIDUOS DETECTADOS — no apto como prueba de tachado" en rojo.
+   El informe verde solo es legítimo cuando verify.clean === true.
+3. main.ts pasa el `verify` ya calculado (línea 92) dentro de reportData; nunca construye el informe con
+   un verify inventado. Coherente con A1: si verify.clean es false, ese fichero no se descarga (A1), pero
+   si por cualquier ruta se generara el informe, su contenido debe reflejar los residuos, no "0".
+4. Actualizar report.test.ts: el BASE_DATA de test debe incluir un verify; añadir el caso con residuos.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/report/report.test.ts):
+- buildReport con verify={clean:true, residues:[]} → el PDF de texto extraído contiene "0 ocurrencias"
+  para cada patrón y NO contiene la cabecera de residuos.
+- buildReport con verify={clean:false, residues:[{kind:'dni', value:'12345678Z', page:0}]} → el PDF de
+  texto extraído contiene la cabecera "RESIDUOS DETECTADOS", el recuento de DNI NO es 0, y menciona la
+  página. (Extraer el texto del PDF resultante con mupdf o pdf-lib en el test para asertar el contenido.)
+- Debe eliminarse cualquier aserción que exija literalmente "0 ocurrencias" independientemente del verify.
+
+=================================================================================================
+BLOQUE A3 (ALTA) — VISOR REAL + TACHADO MANUAL: cablear ui/viewer.ts al pipeline y VERIFICAR el manual
+=================================================================================================
+FICHEROS: src/main.ts (initApp 121-244; processOneFile 73-111; markAutomaticHits 43-60), src/ui/viewer.ts
+(mountCanvas/attachManualBoxDrawing/renderHitOverlay, hoy código muerto), src/ui/boxes.ts (SelectionState,
+addManualBox, toggleHit, selectAll ya existen), src/pdf/engine.ts (nuevo método de extracción por región),
+src/pdf/verify.ts (ya acepta manualStrings pero siempre recibe []).
+
+QUÉ CAMBIA (spec de producto idea.txt puntos 3 y 6 — es feature de primera clase, no opcional):
+1. initApp monta el VISOR real: por cada página no escaneada renderiza el PNG con doc.renderToPng(page,dpi)
+   sobre un canvas (mountCanvas), pinta el overlay de hits detectados con renderHitOverlay (marcables/
+   desmarcables uno a uno + "seleccionar todo" con selectAll/toggleHit), y habilita el dibujo de cajas
+   manuales con attachManualBoxDrawing. renderBoxes(boxesContainer, []) con array vacío (main.ts:219) deja
+   de ser el único feedback: debe reflejar las cajas reales (automáticas seleccionadas + manuales).
+2. Las cajas que llegan a applyRedactions = (hits automáticos SELECCIONADOS en el visor) + (SelectionState.
+   manual). Hoy solo llegan los automáticos y sin poder deseleccionarlos. Volcar SelectionState.manual a
+   `marks` antes de doc.applyRedactions.
+3. VERIFICACIÓN DEL MANUAL (anti-falso-verde, idea.txt punto 6 "cada string tachado manualmente"):
+   - Nuevo método en PdfDoc: `extractTextInRect(page: number, rect: BoxRect): string` que devuelve el texto
+     cuyos bbox (spans/chars de toStructuredText) intersecan el rect, ANTES de aplicar la redacción.
+   - Por cada caja manual se captura ese texto; el conjunto de strings capturados (no vacíos) se pasa como
+     `manualStrings` a verifyRedaction en lugar del `[]` de main.ts:92.
+   - Así, si un tachado manual no borró de verdad su contenido (o el usuario dibujó mal la caja), verify lo
+     re-encuentra en el texto del PDF final → clean=false → verde bloqueado (A1/A2 lo propagan).
+4. Mientras exista una caja manual cuyo texto cubierto NO se pudo capturar (p. ej. cubre solo imagen, sin
+   spans de texto), NO declarar limpio en base a ella: la caja se aplica igual (borra píxeles/texto), pero
+   si esa región no aporta string verificable, el informe debe advertir "zona(s) manual(es) no verificables
+   automáticamente" en esa página; nunca presentarla como comprobada silenciosamente.
+5. El checkbox "He revisado visualmente el documento final página a página" (app.ts:11) solo es coherente
+   si el visor existe. Con A3, el visor existe; mantener el checkbox como gate humano adicional.
+
+CRITERIO DE ACEPTACIÓN / TESTS NUEVOS:
+- src/pdf/engine.test.ts: crear un PDF (o fixture) con "Propietario: Maria Lopez Saez" en una posición
+  conocida; extractTextInRect sobre el rect que cubre ese texto devuelve una cadena que incluye
+  "Maria Lopez Saez"; sobre un rect vacío devuelve "".
+- src/pdf/redact.test.ts (round-trip manual): PDF con un nombre (no casa con ningún patrón) → aplicar una
+  caja manual sobre él → re-extraer texto del PDF final → el nombre NO existe; el resto del texto permanece.
+- src/pdf/verify.test.ts: verifyRedaction(pageTexts, manualStrings) con un pageTexts que AÚN contiene el
+  string manual → clean=false y residues incluye {kind:'manual', value:<string>}. (La rama ya existe; el
+  test nuevo garantiza que el pipeline la alimenta.)
+- Test de integración de processOneFile: para un PDF donde el nombre se tacha manualmente y SÍ se borra,
+  verify.clean=true; si se simula que la redacción falló (el string sigue en el texto final), verify.clean=false.
+
+=================================================================================================
+BLOQUE A4 (ALTA) — TELÉFONOS: separadores y agrupaciones habituales no se detectan (falso verde)
+=================================================================================================
+FICHERO: src/detect/patterns.ts (regex telefono línea 85).
+
+QUÉ CAMBIA:
+- Reemplazar la regex `(?<![\d+])(?:\+34[ ]?)?[6789]\d{2}[ ]?\d{3}[ ]?\d{3}(?!\d)` por una que (a) admita
+  separadores espacio, punto y guion entre grupos (usar la familia del SEP: `[ .\-]`), (b) no fije la
+  agrupación 3-3-3, y (c) acepte prefijo +34 y 0034. Propuesta:
+  `/(?<![\d+])(?:(?:\+34|0034)[ .\-]?)?[6-9](?:[ .\-]?\d){8}(?!\d)/g`
+  (cubre móviles 6/7 y fijos 8/9, 9 dígitos, con cualquier agrupación y separador). Como no hay checksum de
+  teléfono, se acepta sobre-detectar; las cajas son desmarcables en el visor (A3), preferible a un falso verde.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/detect/patterns.test.ts):
+- detect() encuentra un teléfono en cada uno de: "612 34 56 78", "91 234 56 78", "612-345-678",
+  "612.345.678", "0034612345678", "+34 612 345 678", "612 345 678", "612345678".
+- No rompe los que ya pasaban. Añadir un caso negativo de control (p. ej. una secuencia de >9 dígitos
+  pegados como un IBAN/NUSS no debe reportarse como teléfono gracias a los lookarounds).
+
+=================================================================================================
+BLOQUE A5 (ALTA) — METADATOS: purga REAL de bytes + verificación post-borrado de metadatos
+=================================================================================================
+FICHEROS: src/pdf/metadata.ts (stripMetadata; catalog.delete('Metadata') 24-28 solo desvincula),
+src/pdf/engine.ts (usar mupdf para la purga con garbage collection), src/pdf/verify.ts (hoy solo re-escanea
+texto de página; nunca Info/XMP/adjuntos), src/main.ts (89-92, 101).
+
+PROBLEMA (confirmado ejecutando): pdf-lib save() no hace garbage collection; borrar la referencia /Metadata
+del catálogo deja el stream XMP huérfano físicamente en el binario (recuperable con `strings`), y el informe
+declara "XMP eliminado" siendo falso. Además verifyRedaction solo mira texto de página: un DNI en Info dict
+no estándar o en XMP pasa como verde.
+
+QUÉ CAMBIA:
+1. Purga real de objetos. Sustituir (o complementar) la limpieza de pdf-lib por una pasada con mupdf que
+   elimine de verdad Info + XMP + adjuntos + anotaciones y luego serialice con garbage collection real, de
+   modo que los objetos huérfanos NO queden en el binario. Opciones aceptables: usar saveToBuffer con
+   opciones de garbage/scrub de mupdf, o re-serializar descartando los objetos indirectos huérfanos. La
+   ruta del Info dict escalar (Title/Author/Subject/Keywords/Producer/Creator) que pdf-lib ya resuelve bien
+   puede mantenerse, pero el XMP y los streams huérfanos deben desaparecer a nivel de bytes.
+2. La lista `removed` que va al informe debe derivarse de una RE-COMPROBACIÓN del binario final, no de la
+   intención optimista de stripMetadata. Solo se declara "XMP eliminado" si, releído el PDF final, el XMP ya
+   no está presente.
+3. Ampliar la verificación post-borrado a metadatos. verifyRedaction (o una función nueva que la envuelva)
+   debe, además del texto de página, re-leer del PDF FINAL: el Info dict COMPLETO (todas las claves, también
+   las no estándar), el XMP a nivel de documento y de página, y los adjuntos; re-buscar en esas cadenas los
+   6 patrones + los manualStrings. Cualquier residuo ahí → clean=false → verde bloqueado (A1/A2).
+
+CRITERIO DE ACEPTACIÓN / TESTS NUEVOS (src/pdf/metadata.test.ts y src/pdf/verify.test.ts):
+- Fixture con XMP que contiene <dc:creator>SECRETO_12345678Z_JuanPerez</dc:creator>. Tras la purga:
+  * catalog.has('Metadata') === false (como ya se comprobaba), Y ADEMÁS
+  * Buffer/latin1 de los bytes finales NO incluye "SECRETO_12345678Z_JuanPerez" (grep de bytes). Este es el
+    test que faltaba y que dejaba pasar el remanente.
+- Fixture con una clave Info NO estándar `/Cliente (Juan 12345678Z)` y sin ese dato en la página: la
+  verificación ampliada devuelve clean=false y lista el residuo. Tras la purga real, el dato ya no está y
+  clean=true.
+- El informe declara "XMP" en metadatos eliminados SOLO cuando la re-lectura confirma que no queda XMP.
+
+=================================================================================================
+BLOQUE A6 (ALTA) — AVISO LEGAL (LSSI art. 10), Términos y Privacidad no se renderizan en la app
+=================================================================================================
+FICHEROS: src/main.ts (initApp), src/legal/textos.ts (AVISO_LEGAL 7, TERMINOS 20, PRIVACIDAD 34; hoy código
+muerto respecto al DOM), index.html (solo <div id="app">).
+
+QUÉ CAMBIA:
+- initApp importa AVISO_LEGAL, TERMINOS y PRIVACIDAD de ./legal/textos y los RENDERIZA en el DOM de forma
+  permanente y accesible: un pie de página con enlaces a secciones (o secciones desplegables) que muestren
+  cada texto íntegro. El Aviso Legal debe ser accesible de forma directa desde la home (requisito LSSI art.
+  10). El scopeNotice corto se mantiene junto al botón, pero NO sustituye al Aviso Legal completo.
+- Sustituir el literal duplicado del scopeNotice (main.ts:144-146) por la constante AVISO_PRINCIPAL importada
+  de ./legal/textos (fuente única de verdad), para no divergir.
+- Los placeholders [NOMBRE]/[NIF]/[DOMICILIO]/[EMAIL] del AVISO_LEGAL se dejan TAL CUAL: su relleno con
+  datos fiscales reales es owner-gate APROBADO-ANGEL, fuera del alcance del motor. No inventar datos.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/legal/render.test.ts o src/main.test.ts con jsdom):
+- Tras initApp(root) sobre un DOM de prueba, root.textContent (o el DOM) contiene fragmentos identificativos
+  de cada texto: "artículo 10", "Términos de uso", "Política de privacidad", "Procesamiento 100% local".
+- Grep de repo en el test o en CI: AVISO_LEGAL/TERMINOS/PRIVACIDAD tienen al menos un import fuera de
+  *.test.ts (dejan de ser código muerto). Aserción mínima: main.ts importa de ./legal/textos.
+
+=================================================================================================
+BLOQUE A7 (ALTA) — PÁGINA ESCANEADA MIXTA (imagen + texto suelto) se salta el aviso rojo
+=================================================================================================
+FICHERO: src/pdf/engine.ts (pageHasTextLayer 61-63, scannedPages 65-74).
+
+PROBLEMA: pageHasTextLayer = extractText(page).trim().length>0. Un sello Bates / pie "Exp 2024/123" / nº de
+página basta para que una imagen escaneada tenga "capa de texto" y quede FUERA del aviso rojo. El público
+objetivo sella en texto sus escaneos, así que ninguna de sus páginas escaneadas se marcaría → verde silencioso
+sobre una página con datos en la imagen.
+
+QUÉ CAMBIA:
+- No basar "escaneada/no verificable" solo en ausencia TOTAL de texto. Añadir heurística de imagen: marcar
+  también como "no verificable automáticamente (probable escaneo)" una página cuando una o más imágenes
+  cubren una fracción ALTA del área de la página (umbral p. ej. >=~60-70% del área), o cuando la relación
+  texto/área es muy baja pese a haber una imagen grande. Estas páginas van al MISMO listado rojo del visor y
+  del informe. Sin OCR (fuera de alcance): sobre-advertir es el comportamiento correcto (idea.txt).
+- Documentar el umbral elegido en un comentario en engine.ts; exponerlo como constante para poder ajustarlo.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/pdf/engine.test.ts):
+- Fixture "página imagen a página completa + drawText 'Exp 2024/123'": scannedPages() (o el nuevo método,
+  p. ej. pagesNeedingVisualReview()) INCLUYE esa página pese a tener texto suelto.
+- Fixture "página de texto normal, sin imagen grande": NO se marca.
+- Fixture "página solo-imagen sin texto": se marca (no regresión del caso ya cubierto).
+
+=================================================================================================
+BLOQUE A8 (ALTA de NEGOCIO) — Verificación de licencia Gumroad permisiva: se activa Pro sin compra
+=================================================================================================
+FICHEROS: src/license/gumroad.ts (isSubscriptionActive 18-30, verifyLicense 32-62),
+src/license/gumroad.test.ts.
+
+PROBLEMA: la métrica norte del producto es "licencias Pro vendidas a desconocidos". Hoy el gate es
+permisivo y regala Pro en respuestas inesperadas: (a) isSubscriptionActive(undefined) devuelve TRUE
+(un `{success:true}` SIN objeto purchase activa Pro); (b) verifyLicense no comprueba response.ok, así
+que un 4xx/5xx cuyo cuerpo JSON contenga success:true colaría; (c) no valida que el product_id de la
+respuesta coincida con el nuestro (una clave válida de OTRO producto Gumroad activaría Pro). No mete al
+usuario en líos legales, pero es un agujero directo de INGRESO.
+
+QUÉ CAMBIA (fail-closed: ante duda, NO Pro — el espejo de "ante duda, bloquear el verde"):
+1. isSubscriptionActive con purchase undefined/null → devuelve FALSE (sin datos de compra no hay Pro).
+2. verifyLicense comprueba `response.ok` antes de parsear; si no, reason:'invalid' (o 'offline' si es de red).
+3. Validar que la compra corresponde a NUESTRO producto: si la respuesta trae product_id/permalink,
+   debe coincidir con GUMROAD_PRODUCT_ID/PERMALINK; si no coincide → pro:false.
+4. Mantener el comportamiento offline (sin red → pro:false, reason:'offline') y el de clave ausente.
+   NUNCA se filtra nada del documento en esta llamada: solo viaja la clave (regla de privacidad intacta).
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/license/gumroad.test.ts):
+- verifyLicense con un fetch mock que devuelve {ok:true, json:{success:true}} SIN purchase → pro:false.
+- fetch mock {ok:false (404), json:{success:true, purchase:{...}}} → pro:false.
+- fetch mock {ok:true, json:{success:true, purchase:{...activa...}, product_id:'OTRO'}} → pro:false.
+- fetch mock {ok:true, json:{success:true, purchase:{...activa...}, product_id:GUMROAD_PRODUCT_ID}} → pro:true.
+- Los casos ya cubiertos (refunded/chargebacked/cancelada → pro:false; ausencia de clave → absent) siguen.
+
+=================================================================================================
+BLOQUE M1 (MEDIA) — IBAN con separadores punto/guion no se detecta (el validador sí los admite)
+=================================================================================================
+FICHERO: src/detect/patterns.ts (regex iban línea 75; es el único patrón que NO usa el SEP común).
+
+QUÉ CAMBIA:
+- Reconstruir la regex de IBAN con el mismo `${SEP}?` (`[ .\-]?`) que DNI/NIE/NUSS entre "ES", los 2 dígitos
+  de control y cada grupo de 4, ya que normalizar() (línea 8) y esIbanEsValido() (37-43) ya toleran punto y
+  guion. Mantener el lookbehind/lookahead que evita pegado con otras letras/dígitos y la validación mod-97.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/detect/patterns.test.ts):
+- detect() encuentra el IBAN en "ES91-2100-0418-4502-0005-1332" y en "ES91.2100.0418.4502.0005.1332",
+  además de los ya soportados "ES91 2100 0418 4502 0005 1332" y pegado.
+- Un IBAN con mod-97 incorrecto (aunque venga con puntos/guiones) NO se marca.
+
+=================================================================================================
+BLOQUE M2 (MEDIA) — NUSS con separador "/" (formato oficial TGSS "PP/NNNNNNNN/CC") no se detecta
+=================================================================================================
+FICHEROS: src/detect/patterns.ts (SEP línea 5 no incluye "/"; regex nuss línea 80; normalizar línea 7-9).
+
+QUÉ CAMBIA (hacen falta AMBOS cambios, no basta la regex):
+1. La regex de NUSS debe admitir "/" como separador entre grupos (ampliar el separador aplicable al NUSS a
+   `[ ./\-]?`, o construir la regex NUSS con esa clase). NO ampliar el SEP global a menos que se verifique
+   que no regresiona DNI/NIE (mantener el SEP global para los demás patrones tal cual).
+2. normalizar() debe eliminar también "/" para que esNussValido() reciba 12 dígitos limpios: cambiar
+   `raw.replace(/[ .\-]/g, '')` por `raw.replace(/[ ./\-]/g, '')`. Verificar que esto NO crea falsos
+   positivos en otros patrones: una fecha "28/12/2024" no cumple la forma 2-8-2 de NUSS, así que sigue sin
+   marcarse.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/detect/patterns.test.ts):
+- detect("28/12345678/40") devuelve un hit NUSS (con un NUSS de checksum válido real en el test).
+- esNussValido("28/12345678/40") === true tras el cambio de normalizar.
+- Caso negativo: detect("28/12/2024") NO devuelve un hit NUSS (la fecha no regresiona).
+- Los formatos ya soportados ("28 12345678 40", "28.12345678.40", "28-12345678-40") siguen funcionando.
+
+=================================================================================================
+BLOQUE M3 (MEDIA) — REDACT_LINE_ART_REMOVE_IF_TOUCHED destruye vector no relacionado (bordes/subrayados)
+=================================================================================================
+FICHERO: src/pdf/engine.ts (applyRedactions 83-88).
+
+QUÉ CAMBIA:
+- Cambiar el parámetro line_art de REDACT_LINE_ART_REMOVE_IF_TOUCHED (2) al default de mupdf
+  REDACT_LINE_ART_REMOVE_IF_COVERED (1), o a NONE (0). El texto lo borra REDACT_TEXT_REMOVE y el raster
+  REDACT_IMAGE_PIXELS; el line art no contiene el dato sensible, así que el modo agresivo solo aporta riesgo
+  de destruir bordes de tabla/marcos/subrayados que la caja meramente roza. Documentar el criterio con un
+  comentario en el código.
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/pdf/engine.test.ts):
+- Fixture con una línea/rectángulo vectorial (p. ej. borde de celda) y un texto DENTRO que se tacha, de modo
+  que la caja de redacción TOCA pero no CUBRE el trazo. Tras applyRedactions: el texto desaparece del texto
+  extraíble Y el trazo vectorial permanece presente (asertar sobre el número de operadores de line art o
+  sobre el render/estructura antes/después). Con el modo antiguo (TOUCHED) el trazo desaparecería; el test
+  debe pasar solo con COVERED/NONE.
+
+=================================================================================================
+BLOQUE M4 (MEDIA) — Titular de landing sobre-alega un resultado que el producto no puede probar
+=================================================================================================
+FICHERO: src/legal/textos.ts (LANDING_TITULAR línea 50).
+
+QUÉ CAMBIA:
+- LANDING_TITULAR = "TachadoPDF: la prueba de que el dato ya no está en el archivo" contradice AVISO_PRINCIPAL
+  y SCOPE_TEXT (que NO garantizan ausencia de datos ni analizan imágenes/escaneos) y va más allá de lo que
+  verifyRedaction demuestra (solo NO-EXTRAIBILIDAD del texto). Reformular a algo verificable y coherente con
+  el alcance, p. ej.: "TachadoPDF: la prueba técnica de que el texto tachado ya no es extraíble del PDF".
+  No usar vocabulario prohibido ni promesa categórica de resultado legal. Cambio de copy en ruta sensible:
+  marcar en el commit que el texto final de landing es owner-gate APROBADO-ANGEL, pero el titular actual es
+  incompatible con las reglas y debe corregirse ya (no dejar la promesa absoluta).
+
+CRITERIO DE ACEPTACIÓN / TEST NUEVO (src/legal/legal.test.ts):
+- LANDING_TITULAR NO contiene la frase "ya no está en el archivo" (ni afirma que el dato desaparece del
+  archivo). Aserción de coherencia: no contiene vocabulario prohibido (anonim*, certif*, "RGPD garantizado",
+  "IA"/"inteligencia artificial") — reutilizar/ampliar el test de vocabulario si ya existe.
+
+=================================================================================================
+VERIFICACIÓN GLOBAL DE CIERRE (obligatoria antes de dar el run por bueno)
+=================================================================================================
+- `npx tsc --noEmit` exit 0, biome/lint exit 0, `npx vitest run` exit 0 — comprobando el EXIT CODE real de
+  cada uno por separado, sin `| tail` ni `|| true`. Un CI verde con tests rotos enmascarados es un fallo del run.
+- Test/lint de repo que verifique que NO se ha introducido vocabulario prohibido en src/ ni en index.html.
+- Test/lint que verifique que la CSP de index.html sigue con connect-src limitado a 'self' https://api.gumroad.com
+  y script-src con 'wasm-unsafe-eval' pero sin 'unsafe-eval'.
+- Todos los tests nuevos de A1..A7 y M1..M4 presentes y en verde. Ningún test existente debe haberse relajado
+  para "pasar" (especialmente report.test.ts: se ACTUALIZA para reflejar el verify real, no se borra la
+  comprobación de contenido).
+- Regla rectora del run: ante cualquier duda entre "verde" y "bloquear", se BLOQUEA. Un falso verde reintroducido
+  en cualquier bloque invalida el run completo.
