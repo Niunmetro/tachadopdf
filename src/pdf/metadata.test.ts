@@ -1,7 +1,9 @@
-import { PDFDict, PDFDocument, PDFName } from 'pdf-lib';
+import { PDFDict, PDFDocument, PDFName, PDFString } from 'pdf-lib';
 import { describe, expect, it } from 'vitest';
 import { pdfConMetadatos, pdfConTexto } from '../test/fixtures';
-import { stripMetadata } from './metadata';
+import { extractMetadataStrings, stripMetadata } from './metadata';
+
+const SECRETO_XMP = 'SECRETO_12345678Z_JuanPerez';
 
 async function pdfConAnotacionYAdjuntoYFormulario(): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
@@ -34,6 +36,44 @@ async function pdfConAnotacionYAdjuntoYFormulario(): Promise<Uint8Array> {
   const form = doc.getForm();
   const field = form.createTextField('nombre');
   field.addToPage(page);
+
+  return doc.save();
+}
+
+async function pdfConXmpSecreto(): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  doc.addPage([595, 842]);
+
+  const xmpXml =
+    '<?xpacket begin="" id="W5M0MpCehiHzreSzNTczkc9d"?>' +
+    '<x:xmpmeta xmlns:x="adobe:ns:meta/">' +
+    '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">' +
+    '<rdf:Description xmlns:dc="http://purl.org/dc/elements/1.1/">' +
+    `<dc:creator>${SECRETO_XMP}</dc:creator>` +
+    '</rdf:Description>' +
+    '</rdf:RDF></x:xmpmeta>' +
+    '<?xpacket end="w"?>';
+  const metadataStream = doc.context.stream(xmpXml, {
+    Type: 'Metadata',
+    Subtype: 'XML',
+  });
+  const metadataRef = doc.context.register(metadataStream);
+  doc.catalog.set(PDFName.of('Metadata'), metadataRef);
+
+  return doc.save();
+}
+
+async function pdfConInfoNoEstandar(): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  doc.addPage([595, 842]);
+
+  const context = doc.context;
+  let infoDict = context.lookupMaybe(context.trailerInfo.Info, PDFDict);
+  if (!infoDict) {
+    infoDict = context.obj({});
+    context.trailerInfo.Info = context.register(infoDict);
+  }
+  infoDict.set(PDFName.of('Cliente'), PDFString.of('Juan 12345678Z'));
 
   return doc.save();
 }
@@ -109,5 +149,53 @@ describe('stripMetadata', () => {
 
     const doc = await PDFDocument.load(bytes, { updateMetadata: false });
     expect(doc.getPageCount()).toBe(1);
+  });
+
+  it('purga de verdad el XMP: el stream huérfano no sobrevive como bytes recuperables', async () => {
+    const original = await pdfConXmpSecreto();
+    const { bytes, removed } = await stripMetadata(original);
+
+    expect(removed).toContain('XMP');
+
+    const doc = await PDFDocument.load(bytes, { updateMetadata: false });
+    expect(doc.catalog.has(PDFName.of('Metadata'))).toBe(false);
+
+    const contenido = Buffer.from(bytes).toString('latin1');
+    expect(contenido).not.toContain(SECRETO_XMP);
+  });
+});
+
+describe('extractMetadataStrings', () => {
+  it('incluye claves de Info no estándar en el binario original y no en el purgado', async () => {
+    const original = await pdfConInfoNoEstandar();
+
+    const originales = await extractMetadataStrings(original);
+    expect(originales).toContain('Juan 12345678Z');
+
+    const { bytes } = await stripMetadata(original);
+    const purgadas = await extractMetadataStrings(bytes);
+    expect(purgadas).not.toContain('Juan 12345678Z');
+  });
+
+  it('incluye el texto del XMP en el binario original y no en el purgado', async () => {
+    const original = await pdfConXmpSecreto();
+
+    const originales = await extractMetadataStrings(original);
+    expect(originales.some((s) => s.includes(SECRETO_XMP))).toBe(true);
+
+    const { bytes } = await stripMetadata(original);
+    const purgadas = await extractMetadataStrings(bytes);
+    expect(purgadas.some((s) => s.includes(SECRETO_XMP))).toBe(false);
+  });
+
+  it('incluye los nombres de adjuntos en el binario original y no en el purgado', async () => {
+    const original = await pdfConAnotacionYAdjuntoYFormulario();
+
+    const originales = await extractMetadataStrings(original);
+    expect(originales).toContain('nota.txt');
+
+    const { bytes } = await stripMetadata(original);
+    const purgadas = await extractMetadataStrings(bytes);
+    expect(purgadas).not.toContain('nota.txt');
   });
 });
