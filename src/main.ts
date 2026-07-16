@@ -1,15 +1,15 @@
-import { CHECKBOX_LABEL, canBatch, canDownloadReport, canProcess, type AppState } from './app';
-import { detect } from './detect/patterns';
+import { CHECKBOX_LABEL, canBatch, canProcess, performBatchDownload, type AppState } from './app';
 import { getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
+import { renderLegalFooter } from './legal/render';
+import { AVISO_PRINCIPAL } from './legal/textos';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
-import { stripMetadata } from './pdf/metadata';
-import { verifyRedaction } from './pdf/verify';
-import { buildReport, computeSha256 } from './report/report';
-import type { BoxRect, PageMark, PatternKind, ReportData } from './types';
-import { addBox, renderBoxes } from './ui/boxes';
+import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
+import type { BoxRect, PageMark, VerifyResult } from './types';
+import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
+import { attachManualBoxDrawing, mountCanvas, renderHitOverlay } from './ui/viewer';
 
-const ALL_PATTERNS: PatternKind[] = ['dni', 'nie', 'iban', 'nuss', 'telefono', 'email'];
+const RENDER_DPI = 96;
 
 interface ProcessedFile {
   fileName: string;
@@ -17,6 +17,14 @@ interface ProcessedFile {
   boxesPerPage: { page: number; count: number }[];
   cleanedBytes: Uint8Array;
   reportBytes: Uint8Array;
+  verify: VerifyResult;
+}
+
+interface FileWork {
+  fileName: string;
+  bytes: Uint8Array;
+  manual: PageMark[];
+  selected: boolean[];
 }
 
 const state: AppState = {
@@ -27,7 +35,7 @@ const state: AppState = {
   quota: { usedThisMonth: 0, limit: 3, allowed: true },
 };
 
-let processedFiles: ProcessedFile[] = [];
+let fileWorks: FileWork[] = [];
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -40,23 +48,25 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
-async function markAutomaticHits(doc: PdfDoc): Promise<{ marks: PageMark[]; scannedPages: number[] }> {
-  const scannedPages = doc.scannedPages();
-  const total = doc.pageCount();
-  let marks: PageMark[] = [];
+function unionSorted(a: number[], b: number[]): number[] {
+  return Array.from(new Set([...a, ...b])).sort((x, y) => x - y);
+}
 
-  for (let page = 0; page < total; page++) {
-    if (scannedPages.includes(page)) continue;
-    const text = doc.extractText(page);
-    for (const hit of detect(text)) {
-      const rects: BoxRect[] = doc.searchText(page, hit.value);
-      for (const rect of rects) {
-        marks = addBox(marks, page, rect);
-      }
-    }
-  }
-
-  return { marks, scannedPages };
+function loadPng(bytes: Uint8Array): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([bytes as BlobPart], { type: 'image/png' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error('No se pudo renderizar la página'));
+    };
+    img.src = url;
+  });
 }
 
 async function loadWithPassword(bytes: Uint8Array, promptPassword: () => string | null): Promise<PdfDoc> {
@@ -70,44 +80,84 @@ async function loadWithPassword(bytes: Uint8Array, promptPassword: () => string 
   }
 }
 
-async function processOneFile(
-  file: File,
-  freeVersion: boolean,
-  promptPassword: () => string | null,
-): Promise<ProcessedFile> {
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  const doc = await loadWithPassword(bytes, promptPassword);
+/**
+ * Monta el visor real de un fichero: una página por cada página que NO
+ * necesita revisión visual (A7), con overlay de hits automáticos
+ * marcables/desmarcables (selectAll/toggleHit) y dibujo de cajas manuales
+ * (attachManualBoxDrawing). Todo lo que el usuario marca se acumula en
+ * `fileWork.selected` / `fileWork.manual`, que es lo que luego se le pasa a
+ * processDocument en el momento de la descarga.
+ */
+async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: FileWork): Promise<void> {
+  const visualReviewPages = doc.pagesNeedingVisualReview();
+  const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
+  fileWork.selected = automaticBoxes.map(() => true);
 
-  const { marks, scannedPages } = await markAutomaticHits(doc);
-  doc.applyRedactions(marks);
-  const redactedBytes = doc.save();
-  doc.close();
+  const title = el('p');
+  title.textContent = fileWork.fileName;
+  container.appendChild(title);
 
-  const { bytes: cleanedBytes, removed } = await stripMetadata(redactedBytes);
+  if (visualReviewPages.length > 0) {
+    const notice = el('p');
+    notice.textContent =
+      `Páginas que requieren revisión visual (sin capa de texto o con imagen a página completa): ` +
+      `${visualReviewPages.map((p) => p + 1).join(', ')}.`;
+    container.appendChild(notice);
+  }
 
-  const finalDoc = await loadPdf(cleanedBytes);
-  const pageTexts = finalDoc.extractAllText();
-  finalDoc.close();
+  const total = doc.pageCount();
+  let cursor = 0;
+  for (let page = 0; page < total; page++) {
+    if (visualReviewPages.includes(page)) continue;
 
-  const verify = verifyRedaction(pageTexts, []);
-  const boxesPerPage = marks.map((m) => ({ page: m.page, count: m.rects.length }));
+    const start = cursor;
+    while (cursor < automaticBoxes.length && automaticBoxes[cursor]?.page === page) cursor++;
+    const end = cursor;
+    const hitRects: BoxRect[] = automaticBoxes.slice(start, end).map((b) => b.rect);
 
-  const reportData: ReportData = {
-    fileName: file.name,
-    sha256: await computeSha256(cleanedBytes),
-    date: new Date().toISOString().slice(0, 10),
-    patternsSearched: ALL_PATTERNS,
-    boxesPerPage,
-    metadataRemoved: removed,
-    scannedPages,
-    freeVersion,
-  };
-  const reportBytes = await buildReport(reportData);
+    const png = doc.renderToPng(page, RENDER_DPI);
+    const img = await loadPng(png);
+    const scale = RENDER_DPI / 72;
+    const viewport: Viewport = {
+      scale,
+      pageW: img.naturalWidth / scale,
+      pageH: img.naturalHeight / scale,
+    };
 
-  state.verify = verify;
-  state.scannedPages = scannedPages;
+    const pageContainer = el('div', { class: 'page-visor' });
+    pageContainer.style.position = 'relative';
+    pageContainer.style.display = 'inline-block';
+    img.style.display = 'block';
+    pageContainer.appendChild(img);
 
-  return { fileName: file.name, scannedPages, boxesPerPage, cleanedBytes, reportBytes };
+    const canvas = mountCanvas(pageContainer, viewport);
+    canvas.style.position = 'absolute';
+    canvas.style.left = '0';
+    canvas.style.top = '0';
+
+    const getState = (): SelectionState => ({
+      hits: [],
+      selected: fileWork.selected.slice(start, end),
+      manual: fileWork.manual,
+    });
+    const setState = (s: SelectionState): void => {
+      for (let i = start; i < end; i++) fileWork.selected[i] = s.selected[i - start] ?? false;
+      fileWork.manual = s.manual;
+      renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
+    };
+
+    renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
+    attachManualBoxDrawing({ canvas, viewport, page, getState, setState });
+
+    if (hitRects.length > 0) {
+      const selectAllButton = el('button', { type: 'button' });
+      selectAllButton.textContent = `Página ${page + 1}: seleccionar todos los hits`;
+      selectAllButton.addEventListener('click', () => setState(selectAll(getState())));
+      pageContainer.appendChild(selectAllButton);
+    }
+
+    container.appendChild(pageContainer);
+  }
 }
 
 function downloadBytes(bytes: Uint8Array, fileName: string): void {
@@ -128,9 +178,11 @@ export function initApp(root: HTMLElement): void {
 
   const fileInput = el('input', { type: 'file', accept: 'application/pdf' });
   const quotaStatus = el('p');
-  const boxesContainer = el('div', { id: 'boxes' });
+  const filesContainer = el('div', { id: 'files' });
   const scannedWarning = el('p');
   scannedWarning.style.color = '#b00020';
+  const resultStatus = el('p');
+  resultStatus.style.color = '#b00020';
 
   const checkbox = el('input', { type: 'checkbox', id: 'checkbox-confirmado' });
   const checkboxLabel = el('label', { for: 'checkbox-confirmado' });
@@ -141,9 +193,7 @@ export function initApp(root: HTMLElement): void {
   downloadButton.setAttribute('disabled', 'true');
 
   const scopeNotice = el('p');
-  scopeNotice.textContent =
-    'TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. ' +
-    'No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana.';
+  scopeNotice.textContent = AVISO_PRINCIPAL;
 
   root.append(
     scopeNotice,
@@ -152,12 +202,14 @@ export function initApp(root: HTMLElement): void {
     licenseStatus,
     quotaStatus,
     fileInput,
-    boxesContainer,
+    filesContainer,
     scannedWarning,
     checkbox,
     checkboxLabel,
     downloadButton,
+    resultStatus,
   );
+  renderLegalFooter(root);
 
   function refreshQuotaAndBatchUI(): void {
     if (canBatch(state)) {
@@ -171,10 +223,12 @@ export function initApp(root: HTMLElement): void {
   }
 
   function refreshDownloadButton(): void {
-    downloadButton.toggleAttribute('disabled', !canDownloadReport(state));
+    downloadButton.toggleAttribute('disabled', !(fileWorks.length > 0 && state.checkboxConfirmed));
     scannedWarning.textContent =
       state.scannedPages.length > 0
-        ? `Atención: páginas sin capa de texto (probablemente escaneadas), revísalas manualmente: ${state.scannedPages.join(', ')}.`
+        ? `Atención: páginas sin capa de texto (probablemente escaneadas), revísalas manualmente: ${state.scannedPages
+            .map((p) => p + 1)
+            .join(', ')}.`
         : '';
   }
 
@@ -209,14 +263,25 @@ export function initApp(root: HTMLElement): void {
         return;
       }
 
-      processedFiles = [];
+      fileWorks = [];
+      filesContainer.innerHTML = '';
+      resultStatus.textContent = '';
+      state.scannedPages = [];
       checkbox.checked = false;
       state.checkboxConfirmed = false;
 
       for (const file of files) {
-        const processed = await processOneFile(file, !state.license.pro, () => window.prompt('Contraseña del PDF'));
-        processedFiles.push(processed);
-        renderBoxes(boxesContainer, []);
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const doc = await loadWithPassword(bytes, () => window.prompt('Contraseña del PDF'));
+
+        const fileWork: FileWork = { fileName: file.name, bytes, manual: [], selected: [] };
+        const fileContainer = el('div', { class: 'file-visor' });
+        await renderFileVisor(fileContainer, doc, fileWork);
+        doc.close();
+
+        filesContainer.appendChild(fileContainer);
+        fileWorks.push(fileWork);
+
         if (!state.license.pro) {
           await recordUse();
           state.quota = await getQuota();
@@ -229,11 +294,38 @@ export function initApp(root: HTMLElement): void {
   });
 
   downloadButton.addEventListener('click', () => {
-    if (!canDownloadReport(state)) return;
-    for (const processed of processedFiles) {
-      downloadBytes(processed.cleanedBytes, processed.fileName);
-      downloadBytes(processed.reportBytes, processed.fileName.replace(/\.pdf$/i, '') + '-informe.pdf');
-    }
+    void (async () => {
+      if (fileWorks.length === 0 || !state.checkboxConfirmed) return;
+
+      const processedFiles: ProcessedFile[] = [];
+      let scannedUnion: number[] = [];
+      for (const fw of fileWorks) {
+        const result = await processDocument({
+          bytes: fw.bytes,
+          fileName: fw.fileName,
+          freeVersion: !state.license.pro,
+          manual: fw.manual,
+          selectedAutomatic: fw.selected,
+        });
+        processedFiles.push({
+          fileName: result.fileName,
+          scannedPages: result.scannedPages,
+          boxesPerPage: result.boxesPerPage,
+          cleanedBytes: result.cleanedBytes,
+          reportBytes: result.reportBytes,
+          verify: result.verify,
+        });
+        scannedUnion = unionSorted(scannedUnion, result.scannedPages);
+      }
+
+      state.scannedPages = scannedUnion;
+      resultStatus.textContent = processedFiles.every((f) => f.verify.clean)
+        ? ''
+        : 'Se han detectado residuos en algún documento del lote: no se ha descargado ningún fichero.';
+      refreshDownloadButton();
+
+      performBatchDownload(processedFiles, state.checkboxConfirmed, downloadBytes);
+    })();
   });
 
   void (async () => {
