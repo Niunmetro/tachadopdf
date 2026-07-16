@@ -1,0 +1,73 @@
+PRODUCTO: TachadoPDF
+Slug repo: tachadopdf. Web app 100% cliente (Vite + TypeScript estricto + Vitest). Todo el procesamiento ocurre en el navegador del usuario; ningún documento sale de su máquina jamás.
+
+=== QUÉ ES ===
+Herramienta que TACHA DE VERDAD datos de un PDF: elimina físicamente el texto del archivo (no le pone un rectángulo negro encima), borra los píxeles de las zonas marcadas sobre imágenes, limpia metadatos, y genera un INFORME DE COMPROBACIÓN TÉCNICA descargable que demuestra que el dato ya no es extraíble del archivo final. El informe es el producto: es el artefacto que el usuario archiva en su expediente de protección de datos como prueba de diligencia.
+
+VOCABULARIO OBLIGATORIO (requisito legal, no estilo): el producto se llama y se describe SIEMPRE como "tachado" o "borrado real de datos". PROHIBIDO en producto, landing, informe y README: "anonimización", "anonimizado", "certifica/certificado", "cumplimiento RGPD garantizado", "IA" o "inteligencia artificial" (la detección son expresiones regulares deterministas con checksum, y así se describe: "detección automática por patrones"). Prohibido nombrar competidores (iLovePDF, AnonDocs, etc.) en la web pública.
+
+=== PARA QUIÉN ===
+Profesionales españoles que entregan documentación con datos personales a terceros y temen una sanción de la AEPD (hay sanciones documentadas de 2.000 a 10.000 € por descuidos así): administradores de fincas (actas y acuerdos con datos de propietarios), gestorías y asesorías, departamentos de RRHH (expedientes), y despachos/procuradores como segmento secundario. Compra autoservicio: una persona, una tarjeta, sin vendedor.
+
+=== POR QUÉ PAGARÍA UN DESCONOCIDO (no es una calculadora) ===
+1) Tachar "gratis" ya existe, pero o sube el documento a un servidor (prohibido por confidencialidad/encargo de tratamiento) o no deja prueba de nada. Lo que NO existe empaquetado es: borrado real + patrones españoles con validación de checksum + informe de comprobación descargable + 100% local. 2) El motor toca el binario del PDF (content stream, metadatos XMP, anotaciones): ni Excel ni un chat lo hacen. 3) El informe convierte una tarea de miedo en un documento de diligencia archivable. Métrica norte del producto: licencias Pro vendidas a desconocidos (pagos Gumroad).
+
+=== STACK Y LICENCIA (decisión ya tomada) ===
+- Vite + TypeScript estricto + Vitest. App estática, sin servidor, sin claves, sin analítica.
+- Motor PDF: paquete npm `mupdf` (MuPDF compilado a WebAssembly, corre 100% local). Uso: render de páginas a canvas, page.search() para localizar texto, anotaciones Redact + applyRedactions() con borrado de píxeles de imagen (REDACT_IMAGE_PIXELS), extracción de texto para la verificación.
+- Limpieza de metadatos: pasada final con pdf-lib (MIT): borrar Info dict (Title, Author, Subject, Keywords, Producer, Creator) y el stream XMP.
+- LICENCIA DEL REPO: AGPL-3.0 (obligado por mupdf; decisión aprobada). Repo público. AGPL no impide vender la licencia Pro; el check de licencia Gumroad se mantiene aunque sea forkeable — riesgo asumido.
+- Verificación de licencia Pro: API de Gumroad desde el navegador, mismo patrón ya validado en producción con Facturea. ÚNICO tráfico de red saliente permitido en toda la app: la llamada de verificación de clave a Gumroad (solo viaja la clave, jamás nada del documento). CSP estricta vía meta tag que bloquee cualquier otro egress. Cero scripts de terceros, cero fuentes remotas, cero analítica. Esto es verificable en el repo público y es parte de la promesa comercial.
+
+=== ALCANCE EXACTO DE LA V1 (todo lo de abajo SÍ; nada más) ===
+1. CARGA: arrastrar/soltar o seleccionar un PDF. Soportar PDFs con contraseña (pedirla y abrir con authenticate). Todo en memoria/IndexedDB local.
+2. DETECCIÓN AUTOMÁTICA POR PATRONES (deterministas, con normalización previa de separadores — puntos, guiones, espacios — antes de validar):
+   - DNI: 8 dígitos + letra, validando la letra de control (mod-23). Detectar también formatos "12.345.678-Z" y "12345678-Z".
+   - NIE: X/Y/Z + 7 dígitos + letra de control válida.
+   - IBAN español (ES + 22 dígitos), validando mod-97. Con y sin espacios.
+   - NUSS (nº Seguridad Social, 12 dígitos con dígitos de control).
+   - Teléfonos españoles (6/7/8/9 + 8 dígitos, con o sin +34, con o sin espacios).
+   - Emails.
+   Cada patrón es una función pura con tests unitarios de checksum (casos válidos, inválidos y con separadores). NADA de detección de nombres propios: no hay NER en v1 y no se promete.
+3. VISOR: render de páginas con mupdf a canvas, overlay de cajas sobre los hits detectados (marcables/desmarcables una a una o "seleccionar todo"), más TACHADO MANUAL dibujando cajas con el ratón. Render y redacción usan el mismo espacio de coordenadas de mupdf (sin conversiones frágiles).
+4. BORRADO: applyRedactions() elimina el texto del content stream y los píxeles de imagen bajo las zonas marcadas. Pasada adicional: limpiar Info dict y XMP; enumerar y eliminar anotaciones y adjuntos embebidos; aplanar/eliminar campos de formulario.
+5. PÁGINAS ESCANEADAS (crítico anti-falso-verde): detectar páginas sin capa de texto y mostrar AVISO ROJO en el visor y en el informe: "Esta página no contiene texto extraíble (probablemente escaneada). La detección automática no puede leerla: revísala visualmente y tacha manualmente." Si el documento tiene páginas así, el informe DEBE listarlas y NUNCA puede presentarse como resultado limpio sin esa advertencia.
+6. VERIFICACIÓN POST-BORRADO: re-extraer TODO el texto del PDF final y re-buscar (a) cada patrón y (b) cada string tachado manualmente. Si aparece cualquier residuo, BLOQUEAR la descarga del informe en verde y señalar dónde. Un falso verde es el peor fallo posible del producto.
+7. INFORME DE COMPROBACIÓN TÉCNICA (PDF descargable, generado localmente): fecha, nombre y hash SHA-256 del archivo final, lista de patrones buscados con "0 ocurrencias en el texto extraíble", nº de zonas tachadas por página, metadatos eliminados, páginas sin capa de texto advertidas, y este texto de ámbito OBLIGATORIO y literal: "Esta comprobación se limita al texto extraíble del archivo PDF resultante y a los píxeles de las zonas marcadas. No analiza el contenido visual de las imágenes no marcadas ni garantiza la ausencia de datos personales en el documento. No sustituye la revisión humana." Título exacto: "Informe de comprobación técnica" (nunca "certificado").
+8. CHECKBOX OBLIGATORIO antes de descargar el PDF final: "He revisado visualmente el documento final página a página". Sin marcar, no hay descarga.
+9. FREEMIUM: Gratis = 3 documentos/mes (contador en IndexedDB; se sabe que es saltable, no venderlo como enforcement) con todas las funciones, e informe con la línea "Generado con TachadoPDF (versión gratuita)". Pro (clave Gumroad válida) = documentos ilimitados, procesado en lote de varios archivos con los mismos patrones, e informe sin esa línea. La marca va SOLO en el informe, JAMÁS impresa en el documento tachado.
+10. TEXTOS LEGALES QUE LA APP DEBE IMPRIMIR (páginas propias, enlazadas en el pie):
+   - Aviso visible junto al botón principal: "TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana."
+   - Aviso Legal (LSSI art. 10) con placeholders claros para que Ángel rellene: nombre, NIF, domicilio, email de contacto.
+   - Términos de uso: destinado a la preparación de documentos para entrega a terceros o publicación; prohibido usarlo para alterar documentos con valor probatorio; responsabilidad limitada al precio pagado; la licencia Pro es anual con renovación automática cancelable (Gumroad la gestiona) y así debe decirlo la landing.
+   - Política de privacidad breve: procesamiento 100% local en el navegador; el documento nunca se transmite; único dato que sale del navegador: la clave de licencia hacia Gumroad para su verificación; sin cookies ni analítica (por tanto sin banner). Gumroad Inc. actúa como vendedor (merchant of record) de la licencia Pro.
+11. LANDING (misma app, en la home): 100% en español, seria y sobria, orientada al informe ("la prueba de que el dato ya no está en el archivo"), con demo del informe visible, mención explícita de administradores de fincas, gestorías y RRHH como casos de uso, y espacio visible para la identidad fiscal de Ángel. Publicidad sin nombrar competidores: "las herramientas online habituales envían tus documentos a un servidor" (genérico, veraz).
+
+=== CRITERIOS DE ACEPTACIÓN VERIFICABLES (tests Vitest obligatorios; el juez debe poder comprobarlos) ===
+- Round-trip: PDF generado con "DNI 12345678Z" → detectar → tachar → re-extraer texto → el string NO existe; el resto del texto de la página permanece intacto.
+- Fragmentación: el mismo DNI partido en varios operadores de texto (como hace Word) y en formato "12.345.678-Z" se detecta y se elimina igualmente.
+- Checksums: suites de casos válidos/inválidos para letra de DNI (mod-23), NIE, IBAN ES (mod-97), NUSS; un IBAN con mod-97 incorrecto NO se marca como IBAN.
+- Metadatos: tras el proceso, Title/Author/Subject/Producer/Creator y XMP del PDF final son inexistentes (verificado releyendo el archivo).
+- Imágenes: una zona marcada sobre una imagen deja los píxeles eliminados (verificable comparando el render antes/después).
+- Anti-falso-verde: si se inyecta un residuo en el PDF final (fixture manipulada), la verificación lo encuentra y el informe verde queda bloqueado.
+- Página escaneada: un PDF de solo-imagen dispara el aviso rojo en UI y consta en el informe.
+- Informe: se genera un PDF local con todos los campos del punto 7, incluido el texto de ámbito literal.
+- Licencia: clave Gumroad válida activa Pro; inválida/ausente deja el modo gratuito; sin conexión, la app funciona en modo gratuito (el documento nunca depende de la red).
+- CSP: ningún test/build introduce peticiones a dominios distintos del de Gumroad para la verificación.
+- Todo el pipeline de verificación (exit codes reales de tsc/lint/tests, sin canalizar a tail).
+
+=== QUÉ NO HACER EN V1 (fuera de alcance, sin excepciones) ===
+- NADA de OCR (tesseract pesa decenas de MB y su fallo aquí es una sanción ajena): las páginas escaneadas se advierten y se tachan a mano. OCR = v2 si acaso.
+- NADA de detección de nombres propios / NER / modelos de lenguaje.
+- NADA de Word, imágenes sueltas u otros formatos: solo PDF.
+- NADA de "enviar a", integraciones, API, ni servidor de ningún tipo.
+- NADA de analítica, cookies, fuentes remotas ni CDNs.
+- NADA de las palabras prohibidas (anonimización, certifica, RGPD garantizado, IA) ni de nombres de competidores o de tests psicométricos comerciales.
+- No emitir jamás nada con apariencia de factura (frontera VERI*FACTU de la casa): el pago y sus recibos son de Gumroad.
+- No prometer plazos ni resultados legales; no usar escudos ni logos oficiales.
+
+=== MONETIZACIÓN (camino ya validado con Facturea) ===
+App gratis con límite 3 docs/mes + licencia Pro 59 €/año vendida en Gumroad (suscripción anual, renovación automática cancelable), verificada por la API de Gumroad desde el cliente. La app debe leer el product_id/permalink de Gumroad desde un fichero de configuración claramente señalado (config.ts) con un placeholder y un README que diga exactamente qué debe pegar Ángel ahí.
+
+=== DESPLIEGUE ===
+Build estático estándar (dist/). Desplegable en GitHub Pages para desarrollo/preview, pero el README debe documentar en 5 líneas el despliegue en Cloudflare Pages con dominio propio como destino recomendado de producción (los términos de GitHub Pages desaconsejan sitios primariamente comerciales; la decisión y el dominio son de Ángel — owner-gate).

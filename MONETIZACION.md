@@ -1,0 +1,8 @@
+# Pasos de Angel para monetizar TachadoPDF
+
+1) GUMROAD (20 min, imprescindible para cobrar): crear producto "TachadoPDF Pro" como membresía anual a 59 €/año, activar generación de claves de licencia, y pegar el product_id/permalink en el config.ts del repo donde el README lo indica. Marcar en la ficha de Gumroad: "renovación anual automática, cancelable en cualquier momento".
+2) AVISO LEGAL LSSI (10 min): rellenar los placeholders de la página de Aviso Legal con nombre, NIF, domicilio (valorar apartado de correos si no quieres exponer tu dirección — el mismo gap existe probablemente en Facturea y Rentómetro) y email de contacto.
+3) LICENCIA AGPL (5 min, decisión consciente): el motor mupdf obliga a que el repo sea público bajo AGPL-3.0. Ya publicamos los repos en abierto, así que el coste real es cero, pero debes saber que alguien podría forkear la app y quitar el check de licencia. Se asume: el comprador de este nicho paga por confianza e informe, no busca forks.
+4) SCREENING OEPM (15 min, tu protocolo habitual): comprobar "TachadoPDF" en el buscador de marcas de la OEPM antes de invertir en el nombre.
+5) DOMINIO + CLOUDFLARE PAGES (30-45 min, recomendado antes de promocionar; único gasto: ~12 €/año el dominio): crear cuenta gratuita en Cloudflare Pages, conectar el repo y apuntar el dominio. Motivo: los términos de GitHub Pages desaconsejan sitios primariamente comerciales y un strike afectaría también a Facturea y Rentómetro; además un dominio propio da la seriedad que este comprador exige.
+6) RUTINA MENSUAL (5 min/mes): exportar desde Gumroad los emails de los compradores (plan B si Gumroad suspendiera la cuenta; su moderación automática tiene historial de falsos positivos).

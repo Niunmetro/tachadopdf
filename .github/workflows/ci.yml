@@ -1,0 +1,30 @@
+# CI de TachadoPDF — puerta obligatoria antes de cualquier merge a master.
+# Los comandos usan --if-present para no romper mientras la auditoría
+# confirma los scripts reales de package.json; después, quitar --if-present
+# para que un script ausente haga fallar el CI (más estricto = mejor).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npm run typecheck --if-present
+      - run: npm test --if-present
+      - run: npm run build --if-present
+        env:
+          # Variables mínimas de build; añadir las reales como Secrets del repo
+          # (GitHub -> Settings -> Secrets and variables -> Actions), nunca en claro.
+          CI: true
