@@ -1,17 +1,33 @@
 import * as mupdf from 'mupdf';
+import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { describe, expect, it } from 'vitest';
 import {
   pdfConTexto,
   pdfDniFragmentado,
   pdfSoloImagen,
 } from '../test/fixtures';
-import { loadPdf, PdfPasswordError } from './engine';
+import { IMAGE_COVERAGE_THRESHOLD, loadPdf, PdfPasswordError } from './engine';
 
 async function pdfCifrado(userPassword: string): Promise<Uint8Array> {
   const abierto = await pdfConTexto('contenido protegido');
   const doc = new mupdf.PDFDocument(abierto);
   const buf = doc.saveToBuffer(`encrypt=aes-256,user-password=${userPassword},owner-password=owner-${userPassword}`);
   return buf.asUint8Array();
+}
+
+const PNG_1X1 = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+  'base64',
+);
+
+async function pdfImagenCompletaConTexto(texto: string): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const page = doc.addPage([595, 842]);
+  const img = await doc.embedPng(PNG_1X1);
+  page.drawImage(img, { x: 0, y: 0, width: 595, height: 842 });
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  page.drawText(texto, { x: 50, y: 780, size: 14, font });
+  return doc.save();
 }
 
 describe('motor mupdf', () => {
@@ -139,5 +155,67 @@ describe('motor mupdf', () => {
   it('lanza PdfPasswordError si la contraseña de un PDF cifrado es incorrecta', async () => {
     const bytes = await pdfCifrado('correcta123');
     await expect(loadPdf(bytes, 'incorrecta')).rejects.toBeInstanceOf(PdfPasswordError);
+  });
+
+  it('extractTextInRect devuelve el texto cuyo rect coincide con el marcado', async () => {
+    const bytes = await pdfConTexto('Maria Lopez Saez');
+    const doc = await loadPdf(bytes);
+
+    const textoCompleto = doc.extractTextInRect(0, { x: 0, y: 0, w: 595, h: 842 });
+    expect(textoCompleto).toContain('Maria Lopez Saez');
+
+    doc.close();
+  });
+
+  it('extractTextInRect sobre un rect vacío devuelve cadena vacía', async () => {
+    const bytes = await pdfConTexto('Maria Lopez Saez');
+    const doc = await loadPdf(bytes);
+
+    expect(doc.extractTextInRect(0, { x: 0, y: 0, w: 0, h: 0 })).toBe('');
+
+    doc.close();
+  });
+
+  it('extractTextInRect sin texto bajo el rect devuelve cadena vacía', async () => {
+    const bytes = await pdfSoloImagen();
+    const doc = await loadPdf(bytes);
+
+    expect(doc.extractTextInRect(0, { x: 0, y: 0, w: 595, h: 842 })).toBe('');
+
+    doc.close();
+  });
+
+  it('pagesNeedingVisualReview incluye páginas con imagen a página completa aunque tengan texto', async () => {
+    const bytes = await pdfImagenCompletaConTexto('Exp 2024/123');
+    const doc = await loadPdf(bytes);
+
+    expect(doc.pageHasTextLayer(0)).toBe(true);
+    expect(doc.pagesNeedingVisualReview()).toEqual([0]);
+
+    doc.close();
+  });
+
+  it('pagesNeedingVisualReview NO incluye una página de texto normal sin imagen grande', async () => {
+    const bytes = await pdfConTexto('texto visible');
+    const doc = await loadPdf(bytes);
+
+    expect(doc.pagesNeedingVisualReview()).toEqual([]);
+
+    doc.close();
+  });
+
+  it('pagesNeedingVisualReview incluye páginas solo-imagen sin texto (igual que scannedPages)', async () => {
+    const bytes = await pdfSoloImagen();
+    const doc = await loadPdf(bytes);
+
+    expect(doc.scannedPages()).toEqual([0]);
+    expect(doc.pagesNeedingVisualReview()).toEqual([0]);
+
+    doc.close();
+  });
+
+  it('IMAGE_COVERAGE_THRESHOLD es una fracción alta del área de página', () => {
+    expect(IMAGE_COVERAGE_THRESHOLD).toBeGreaterThan(0.5);
+    expect(IMAGE_COVERAGE_THRESHOLD).toBeLessThanOrEqual(1);
   });
 });
