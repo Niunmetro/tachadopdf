@@ -48,6 +48,26 @@ describe('verifyRedaction (unidades sobre texto)', () => {
   });
 });
 
+describe('verifyRedaction (tercer parámetro: metadataTexts)', () => {
+  it('un string manual que sobrevive en pageTexts se señala como residuo manual (comportamiento base intacto)', () => {
+    const resultado = verifyRedaction(['El propietario es Juan Pérez López.'], ['Juan Pérez López']);
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'manual', value: 'Juan Pérez López', page: 0 });
+  });
+
+  it('un DNI válido residual en metadataTexts da clean=false y señala el residuo con page=null', () => {
+    const resultado = verifyRedaction([], [], ['/Cliente (Juan 12345678Z)']);
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: null });
+  });
+
+  it('sin residuos en ninguna fuente da clean=true', () => {
+    const resultado = verifyRedaction(['texto limpio'], [], []);
+    expect(resultado.clean).toBe(true);
+    expect(resultado.residues).toEqual([]);
+  });
+});
+
 describe('verifyRedaction (integración con motor mupdf y fixtures de T2/T3)', () => {
   it('un PDF ya limpio (sin datos) da clean=true', async () => {
     const bytes = await pdfConTexto('Documento sin ningún dato identificativo.');
