@@ -1,7 +1,11 @@
 import type { VerifyResidue, VerifyResult } from '../types';
 import { detect } from '../detect/patterns';
 
-export function verifyRedaction(pageTexts: string[], manualStrings: string[]): VerifyResult {
+export function verifyRedaction(
+  pageTexts: string[],
+  manualStrings: string[],
+  metadataTexts: string[] = [],
+): VerifyResult {
   const residues: VerifyResidue[] = [];
 
   pageTexts.forEach((texto, page) => {
@@ -17,6 +21,18 @@ export function verifyRedaction(pageTexts: string[], manualStrings: string[]): V
         residues.push({ kind: 'manual', value: manual, page });
       }
     });
+  }
+
+  for (const texto of metadataTexts) {
+    for (const hit of detect(texto)) {
+      residues.push({ kind: hit.kind, value: hit.value, page: null });
+    }
+    for (const manual of manualStrings) {
+      if (manual.trim() === '') continue;
+      if (texto.includes(manual)) {
+        residues.push({ kind: 'manual', value: manual, page: null });
+      }
+    }
   }
 
   return { clean: residues.length === 0, residues };
