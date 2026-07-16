@@ -1,0 +1,9 @@
+import './detect/patterns';
+import './pdf/engine';
+import './pdf/metadata';
+import './pdf/verify';
+import './report/report';
+import './license/gumroad';
+import './freemium/quota';
+import './ui/boxes';
+import './app';
