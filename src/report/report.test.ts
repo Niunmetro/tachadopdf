@@ -13,6 +13,7 @@ const BASE_DATA: ReportData = {
   metadataRemoved: ['Title', 'Author', 'XMP'],
   scannedPages: [1],
   freeVersion: true,
+  verify: { clean: true, residues: [] },
 };
 
 async function extractNormalizedText(bytes: Uint8Array): Promise<string> {
@@ -37,13 +38,35 @@ describe('buildReport', () => {
     expect(texto).toContain(SCOPE_TEXT);
   });
 
-  it('incluye la lista de patrones con "0 ocurrencias en el texto extraíble"', async () => {
+  it('incluye la lista de patrones con "0 ocurrencias en el texto extraíble" cuando verify está limpio', async () => {
     const bytes = await buildReport(BASE_DATA);
     const texto = await extractNormalizedText(bytes);
 
     expect(texto).toContain('DNI: 0 ocurrencias en el texto extraíble');
     expect(texto).toContain('IBAN: 0 ocurrencias en el texto extraíble');
     expect(texto).toContain('Correo electrónico: 0 ocurrencias en el texto extraíble');
+    expect(texto).not.toContain('RESIDUOS DETECTADOS');
+  });
+
+  it('cuando hay residuos, el patrón afectado muestra el recuento real y la página, con cabecera de residuos', async () => {
+    const bytes = await buildReport({
+      ...BASE_DATA,
+      verify: { clean: false, residues: [{ kind: 'dni', value: '12345678Z', page: 0 }] },
+    });
+    const texto = await extractNormalizedText(bytes);
+
+    expect(texto).toContain('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado');
+    expect(texto).not.toContain('DNI: 0 ocurrencias en el texto extraíble');
+    expect(texto).toContain('DNI: 1 ocurrencia(s) en el texto extraíble');
+    expect(texto).toContain('páginas: 0');
+  });
+
+  it('cuando verify no está presente, el informe se marca como no verde con la cabecera de residuos', async () => {
+    const { verify, ...sinVerify } = BASE_DATA;
+    const bytes = await buildReport(sinVerify);
+    const texto = await extractNormalizedText(bytes);
+
+    expect(texto).toContain('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado');
   });
 
   it('incluye la línea de versión gratuita solo cuando freeVersion es true', async () => {
