@@ -18,6 +18,26 @@ function quadToBoxRect(quad: mupdf.Quad): BoxRect {
   return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
 }
 
+function rectFromBounds([x0, y0, x1, y1]: mupdf.Rect): BoxRect {
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+
+function rectsIntersect(a: BoxRect, b: BoxRect): boolean {
+  return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+}
+
+function rectArea(rect: BoxRect): number {
+  return Math.max(0, rect.w) * Math.max(0, rect.h);
+}
+
+/**
+ * Fracción del área de la página que una imagen debe cubrir para que la página
+ * se marque como "necesita revisión visual" (A7). Una foto o escaneo incrustado
+ * como imagen a página completa puede ocultar datos que el detector de texto no
+ * ve nunca, así que se avisa aunque la página sí tenga capa de texto.
+ */
+export const IMAGE_COVERAGE_THRESHOLD = 0.6;
+
 export class PdfDoc {
   private readonly doc: mupdf.PDFDocument;
   private closed = false;
@@ -73,6 +93,55 @@ export class PdfDoc {
     return result;
   }
 
+  extractTextInRect(page: number, rect: BoxRect): string {
+    if (rect.w <= 0 || rect.h <= 0) {
+      return '';
+    }
+    const structured = this.page(page).toStructuredText();
+    let text = '';
+    structured.walk({
+      onChar(c, _origin, _font, _size, quad) {
+        if (rectsIntersect(rect, quadToBoxRect(quad))) {
+          text += c;
+        }
+      },
+    });
+    return text;
+  }
+
+  /**
+   * Páginas que necesitan revisión visual humana antes de dar el informe por
+   * bueno: (a) sin capa de texto (igual que scannedPages, sin regresión) o
+   * (b) con una o varias imágenes que cubren una fracción alta del área de la
+   * página (>= IMAGE_COVERAGE_THRESHOLD), aunque sí tengan texto detectable.
+   */
+  pagesNeedingVisualReview(): number[] {
+    const total = this.pageCount();
+    const result: number[] = [];
+    for (let i = 0; i < total; i++) {
+      if (!this.pageHasTextLayer(i)) {
+        result.push(i);
+        continue;
+      }
+      const page = this.page(i);
+      const pageArea = rectArea(rectFromBounds(page.getBounds()));
+      if (pageArea <= 0) {
+        continue;
+      }
+      const structured = page.toStructuredText('preserve-images');
+      let imageArea = 0;
+      structured.walk({
+        onImageBlock(bbox) {
+          imageArea += rectArea(rectFromBounds(bbox));
+        },
+      });
+      if (imageArea / pageArea >= IMAGE_COVERAGE_THRESHOLD) {
+        result.push(i);
+      }
+    }
+    return result;
+  }
+
   applyRedactions(marks: PageMark[]): void {
     for (const mark of marks) {
       const page = this.page(mark.page);
@@ -80,10 +149,14 @@ export class PdfDoc {
         const annot = page.createAnnotation('Redact');
         annot.setRect([rect.x, rect.y, rect.x + rect.w, rect.y + rect.h]);
       }
+      // REMOVE_IF_COVERED (en vez de REMOVE_IF_TOUCHED): una caja de redacción
+      // que solo TOCA un trazo vectorial (línea, borde de tabla) no debe borrar
+      // ese trazo entero; sólo se elimina el arte vectorial que la caja cubre
+      // por completo. Evita destruir maquetación que no contiene el dato a tachar.
       page.applyRedactions(
         true,
         mupdf.PDFPage.REDACT_IMAGE_PIXELS,
-        mupdf.PDFPage.REDACT_LINE_ART_REMOVE_IF_TOUCHED,
+        mupdf.PDFPage.REDACT_LINE_ART_REMOVE_IF_COVERED,
         mupdf.PDFPage.REDACT_TEXT_REMOVE,
       );
     }
