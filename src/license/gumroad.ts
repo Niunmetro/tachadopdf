@@ -9,21 +9,37 @@ interface GumroadPurchase {
   subscription_cancelled_at?: string | null;
   subscription_failed_at?: string | null;
   subscription_ended_at?: string | null;
+  product_id?: string;
+  permalink?: string;
 }
 
 interface GumroadVerifyResponse {
   success: boolean;
   purchase?: GumroadPurchase;
+  product_id?: string;
+  permalink?: string;
 }
 
-function isSubscriptionActive(purchase: GumroadPurchase | undefined): boolean {
+function isSubscriptionActive(purchase: GumroadPurchase | null | undefined): boolean {
   if (!purchase) {
-    return true;
+    return false;
   }
   if (purchase.refunded || purchase.chargebacked) {
     return false;
   }
   if (purchase.subscription_cancelled_at || purchase.subscription_failed_at || purchase.subscription_ended_at) {
+    return false;
+  }
+  return true;
+}
+
+function matchesOurProduct(data: GumroadVerifyResponse): boolean {
+  const productId = data.product_id ?? data.purchase?.product_id;
+  const permalink = data.permalink ?? data.purchase?.permalink;
+  if (productId !== undefined && productId !== GUMROAD_PRODUCT_ID) {
+    return false;
+  }
+  if (permalink !== undefined && permalink !== GUMROAD_PRODUCT_PERMALINK) {
     return false;
   }
   return true;
@@ -46,8 +62,11 @@ export async function verifyLicense(licenseKey: string, fetchImpl?: typeof fetch
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: body.toString(),
     });
+    if (!response.ok) {
+      return { pro: false, reason: 'invalid' };
+    }
     const data = (await response.json()) as GumroadVerifyResponse;
-    if (data.success && isSubscriptionActive(data.purchase)) {
+    if (data.success && isSubscriptionActive(data.purchase) && matchesOurProduct(data)) {
       return { pro: true, reason: 'valid' };
     }
     return { pro: false, reason: 'invalid' };
