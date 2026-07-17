@@ -1,4 +1,10 @@
-// Rellenar tras crear el producto en Gumroad (paso de Ángel, ver MONETIZACION.md).
-// Estos valores son públicos por diseño: identifican el producto, no autentican nada.
-export const GUMROAD_PRODUCT_PERMALINK: string = 'PEGAR_AQUI_PERMALINK';
-export const GUMROAD_PRODUCT_ID: string = 'PEGAR_AQUI_PRODUCT_ID';
+// Identificadores del producto en Gumroad. PÚBLICOS por diseño: identifican el producto,
+// no autentican nada (el token de la cuenta NUNCA vive aquí ni en el navegador).
+// La API de Gumroad exige product_id para productos creados desde 2023-01-09; el permalink
+// se conserva para construir el enlace de compra.
+export const GUMROAD_PRODUCT_PERMALINK: string = 'tachadopdf';
+export const GUMROAD_PRODUCT_ID: string = 'R7cXtVb-N9uZ49dQ6RQ6jw==';
+
+// Enlace de compra que se muestra en la app.
+export const PRO_URL: string = 'https://shafted6.gumroad.com/l/tachadopdf';
+export const PRECIO_PRO: string = '59 €';

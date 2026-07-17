@@ -32,9 +32,12 @@ describe('textos legales: contenido requerido', () => {
     expect(TERMINOS).toContain('prohibido');
     expect(TERMINOS).toContain('responsabilidad');
     expect(TERMINOS).toContain('limitada al precio pagado');
-    expect(TERMINOS).toContain('anual');
-    expect(TERMINOS).toContain('renovación automática');
-    expect(TERMINOS).toContain('cancelable');
+    // El producto se vende en Gumroad como PAGO ÚNICO (decisión de 2026-07-17). Los Términos
+    // deben decir exactamente eso: prometer una suscripción que no existe —o al revés— sería
+    // vender una cosa y cobrar otra. Este test guarda esa coherencia en la dirección correcta.
+    expect(TERMINOS).toContain('pago único');
+    expect(TERMINOS).toContain('no es una suscripción');
+    expect(TERMINOS).not.toContain('renovación automática');
     expect(TERMINOS).toContain('Gumroad');
   });
 

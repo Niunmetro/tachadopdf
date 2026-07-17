@@ -123,7 +123,14 @@ describe('verifyLicense', () => {
     expect(resultado).toEqual({ pro: false, reason: 'invalid' });
   });
 
-  it('purchase activa pero de OTRO producto → {pro:false, reason:"invalid"}', async () => {
+  // La pertenencia al producto la garantiza la API server-side, NO el cliente. Verificado
+  // empíricamente contra api.gumroad.com el 2026-07-17: enviando nuestro product_id, una clave
+  // ajena responde {"success":false,"message":"That license does not exist for the provided
+  // product."} — o sea, `success:true` YA implica que la licencia es de NUESTRO producto.
+  // Por eso no re-comparamos el product_id devuelto: si Gumroad lo formatea distinto del que
+  // se usa para verificar, rechazaríamos compras legítimas (falso negativo que cuesta dinero).
+  // Este test fija esa decisión: la envoltura de la respuesta no puede vetar una compra válida.
+  it('success:true con compra activa → pro:true (el matching de producto es server-side)', async () => {
     const fetchImpl = vi.fn().mockResolvedValue(
       jsonResponse({
         success: true,
@@ -134,13 +141,15 @@ describe('verifyLicense', () => {
           subscription_failed_at: null,
           subscription_ended_at: null,
         },
-        product_id: 'OTRO',
       }),
     );
 
-    const resultado = await verifyLicense('CLAVE-OTRO-PRODUCTO', fetchImpl);
+    const resultado = await verifyLicense('CLAVE-VALIDA', fetchImpl);
 
-    expect(resultado).toEqual({ pro: false, reason: 'invalid' });
+    expect(resultado).toEqual({ pro: true, reason: 'valid' });
+    // y se envió NUESTRO product_id, que es lo que hace válido el filtro server-side:
+    const llamada = fetchImpl.mock.calls[0] as [string, RequestInit];
+    expect(String(llamada[1].body)).toContain('product_id=');
   });
 
   it('purchase activa del producto correcto (product_id coincide) → {pro:true, reason:"valid"}', async () => {

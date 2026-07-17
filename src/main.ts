@@ -1,4 +1,5 @@
 import { CHECKBOX_LABEL, canBatch, canProcess, performBatchDownload, type AppState } from './app';
+import { PRECIO_PRO, PRO_URL } from './config';
 import { getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
 import { renderLegalFooter } from './legal/render';
@@ -195,12 +196,18 @@ export function initApp(root: HTMLElement): void {
   const scopeNotice = el('p');
   scopeNotice.textContent = AVISO_PRINCIPAL;
 
+  // Enlace de compra: sin esto, quien agota la cuota gratuita no sabe dónde comprar Pro.
+  // Se muestra solo cuando NO hay Pro activo (a un cliente que ya pagó no se le vende nada).
+  const proLink = el('a', { href: PRO_URL, target: '_blank', rel: 'noopener noreferrer', id: 'comprar-pro' });
+  proLink.textContent = `Comprar Pro — ${PRECIO_PRO} (pago único)`;
+
   root.append(
     scopeNotice,
     licenseInput,
     licenseButton,
     licenseStatus,
     quotaStatus,
+    proLink,
     fileInput,
     filesContainer,
     scannedWarning,
@@ -220,6 +227,11 @@ export function initApp(root: HTMLElement): void {
     quotaStatus.textContent = state.license.pro
       ? 'Licencia Pro activa: documentos ilimitados, procesado en lote.'
       : `Modo gratuito: ${state.quota.usedThisMonth}/${state.quota.limit} documentos usados este mes.`;
+    // A quien ya pagó no se le enseña el enlace de compra; a quien agotó la cuota, más visible.
+    proLink.hidden = state.license.pro;
+    proLink.textContent = state.quota.allowed
+      ? `Comprar Pro — ${PRECIO_PRO} (pago único)`
+      : `Has agotado los ${state.quota.limit} documentos gratis de este mes · Comprar Pro — ${PRECIO_PRO} (pago único)`;
   }
 
   function refreshDownloadButton(): void {

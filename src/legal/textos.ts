@@ -27,7 +27,7 @@ export const TERMINOS = `Términos de uso
 
 4. Responsabilidad. En la máxima medida permitida por la ley, la responsabilidad del titular frente al usuario por cualquier daño derivado del uso de TachadoPDF queda limitada al precio pagado por la licencia, en su caso.
 
-5. Licencia Pro. La licencia Pro tiene una duración anual con renovación automática, cancelable en cualquier momento. La contratación, el cobro y la cancelación de la licencia Pro los gestiona Gumroad como plataforma de venta.
+5. Licencia Pro. La licencia Pro se adquiere mediante un pago único y no es una suscripción: no se renueva ni genera cobros periódicos. La contratación y el cobro los gestiona Gumroad como plataforma de venta.
 
 6. Modificaciones. Estos Términos de uso pueden actualizarse; la versión vigente es la publicada en cada momento en este sitio.`;
 

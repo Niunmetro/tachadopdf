@@ -33,17 +33,14 @@ function isSubscriptionActive(purchase: GumroadPurchase | null | undefined): boo
   return true;
 }
 
-function matchesOurProduct(data: GumroadVerifyResponse): boolean {
-  const productId = data.product_id ?? data.purchase?.product_id;
-  const permalink = data.permalink ?? data.purchase?.permalink;
-  if (productId !== undefined && productId !== GUMROAD_PRODUCT_ID) {
-    return false;
-  }
-  if (permalink !== undefined && permalink !== GUMROAD_PRODUCT_PERMALINK) {
-    return false;
-  }
-  return true;
-}
+// NOTA (verificado empíricamente contra la API real de Gumroad el 2026-07-17):
+// NO comparamos aquí el product_id de la respuesta con el nuestro. La API YA garantiza la
+// pertenencia al producto server-side: al enviar nuestro product_id, una clave de otro
+// producto devuelve {"success":false,"message":"That license does not exist for the provided
+// product."}. Repetir esa comprobación en el cliente sería redundante y PELIGROSA: si Gumroad
+// devolviera el id en otro formato que el usado para verificar, rechazaríamos compras
+// LEGÍTIMAS (falso negativo que cuesta dinero). La regla fail-closed se mantiene donde sí
+// aporta: response.ok, success, y purchase presente y activa.
 
 export async function verifyLicense(licenseKey: string, fetchImpl?: typeof fetch): Promise<LicenseStatus> {
   if (!licenseKey) {
@@ -66,7 +63,7 @@ export async function verifyLicense(licenseKey: string, fetchImpl?: typeof fetch
       return { pro: false, reason: 'invalid' };
     }
     const data = (await response.json()) as GumroadVerifyResponse;
-    if (data.success && isSubscriptionActive(data.purchase) && matchesOurProduct(data)) {
+    if (data.success && isSubscriptionActive(data.purchase)) {
       return { pro: true, reason: 'valid' };
     }
     return { pro: false, reason: 'invalid' };
