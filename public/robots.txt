@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://www.tachadopdf.com/sitemap.xml
+Sitemap: https://niunmetro.github.io/tachadopdf/sitemap.xml
