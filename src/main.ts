@@ -135,16 +135,20 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
       pageH: img.naturalHeight / scale,
     };
 
+    // El rótulo va FUERA del pageContainer: dentro empujaría la <img> hacia abajo mientras el
+    // <canvas> (position:absolute; top:0) se queda arriba, desalineando el tachado manual en las
+    // páginas escaneadas (bug cazado por Codex el 2026-07-17). El pageContainer solo lleva la
+    // img y el canvas, perfectamente superpuestos.
+    if (necesitaRevisionVisual) {
+      const rotulo = el('p', { class: 'aviso-rojo' });
+      rotulo.textContent = `Página ${page + 1}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`;
+      container.appendChild(rotulo);
+    }
+
     const pageContainer = el('div', { class: 'page-visor' });
     pageContainer.style.position = 'relative';
     pageContainer.style.display = 'inline-block';
     img.style.display = 'block';
-
-    if (necesitaRevisionVisual) {
-      const rotulo = el('p', { class: 'aviso-rojo' });
-      rotulo.textContent = `Página ${page + 1}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`;
-      pageContainer.appendChild(rotulo);
-    }
     pageContainer.appendChild(img);
 
     const canvas = mountCanvas(pageContainer, viewport);
@@ -377,6 +381,10 @@ export function initApp(root: HTMLElement): void {
           'si persiste, el archivo puede no ser compatible. (Detalle técnico: ' +
           `${err instanceof Error ? err.message : String(err)})`;
       }
+
+      // Resetear el input: si no, volver a elegir el MISMO archivo (p.ej. tras contraseña mal o
+      // un error) no dispara 'change' y parece que la app se ignora (Codex, 2026-07-17).
+      fileInput.value = '';
 
       refreshQuotaAndBatchUI();
       refreshDownloadButton();

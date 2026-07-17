@@ -73,7 +73,7 @@ export function renderHitOverlay(options: HitOverlayOptions): void {
   // la <img> de la página renderizada y el <canvas> de tachado manual; vaciarlo entero los
   // destruía y dejaba el canvas fuera del DOM -> el usuario no podía tachar nada (bug real
   // cazado por Codex el 2026-07-17: era el motivo de "la web no funciona").
-  for (const previa of Array.from(container.querySelectorAll('.hit-box'))) {
+  for (const previa of Array.from(container.querySelectorAll(':scope > .hit-box'))) {
     previa.remove();
   }
   const state = getState();
