@@ -20,6 +20,7 @@ export const GUIAS: { titulo: string; url: string }[] = [
   { titulo: 'Cómo tachar un DNI de un PDF sin que se pueda recuperar', url: 'guia/tachar-dni-pdf/' },
   { titulo: 'Por qué el rectángulo negro no borra el dato', url: 'guia/rectangulo-negro-pdf-no-borra/' },
   { titulo: 'Datos personales en actas y documentos de comunidades', url: 'guia/proteccion-datos-administradores-fincas/' },
+  { titulo: 'Cómo tachar datos de un PDF sin subirlo a internet', url: 'guia/tachar-pdf-sin-subir-internet/' },
 ];
 
 export function renderGuias(root: HTMLElement): void {
