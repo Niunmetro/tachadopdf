@@ -1,3 +1,10 @@
+# PLANTILLA DE CI (no activa). GitHub rechaza pushear .github/workflows/ sin el scope
+# 'workflow' en el token de gh. Para activarlo:
+#   gh auth refresh -h github.com -s workflow
+#   mkdir -p .github/workflows && cp docs/ci-workflow.yml.txt .github/workflows/ci.yml
+#   git add .github/workflows/ci.yml && git commit -m 'ci: activar' && git push
+# Mientras tanto la verificacion corre en local: npx tsc --noEmit, npm test, npm run build.
+
 # CI de TachadoPDF — puerta obligatoria antes de cualquier merge a master.
 # Los comandos usan --if-present para no romper mientras la auditoría
 # confirma los scripts reales de package.json; después, quitar --if-present
