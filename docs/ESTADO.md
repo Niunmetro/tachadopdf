@@ -3,7 +3,7 @@
 > Regla: este archivo dice la VERDAD ACTUAL en 2 minutos de lectura. Lo mantiene el subagente `documentador`. La historia va en BITACORA.md; aquí solo el presente.
 
 ## Objetivo vigente
-Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA VENTA** — la web funciona (https://niunmetro.github.io/tachadopdf/) y **el cobro está abierto**: producto Gumroad PUBLICADO con Payouts conectado (botón "Buy this" activo, verificado 2026-07-17). El circuito técnico está cerrado de punta a punta. El cuello de botella ahora es **tráfico**, no producto.
+Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA VENTA** — la web funciona en el DOMINIO PROPIO **https://www.tachadopdf.com** (HTTPS, verificado 200 + app cargando sin errores; niunmetro.github.io/tachadopdf/ redirige a él) y **el cobro está abierto**: producto Gumroad PUBLICADO con Payouts conectado (botón "Buy this" activo, verificado 2026-07-17). El circuito técnico está cerrado de punta a punta. El cuello de botella ahora es **tráfico**, no producto.
 
 ## Qué funciona hoy (verificado EN EL NAVEGADOR de producción, 2026-07-17)
 - **FLUJO COMPLETO end-to-end en la web viva**: subir PDF → visor con imagen + detecciones (DNI/IBAN/teléfono marcados) → checkbox → descargar → el documento tachado y el informe NO contienen ninguno de los datos (comprobado sobre los bytes de los blobs descargados). Cero errores de consola.
@@ -29,9 +29,11 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
 ## Qué falta (honesto)
 - **Tráfico.** El SEO tarda semanas/meses; el primer cobro rápido vendría de un empujón directo en
   un canal del nicho (grupo de administradores de fincas/gestorías). Ver `docs/GROWTH.md`.
-- **Dominio www.tachadopdf.com**: comprado (IONOS), DNS sin configurar (CNAME www → niunmetro.github.io).
-  Requiere login de Ángel en IONOS (barrera de contraseña). No bloquea el cobro.
-- **Google Search Console**: dar de alta también la propiedad del dominio cuando el DNS resuelva.
+- **Dominio www.tachadopdf.com: CONFIGURADO Y VIVO** (2026-07-17). CNAME www → niunmetro.github.io
+  + A del apex → 185.199.108.153 (GitHub Pages) hechos en IONOS; custom domain + CNAME file en
+  GitHub Pages; SEO migrado al dominio. `tachadopdf.com` sin www propagando (TTL 1h).
+- **Google Search Console**: propiedad de niunmetro.github.io verificada; falta añadir la del
+  dominio www.tachadopdf.com (el meta de verificación ya está en su home).
 - Screening OEPM del nombre (pendiente de Ángel, no bloquea).
 
 ## Arquitectura en una línea
