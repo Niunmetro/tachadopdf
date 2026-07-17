@@ -14,6 +14,35 @@ export function legalSections(): SeccionLegal[] {
   ];
 }
 
+// Guías informativas (páginas estáticas en /guia/*). Enlazarlas desde la app cumple dos fines:
+// que Google las descubra (enlaces internos) y que el usuario que llega a la herramienta las lea.
+export const GUIAS: { titulo: string; url: string }[] = [
+  { titulo: 'Cómo tachar un DNI de un PDF sin que se pueda recuperar', url: 'guia/tachar-dni-pdf/' },
+  { titulo: 'Por qué el rectángulo negro no borra el dato', url: 'guia/rectangulo-negro-pdf-no-borra/' },
+  { titulo: 'Datos personales en actas y documentos de comunidades', url: 'guia/proteccion-datos-administradores-fincas/' },
+];
+
+export function renderGuias(root: HTMLElement): void {
+  const doc = root.ownerDocument;
+  const nav = doc.createElement('nav');
+  nav.setAttribute('aria-label', 'Guías');
+  nav.className = 'guias';
+  const titulo = doc.createElement('h2');
+  titulo.textContent = 'Guías';
+  nav.appendChild(titulo);
+  const ul = doc.createElement('ul');
+  for (const g of GUIAS) {
+    const li = doc.createElement('li');
+    const a = doc.createElement('a');
+    a.href = g.url;
+    a.textContent = g.titulo;
+    li.appendChild(a);
+    ul.appendChild(li);
+  }
+  nav.appendChild(ul);
+  root.appendChild(nav);
+}
+
 export function renderLegalFooter(root: HTMLElement): void {
   const doc = root.ownerDocument;
   const footer = doc.createElement('footer');

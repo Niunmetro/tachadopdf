@@ -3,7 +3,7 @@ import { CHECKBOX_LABEL, canBatch, canProcess, performBatchDownload, type AppSta
 import { PRECIO_PRO, PRO_URL } from './config';
 import { getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
-import { renderLegalFooter } from './legal/render';
+import { renderGuias, renderLegalFooter } from './legal/render';
 import {
   AVISO_PRINCIPAL,
   LANDING_CASOS_USO_TEXTO,
@@ -279,6 +279,7 @@ export function initApp(root: HTMLElement): void {
   panelPro.append(tituloPro, filaLicencia, licenseStatus, proLink);
 
   root.append(panelTrabajo, panelPro);
+  renderGuias(root);
   renderLegalFooter(root);
 
   function refreshQuotaAndBatchUI(): void {
