@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 'wasm-unsafe-eval' es OBLIGATORIO para instanciar mupdf-wasm; permite compilar WebAssembly
+         pero NO eval() de JS arbitrario (a diferencia de 'unsafe-eval'). connect-src limita el
+         egress a Gumroad; ningun documento sale del navegador. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <title>TachadoPDF</title>
+    <script type="module" crossorigin src="/tachadopdf/assets/index-Cufwwv0d.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
