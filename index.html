@@ -7,7 +7,41 @@
          pero NO eval() de JS arbitrario (a diferencia de 'unsafe-eval'). connect-src limita el
          egress a Gumroad; ningun documento sale del navegador. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
-    <title>TachadoPDF</title>
+
+    <title>TachadoPDF · Tacha de verdad los datos personales de un PDF</title>
+    <meta name="description" content="Tacha DNI, IBAN, teléfonos y datos personales de un PDF eliminándolos del archivo (no un rectángulo negro encima), 100% en tu navegador y con informe de comprobación técnica. Para gestorías, administradores de fincas y RRHH." />
+    <link rel="canonical" href="https://www.tachadopdf.com/" />
+
+    <!-- Open Graph: cómo se ve el enlace al compartirlo en WhatsApp, LinkedIn, etc. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="TachadoPDF · Tacha de verdad los datos personales de un PDF" />
+    <meta property="og:description" content="Elimina DNI, IBAN y datos personales del archivo, no solo un rectángulo por encima. 100% en tu navegador, con informe de comprobación técnica." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/" />
+    <meta property="og:locale" content="es_ES" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TachadoPDF · Tacha de verdad los datos personales de un PDF" />
+    <meta name="twitter:description" content="Elimina DNI, IBAN y datos personales del archivo, 100% en tu navegador, con informe de comprobación." />
+    <meta name="twitter:image" content="https://www.tachadopdf.com/og-image.png" />
+
+    <!-- Datos estructurados: ayuda a Google a entender que es una app web gratuita con opción Pro. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "TachadoPDF",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Navegador web",
+      "description": "Tacha datos personales de un PDF eliminándolos del archivo, 100% en el navegador, con informe de comprobación técnica.",
+      "url": "https://www.tachadopdf.com/",
+      "inLanguage": "es",
+      "offers": [
+        { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Gratuito (3 documentos/mes)" },
+        { "@type": "Offer", "price": "59", "priceCurrency": "EUR", "name": "Pro (pago único, documentos ilimitados)" }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="app"></div>
