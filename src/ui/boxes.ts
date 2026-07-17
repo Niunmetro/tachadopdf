@@ -82,3 +82,20 @@ export function addManualBox(s: SelectionState, page: number, rect: BoxRect): Se
   );
   return { ...s, manual };
 }
+
+/** Cajas manuales de una página (para pintarlas en el visor). Vacío si no hay. */
+export function manualRectsForPage(s: SelectionState, page: number): BoxRect[] {
+  return s.manual.find((mark) => mark.page === page)?.rects ?? [];
+}
+
+/** Quita la caja manual `rectIndex` de `page`. Deja a la vista deshacer un tachado a mano. */
+export function removeManualBox(s: SelectionState, page: number, rectIndex: number): SelectionState {
+  const manual = s.manual
+    .map((mark) =>
+      mark.page === page
+        ? { page: mark.page, rects: mark.rects.filter((_, i) => i !== rectIndex) }
+        : mark,
+    )
+    .filter((mark) => mark.rects.length > 0);
+  return { ...s, manual };
+}

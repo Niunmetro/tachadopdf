@@ -14,7 +14,7 @@ import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, VerifyResult } from './types';
 import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
-import { attachManualBoxDrawing, mountCanvas, renderHitOverlay } from './ui/viewer';
+import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
 const RENDER_DPI = 96;
 
@@ -104,6 +104,15 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
   title.textContent = fileWork.fileName;
   container.appendChild(title);
 
+  // Instrucción visible del tachado manual. Sin ella, nadie sabía que se podía tachar a mano
+  // arrastrando el ratón (la queja "no deja tachar" del 2026-07-17).
+  const comoTachar = el('p', { class: 'como-tachar' });
+  comoTachar.textContent =
+    'Los datos detectados aparecen marcados: haz clic para elegir cuáles tachar. Para tachar ' +
+    'cualquier otra cosa (un nombre, una firma, una foto), arrastra el ratón sobre ella dibujando ' +
+    'un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.';
+  container.appendChild(comoTachar);
+
   if (visualReviewPages.length > 0) {
     const notice = el('p');
     notice.textContent =
@@ -165,9 +174,11 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
       for (let i = start; i < end; i++) fileWork.selected[i] = s.selected[i - start] ?? false;
       fileWork.manual = s.manual;
       renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
+      renderManualBoxes({ container: pageContainer, viewport, page, getState, setState });
     };
 
     renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
+    renderManualBoxes({ container: pageContainer, viewport, page, getState, setState });
     attachManualBoxDrawing({ canvas, viewport, page, getState, setState });
 
     if (hitRects.length > 0) {

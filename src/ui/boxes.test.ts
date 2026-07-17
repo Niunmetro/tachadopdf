@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { BoxRect, Hit } from '../types';
 import {
   addManualBox,
+  manualRectsForPage,
+  removeManualBox,
   canvasToPage,
   clearAll,
   pageToCanvas,
@@ -118,5 +120,22 @@ describe('addManualBox', () => {
       { page: 0, rects: [rectA] },
       { page: 1, rects: [rectB] },
     ]);
+  });
+
+  it('manualRectsForPage devuelve las cajas de la página (para pintarlas en el visor)', () => {
+    const rect: BoxRect = { x: 1, y: 1, w: 2, h: 2 };
+    const s = addManualBox(estadoInicial(), 0, rect);
+    expect(manualRectsForPage(s, 0)).toEqual([rect]);
+    expect(manualRectsForPage(s, 1)).toEqual([]);
+  });
+
+  it('removeManualBox quita solo la caja indicada y limpia la página si queda vacía', () => {
+    const r1: BoxRect = { x: 1, y: 1, w: 2, h: 2 };
+    const r2: BoxRect = { x: 3, y: 3, w: 4, h: 4 };
+    const s = addManualBox(addManualBox(estadoInicial(), 0, r1), 0, r2);
+    const quitada = removeManualBox(s, 0, 0);
+    expect(manualRectsForPage(quitada, 0)).toEqual([r2]);
+    const vacia = removeManualBox(quitada, 0, 0);
+    expect(vacia.manual).toEqual([]); // sin rects, la página desaparece del estado
   });
 });
