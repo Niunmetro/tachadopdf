@@ -1,6 +1,9 @@
 import type { QuotaStatus } from '../types';
 
-export const FREE_MONTHLY_LIMIT = 3;
+// 5 documentos/mes gratis: 3 dejaba al usuario sin margen para probar antes de engancharse
+// (feedback de Ángel 2026-07-17). Es un umbral de conveniencia, no un control: el contador vive
+// en IndexedDB local y es reseteable — la versión gratuita se sostiene por honradez, no por muro.
+export const FREE_MONTHLY_LIMIT = 5;
 
 const DB_NAME = 'tachadopdf-freemium';
 const DB_VERSION = 1;
