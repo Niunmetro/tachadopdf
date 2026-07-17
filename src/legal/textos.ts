@@ -8,10 +8,10 @@ export const AVISO_LEGAL = `Aviso Legal
 
 En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa a los usuarios de los siguientes datos del titular de este sitio web:
 
-Titular: [NOMBRE]
-NIF: [NIF]
-Domicilio: [DOMICILIO]
-Correo electrónico de contacto: [EMAIL]
+Titular: Ángel Talón Villa
+NIF: 48611594J
+Domicilio: [PENDIENTE — ver nota en MONETIZACION.md: NO publicar el domicilio particular]
+Correo electrónico de contacto: [PENDIENTE — email de contacto del titular]
 
 El acceso y uso de este sitio web atribuye la condición de usuario y supone la aceptación plena de las condiciones incluidas en este Aviso Legal, en los Términos de uso y en la Política de privacidad.
 

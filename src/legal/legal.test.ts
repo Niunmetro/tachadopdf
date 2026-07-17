@@ -17,12 +17,20 @@ describe('textos legales: contenido requerido', () => {
     );
   });
 
-  it('AVISO_LEGAL contiene los placeholders y referencia el artículo 10 LSSI', () => {
-    expect(AVISO_LEGAL).toContain('[NOMBRE]');
-    expect(AVISO_LEGAL).toContain('[NIF]');
-    expect(AVISO_LEGAL).toContain('[DOMICILIO]');
-    expect(AVISO_LEGAL).toContain('[EMAIL]');
+  it('AVISO_LEGAL identifica al titular y referencia el artículo 10 LSSI', () => {
+    expect(AVISO_LEGAL).toContain('Ángel Talón Villa');
+    expect(AVISO_LEGAL).toContain('48611594J');
     expect(AVISO_LEGAL).toContain('artículo 10');
+  });
+
+  // El titular pidió expresamente NO publicar su domicilio particular (2026-07-17), y es lo
+  // correcto: exponerlo en una web pública es un riesgo personal innecesario. Este test impide
+  // que la calle vuelva a colarse por descuido en un futuro cambio de textos.
+  it('AVISO_LEGAL NO expone el domicilio particular del titular', () => {
+    const texto = AVISO_LEGAL.toLowerCase();
+    for (const fragmento of ['gardenias', '30009']) {
+      expect(texto).not.toContain(fragmento);
+    }
   });
 
   it('TERMINOS cubre preparación para terceros/publicación, prohibición de alterar valor probatorio, responsabilidad limitada y licencia Pro anual cancelable', () => {
