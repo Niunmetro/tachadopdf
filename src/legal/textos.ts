@@ -10,8 +10,8 @@ En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad 
 
 Titular: Ángel Talón Villa
 NIF: 48611594J
-Domicilio: [PENDIENTE — ver nota en MONETIZACION.md: NO publicar el domicilio particular]
-Correo electrónico de contacto: [PENDIENTE — email de contacto del titular]
+Domicilio: Murcia (España). Dirección postal a disposición de quien acredite interés legítimo, solicitándola en el correo de contacto.
+Correo electrónico de contacto: ccsshaft@gmail.com
 
 El acceso y uso de este sitio web atribuye la condición de usuario y supone la aceptación plena de las condiciones incluidas en este Aviso Legal, en los Términos de uso y en la Política de privacidad.
 
