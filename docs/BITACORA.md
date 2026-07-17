@@ -13,6 +13,12 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-07-17 · ingeniero · El visor se autodestruía — arreglado el tachado en navegador
+**Hecho:** el usuario reportó "la web no funciona, no se puede tachar". Reproducido en el navegador (los tests de Node no lo veían). Codex (review, otra familia de modelos) localizó la causa: `renderHitOverlay` (src/ui/viewer.ts) hacía `container.innerHTML=''`, borrando la <img> y el <canvas> del visor → el canvas de tachado quedaba fuera del DOM. Arreglado (borrar solo `.hit-box`). Codex cazó 3 más: escaneos omitidos del visor (quitado el `continue`), errores async tragados (try/catch visible), y un bug que YO introduje al arreglar los escaneos (rótulo desalineaba el canvas → sacado fuera del pageContainer). + reset de fileInput.value.
+**Decisiones y porqués:** verificación obligatoria en NAVEGADOR real con flujo completo, no solo vitest en Node (doctrina 50 de la casa: el artefacto vivo). Test de regresión en happy-dom (viewer.test.ts) que falla con el bug y pasa con el fix.
+**Bloqueos / pendiente:** ninguno técnico. Para cobrar: Payouts de Gumroad (owner) + DNS del dominio (owner).
+**Enlaces:** commits del 17-jul; verificado en https://niunmetro.github.io/tachadopdf/
+
 ## 2026-07-16 · sistema · Siembra del repo (estreno end-to-end de la sede)
 
 **Hecho:** repo sembrado con la plantilla-sello de la sede (CLAUDE.md adaptado, hooks, subagentes, CI), `idea.txt` con la spec v1 cerrada por el comité, motor FORJA duplicado en `forja/` y `forja.yaml` configurado. ESTADO.md con el objetivo vigente.

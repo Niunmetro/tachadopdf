@@ -5,7 +5,9 @@
 ## Objetivo vigente
 Primera licencia Pro (59 €/año) vendida a un desconocido vía Gumroad. Fase: **VIVO en producción** — https://niunmetro.github.io/tachadopdf/ (repo público `Niunmetro/tachadopdf`, AGPL-3.0). Verificado desde internet sin errores. Falta activar el cobro (Gumroad) y los datos fiscales del Aviso Legal: pasos de Ángel en MONETIZACION.md.
 
-## Qué funciona hoy (verificado)
+## Qué funciona hoy (verificado EN EL NAVEGADOR de producción, 2026-07-17)
+- **FLUJO COMPLETO end-to-end en la web viva**: subir PDF → visor con imagen + detecciones (DNI/IBAN/teléfono marcados) → checkbox → descargar → el documento tachado y el informe NO contienen ninguno de los datos (comprobado sobre los bytes de los blobs descargados). Cero errores de consola.
+- **BUG CRÍTICO resuelto (lo que hacía "la web no funciona")**: el visor se autodestruía (`renderHitOverlay` hacía `container.innerHTML=''` y borraba imagen+canvas → el usuario no podía tachar). Cazado por Codex, no por los tests de Node. Ver BITACORA.
 - v1 construida por el motor (run 1, 13 tareas + reparación automática del consolidado) y v2 con los 15 hallazgos de la revisión adversarial corregidos (run 2, 10 tareas). **193 tests, typecheck y build en verde.**
 - **Verificado en navegador real** (build servido, no solo tests): la app carga sin errores de consola, mupdf-wasm instancia, y se muestran el aviso principal, el contador freemium (3/mes), el checkbox de revisión visual y los tres textos legales completos (Aviso Legal LSSI art. 10 con placeholders, Términos, Privacidad).
 - Núcleo anti-falso-verde reforzado: informe acoplado a la verificación real (fin del "0 ocurrencias" hardcodeado), lote sin last-write-wins, visor cableado + tachado manual verificado, purga real de metadatos (bytes, no solo desvincular XMP), página escaneada mixta advertida, teléfonos/IBAN/NUSS con separadores, licencia Gumroad fail-closed, y `verify` opcional con semántica fail-safe (ausencia = nunca verde).
