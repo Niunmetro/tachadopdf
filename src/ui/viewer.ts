@@ -69,7 +69,13 @@ export interface HitOverlayOptions {
 
 export function renderHitOverlay(options: HitOverlayOptions): void {
   const { container, hitRects, viewport, getState, setState } = options;
-  container.innerHTML = '';
+  // Borrar SOLO las cajas de hits previas, NUNCA `container.innerHTML = ''`: el contenedor lleva
+  // la <img> de la página renderizada y el <canvas> de tachado manual; vaciarlo entero los
+  // destruía y dejaba el canvas fuera del DOM -> el usuario no podía tachar nada (bug real
+  // cazado por Codex el 2026-07-17: era el motivo de "la web no funciona").
+  for (const previa of Array.from(container.querySelectorAll('.hit-box'))) {
+    previa.remove();
+  }
   const state = getState();
   hitRects.forEach((pageRect, index) => {
     const canvasRect = pageToCanvas(pageRect, viewport);

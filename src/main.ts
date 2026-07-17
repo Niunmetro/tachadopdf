@@ -115,7 +115,11 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
   const total = doc.pageCount();
   let cursor = 0;
   for (let page = 0; page < total; page++) {
-    if (visualReviewPages.includes(page)) continue;
+    // Las páginas escaneadas (sin capa de texto) NO se saltan: se renderizan igual para que el
+    // usuario pueda TACHARLAS A MANO — son el caso más común en gestorías/administradores de
+    // fincas. Antes se hacía `continue` y esas páginas no aparecían en el visor: imposible
+    // tacharlas (bug cazado por Codex el 2026-07-17). No tienen hits automáticos (no hay texto).
+    const necesitaRevisionVisual = visualReviewPages.includes(page);
 
     const start = cursor;
     while (cursor < automaticBoxes.length && automaticBoxes[cursor]?.page === page) cursor++;
@@ -135,6 +139,12 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
     pageContainer.style.position = 'relative';
     pageContainer.style.display = 'inline-block';
     img.style.display = 'block';
+
+    if (necesitaRevisionVisual) {
+      const rotulo = el('p', { class: 'aviso-rojo' });
+      rotulo.textContent = `Página ${page + 1}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`;
+      pageContainer.appendChild(rotulo);
+    }
     pageContainer.appendChild(img);
 
     const canvas = mountCanvas(pageContainer, viewport);
@@ -331,22 +341,41 @@ export function initApp(root: HTMLElement): void {
       checkbox.checked = false;
       state.checkboxConfirmed = false;
 
-      for (const file of files) {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const doc = await loadWithPassword(bytes, () => window.prompt('Contraseña del PDF'));
+      // try/catch VISIBLE: sin esto, cualquier error de mupdf/render dejaba la pantalla muerta
+      // (visor vacío, botón deshabilitado) sin decir nada — el usuario cree que "no funciona"
+      // y no sabe por qué. Un fallo del procesado DEBE verse (doctrina 49: el silencio no vale).
+      try {
+        for (const file of files) {
+          const bytes = new Uint8Array(await file.arrayBuffer());
+          let doc: PdfDoc;
+          try {
+            doc = await loadWithPassword(bytes, () => window.prompt('Contraseña del PDF'));
+          } catch {
+            resultStatus.textContent = `No se pudo abrir "${file.name}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`;
+            continue;
+          }
 
-        const fileWork: FileWork = { fileName: file.name, bytes, manual: [], selected: [] };
-        const fileContainer = el('div', { class: 'file-visor' });
-        await renderFileVisor(fileContainer, doc, fileWork);
-        doc.close();
+          const fileWork: FileWork = { fileName: file.name, bytes, manual: [], selected: [] };
+          const fileContainer = el('div', { class: 'file-visor' });
+          try {
+            await renderFileVisor(fileContainer, doc, fileWork);
+          } finally {
+            doc.close();
+          }
 
-        filesContainer.appendChild(fileContainer);
-        fileWorks.push(fileWork);
+          filesContainer.appendChild(fileContainer);
+          fileWorks.push(fileWork);
 
-        if (!state.license.pro) {
-          await recordUse();
-          state.quota = await getQuota();
+          if (!state.license.pro) {
+            await recordUse();
+            state.quota = await getQuota();
+          }
         }
+      } catch (err) {
+        resultStatus.textContent =
+          'Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; ' +
+          'si persiste, el archivo puede no ser compatible. (Detalle técnico: ' +
+          `${err instanceof Error ? err.message : String(err)})`;
       }
 
       refreshQuotaAndBatchUI();
