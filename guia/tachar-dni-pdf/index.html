@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cómo tachar un DNI de un PDF sin que se pueda recuperar · TachadoPDF</title>
+<meta name="description" content="Tapar un DNI con un rectángulo negro no lo borra: el texto sigue en el archivo y se recupera copiándolo. Te explicamos cómo eliminarlo de verdad del PDF, paso a paso y gratis." />
+<link rel="canonical" href="https://niunmetro.github.io/tachadopdf/guia/tachar-dni-pdf/" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Cómo tachar un DNI de un PDF sin que se pueda recuperar" />
+<meta property="og:description" content="El rectángulo negro no borra el dato. Así se elimina de verdad del PDF, gratis y en tu navegador." />
+<meta property="og:image" content="https://niunmetro.github.io/tachadopdf/og-image.png" />
+<meta property="og:url" content="https://niunmetro.github.io/tachadopdf/guia/tachar-dni-pdf/" />
+<meta property="og:locale" content="es_ES" />
+<style>
+  :root { color-scheme: light dark; }
+  body { max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem; font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1e293b; background: #fff; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .4rem; }
+  h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+  .lede { color: #475569; font-size: 1.1rem; }
+  a { color: #0369a1; }
+  .cta { display: block; margin: 2rem 0; padding: 1.2rem 1.4rem; background: #0f172a; color: #fff; border-radius: 10px; text-decoration: none; }
+  .cta strong { color: #7dd3fc; }
+  .nota { background: #f1f5f9; border-left: 4px solid #38bdf8; padding: .8rem 1rem; border-radius: 6px; color: #334155; }
+  footer { margin-top: 3rem; font-size: .9rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; } .lede { color: #94a3b8; } .nota { background: #1e293b; color: #cbd5e1; } a { color: #7dd3fc; } footer { color: #94a3b8; border-color: #334155; } }
+</style>
+</head>
+<body>
+<article>
+<h1>Cómo tachar un DNI de un PDF sin que se pueda recuperar</h1>
+<p class="lede">Si tapas un DNI con un rectángulo negro, el número sigue dentro del archivo y cualquiera lo recupera en dos clics. Aquí te explicamos por qué pasa y cómo eliminarlo de verdad.</p>
+
+<h2>El error habitual: el rectángulo negro</h2>
+<p>La forma más común de "ocultar" un dato en un PDF es dibujar un recuadro negro encima, con el visor de PDF o con un editor de imágenes. El problema es que ese recuadro es solo una <em>capa visual</em>: el texto del DNI sigue existiendo debajo, en el contenido del archivo. Basta con seleccionar el texto y copiarlo, o abrir el PDF con otra herramienta, para que el número reaparezca intacto.</p>
+<p>Lo mismo ocurre al "resaltar en negro" en Word y exportar a PDF, o al pegar una pegatina encima en una app de anotación. El dato no se borra: se disfraza.</p>
+
+<div class="nota">Regla simple: si después de "tachar" puedes seleccionar el texto con el ratón y copiarlo, el dato <strong>no está borrado</strong>.</div>
+
+<h2>Qué significa tachar de verdad</h2>
+<p>Tachar de verdad es <strong>eliminar el texto del propio archivo</strong>, no taparlo. Cuando el dato se borra del contenido del PDF, ya no se puede seleccionar, ni copiar, ni recuperar con otro programa, porque sencillamente no está. Si el dato está sobre una imagen escaneada, hay que borrar además los píxeles de esa zona.</p>
+
+<h2>Cómo hacerlo, paso a paso y gratis</h2>
+<p>Con <a href="https://niunmetro.github.io/tachadopdf/">TachadoPDF</a> se hace en el navegador, sin instalar nada y sin subir el documento a ningún servidor:</p>
+<ol>
+  <li>Abre la herramienta y arrastra tu PDF.</li>
+  <li>Detecta automáticamente DNI, NIE, IBAN, teléfonos y otros datos; márcalos (o dibuja tú la zona a tapar).</li>
+  <li>Aplica el tachado: el texto se elimina del archivo y los píxeles de las zonas marcadas se borran.</li>
+  <li>Descarga el PDF ya limpio y su informe de comprobación, que confirma que el dato ya no es extraíble.</li>
+</ol>
+
+<a class="cta" href="https://niunmetro.github.io/tachadopdf/">Tacha tu PDF ahora → <strong>gratis, en tu navegador</strong>, el documento no se sube a ningún servidor.</a>
+
+<h2>Cómo comprobar que ha quedado bien</h2>
+<p>Abre el PDF final e intenta seleccionar con el ratón donde estaba el dato: no debería poder seleccionarse nada. Como comprobación extra, TachadoPDF vuelve a leer el archivo resultante y busca de nuevo el dato; si encontrara cualquier resto, te avisa y no da el trabajo por bueno.</p>
+
+<footer>
+Guía de <a href="https://niunmetro.github.io/tachadopdf/">TachadoPDF</a> — tacha datos personales de un PDF de verdad, 100% en tu navegador. Esta guía es informativa y no constituye asesoramiento legal.
+</footer>
+</article>
+</body>
+</html>

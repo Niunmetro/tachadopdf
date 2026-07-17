@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Poner un rectángulo negro en un PDF NO borra el dato: por qué y cómo hacerlo bien · TachadoPDF</title>
+<meta name="description" content="El recuadro negro sobre un PDF solo tapa el dato: el texto sigue debajo y se copia. Te enseñamos a comprobarlo y a eliminarlo de verdad del archivo, gratis." />
+<link rel="canonical" href="https://niunmetro.github.io/tachadopdf/guia/rectangulo-negro-pdf-no-borra/" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="El rectángulo negro en un PDF NO borra el dato" />
+<meta property="og:description" content="El texto sigue debajo del recuadro y se recupera copiándolo. Así se elimina de verdad." />
+<meta property="og:image" content="https://niunmetro.github.io/tachadopdf/og-image.png" />
+<meta property="og:url" content="https://niunmetro.github.io/tachadopdf/guia/rectangulo-negro-pdf-no-borra/" />
+<meta property="og:locale" content="es_ES" />
+<style>
+  :root { color-scheme: light dark; }
+  body { max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem; font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif; color: #1e293b; background: #fff; }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .4rem; }
+  h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+  .lede { color: #475569; font-size: 1.1rem; }
+  a { color: #0369a1; }
+  .cta { display: block; margin: 2rem 0; padding: 1.2rem 1.4rem; background: #0f172a; color: #fff; border-radius: 10px; text-decoration: none; }
+  .cta strong { color: #7dd3fc; }
+  .nota { background: #fef2f2; border-left: 4px solid #ef4444; padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d; }
+  footer { margin-top: 3rem; font-size: .9rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
+  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; } .lede { color: #94a3b8; } .nota { background: #450a0a; color: #fecaca; border-color:#ef4444; } a { color: #7dd3fc; } footer { color: #94a3b8; border-color: #334155; } }
+</style>
+</head>
+<body>
+<article>
+<h1>Poner un rectángulo negro en un PDF no borra el dato</h1>
+<p class="lede">Es el error más frecuente al preparar un documento para entregarlo: tapar lo confidencial con un recuadro negro. El dato sigue ahí, y quien lo reciba puede recuperarlo sin ningún conocimiento técnico.</p>
+
+<h2>Por qué el recuadro no sirve</h2>
+<p>Un PDF guarda el texto y las imágenes por separado de lo que ves en pantalla. Cuando dibujas un rectángulo negro encima de un DNI, un IBAN o un nombre, solo estás añadiendo una figura por delante. El texto original sigue almacenado en el archivo, debajo. Por eso:</p>
+<ul>
+  <li>Si seleccionas con el ratón sobre el recuadro y copias, aparece el texto oculto.</li>
+  <li>Si abres el PDF con otro programa o lo conviertes, el dato reaparece.</li>
+  <li>Si mueves o borras el recuadro, queda el dato a la vista.</li>
+</ul>
+
+<div class="nota"><strong>Compruébalo tú mismo:</strong> abre un PDF donde hayas tapado algo con un recuadro, pasa el ratón por encima seleccionando, y pega en un bloc de notas. Si sale el texto, no estaba borrado.</div>
+
+<h2>Qué hay que hacer en su lugar</h2>
+<p>Para que el dato desaparezca de verdad hay que <strong>eliminarlo del contenido del archivo</strong>, no taparlo. Y si el dato está dentro de una imagen escaneada, hay que borrar los píxeles de esa zona, no ponerles un parche encima.</p>
+<p>Hacerlo a mano con herramientas profesionales de PDF es posible pero laborioso y caro. La alternativa rápida y gratuita:</p>
+
+<a class="cta" href="https://niunmetro.github.io/tachadopdf/">Elimina los datos de tu PDF de verdad → <strong>gratis y en tu navegador</strong>, sin subir el documento a ningún servidor.</a>
+
+<h2>Cómo lo hace TachadoPDF</h2>
+<p><a href="https://niunmetro.github.io/tachadopdf/">TachadoPDF</a> detecta automáticamente DNI, NIE, IBAN, número de la Seguridad Social, teléfonos y correos, borra el texto del archivo y los píxeles de las zonas marcadas, limpia los metadatos, y genera un informe de comprobación técnica. Después vuelve a leer el archivo resultante para confirmar que el dato ya no es extraíble: si quedara cualquier resto, te avisa. Todo ocurre en tu navegador; el documento no se transmite a ningún sitio.</p>
+
+<footer>
+Guía de <a href="https://niunmetro.github.io/tachadopdf/">TachadoPDF</a>. Contenido informativo, no es asesoramiento legal.
+</footer>
+</article>
+</body>
+</html>
