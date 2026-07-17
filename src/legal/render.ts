@@ -15,23 +15,34 @@ export function legalSections(): SeccionLegal[] {
 }
 
 export function renderLegalFooter(root: HTMLElement): void {
-  const footer = root.ownerDocument.createElement('footer');
+  const doc = root.ownerDocument;
+  const footer = doc.createElement('footer');
   footer.setAttribute('aria-label', 'Información legal');
+  footer.className = 'legales';
 
+  // Plegados (<details>): la LSSI exige que sean accesibles de forma directa, no que ocupen la
+  // pantalla entera. Antes empujaban el producto fuera de la vista; siguen a un clic y en el DOM.
   for (const seccion of legalSections()) {
-    const section = root.ownerDocument.createElement('section');
-    section.id = seccion.id;
+    const details = doc.createElement('details');
+    details.id = seccion.id;
 
-    const heading = root.ownerDocument.createElement('h2');
-    heading.textContent = seccion.titulo;
-    section.appendChild(heading);
+    const summary = doc.createElement('summary');
+    summary.textContent = seccion.titulo;
+    details.appendChild(summary);
 
-    const body = root.ownerDocument.createElement('pre');
+    const body = doc.createElement('pre');
     body.textContent = seccion.cuerpo;
-    section.appendChild(body);
+    details.appendChild(body);
 
-    footer.appendChild(section);
+    footer.appendChild(details);
   }
+
+  const pie = doc.createElement('p');
+  pie.className = 'pie';
+  pie.textContent =
+    'TachadoPDF funciona enteramente en tu navegador. Código abierto (AGPL-3.0). ' +
+    'La licencia Pro la vende Gumroad.';
+  footer.appendChild(pie);
 
   root.appendChild(footer);
 }

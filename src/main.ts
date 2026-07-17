@@ -1,9 +1,15 @@
+import './estilo.css';
 import { CHECKBOX_LABEL, canBatch, canProcess, performBatchDownload, type AppState } from './app';
 import { PRECIO_PRO, PRO_URL } from './config';
 import { getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
 import { renderLegalFooter } from './legal/render';
-import { AVISO_PRINCIPAL } from './legal/textos';
+import {
+  AVISO_PRINCIPAL,
+  LANDING_CASOS_USO_TEXTO,
+  LANDING_SUBTITULO,
+  LANDING_TITULAR,
+} from './legal/textos';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, VerifyResult } from './types';
@@ -169,21 +175,54 @@ function downloadBytes(bytes: Uint8Array, fileName: string): void {
   URL.revokeObjectURL(url);
 }
 
+/** El hero: lo primero que ve un desconocido. Sin esto la app era HTML crudo que no explicaba
+ *  qué es ni por qué pagar — y este comprador compra CONFIANZA antes que funciones. Los textos
+ *  vienen de legal/textos.ts (fuente única, ya filtrada de vocabulario prohibido). */
+function renderHero(root: HTMLElement): void {
+  const hero = el('header', { class: 'hero' });
+
+  const marca = el('p', { class: 'hero__marca' });
+  marca.textContent = 'TachadoPDF';
+
+  const titular = el('h1', { class: 'hero__titular' });
+  titular.textContent = LANDING_TITULAR;
+
+  const sub = el('p', { class: 'hero__sub' });
+  sub.textContent = LANDING_SUBTITULO;
+
+  const bullets = el('ul', { class: 'hero__bullets' });
+  for (const t of [
+    'El texto se elimina del archivo, no se tapa con un rectángulo negro.',
+    'Todo ocurre en tu navegador: el documento no se sube a ningún servidor.',
+    'Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, teléfonos y emails.',
+    'Informe de comprobación técnica descargable para tu expediente.',
+  ]) {
+    const li = el('li');
+    li.textContent = t;
+    bullets.appendChild(li);
+  }
+
+  const nicho = el('p', { class: 'hero__nicho' });
+  nicho.textContent = LANDING_CASOS_USO_TEXTO;
+
+  hero.append(marca, titular, sub, bullets, nicho);
+  root.appendChild(hero);
+}
+
 export function initApp(root: HTMLElement): void {
   root.innerHTML = '';
+  renderHero(root);
 
   const licenseInput = el('input', { type: 'text', placeholder: 'Clave de licencia Pro (Gumroad)' });
   const licenseButton = el('button', { type: 'button' });
   licenseButton.textContent = 'Verificar licencia';
-  const licenseStatus = el('p');
+  const licenseStatus = el('p', { class: 'estado-licencia' });
 
   const fileInput = el('input', { type: 'file', accept: 'application/pdf' });
-  const quotaStatus = el('p');
+  const quotaStatus = el('p', { class: 'estado-cuota' });
   const filesContainer = el('div', { id: 'files' });
-  const scannedWarning = el('p');
-  scannedWarning.style.color = '#b00020';
-  const resultStatus = el('p');
-  resultStatus.style.color = '#b00020';
+  const scannedWarning = el('p', { class: 'aviso-rojo' });
+  const resultStatus = el('p', { class: 'aviso-rojo' });
 
   const checkbox = el('input', { type: 'checkbox', id: 'checkbox-confirmado' });
   const checkboxLabel = el('label', { for: 'checkbox-confirmado' });
@@ -193,29 +232,39 @@ export function initApp(root: HTMLElement): void {
   downloadButton.textContent = 'Descargar documentos e informes';
   downloadButton.setAttribute('disabled', 'true');
 
-  const scopeNotice = el('p');
+  const scopeNotice = el('p', { class: 'aviso-principal' });
   scopeNotice.textContent = AVISO_PRINCIPAL;
 
   // Enlace de compra: sin esto, quien agota la cuota gratuita no sabe dónde comprar Pro.
   // Se muestra solo cuando NO hay Pro activo (a un cliente que ya pagó no se le vende nada).
-  const proLink = el('a', { href: PRO_URL, target: '_blank', rel: 'noopener noreferrer', id: 'comprar-pro' });
+  const proLink = el('a', {
+    href: PRO_URL, target: '_blank', rel: 'noopener noreferrer',
+    id: 'comprar-pro', class: 'comprar',
+  });
   proLink.textContent = `Comprar Pro — ${PRECIO_PRO} (pago único)`;
 
-  root.append(
-    scopeNotice,
-    licenseInput,
-    licenseButton,
-    licenseStatus,
-    quotaStatus,
-    proLink,
-    fileInput,
-    filesContainer,
-    scannedWarning,
-    checkbox,
-    checkboxLabel,
-    downloadButton,
-    resultStatus,
+  // Panel 1: el trabajo (subir el PDF y tacharlo).
+  const panelTrabajo = el('section', { class: 'panel' });
+  const tituloTrabajo = el('h2', { class: 'panel__titulo' });
+  tituloTrabajo.textContent = 'Tacha tu documento';
+  const filaArchivo = el('div', { class: 'fila' });
+  filaArchivo.append(fileInput);
+  const confirmacion = el('div', { class: 'confirmacion' });
+  confirmacion.append(checkbox, checkboxLabel);
+  panelTrabajo.append(
+    tituloTrabajo, scopeNotice, filaArchivo, quotaStatus,
+    filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus,
   );
+
+  // Panel 2: licencia y compra (separado del trabajo: no estorba a quien solo prueba).
+  const panelPro = el('section', { class: 'panel' });
+  const tituloPro = el('h2', { class: 'panel__titulo' });
+  tituloPro.textContent = 'Versión Pro';
+  const filaLicencia = el('div', { class: 'fila' });
+  filaLicencia.append(licenseInput, licenseButton);
+  panelPro.append(tituloPro, filaLicencia, licenseStatus, proLink);
+
+  root.append(panelTrabajo, panelPro);
   renderLegalFooter(root);
 
   function refreshQuotaAndBatchUI(): void {
