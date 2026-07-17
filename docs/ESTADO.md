@@ -14,17 +14,21 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
 
 ## Monetización — HECHO
 - Gumroad "TachadoPDF Pro" 59 € pago único: publicado, claves de licencia activas, product_id
-  cableado en `src/config.ts` y **verificado empíricamente contra la API real**. Botón de compra
-  en la app (`#comprar-pro`). Payouts conectado por Ángel. **Se puede pagar hoy.**
+  cableado y **verificado contra la API real**. Botón de compra en la app. Payouts conectado.
+  **Se puede pagar hoy.** VERIFICADO nuestro lado: una clave válida activa Pro (ilimitado, sin
+  marca, oculta el botón de compra). PENDIENTE (limitación técnica: la SPA de Gumroad bloquea la
+  extensión): confirmar con una compra REAL que la clave llega por email — paso de 2 min de Ángel.
+- **Robustez probada con PDF real** (test permanente `src/pdf/real-pdf.test.ts`): acta de comunidad
+  de 2 páginas con DNI/IBAN/teléfono/NIE/NUSS/email en formatos variados → detecta todo, tacha, y
+  el PDF final no contiene ninguno de los valores (verify.clean).
 - Aviso Legal: titular y NIF reales puestos. Datos fiscales verificados.
 
-## Growth — motor de tráfico montado (2026-07-17)
-- **SEO on-page**: title, meta description, Open Graph, JSON-LD, robots, sitemap. Apuntan a la URL
-  viva (se migrarán al dominio cuando resuelva el DNS).
-- **Google Search Console**: propiedad `niunmetro.github.io/tachadopdf/` VERIFICADA (meta tag);
-  sitemap referenciado en robots.txt. Datos de rendimiento: "procesando, vuelve mañana".
-- **3 guías SEO long-tail** vivas en `/guia/*` (tachar un DNI, el rectángulo negro no borra, datos
-  en actas de comunidad), enlazadas desde la app y en el sitemap. Es el canal orgánico gratuito.
+## Growth — motor de tráfico montado (2026-07-17/18)
+- **Dominio propio VIVO**: www.tachadopdf.com (HTTPS) y el apex tachadopdf.com redirige a él.
+- **SEO on-page** completo apuntando al dominio. **Google Search Console** verificado + sitemap.
+- **4 guías SEO long-tail** vivas en `/guia/*` (tachar un DNI, el rectángulo negro no borra, datos
+  en actas de comunidad, tachar sin subir a internet), enlazadas desde la app y en el sitemap.
+- **Límite gratis subido a 5 docs/mes** (menos fricción para probar).
 
 ## Qué falta (honesto)
 - **Tráfico.** El SEO tarda semanas/meses; el primer cobro rápido vendría de un empujón directo en
