@@ -29,6 +29,12 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
 - **4 guías SEO long-tail** vivas en `/guia/*` (tachar un DNI, el rectángulo negro no borra, datos
   en actas de comunidad, tachar sin subir a internet), enlazadas desde la app y en el sitemap.
 - **Límite gratis subido a 5 docs/mes** (menos fricción para probar).
+- **FAQ honesto en la landing** (6 objeciones: Acrobat, seguridad, si de verdad borra, si se le
+  escapa un dato, gratis vs Pro, escaneados) + datos estructurados **FAQPage** para resultado
+  enriquecido en Google. Verificado vivo. Mejora la conversión del tráfico que llegue.
+- **IndexNow**: avisado Bing/DuckDuckGo/Yandex (HTTP 202) para rastrear home + 4 guías sin esperar
+  al rastreo natural. Clave pública en la raíz del sitio. (Google se acelera con Search Console,
+  que necesita la extensión operativa; ver "Qué falta").
 
 ## Qué falta (honesto)
 - **Tráfico.** El SEO tarda semanas/meses; el primer cobro rápido vendría de un empujón directo en
