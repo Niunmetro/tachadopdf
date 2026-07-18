@@ -38,13 +38,54 @@
       "url": "https://www.tachadopdf.com/",
       "inLanguage": "es",
       "offers": [
-        { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Gratuito (3 documentos/mes)" },
+        { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Gratuito (5 documentos/mes)" },
         { "@type": "Offer", "price": "59", "priceCurrency": "EUR", "name": "Pro (pago único, documentos ilimitados)" }
       ]
     }
     </script>
-    <script type="module" crossorigin src="/assets/index-B69YJfah.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-D0L9qwAT.css">
+
+    <!-- FAQPage: permite que Google muestre las preguntas desplegables en el resultado de busqueda
+         (resultado enriquecido). El texto debe coincidir en esencia con el FAQ que ve el usuario. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿No hace esto ya Acrobat Pro?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Acrobat Pro también elimina texto de un PDF. TachadoPDF está pensado para quien no paga esa suscripción: funciona en el navegador sin instalar nada, reconoce por sí solo los formatos españoles (DNI, NIE, IBAN, Nº de la Seguridad Social, teléfonos), es un pago único de 59 € en lugar de una cuota anual, y deja un informe de comprobación. Si ya usas Acrobat Pro a diario, es probable que no lo necesites." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Se sube mi documento a algún servidor?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿De verdad se borra el dato o solo se tapa?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Y si se le escapa un dato?",
+          "acceptedAnswer": { "@type": "Answer", "text": "La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué diferencia hay entre el modo gratuito y Pro?",
+          "acceptedAnswer": { "@type": "Answer", "text": "El modo gratuito permite 5 documentos al mes. Pro es un pago único de 59 € (no una suscripción) que quita ese límite. El tachado y el informe son idénticos en ambos; Pro solo levanta el tope mensual." }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Funciona con documentos escaneados?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado." }
+        }
+      ]
+    }
+    </script>
+    <script type="module" crossorigin src="/assets/index-Do7P0ZDR.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BD9-Bzdo.css">
   </head>
   <body>
     <div id="app"></div>
