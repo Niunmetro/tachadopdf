@@ -33,8 +33,12 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
   escapa un dato, gratis vs Pro, escaneados) + datos estructurados **FAQPage** para resultado
   enriquecido en Google. Verificado vivo. Mejora la conversión del tráfico que llegue.
 - **IndexNow**: avisado Bing/DuckDuckGo/Yandex (HTTP 202) para rastrear home + 4 guías sin esperar
-  al rastreo natural. Clave pública en la raíz del sitio. (Google se acelera con Search Console,
-  que necesita la extensión operativa; ver "Qué falta").
+  al rastreo natural. Clave pública en la raíz del sitio.
+- **Google Search Console — dominio propio VERIFICADO** (meta HTML, 2º token en index.html) y
+  **sitemap.xml enviado** (Google descubrirá y rastreará las 5 URLs automáticamente). Además,
+  solicitada indexación prioritaria de la guía `tachar-dni-pdf`. Las demás guías + home entran por
+  el sitemap. La UI de Search Console va MUY inestable por la extensión (capturas se cuelgan); el
+  "solicitar indexación" URL-por-URL del resto se deja al sitemap, que es el mecanismo durable.
 
 ## Qué falta (honesto)
 - **Tráfico.** El SEO tarda semanas/meses; el primer cobro rápido vendría de un empujón directo en
@@ -42,8 +46,8 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
 - **Dominio www.tachadopdf.com: CONFIGURADO Y VIVO** (2026-07-17). CNAME www → niunmetro.github.io
   + A del apex → 185.199.108.153 (GitHub Pages) hechos en IONOS; custom domain + CNAME file en
   GitHub Pages; SEO migrado al dominio. `tachadopdf.com` sin www propagando (TTL 1h).
-- **Google Search Console**: propiedad de niunmetro.github.io verificada; falta añadir la del
-  dominio www.tachadopdf.com (el meta de verificación ya está en su home).
+- **Google Search Console**: propiedad del dominio www.tachadopdf.com VERIFICADA + sitemap enviado
+  (2026-07-18). El rendimiento/indexación tardan días en poblarse ("procesando").
 - Screening OEPM del nombre (pendiente de Ángel, no bloquea).
 
 ## Arquitectura en una línea
