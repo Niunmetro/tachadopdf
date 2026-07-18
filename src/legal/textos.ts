@@ -57,3 +57,40 @@ export const LANDING_CASOS_USO_TEXTO =
 
 export const LANDING_PUBLICIDAD_GENERICA =
   'Las herramientas de tachado online habituales envían tus documentos a un servidor. TachadoPDF procesa todo en tu propio navegador: el archivo nunca sale de tu equipo.';
+
+// Preguntas frecuentes. Responden HONESTAMENTE las dudas que frenan la compra de un profesional
+// (¿no lo hace ya Acrobat?, ¿es seguro?, ¿de verdad se borra?). También se publican como datos
+// estructurados FAQPage en index.html para que aparezcan como resultado enriquecido en Google.
+// Ruta sensible al vocabulario prohibido (ver guard.test.ts): nada de garantías absolutas.
+export const FAQ: { pregunta: string; respuesta: string }[] = [
+  {
+    pregunta: '¿No hace esto ya Acrobat Pro?',
+    respuesta:
+      'Acrobat Pro también elimina texto de un PDF. TachadoPDF está pensado para quien no paga esa suscripción: funciona en el navegador sin instalar nada, reconoce por sí solo los formatos españoles (DNI, NIE, IBAN, Nº de la Seguridad Social, teléfonos), es un pago único de 59 € en lugar de una cuota anual, y deja un informe de comprobación. Si ya usas Acrobat Pro a diario, es probable que no lo necesites.',
+  },
+  {
+    pregunta: '¿Se sube mi documento a algún servidor?',
+    respuesta:
+      'No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión.',
+  },
+  {
+    pregunta: '¿De verdad se borra el dato o solo se tapa?',
+    respuesta:
+      'Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno.',
+  },
+  {
+    pregunta: '¿Y si se le escapa un dato?',
+    respuesta:
+      'La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana.',
+  },
+  {
+    pregunta: '¿Qué diferencia hay entre el modo gratuito y Pro?',
+    respuesta:
+      'El modo gratuito permite 5 documentos al mes. Pro es un pago único de 59 € (no una suscripción) que quita ese límite. El tachado y el informe son idénticos en ambos; Pro solo levanta el tope mensual.',
+  },
+  {
+    pregunta: '¿Funciona con documentos escaneados?',
+    respuesta:
+      'Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.',
+  },
+];

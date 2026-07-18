@@ -84,6 +84,18 @@ button {
 button:hover:not([disabled]) { background: #1e293b; }
 button[disabled] { opacity: .45; cursor: not-allowed; }
 
+/* ---------- Preguntas frecuentes ---------- */
+.faq__item { border-bottom: 1px solid var(--linea); padding: 4px 0; }
+.faq__item:last-child { border-bottom: 0; }
+.faq__item summary {
+  cursor: pointer; font-weight: 600; font-size: 15px; color: var(--tinta);
+  padding: 11px 4px; list-style: none;
+}
+.faq__item summary::-webkit-details-marker { display: none; }
+.faq__item summary::before { content: '+ '; color: var(--acento); font-weight: 700; }
+.faq__item[open] summary::before { content: '– '; }
+.faq__item p { margin: 0 4px 14px; color: var(--tinta-suave); font-size: 14.5px; line-height: 1.6; }
+
 /* ---------- Estados ---------- */
 .estado-cuota { font-size: 14px; color: var(--tinta-suave); }
 .aviso-rojo { color: var(--rojo); background: var(--rojo-fondo); border: 1px solid #fecaca;

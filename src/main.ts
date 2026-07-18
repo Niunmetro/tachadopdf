@@ -6,6 +6,7 @@ import { verifyLicense } from './license/gumroad';
 import { renderGuias, renderLegalFooter } from './legal/render';
 import {
   AVISO_PRINCIPAL,
+  FAQ,
   LANDING_CASOS_USO_TEXTO,
   LANDING_SUBTITULO,
   LANDING_TITULAR,
@@ -234,6 +235,31 @@ function renderHero(root: HTMLElement): void {
   root.appendChild(hero);
 }
 
+/** Preguntas frecuentes: responden las objeciones que frenan la compra (Acrobat, seguridad, si de
+ *  verdad borra). Se renderiza como <details> para no ocupar pantalla; el contenido está en el DOM
+ *  desde el inicio (bueno para SEO) y a un clic para el usuario. */
+function renderFaq(root: HTMLElement): void {
+  const doc = root.ownerDocument;
+  const section = doc.createElement('section');
+  section.className = 'panel faq';
+  section.setAttribute('aria-label', 'Preguntas frecuentes');
+  const titulo = doc.createElement('h2');
+  titulo.className = 'panel__titulo';
+  titulo.textContent = 'Preguntas frecuentes';
+  section.appendChild(titulo);
+  for (const item of FAQ) {
+    const details = doc.createElement('details');
+    details.className = 'faq__item';
+    const summary = doc.createElement('summary');
+    summary.textContent = item.pregunta;
+    const respuesta = doc.createElement('p');
+    respuesta.textContent = item.respuesta;
+    details.append(summary, respuesta);
+    section.appendChild(details);
+  }
+  root.appendChild(section);
+}
+
 export function initApp(root: HTMLElement): void {
   root.innerHTML = '';
   renderHero(root);
@@ -290,6 +316,7 @@ export function initApp(root: HTMLElement): void {
   panelPro.append(tituloPro, filaLicencia, licenseStatus, proLink);
 
   root.append(panelTrabajo, panelPro);
+  renderFaq(root);
   renderGuias(root);
   renderLegalFooter(root);
 
