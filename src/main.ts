@@ -1,7 +1,14 @@
 import './estilo.css';
-import { CHECKBOX_LABEL, canBatch, canProcess, performBatchDownload, type AppState } from './app';
+import {
+  CHECKBOX_LABEL,
+  canBatch,
+  canProcess,
+  performBatchDownload,
+  withinFreePageLimit,
+  type AppState,
+} from './app';
 import { PRECIO_PRO, PRO_URL } from './config';
-import { getQuota, recordUse } from './freemium/quota';
+import { FREE_MAX_PAGES, getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
 import { renderGuias, renderLegalFooter } from './legal/render';
 import {
@@ -328,7 +335,7 @@ export function initApp(root: HTMLElement): void {
     }
     quotaStatus.textContent = state.license.pro
       ? 'Licencia Pro activa: documentos ilimitados, procesado en lote.'
-      : `Modo gratuito: ${state.quota.usedThisMonth}/${state.quota.limit} documentos usados este mes.`;
+      : `Modo gratuito: ${state.quota.usedThisMonth}/${state.quota.limit} documentos este mes · hasta ${FREE_MAX_PAGES} páginas por documento.`;
     // A quien ya pagó no se le enseña el enlace de compra; a quien agotó la cuota, más visible.
     proLink.hidden = state.license.pro;
     proLink.textContent = state.quota.allowed
@@ -395,6 +402,18 @@ export function initApp(root: HTMLElement): void {
             doc = await loadWithPassword(bytes, () => window.prompt('Contraseña del PDF'));
           } catch {
             resultStatus.textContent = `No se pudo abrir "${file.name}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`;
+            continue;
+          }
+
+          // Muro de la versión gratuita: documentos de más de FREE_MAX_PAGES páginas requieren Pro.
+          // Se comprueba con el PDF ya cargado (pageCount real) y ANTES de gastar cuota o montar el
+          // visor. El trabajo profesional (actas, listados) cae aquí; el test honesto (1-3 págs) pasa.
+          const pageCount = doc.pageCount();
+          if (!withinFreePageLimit(state, pageCount)) {
+            doc.close();
+            resultStatus.textContent =
+              `"${file.name}" tiene ${pageCount} páginas. La versión gratuita tacha documentos de ` +
+              `hasta ${FREE_MAX_PAGES} páginas; para archivos más largos, consigue la licencia Pro (${PRECIO_PRO}, pago único).`;
             continue;
           }
 

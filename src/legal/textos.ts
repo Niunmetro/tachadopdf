@@ -64,11 +64,6 @@ export const LANDING_PUBLICIDAD_GENERICA =
 // Ruta sensible al vocabulario prohibido (ver guard.test.ts): nada de garantías absolutas.
 export const FAQ: { pregunta: string; respuesta: string }[] = [
   {
-    pregunta: '¿No hace esto ya Acrobat Pro?',
-    respuesta:
-      'Acrobat Pro también elimina texto de un PDF. TachadoPDF está pensado para quien no paga esa suscripción: funciona en el navegador sin instalar nada, reconoce por sí solo los formatos españoles (DNI, NIE, IBAN, Nº de la Seguridad Social, teléfonos), es un pago único de 59 € en lugar de una cuota anual, y deja un informe de comprobación. Si ya usas Acrobat Pro a diario, es probable que no lo necesites.',
-  },
-  {
     pregunta: '¿Se sube mi documento a algún servidor?',
     respuesta:
       'No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión.',
@@ -86,7 +81,7 @@ export const FAQ: { pregunta: string; respuesta: string }[] = [
   {
     pregunta: '¿Qué diferencia hay entre el modo gratuito y Pro?',
     respuesta:
-      'El modo gratuito permite 5 documentos al mes. Pro es un pago único de 59 € (no una suscripción) que quita ese límite. El tachado y el informe son idénticos en ambos; Pro solo levanta el tope mensual.',
+      'El modo gratuito permite tachar 3 documentos al mes, de hasta 3 páginas cada uno — suficiente para probarlo con un documento real. Pro es un pago único de 59 € (no una suscripción) y quita ambos topes: documentos y páginas ilimitados, y procesado de varios ficheros a la vez. El tachado y el informe de comprobación son idénticos en las dos versiones.',
   },
   {
     pregunta: '¿Funciona con documentos escaneados?',

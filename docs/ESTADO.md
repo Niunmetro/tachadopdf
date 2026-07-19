@@ -36,7 +36,10 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
 - **SEO on-page** completo apuntando al dominio. **Google Search Console** verificado + sitemap.
 - **4 guías SEO long-tail** vivas en `/guia/*` (tachar un DNI, el rectángulo negro no borra, datos
   en actas de comunidad, tachar sin subir a internet), enlazadas desde la app y en el sitemap.
-- **Límite gratis subido a 5 docs/mes** (menos fricción para probar).
+- **Gratis: 3 documentos/mes + máx. 3 páginas por documento** (`FREE_MAX_PAGES`); Pro = ilimitado.
+  El contador de docs es soft (IndexedDB reseteable, honradez); el **tope de páginas es el muro real**
+  hacia Pro (se aplica en cada uso, lo reseteen o no; el trabajo profesional tiene muchas páginas).
+  FAQ "¿No hace esto ya Acrobat?" retirado (desviaba la compra, decisión del owner).
 - **FAQ honesto en la landing** (6 objeciones: Acrobat, seguridad, si de verdad borra, si se le
   escapa un dato, gratis vs Pro, escaneados) + datos estructurados **FAQPage** para resultado
   enriquecido en Google. Verificado vivo. Mejora la conversión del tráfico que llegue.

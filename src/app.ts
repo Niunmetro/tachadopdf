@@ -1,3 +1,4 @@
+import { FREE_MAX_PAGES } from './freemium/quota';
 import type { LicenseStatus, QuotaStatus, VerifyResult } from './types';
 
 export interface AppState {
@@ -12,6 +13,12 @@ export const CHECKBOX_LABEL = 'He revisado visualmente el documento final págin
 
 export function canProcess(s: AppState): boolean {
   return s.license.pro || s.quota.allowed;
+}
+
+// Muro de páginas de la versión gratuita: Pro no tiene tope; en gratis, hasta FREE_MAX_PAGES.
+// Es el gate robusto (no depende del contador reseteable) que empuja el trabajo real hacia Pro.
+export function withinFreePageLimit(s: AppState, pageCount: number): boolean {
+  return s.license.pro || pageCount <= FREE_MAX_PAGES;
 }
 
 export function canDownloadReport(s: AppState): boolean {

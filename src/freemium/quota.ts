@@ -1,9 +1,16 @@
 import type { QuotaStatus } from '../types';
 
-// 5 documentos/mes gratis: 3 dejaba al usuario sin margen para probar antes de engancharse
-// (feedback de Ángel 2026-07-17). Es un umbral de conveniencia, no un control: el contador vive
-// en IndexedDB local y es reseteable — la versión gratuita se sostiene por honradez, no por muro.
-export const FREE_MONTHLY_LIMIT = 5;
+// 3 documentos/mes gratis. OJO: este contador vive en IndexedDB local y es RESETEABLE (borrando
+// datos del navegador / incógnito). No es —ni puede ser— un muro: la app no tiene servidor ni
+// cuentas a propósito (nada sale del navegador). Es un umbral de conveniencia sostenido por
+// honradez. El muro DE VERDAD contra el uso profesional gratis es FREE_MAX_PAGES (ver abajo).
+export const FREE_MONTHLY_LIMIT = 3;
+
+// Tope de páginas por documento en la versión gratuita. A diferencia del contador, esto SÍ es un
+// muro robusto: se aplica en CADA uso, lo reseteen o no, y el trabajo real (actas de comunidad,
+// listados de morosos, expedientes) tiene muchas páginas → el profesional necesita Pro sí o sí.
+// La versión gratuita sigue siendo un test HONESTO: tacha de verdad hasta este número de páginas.
+export const FREE_MAX_PAGES = 3;
 
 const DB_NAME = 'tachadopdf-freemium';
 const DB_VERSION = 1;

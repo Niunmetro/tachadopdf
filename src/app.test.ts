@@ -6,9 +6,11 @@ import {
   canDownloadReport,
   canProcess,
   performBatchDownload,
+  withinFreePageLimit,
   type AppState,
   type DownloadableFile,
 } from './app';
+import { FREE_MAX_PAGES } from './freemium/quota';
 import type { LicenseStatus, QuotaStatus, VerifyResult } from './types';
 
 const licensePro: LicenseStatus = { pro: true, reason: 'valid' };
@@ -55,6 +57,24 @@ describe('canProcess', () => {
 
   it('true si Pro y además la cuota permite (caso trivial)', () => {
     expect(canProcess(baseState({ license: licensePro, quota: quotaAllowed }))).toBe(true);
+  });
+});
+
+describe('withinFreePageLimit', () => {
+  it('Pro no tiene tope de páginas (aunque el documento sea enorme)', () => {
+    expect(withinFreePageLimit(baseState({ license: licensePro }), FREE_MAX_PAGES + 100)).toBe(true);
+  });
+
+  it('gratis: permite exactamente hasta FREE_MAX_PAGES páginas', () => {
+    expect(withinFreePageLimit(baseState({ license: licenseFree }), FREE_MAX_PAGES)).toBe(true);
+  });
+
+  it('gratis: bloquea un documento con más de FREE_MAX_PAGES páginas', () => {
+    expect(withinFreePageLimit(baseState({ license: licenseFree }), FREE_MAX_PAGES + 1)).toBe(false);
+  });
+
+  it('gratis: un documento de 1 página siempre pasa', () => {
+    expect(withinFreePageLimit(baseState({ license: licenseFree }), 1)).toBe(true);
   });
 });
 
