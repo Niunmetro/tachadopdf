@@ -22,6 +22,14 @@ Primera licencia Pro (59 € pago único) vendida a un desconocido. Fase: **A LA
   de 2 páginas con DNI/IBAN/teléfono/NIE/NUSS/email en formatos variados → detecta todo, tacha, y
   el PDF final no contiene ninguno de los valores (verify.clean).
 - Aviso Legal: titular y NIF reales puestos. Datos fiscales verificados.
+- **CIRCUITO DE COBRO VERIFICADO END-TO-END (2026-07-19)**: compra real de prueba (código 100%)
+  → Gumroad generó la clave `F908EA4B-…` → **llegó por email** → valida en la API (`success:true`,
+  producto "TachadoPDF Pro", no refunded/chargebacked) → `verifyLicense` devuelve `pro:true`.
+  Confirmado que un **pago único** (sin objeto de suscripción) pasa el check. Ya se puede anunciar.
+- ⚠️ **PENDIENTE precio/IVA**: la página muestra 59,00 € (coincide con la publicidad), pero la
+  transacción de prueba registró **67,48 €** → probablemente Gumroad suma IVA por encima al comprador
+  del EEE. Decidir: activar "precios incluyen impuestos" en Gumroad (cliente paga 59 € exactos) o
+  cambiar el copy a "59 € + IVA". No bloquea el test, pero cuadrar antes de escalar ads.
 
 ## Growth — motor de tráfico montado (2026-07-17/18)
 - **Dominio propio VIVO**: www.tachadopdf.com (HTTPS) y el apex tachadopdf.com redirige a él.
