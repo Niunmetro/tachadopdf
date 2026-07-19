@@ -58,7 +58,7 @@ describe('buildReport', () => {
     expect(texto).toContain('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado');
     expect(texto).not.toContain('DNI: 0 ocurrencias en el texto extraíble');
     expect(texto).toContain('DNI: 1 ocurrencia(s) en el texto extraíble');
-    expect(texto).toContain('páginas: 0');
+    expect(texto).toContain('páginas: 1');
   });
 
   it('cuando verify no está presente, el informe se marca como no verde con la cabecera de residuos', async () => {
