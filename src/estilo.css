@@ -84,6 +84,16 @@ button {
 button:hover:not([disabled]) { background: #1e293b; }
 button[disabled] { opacity: .45; cursor: not-allowed; }
 
+/* ---------- Documento de ejemplo (gancho de activación) ---------- */
+.ejemplo {
+  background: #fff; color: var(--tinta); border: 1px solid var(--acento);
+  font-weight: 600; font-size: 14.5px; padding: 9px 15px;
+}
+.ejemplo:hover:not([disabled]) { background: #f0f9ff; }
+.pista-ejemplo {
+  font-size: 13.5px; color: var(--tinta-suave); margin: -4px 0 16px; max-width: 62ch;
+}
+
 /* ---------- Preguntas frecuentes ---------- */
 .faq__item { border-bottom: 1px solid var(--linea); padding: 4px 0; }
 .faq__item:last-child { border-bottom: 0; }

@@ -277,6 +277,12 @@ export function initApp(root: HTMLElement): void {
   const licenseStatus = el('p', { class: 'estado-licencia' });
 
   const fileInput = el('input', { type: 'file', accept: 'application/pdf' });
+  const ejemploBtn = el('button', { type: 'button', class: 'ejemplo' });
+  ejemploBtn.textContent = 'Probar con un documento de ejemplo';
+  const pistaEjemplo = el('p', { class: 'pista-ejemplo' });
+  pistaEjemplo.textContent =
+    '¿No tienes un PDF a mano, o prefieres no subir todavía un documento real? Carga un acta de ' +
+    'comunidad de ejemplo (datos ficticios) y comprueba en cinco segundos cómo detecta y tacha.';
   const quotaStatus = el('p', { class: 'estado-cuota' });
   const filesContainer = el('div', { id: 'files' });
   const scannedWarning = el('p', { class: 'aviso-rojo' });
@@ -306,11 +312,11 @@ export function initApp(root: HTMLElement): void {
   const tituloTrabajo = el('h2', { class: 'panel__titulo' });
   tituloTrabajo.textContent = 'Tacha tu documento';
   const filaArchivo = el('div', { class: 'fila' });
-  filaArchivo.append(fileInput);
+  filaArchivo.append(fileInput, ejemploBtn);
   const confirmacion = el('div', { class: 'confirmacion' });
   confirmacion.append(checkbox, checkboxLabel);
   panelTrabajo.append(
-    tituloTrabajo, scopeNotice, filaArchivo, quotaStatus,
+    tituloTrabajo, scopeNotice, filaArchivo, pistaEjemplo, quotaStatus,
     filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus,
   );
 
@@ -370,6 +376,71 @@ export function initApp(root: HTMLElement): void {
     })();
   });
 
+  /** Carga uno o varios PDF en el visor. Lo comparten la subida del usuario y el documento de
+   *  ejemplo; `contarCuota` es lo único que cambia (el ejemplo no gasta cuota). */
+  async function cargarEntradas(
+    entradas: { bytes: Uint8Array; nombre: string }[],
+    contarCuota: boolean,
+  ): Promise<void> {
+    fileWorks = [];
+    filesContainer.innerHTML = '';
+    resultStatus.textContent = '';
+    state.scannedPages = [];
+    checkbox.checked = false;
+    state.checkboxConfirmed = false;
+
+    // try/catch VISIBLE: sin esto, cualquier error de mupdf/render dejaba la pantalla muerta
+    // (visor vacío, botón deshabilitado) sin decir nada — el usuario cree que "no funciona"
+    // y no sabe por qué. Un fallo del procesado DEBE verse (doctrina 49: el silencio no vale).
+    try {
+      for (const entrada of entradas) {
+        let doc: PdfDoc;
+        try {
+          doc = await loadWithPassword(entrada.bytes, () => window.prompt('Contraseña del PDF'));
+        } catch {
+          resultStatus.textContent = `No se pudo abrir "${entrada.nombre}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`;
+          continue;
+        }
+
+        // Muro de la versión gratuita: documentos de más de FREE_MAX_PAGES páginas requieren Pro.
+        // Se comprueba con el PDF ya cargado (pageCount real) y ANTES de gastar cuota o montar el
+        // visor. El trabajo profesional (actas, listados) cae aquí; el test honesto (1-3 págs) pasa.
+        const pageCount = doc.pageCount();
+        if (!withinFreePageLimit(state, pageCount)) {
+          doc.close();
+          resultStatus.textContent =
+            `"${entrada.nombre}" tiene ${pageCount} páginas. La versión gratuita tacha documentos de ` +
+            `hasta ${FREE_MAX_PAGES} páginas; para archivos más largos, consigue la licencia Pro (${PRECIO_PRO}, pago único).`;
+          continue;
+        }
+
+        const fileWork: FileWork = { fileName: entrada.nombre, bytes: entrada.bytes, manual: [], selected: [] };
+        const fileContainer = el('div', { class: 'file-visor' });
+        try {
+          await renderFileVisor(fileContainer, doc, fileWork);
+        } finally {
+          doc.close();
+        }
+
+        filesContainer.appendChild(fileContainer);
+        fileWorks.push(fileWork);
+
+        if (contarCuota && !state.license.pro) {
+          await recordUse();
+          state.quota = await getQuota();
+        }
+      }
+    } catch (err) {
+      resultStatus.textContent =
+        'Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; ' +
+        'si persiste, el archivo puede no ser compatible. (Detalle técnico: ' +
+        `${err instanceof Error ? err.message : String(err)})`;
+    }
+
+    refreshQuotaAndBatchUI();
+    refreshDownloadButton();
+  }
+
   fileInput.addEventListener('change', () => {
     void (async () => {
       const files = fileInput.files ? Array.from(fileInput.files) : [];
@@ -384,68 +455,38 @@ export function initApp(root: HTMLElement): void {
         return;
       }
 
-      fileWorks = [];
-      filesContainer.innerHTML = '';
-      resultStatus.textContent = '';
-      state.scannedPages = [];
-      checkbox.checked = false;
-      state.checkboxConfirmed = false;
-
-      // try/catch VISIBLE: sin esto, cualquier error de mupdf/render dejaba la pantalla muerta
-      // (visor vacío, botón deshabilitado) sin decir nada — el usuario cree que "no funciona"
-      // y no sabe por qué. Un fallo del procesado DEBE verse (doctrina 49: el silencio no vale).
-      try {
-        for (const file of files) {
-          const bytes = new Uint8Array(await file.arrayBuffer());
-          let doc: PdfDoc;
-          try {
-            doc = await loadWithPassword(bytes, () => window.prompt('Contraseña del PDF'));
-          } catch {
-            resultStatus.textContent = `No se pudo abrir "${file.name}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`;
-            continue;
-          }
-
-          // Muro de la versión gratuita: documentos de más de FREE_MAX_PAGES páginas requieren Pro.
-          // Se comprueba con el PDF ya cargado (pageCount real) y ANTES de gastar cuota o montar el
-          // visor. El trabajo profesional (actas, listados) cae aquí; el test honesto (1-3 págs) pasa.
-          const pageCount = doc.pageCount();
-          if (!withinFreePageLimit(state, pageCount)) {
-            doc.close();
-            resultStatus.textContent =
-              `"${file.name}" tiene ${pageCount} páginas. La versión gratuita tacha documentos de ` +
-              `hasta ${FREE_MAX_PAGES} páginas; para archivos más largos, consigue la licencia Pro (${PRECIO_PRO}, pago único).`;
-            continue;
-          }
-
-          const fileWork: FileWork = { fileName: file.name, bytes, manual: [], selected: [] };
-          const fileContainer = el('div', { class: 'file-visor' });
-          try {
-            await renderFileVisor(fileContainer, doc, fileWork);
-          } finally {
-            doc.close();
-          }
-
-          filesContainer.appendChild(fileContainer);
-          fileWorks.push(fileWork);
-
-          if (!state.license.pro) {
-            await recordUse();
-            state.quota = await getQuota();
-          }
-        }
-      } catch (err) {
-        resultStatus.textContent =
-          'Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; ' +
-          'si persiste, el archivo puede no ser compatible. (Detalle técnico: ' +
-          `${err instanceof Error ? err.message : String(err)})`;
+      const entradas: { bytes: Uint8Array; nombre: string }[] = [];
+      for (const file of files) {
+        entradas.push({ bytes: new Uint8Array(await file.arrayBuffer()), nombre: file.name });
       }
+      await cargarEntradas(entradas, true);
 
       // Resetear el input: si no, volver a elegir el MISMO archivo (p.ej. tras contraseña mal o
       // un error) no dispara 'change' y parece que la app se ignora (Codex, 2026-07-17).
       fileInput.value = '';
+    })();
+  });
 
-      refreshQuotaAndBatchUI();
-      refreshDownloadButton();
+  // Gancho de activación: quien llega de un anuncio muchas veces no tiene un PDF a mano, y casi
+  // nadie sube el acta REAL de su comunidad en el primer minuto — se va sin ver nada. Con un acta
+  // ficticia ve la detección automática funcionando al instante. No gasta cuota: el documento es
+  // nuestro y no le sirve para trabajar, así que regalarlo no abre ningún agujero.
+  ejemploBtn.addEventListener('click', () => {
+    void (async () => {
+      ejemploBtn.setAttribute('disabled', 'true');
+      try {
+        // URL relativa al documento: sirve igual en el dominio propio (/) que en la ruta de
+        // GitHub Pages (/tachadopdf/), sin depender de import.meta.env.
+        const resp = await fetch('ejemplo-acta-comunidad.pdf');
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const bytes = new Uint8Array(await resp.arrayBuffer());
+        await cargarEntradas([{ bytes, nombre: 'acta-de-ejemplo.pdf' }], false);
+      } catch {
+        resultStatus.textContent =
+          'No se pudo cargar el documento de ejemplo. Prueba a subir tu propio PDF.';
+      } finally {
+        ejemploBtn.removeAttribute('disabled');
+      }
     })();
   });
 
