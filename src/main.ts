@@ -15,6 +15,7 @@ import {
   AVISO_PRINCIPAL,
   FAQ,
   LANDING_CASOS_USO_TEXTO,
+  LANDING_DOLOR,
   LANDING_SUBTITULO,
   LANDING_TITULAR,
 } from './legal/textos';
@@ -220,6 +221,11 @@ function renderHero(root: HTMLElement): void {
   const titular = el('h1', { class: 'hero__titular' });
   titular.textContent = LANDING_TITULAR;
 
+  // El dolor ANTES que la solución: quien no sabe que esto es sancionable no siente
+  // urgencia. Cifras reales de la AEPD (verificadas), nada de miedo inventado.
+  const dolor = el('p', { class: 'hero__dolor' });
+  dolor.textContent = LANDING_DOLOR;
+
   const sub = el('p', { class: 'hero__sub' });
   sub.textContent = LANDING_SUBTITULO;
 
@@ -238,7 +244,7 @@ function renderHero(root: HTMLElement): void {
   const nicho = el('p', { class: 'hero__nicho' });
   nicho.textContent = LANDING_CASOS_USO_TEXTO;
 
-  hero.append(marca, titular, sub, bullets, nicho);
+  hero.append(marca, titular, dolor, sub, bullets, nicho);
   root.appendChild(hero);
 }
 

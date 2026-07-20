@@ -47,10 +47,16 @@ export const CASOS_USO: string[] = [
   'RRHH',
 ];
 
-export const LANDING_TITULAR = 'TachadoPDF: la prueba tecnica de que el texto tachado ya no es extraible del PDF';
+// Estructura de venta dolor->solución (decisión del owner, 2026-07-20): la mayoría no sabe
+// que el rectángulo negro no borra NI que difundir datos así es sancionable. Primero el dolor
+// (verificable: cifras reales de la AEPD), después la solución. Sin garantías absolutas.
+export const LANDING_TITULAR = 'El dato que tachaste con un rectángulo negro sigue dentro del PDF';
+
+export const LANDING_DOLOR =
+  'Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a evitar esas comunicaciones no autorizadas (art. 32), y la AEPD ha sancionado a más de 200 comunidades de propietarios entre 2020 y 2024 — 6.000 € por un listado de morosos, 15.000 € por un acta con datos expuestos. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.';
 
 export const LANDING_SUBTITULO =
-  'Elimina de verdad datos personales de tus PDF antes de entregarlos a terceros, y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.';
+  'TachadoPDF elimina el texto del propio archivo en lugar de taparlo: el dato deja de ser extraíble. Y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.';
 
 export const LANDING_CASOS_USO_TEXTO =
   'Pensado para administradores de fincas que reparten actas con datos de propietarios, gestorías que envían documentación de clientes y departamentos de RRHH que gestionan expedientes.';
