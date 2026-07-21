@@ -63,3 +63,27 @@ vecinos") atraen tráfico cualificado. Se pueden escribir y publicar en el propi
 Publicar en foros/grupos o enviar mensajes es contenido público a tu nombre: no lo hago sin que me
 lo pidas para un canal concreto. Si me dices "publica esto en tal grupo", lo preparo y te lo dejo
 listo para que le des tú al botón, o lo hago yo si me das acceso y permiso para ese canal puntual.
+
+## Outreach directo a despachos (21-07-2026, ~13:25-13:40)
+Orden del owner: Ads no rinde -> salir a buscar clientes directos. Prospección multi-agente
+(35 verificados, 12 seleccionados con email de rol publicado en su propia web) + envío desde
+admin@ (remitente "Equipo de TachadoPDF", con línea de baja LSSI).
+
+Plantilla A (actas/AEPD) - administradores de fincas:
+1. Fincas Infante (Murcia) - info@fincasinfante.es
+2. Fincas Murcia Administraciones (Murcia) - info@fincasmur.com
+3. API Marqués (Alicante) - contacto@marquesadministracion.es
+4. Maciá Belmonte (Alicante) - administracion@maciafincas.es
+5. NV Fincas (Playa San Juan, Alicante) - info@nvfincas.com
+6. GD Fincas (Valencia) - info@gdfincas.com
+
+Plantilla B (nóminas/expedientes) - gestorías y laboral:
+7. Gestoría Yara (Madrid) - info@gestoriayara.com  [auto-acuse recibido 13:32]
+8. Gestoría Alcázar (Murcia) - info@gestoriaalcazar.com
+9. Mora Gestores (Murcia) - gestoria@moragestores.com
+10. Asetys Asesores (Valencia) - info@asetys.com
+11. Antelo Mencheta (Valencia) - contacto@anteloconsultores.com
+12. Andrés Asesores (Valencia) - info@andresasesores.com
+
+Seguimiento: responder dudas al momento; si silencio, NO reenviar antes de 7 días.
+Bolsa restante de prospectos verificados (23 más) en el resultado del workflow wf_5e288c1f-39a.
