@@ -62,6 +62,16 @@ export async function pdfSoloImagen(): Promise<Uint8Array> {
   return doc.save();
 }
 
+export async function pdfMultiPagina(textos: string[]): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  for (const texto of textos) {
+    const page = doc.addPage(PAGE_SIZE);
+    page.drawText(texto, { x: 50, y: 780, size: 14, font });
+  }
+  return doc.save();
+}
+
 export async function inyectarResiduo(base: Uint8Array, residuo: string): Promise<Uint8Array> {
   const doc = await PDFDocument.load(base);
   const paginas = doc.getPages();
