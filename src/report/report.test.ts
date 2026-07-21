@@ -79,6 +79,12 @@ describe('buildReport', () => {
     expect(textoPro).not.toContain('Generado con TachadoPDF (versión gratuita)');
   });
 
+  it('incluye la etiqueta correcta para la huella SHA-256 del documento entregado', async () => {
+    const bytes = await buildReport(BASE_DATA);
+    const texto = await extractNormalizedText(bytes);
+    expect(texto).toContain('Huella SHA-256 del documento entregado');
+  });
+
   it('advierte las páginas sin capa de texto', async () => {
     const bytes = await buildReport(BASE_DATA);
     const texto = await extractNormalizedText(bytes);
