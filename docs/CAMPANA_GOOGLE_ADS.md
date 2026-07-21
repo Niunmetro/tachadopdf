@@ -85,3 +85,7 @@ servir, aplicar este plan (~5 min):
    "gratis para estudiantes", "apk", "descargar programa"
 4) NO tocar puja (Maximizar clics sigue en aprendizaje); no subir presupuesto (5 €/día).
 5) A las 24h de la ampliación: revisar informe de términos de búsqueda y podar.
+
+### Añadir junto al Plan B (pendiente de UI, mar 21-07):
+- Negativas nuevas por el informe de búsquedas real (3/4 impresiones fueron "quitar/eliminar marca de agua pdf"):
+  "marca de agua", "marcas de agua", "watermark"
