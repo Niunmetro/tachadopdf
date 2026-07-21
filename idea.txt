@@ -71,3 +71,29 @@ App gratis con límite 3 docs/mes + licencia Pro 59 €/año vendida en Gumroad 
 
 === DESPLIEGUE ===
 Build estático estándar (dist/). Desplegable en GitHub Pages para desarrollo/preview, pero el README debe documentar en 5 líneas el despliegue en Cloudflare Pages con dominio propio como destino recomendado de producción (los términos de GitHub Pages desaconsejan sitios primariamente comerciales; la decisión y el dominio son de Ángel — owner-gate).
+=== RUN 3 (21-07-2026): CALIDAD DE TACHADO Y FUNNEL PRO ===
+Contexto: el producto esta VIVO en www.tachadopdf.com con venta Gumroad activa. Este run es un
+incremento pequeno y quirurgico. NO tocar: scripts/deploy-pages.mjs, public/guia/**, la cuota
+freemium (3 docs/3 paginas), el precio, ni el resto de textos legales (ruta sensible: nada de
+garantias absolutas, ver guard.test.ts) salvo lo que pide la mejora 4.
+
+Cuatro mejoras, cada una con sus tests:
+1) TACHAR TODAS LAS APARICIONES: cuando el usuario tacha un texto (deteccion o seleccion manual
+   de texto), ofrecer con un clic tachar TODAS las apariciones de ese mismo texto en el documento.
+   Debe pasar por el mismo pipeline de borrado real + re-verificacion posterior que el resto.
+2) PRESETS POR CASO DE USO: selector "Tipo de documento": "Generico" (= comportamiento actual,
+   default), "Acta de comunidad" (preselecciona DNI, NIE, IBAN, telefonos, emails) y
+   "Nomina/expediente" (preselecciona DNI, NIE, N. Seguridad Social, IBAN, telefonos). El preset
+   SOLO cambia que categorias de deteccion vienen marcadas por defecto; no altera la deteccion.
+3) HUELLA SHA-256 EN EL INFORME: calcular con WebCrypto el SHA-256 del PDF final descargado y
+   mostrarlo en el informe como "Huella SHA-256 del documento entregado" (prueba de integridad
+   archivable). Mantener el diseno actual del informe; anadir la fila donde encaje.
+4) FAQ FACTURA: nueva pregunta frecuente "Necesito factura de la licencia Pro, como la obtengo?"
+   Respuesta honesta: la compra la gestiona Gumroad como vendedor; el recibo de compra incluye un
+   enlace para generar la factura y anadir los datos fiscales (NIF/empresa); para casos especiales,
+   escribir a admin@tachadopdf.com. Anadirla a la FAQ de src/legal/textos.ts Y al JSON-LD FAQPage
+   de index.html (deben coincidir en esencia).
+
+Restricciones tecnicas: CSP intacta (ninguna conexion externa nueva), 100% cliente, TypeScript
+estricto, tests Vitest por mejora, `npm test` COMPLETO en verde al final de cada tarea. No subir
+versiones de dependencias.
