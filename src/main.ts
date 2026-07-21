@@ -19,10 +19,12 @@ import {
   LANDING_SUBTITULO,
   LANDING_TITULAR,
 } from './legal/textos';
+import { patternsForPreset, type DocumentPreset } from './detect/presets';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, VerifyResult } from './types';
 import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
+import { buildPresetSelector } from './ui/preset-selector';
 import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
 const RENDER_DPI = 96;
@@ -52,6 +54,7 @@ const state: AppState = {
 };
 
 let fileWorks: FileWork[] = [];
+let currentPreset: DocumentPreset = 'generico';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -104,10 +107,16 @@ async function loadWithPassword(bytes: Uint8Array, promptPassword: () => string 
  * `fileWork.selected` / `fileWork.manual`, que es lo que luego se le pasa a
  * processDocument en el momento de la descarga.
  */
-async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: FileWork): Promise<void> {
+async function renderFileVisor(
+  container: HTMLElement,
+  doc: PdfDoc,
+  fileWork: FileWork,
+  preset: DocumentPreset,
+): Promise<void> {
   const visualReviewPages = doc.pagesNeedingVisualReview();
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
-  fileWork.selected = automaticBoxes.map(() => true);
+  const kindsPremarcados = new Set(patternsForPreset(preset));
+  fileWork.selected = automaticBoxes.map((box) => kindsPremarcados.has(box.kind));
 
   const title = el('p');
   title.textContent = fileWork.fileName;
@@ -305,6 +314,16 @@ export function initApp(root: HTMLElement): void {
   const scopeNotice = el('p', { class: 'aviso-principal' });
   scopeNotice.textContent = AVISO_PRINCIPAL;
 
+  // Selector de tipo de documento: solo cambia qué categorías vienen premarcadas al montar el
+  // visor de un fichero (T2). No altera la detección.
+  const presetLabel = el('label', { for: 'preset-tipo-documento' });
+  presetLabel.textContent = 'Tipo de documento';
+  const presetSelector = buildPresetSelector(document, (preset) => {
+    currentPreset = preset;
+  });
+  const filaPreset = el('div', { class: 'fila' });
+  filaPreset.append(presetLabel, presetSelector);
+
   // Enlace de compra: sin esto, quien agota la cuota gratuita no sabe dónde comprar Pro.
   // Se muestra solo cuando NO hay Pro activo (a un cliente que ya pagó no se le vende nada).
   const proLink = el('a', {
@@ -322,7 +341,7 @@ export function initApp(root: HTMLElement): void {
   const confirmacion = el('div', { class: 'confirmacion' });
   confirmacion.append(checkbox, checkboxLabel);
   panelTrabajo.append(
-    tituloTrabajo, scopeNotice, filaArchivo, pistaEjemplo, quotaStatus,
+    tituloTrabajo, scopeNotice, filaPreset, filaArchivo, pistaEjemplo, quotaStatus,
     filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus,
   );
 
@@ -423,7 +442,7 @@ export function initApp(root: HTMLElement): void {
         const fileWork: FileWork = { fileName: entrada.nombre, bytes: entrada.bytes, manual: [], selected: [] };
         const fileContainer = el('div', { class: 'file-visor' });
         try {
-          await renderFileVisor(fileContainer, doc, fileWork);
+          await renderFileVisor(fileContainer, doc, fileWork, currentPreset);
         } finally {
           doc.close();
         }

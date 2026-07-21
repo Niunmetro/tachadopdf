@@ -38,16 +38,16 @@ export interface ProcessResult {
 export function detectAutomaticBoxes(
   doc: PdfDoc,
   visualReviewPages: number[],
-): { page: number; rect: BoxRect }[] {
+): { page: number; rect: BoxRect; kind: PatternKind }[] {
   const reviewSet = new Set(visualReviewPages);
   const total = doc.pageCount();
-  const boxes: { page: number; rect: BoxRect }[] = [];
+  const boxes: { page: number; rect: BoxRect; kind: PatternKind }[] = [];
   for (let page = 0; page < total; page++) {
     if (reviewSet.has(page)) continue;
     const text = doc.extractText(page);
     for (const hit of detect(text)) {
       for (const rect of doc.searchText(page, hit.value)) {
-        boxes.push({ page, rect });
+        boxes.push({ page, rect, kind: hit.kind });
       }
     }
   }
