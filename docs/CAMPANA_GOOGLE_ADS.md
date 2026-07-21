@@ -69,3 +69,19 @@ El asistente de alta de cuenta nueva usa botones Shadow DOM que la extensión de
 pulsar de forma fiable. **En cuanto el owner añada el método de pago** (su parte), la cuenta sale del
 asistente y la campaña se construye en la consola normal (campos estándar, sí manejables). El owner
 NO diseña nada: solo mete la tarjeta; el montaje es del equipo.
+
+## Plan B de volumen (preparado mar 21-07, ejecutar mié 22-07 si sigue en ~0 impresiones)
+Contexto: 19-21 jul solo 6 impresiones totales. Causa probable ya corregida el 21-07 a las ~07:45:
+la URL final (www.tachadopdf.com) llevaba en 404 total desde el 17-07 (dominio sin activar en Pages);
+el revisor de Google no podía verificar el destino. Si tras 24h con la web viva el anuncio sigue sin
+servir, aplicar este plan (~5 min):
+
+1) Añadir en concordancia de FRASE (no amplia) keywords con volumen real:
+   "tachar pdf online", "ocultar datos pdf", "borrar texto pdf", "editar pdf quitar datos",
+   "anonimizar pdf online", "eliminar dni de un pdf", "censurar documento pdf gratis"
+2) Mantener las 12 amplias actuales (nicho, CPC bajo cuando entren).
+3) Reforzar negativas para el tráfico genérico que traerán las de frase:
+   "unir", "comprimir", "convertir", "word", "excel", "firmar", "rellenar", "escanear",
+   "gratis para estudiantes", "apk", "descargar programa"
+4) NO tocar puja (Maximizar clics sigue en aprendizaje); no subir presupuesto (5 €/día).
+5) A las 24h de la ampliación: revisar informe de términos de búsqueda y podar.
