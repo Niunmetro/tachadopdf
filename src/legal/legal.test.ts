@@ -5,6 +5,7 @@ import {
   AVISO_LEGAL,
   AVISO_PRINCIPAL,
   CASOS_USO,
+  FAQ,
   LANDING_TITULAR,
   PRIVACIDAD,
   TERMINOS,
@@ -63,6 +64,13 @@ describe('textos legales: contenido requerido', () => {
     expect(CASOS_USO).toContain('administradores de fincas');
     expect(CASOS_USO).toContain('gestorías');
     expect(CASOS_USO).toContain('RRHH');
+  });
+
+  it('FAQ contiene una entrada sobre factura de la licencia Pro con referencias a Gumroad y admin@tachadopdf.com', () => {
+    const entradaFactura = FAQ.find((item) => item.pregunta.toLowerCase().includes('factura'));
+    expect(entradaFactura).toBeDefined();
+    expect(entradaFactura?.respuesta).toContain('Gumroad');
+    expect(entradaFactura?.respuesta).toContain('admin@tachadopdf.com');
   });
 
   it('LANDING_TITULAR NO contiene "ya no esta en el archivo"', () => {

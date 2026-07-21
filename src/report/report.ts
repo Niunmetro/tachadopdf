@@ -178,7 +178,7 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
   row('Archivo comprobado', data.fileName);
   row('Fecha de emisión', data.date);
   row('Referencia del informe', ref);
-  row('Huella SHA-256 del archivo final', data.sha256, 8.5);
+  row('Huella SHA-256 del documento entregado', data.sha256, 8.5);
 
   // --- comprobaciones ------------------------------------------------------
   heading('Comprobaciones realizadas');

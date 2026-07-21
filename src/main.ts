@@ -19,10 +19,15 @@ import {
   LANDING_SUBTITULO,
   LANDING_TITULAR,
 } from './legal/textos';
+import { detect } from './detect/patterns';
+import { patternsForPreset, type DocumentPreset } from './detect/presets';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
+import { findAllOccurrenceMarks } from './pdf/occurrences';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, VerifyResult } from './types';
 import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
+import { buildPresetSelector } from './ui/preset-selector';
+import { mergeOccurrenceMarks } from './ui/tachar-todas';
 import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
 const RENDER_DPI = 96;
@@ -52,6 +57,7 @@ const state: AppState = {
 };
 
 let fileWorks: FileWork[] = [];
+let currentPreset: DocumentPreset = 'generico';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -104,10 +110,16 @@ async function loadWithPassword(bytes: Uint8Array, promptPassword: () => string 
  * `fileWork.selected` / `fileWork.manual`, que es lo que luego se le pasa a
  * processDocument en el momento de la descarga.
  */
-async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: FileWork): Promise<void> {
+async function renderFileVisor(
+  container: HTMLElement,
+  doc: PdfDoc,
+  fileWork: FileWork,
+  preset: DocumentPreset,
+): Promise<void> {
   const visualReviewPages = doc.pagesNeedingVisualReview();
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
-  fileWork.selected = automaticBoxes.map(() => true);
+  const kindsPremarcados = new Set(patternsForPreset(preset));
+  fileWork.selected = automaticBoxes.map((box) => kindsPremarcados.has(box.kind));
 
   const title = el('p');
   title.textContent = fileWork.fileName;
@@ -131,6 +143,57 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
   }
 
   const total = doc.pageCount();
+
+  // Botón "tachar todas las apariciones": por cada VALOR único detectado en el documento
+  // (no por caja) precalculamos, con el doc todavía abierto, las marcas de TODAS sus apariciones
+  // (incluida la propia). Al pulsar se fusionan en fileWork.manual (dedupe por rect exacto) y se
+  // repinta; como fileWork.manual lo procesa processDocument igual que cualquier otro tachado
+  // manual, el borrado es el mismo pipeline real + re-verificación, sin vía nueva.
+  const valoresUnicos: string[] = [];
+  const vistos = new Set<string>();
+  for (let page = 0; page < total; page++) {
+    if (visualReviewPages.includes(page)) continue;
+    for (const hit of detect(doc.extractText(page))) {
+      if (!vistos.has(hit.value)) {
+        vistos.add(hit.value);
+        valoresUnicos.push(hit.value);
+      }
+    }
+  }
+
+  const pageEntries: {
+    page: number;
+    container: HTMLElement;
+    viewport: Viewport;
+    getState: () => SelectionState;
+    setState: (s: SelectionState) => void;
+  }[] = [];
+
+  if (valoresUnicos.length > 0) {
+    const occContainer = el('div', { class: 'tachar-todas' });
+    for (const valor of valoresUnicos) {
+      const occ = findAllOccurrenceMarks(doc, valor, visualReviewPages);
+      const n = occ.reduce((acc, m) => acc + m.rects.length, 0);
+      if (n === 0) continue;
+      const boton = el('button', { type: 'button' });
+      boton.textContent = `Tachar todas las apariciones de «${valor}» (${n})`;
+      boton.addEventListener('click', () => {
+        fileWork.manual = mergeOccurrenceMarks(fileWork.manual, occ);
+        for (const entry of pageEntries) {
+          renderManualBoxes({
+            container: entry.container,
+            viewport: entry.viewport,
+            page: entry.page,
+            getState: entry.getState,
+            setState: entry.setState,
+          });
+        }
+      });
+      occContainer.appendChild(boton);
+    }
+    container.appendChild(occContainer);
+  }
+
   let cursor = 0;
   for (let page = 0; page < total; page++) {
     // Las páginas escaneadas (sin capa de texto) NO se saltan: se renderizan igual para que el
@@ -189,6 +252,7 @@ async function renderFileVisor(container: HTMLElement, doc: PdfDoc, fileWork: Fi
     renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
     renderManualBoxes({ container: pageContainer, viewport, page, getState, setState });
     attachManualBoxDrawing({ canvas, viewport, page, getState, setState });
+    pageEntries.push({ page, container: pageContainer, viewport, getState, setState });
 
     if (hitRects.length > 0) {
       const selectAllButton = el('button', { type: 'button' });
@@ -305,6 +369,16 @@ export function initApp(root: HTMLElement): void {
   const scopeNotice = el('p', { class: 'aviso-principal' });
   scopeNotice.textContent = AVISO_PRINCIPAL;
 
+  // Selector de tipo de documento: solo cambia qué categorías vienen premarcadas al montar el
+  // visor de un fichero (T2). No altera la detección.
+  const presetLabel = el('label', { for: 'preset-tipo-documento' });
+  presetLabel.textContent = 'Tipo de documento';
+  const presetSelector = buildPresetSelector(document, (preset) => {
+    currentPreset = preset;
+  });
+  const filaPreset = el('div', { class: 'fila' });
+  filaPreset.append(presetLabel, presetSelector);
+
   // Enlace de compra: sin esto, quien agota la cuota gratuita no sabe dónde comprar Pro.
   // Se muestra solo cuando NO hay Pro activo (a un cliente que ya pagó no se le vende nada).
   const proLink = el('a', {
@@ -322,7 +396,7 @@ export function initApp(root: HTMLElement): void {
   const confirmacion = el('div', { class: 'confirmacion' });
   confirmacion.append(checkbox, checkboxLabel);
   panelTrabajo.append(
-    tituloTrabajo, scopeNotice, filaArchivo, pistaEjemplo, quotaStatus,
+    tituloTrabajo, scopeNotice, filaPreset, filaArchivo, pistaEjemplo, quotaStatus,
     filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus,
   );
 
@@ -423,7 +497,7 @@ export function initApp(root: HTMLElement): void {
         const fileWork: FileWork = { fileName: entrada.nombre, bytes: entrada.bytes, manual: [], selected: [] };
         const fileContainer = el('div', { class: 'file-visor' });
         try {
-          await renderFileVisor(fileContainer, doc, fileWork);
+          await renderFileVisor(fileContainer, doc, fileWork, currentPreset);
         } finally {
           doc.close();
         }
