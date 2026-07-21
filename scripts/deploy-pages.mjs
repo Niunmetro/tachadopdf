@@ -1,14 +1,14 @@
-// Publica el sitio en GitHub Pages (rama gh-pages), con dotfiles (.nojekyll y, si procede, CNAME).
-// Uso: npm run deploy-pages          -> hoy: se sirve en https://niunmetro.github.io/tachadopdf/
-//      DOMINIO=1 npm run deploy-pages -> cuando el DNS de www.tachadopdf.com apunte a GitHub
-//                                        (ver MONETIZACION.md): base '/' + CNAME del dominio.
-// OJO: no actives DOMINIO=1 antes de que el DNS resuelva. GitHub redirige la URL de Pages al
-// dominio del CNAME, así que un dominio sin DNS deja el sitio INACCESIBLE (comprobado el 17-07).
+// Publica el sitio en GitHub Pages (rama gh-pages), con dotfiles (.nojekyll y CNAME).
+// Desde el 21-07-2026 el dominio www.tachadopdf.com está ACTIVO (DNS ok + CNAME vinculado):
+// el modo dominio es el DEFAULT. Publicar sin CNAME desvincularía el dominio de GitHub Pages
+// y tumbaría la web entera (404 en todo) — solo usar DOMINIO=0 si el DNS deja de resolver.
+// Uso: npm run deploy-pages           -> base '/' + CNAME www.tachadopdf.com (normal)
+//      DOMINIO=0 npm run deploy-pages -> emergencia sin dominio: base '/tachadopdf/', sin CNAME.
 import { execFileSync } from 'node:child_process';
 import { writeFileSync, rmSync } from 'node:fs';
 import { publish } from 'gh-pages';
 
-const conDominio = process.env.DOMINIO === '1';
+const conDominio = process.env.DOMINIO !== '0';
 const env = { ...process.env, VITE_BASE: conDominio ? '/' : '/tachadopdf/' };
 
 console.log(`Build (base=${env.VITE_BASE}) ...`);
