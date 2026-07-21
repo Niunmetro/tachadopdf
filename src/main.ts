@@ -19,12 +19,15 @@ import {
   LANDING_SUBTITULO,
   LANDING_TITULAR,
 } from './legal/textos';
+import { detect } from './detect/patterns';
 import { patternsForPreset, type DocumentPreset } from './detect/presets';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
+import { findAllOccurrenceMarks } from './pdf/occurrences';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, VerifyResult } from './types';
 import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
 import { buildPresetSelector } from './ui/preset-selector';
+import { mergeOccurrenceMarks } from './ui/tachar-todas';
 import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
 const RENDER_DPI = 96;
@@ -140,6 +143,57 @@ async function renderFileVisor(
   }
 
   const total = doc.pageCount();
+
+  // Botón "tachar todas las apariciones": por cada VALOR único detectado en el documento
+  // (no por caja) precalculamos, con el doc todavía abierto, las marcas de TODAS sus apariciones
+  // (incluida la propia). Al pulsar se fusionan en fileWork.manual (dedupe por rect exacto) y se
+  // repinta; como fileWork.manual lo procesa processDocument igual que cualquier otro tachado
+  // manual, el borrado es el mismo pipeline real + re-verificación, sin vía nueva.
+  const valoresUnicos: string[] = [];
+  const vistos = new Set<string>();
+  for (let page = 0; page < total; page++) {
+    if (visualReviewPages.includes(page)) continue;
+    for (const hit of detect(doc.extractText(page))) {
+      if (!vistos.has(hit.value)) {
+        vistos.add(hit.value);
+        valoresUnicos.push(hit.value);
+      }
+    }
+  }
+
+  const pageEntries: {
+    page: number;
+    container: HTMLElement;
+    viewport: Viewport;
+    getState: () => SelectionState;
+    setState: (s: SelectionState) => void;
+  }[] = [];
+
+  if (valoresUnicos.length > 0) {
+    const occContainer = el('div', { class: 'tachar-todas' });
+    for (const valor of valoresUnicos) {
+      const occ = findAllOccurrenceMarks(doc, valor, visualReviewPages);
+      const n = occ.reduce((acc, m) => acc + m.rects.length, 0);
+      if (n === 0) continue;
+      const boton = el('button', { type: 'button' });
+      boton.textContent = `Tachar todas las apariciones de «${valor}» (${n})`;
+      boton.addEventListener('click', () => {
+        fileWork.manual = mergeOccurrenceMarks(fileWork.manual, occ);
+        for (const entry of pageEntries) {
+          renderManualBoxes({
+            container: entry.container,
+            viewport: entry.viewport,
+            page: entry.page,
+            getState: entry.getState,
+            setState: entry.setState,
+          });
+        }
+      });
+      occContainer.appendChild(boton);
+    }
+    container.appendChild(occContainer);
+  }
+
   let cursor = 0;
   for (let page = 0; page < total; page++) {
     // Las páginas escaneadas (sin capa de texto) NO se saltan: se renderizan igual para que el
@@ -198,6 +252,7 @@ async function renderFileVisor(
     renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
     renderManualBoxes({ container: pageContainer, viewport, page, getState, setState });
     attachManualBoxDrawing({ canvas, viewport, page, getState, setState });
+    pageEntries.push({ page, container: pageContainer, viewport, getState, setState });
 
     if (hitRects.length > 0) {
       const selectAllButton = el('button', { type: 'button' });
