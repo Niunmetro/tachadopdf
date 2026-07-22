@@ -74,5 +74,20 @@ export function renderLegalFooter(root: HTMLElement): void {
     'La licencia Pro la vende Gumroad.';
   footer.appendChild(pie);
 
+  const enlacesSector = doc.createElement('p');
+  enlacesSector.className = 'enlaces-sector';
+
+  const enlaceActas = doc.createElement('a');
+  enlaceActas.href = 'actas/';
+  enlaceActas.textContent = 'Para administradores de fincas';
+  enlacesSector.appendChild(enlaceActas);
+
+  const enlaceNominas = doc.createElement('a');
+  enlaceNominas.href = 'nominas/';
+  enlaceNominas.textContent = 'Para gestorías y RRHH';
+  enlacesSector.appendChild(enlaceNominas);
+
+  footer.appendChild(enlacesSector);
+
   root.appendChild(footer);
 }

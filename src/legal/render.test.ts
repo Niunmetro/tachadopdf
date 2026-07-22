@@ -1,5 +1,6 @@
+// @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { legalSections } from './render';
+import { legalSections, renderLegalFooter } from './render';
 
 describe('legalSections', () => {
   const secciones = legalSections();
@@ -22,5 +23,17 @@ describe('legalSections', () => {
     const privacidad = secciones.find((s) => s.id === 'privacidad');
     expect(privacidad?.cuerpo).toContain('Política de privacidad');
     expect(privacidad?.cuerpo).toContain('Procesamiento 100% local');
+  });
+});
+
+describe('renderLegalFooter', () => {
+  it('incluye enlaces relativos a las landings de actas y nóminas', () => {
+    const root = document.createElement('div');
+    renderLegalFooter(root);
+
+    const hrefs = Array.from(root.querySelectorAll('a')).map((a) => a.getAttribute('href') ?? '');
+
+    expect(hrefs.some((href) => href.endsWith('actas/'))).toBe(true);
+    expect(hrefs.some((href) => href.endsWith('nominas/'))).toBe(true);
   });
 });
