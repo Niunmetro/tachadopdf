@@ -54,6 +54,14 @@ export function esNussValido(v: string): boolean {
   return esperado === control;
 }
 
+export function esRefCatastralValido(v: string): boolean {
+  const n = normalizar(v);
+  if (!/^[A-Z0-9]{20}$/.test(n)) return false;
+  if (/^\d{20}$/.test(n)) return false;
+  if (/^[A-Z]{20}$/.test(n)) return false;
+  return true;
+}
+
 interface Candidato {
   kind: Hit['kind'];
   regex: RegExp;
@@ -88,6 +96,11 @@ const CANDIDATOS: Candidato[] = [
   {
     kind: 'email',
     regex: /(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])/g,
+  },
+  {
+    kind: 'catastro',
+    regex: /(?<![\dA-Za-z])[A-Za-z0-9]{20}(?![\dA-Za-z])/g,
+    valido: esRefCatastralValido,
   },
 ];
 

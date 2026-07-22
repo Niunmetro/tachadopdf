@@ -237,6 +237,28 @@ describe('detect', () => {
     });
   });
 
+  describe('referencia catastral', () => {
+    it('encuentra una referencia catastral válida con kind catastro', () => {
+      const texto = 'Ref. catastral: 9872023VH5797S0001WX en el recibo.';
+      const hits = detect(texto);
+      const catastro = hits.find((h) => h.kind === 'catastro');
+      expect(catastro).toBeDefined();
+      expect(catastro?.value).toBe('9872023VH5797S0001WX');
+    });
+
+    it('no marca como catastro una cadena alfanumérica de 19 caracteres', () => {
+      const texto = 'Código: A123456789012345678 fin.';
+      const hits = detect(texto);
+      expect(hits.some((h) => h.kind === 'catastro')).toBe(false);
+    });
+
+    it('no marca como catastro una cadena alfanumérica de 21 caracteres', () => {
+      const texto = 'Código: A12345678901234567890 fin.';
+      const hits = detect(texto);
+      expect(hits.some((h) => h.kind === 'catastro')).toBe(false);
+    });
+  });
+
   describe('NUSS con barra (M2)', () => {
     it('encuentra un NUSS válido separado por barras', () => {
       const texto = 'Nº Seguridad Social: 28/12345678/40.';
