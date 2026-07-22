@@ -45,4 +45,22 @@ describe('freemium/quota', () => {
     expect(estadoAgosto.usedThisMonth).toBe(0);
     expect(estadoAgosto.allowed).toBe(true);
   });
+
+  it('getQuota devuelve limit === 5', async () => {
+    const status = await getQuota(new Date('2026-07-16T10:00:00Z'));
+    expect(status.limit).toBe(5);
+  });
+
+  it('reinicio por mes: recordUse en un mes y getQuota en otro mes distinto', async () => {
+    const mesUno = new Date('2026-07-16T10:00:00Z');
+    const mesDos = new Date('2026-08-15T10:00:00Z');
+
+    await recordUse(mesUno);
+    const estadoMesUno = await getQuota(mesUno);
+    expect(estadoMesUno.usedThisMonth).toBe(1);
+
+    const estadoMesDos = await getQuota(mesDos);
+    expect(estadoMesDos.usedThisMonth).toBe(0);
+    expect(estadoMesDos.allowed).toBe(true);
+  });
 });

@@ -53,7 +53,7 @@ const state: AppState = {
   verify: null,
   scannedPages: [],
   license: { pro: false, reason: 'absent' },
-  quota: { usedThisMonth: 0, limit: 3, allowed: true },
+  quota: { usedThisMonth: 0, limit: 5, allowed: true },
 };
 
 let fileWorks: FileWork[] = [];

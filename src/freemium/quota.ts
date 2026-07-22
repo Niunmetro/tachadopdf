@@ -1,10 +1,10 @@
 import type { QuotaStatus } from '../types';
 
-// 3 documentos/mes gratis. OJO: este contador vive en IndexedDB local y es RESETEABLE (borrando
+// 5 documentos/mes gratis. OJO: este contador vive en IndexedDB local y es RESETEABLE (borrando
 // datos del navegador / incógnito). No es —ni puede ser— un muro: la app no tiene servidor ni
 // cuentas a propósito (nada sale del navegador). Es un umbral de conveniencia sostenido por
 // honradez. El muro DE VERDAD contra el uso profesional gratis es FREE_MAX_PAGES (ver abajo).
-export const FREE_MONTHLY_LIMIT = 3;
+export const FREE_MONTHLY_LIMIT = 5;
 
 // Tope de páginas por documento en la versión gratuita. A diferencia del contador, esto SÍ es un
 // muro robusto: se aplica en CADA uso, lo reseteen o no, y el trabajo real (actas de comunidad,
