@@ -150,3 +150,17 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   .hero { padding: 32px 0 24px; }
   input[type="text"] { min-width: 0; width: 100%; }
 }
+
+/* ---------- Tachar todas las apariciones ---------- */
+.tachar-todas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tachar-todas button {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
