@@ -79,6 +79,16 @@ describe('buildReport', () => {
     expect(textoPro).not.toContain('Generado con TachadoPDF (versión gratuita)');
   });
 
+  it('incluye la marca de agua DEMO en el informe solo cuando freeVersion es true', async () => {
+    const bytesGratis = await buildReport({ ...BASE_DATA, freeVersion: true });
+    const textoGratis = await extractNormalizedText(bytesGratis);
+    expect(textoGratis).toContain('DEMO');
+
+    const bytesPro = await buildReport({ ...BASE_DATA, freeVersion: false });
+    const textoPro = await extractNormalizedText(bytesPro);
+    expect(textoPro).not.toContain('DEMO');
+  });
+
   it('incluye la etiqueta correcta para la huella SHA-256 del documento entregado', async () => {
     const bytes = await buildReport(BASE_DATA);
     const texto = await extractNormalizedText(bytes);

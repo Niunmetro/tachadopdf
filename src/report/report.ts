@@ -1,4 +1,4 @@
-import { type Color, type PDFFont, type PDFPage, PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { type Color, degrees, type PDFFont, type PDFPage, PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import type { PatternKind, ReportData } from '../types';
 
 export const REPORT_TITLE = 'Informe de comprobación técnica';
@@ -7,6 +7,7 @@ export const SCOPE_TEXT =
   'Esta comprobación se limita al texto extraíble del archivo PDF resultante y a los píxeles de las zonas marcadas. No analiza el contenido visual de las imágenes no marcadas ni garantiza la ausencia de datos personales en el documento. No sustituye la revisión humana.';
 
 const FREE_VERSION_LINE = 'Generado con TachadoPDF (versión gratuita)';
+const WATERMARK_TEXT = 'DEMO — no valido como evidencia';
 
 const PATTERN_LABELS: Record<PatternKind, string> = {
   dni: 'DNI',
@@ -255,6 +256,25 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
     const pn = `Página ${i + 1} de ${allPages.length}`;
     p.drawText(safe(pn), { x: PAGE[0] - MARGIN - font.widthOfTextAtSize(pn, 8), y: 44, size: 8, font, color: MUTED });
   });
+
+  // --- marca de agua DEMO (solo versión gratuita) --------------------------
+  if (data.freeVersion) {
+    const wmText = safe(WATERMARK_TEXT);
+    const wmSize = 32;
+    const wmColor = rgb(0.6, 0.6, 0.6);
+    const wmWidth = bold.widthOfTextAtSize(wmText, wmSize);
+    allPages.forEach((p) => {
+      p.drawText(wmText, {
+        x: PAGE[0] / 2 - wmWidth / 2,
+        y: PAGE[1] / 2,
+        size: wmSize,
+        font: bold,
+        color: wmColor,
+        opacity: 0.28,
+        rotate: degrees(45),
+      });
+    });
+  }
 
   return doc.save();
 }
