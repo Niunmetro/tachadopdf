@@ -97,6 +97,11 @@ const CANDIDATOS: Candidato[] = [
     kind: 'email',
     regex: /(?<![\w.+-])[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?![\w.-])/g,
   },
+  {
+    kind: 'catastro',
+    regex: /(?<![\dA-Za-z])[A-Za-z0-9]{20}(?![\dA-Za-z])/g,
+    valido: esRefCatastralValido,
+  },
 ];
 
 export function detect(text: string): Hit[] {
