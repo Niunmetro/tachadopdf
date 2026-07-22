@@ -97,3 +97,46 @@ Cuatro mejoras, cada una con sus tests:
 Restricciones tecnicas: CSP intacta (ninguna conexion externa nueva), 100% cliente, TypeScript
 estricto, tests Vitest por mejora, `npm test` COMPLETO en verde al final de cada tarea. No subir
 versiones de dependencias.
+
+=== RUN 4 (22-07-2026): PULIDO VISUAL + VERTICAL FINCAS ===
+(Reconstruido tras fallo del disco E:; ya EJECUTADO y mergeado en 7f0de99 — solo registro.)
+Encargo del comité (acta 2026-07-22, decisión D3). Incremento MUY pequeño; presupuesto <=$5.
+1) Pulido CSS de los botones "Tachar todas las apariciones" como chips (flex-wrap con gap,
+   elipsis en valores largos, sin romper móvil).
+2) Detección de REFERENCIA CATASTRAL española (20 caracteres alfanuméricos), categoría
+   'catastro' en presets 'generico' y 'acta' (NO en 'nomina'), con tests.
+
+=== RUN 5 (22-07-2026, noche): PLAN 14 DIAS — LANDINGS VERTICALES + GATE DEL INFORME ===
+Encargo del comite extraordinario (docs/PLAN_14D.md). Presupuesto <=$6.
+NO tocar: scripts/deploy-pages.mjs, precio en Gumroad, motor de tachado (deteccion/borrado),
+CSP (cero conexiones externas nuevas), vocabulario legal (nada de "anonimizar/certificar/IA").
+
+Cuatro mejoras, cada una con tests y `npm test` COMPLETO en verde:
+
+1) LANDING /actas/ (public/actas/index.html, misma tecnica self-contained que las guias de
+   public/guia/*): para ADMINISTRADORES DE FINCAS. Estructura: titular de dolor ("Un acta con
+   DNIs sin tachar de verdad le costo 15.000 EUR a una comunidad — sancion real de la AEPD"),
+   el fallo del rectangulo negro (enlazar guia rectangulo-negro), que exige el RGPD (minimizacion
+   + medidas art. 32, sin prometer cumplimiento), como lo resuelve TachadoPDF en 60 segundos
+   (preset Acta, deteccion DNI/NIE/catastro, borrado real, informe con SHA-256), diferencial
+   clave en caja destacada: "El PDF nunca sale de tu equipo: sin contrato de encargado de
+   tratamiento con nosotros porque no tratamos ningun dato", CTA a la herramienta
+   (/?utm_source=landing&utm_campaign=actas), mencion de la garantia de devolucion de 30 dias
+   de la compra y del precio (59 EUR/ano; tier Despacho 149 EUR/ano con 3 puestos y logo del
+   despacho en el informe). Firmado "Equipo de TachadoPDF". Canonical, OG, JSON-LD Article.
+   Anadir a sitemap.xml y enlazar desde la guia de administradores de fincas y el pie de la home.
+2) LANDING /nominas/ (public/nominas/index.html): igual para GESTORIAS/ASESORIAS LABORALES/RRHH.
+   Titular de dolor sobre nominas/expedientes enviados a terceros con DNI, NSS e IBAN a la vista;
+   preset Nomina/expediente; mismo bloque de diferencial local + informe; CTA con
+   utm_campaign=nominas; enlazar desde la guia de nominas y el pie. Sitemap.
+3) FREE 5 DOCUMENTOS/MES: la cuota gratuita pasa de N documentos TOTALES a 5 por MES NATURAL
+   (contador con clave YYYY-MM en el almacenamiento local existente; al cambiar de mes se
+   reinicia). Mensaje de cuota agotada debe decir "este mes" y ofrecer Pro. Tests del reset
+   de mes y del limite. Pro sigue ilimitado.
+4) INFORME FREE CON MARCA "DEMO": en la version gratuita, el informe de comprobacion tecnica
+   lleva una marca de agua diagonal visible en cada pagina con el texto "DEMO — no valido como
+   evidencia" ademas de la linea actual de version gratuita; en Pro no hay marca alguna. La
+   marca va SOLO en el informe, JAMAS en el documento tachado. Actualizar la FAQ para explicar
+   honesto: "el tachado gratis es completo; lo que diferencia Pro es el informe sin marca,
+   documentos ilimitados y el procesado por lotes". Tests: free genera informe con marca,
+   Pro sin ella.
