@@ -89,3 +89,14 @@ servir, aplicar este plan (~5 min):
 ### Añadir junto al Plan B (pendiente de UI, mar 21-07):
 - Negativas nuevas por el informe de búsquedas real (3/4 impresiones fueron "quitar/eliminar marca de agua pdf"):
   "marca de agua", "marcas de agua", "watermark"
+
+### Plan B EJECUTADO (mié 22-07, ~06:30)
+- 8 negativas nuevas guardadas (31 total): marca de agua, marcas de agua, watermark,
+  rellenar, escanear, apk, descargar programa, gratis para estudiantes.
+- 7 keywords de FRASE añadidas al Grupo de anuncios 1 (adGroupId 204209382691):
+  4 en revisión ("tachar pdf online", "ocultar datos pdf", "borrar texto pdf",
+  "anonimizar pdf online") + 3 en "volumen de búsquedas bajo" (long-tail, quedan latentes).
+- Contexto: 18 impresiones acumuladas (10 el martes tras revivir el dominio, +2 madrugada).
+- Truco de UI que funcionó: los enlaces de drill-down de la consola ignoran el click
+  sintético; foco con click + tecla Enter SÍ navega. El selector de grupo del botón "+"
+  a nivel cuenta se cierra solo: añadir keywords SIEMPRE desde la vista del grupo.
