@@ -15,6 +15,7 @@ const PATTERN_LABELS: Record<PatternKind, string> = {
   nuss: 'Número de la Seguridad Social',
   telefono: 'Teléfono',
   email: 'Correo electrónico',
+  catastro: 'Referencia catastral',
 };
 
 const PAGE: [number, number] = [595, 842];

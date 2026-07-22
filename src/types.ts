@@ -1,4 +1,4 @@
-export type PatternKind = 'dni' | 'nie' | 'iban' | 'nuss' | 'telefono' | 'email';
+export type PatternKind = 'dni' | 'nie' | 'iban' | 'nuss' | 'telefono' | 'email' | 'catastro';
 
 export interface Hit {
   kind: PatternKind;
