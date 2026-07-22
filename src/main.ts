@@ -297,7 +297,7 @@ function renderHero(root: HTMLElement): void {
   for (const t of [
     'El texto se elimina del archivo, no se tapa con un rectángulo negro.',
     'Todo ocurre en tu navegador: el documento no se sube a ningún servidor.',
-    'Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, teléfonos y emails.',
+    'Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.',
     'Informe de comprobación técnica descargable para tu expediente.',
   ]) {
     const li = el('li');
