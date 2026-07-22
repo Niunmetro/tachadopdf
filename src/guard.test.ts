@@ -5,6 +5,7 @@ import * as path from 'node:path';
 describe('guardias de repo: vocabulario y CSP', () => {
   const SRC_DIR = path.resolve(__dirname);
   const INDEX_HTML = path.resolve(__dirname, '..', 'index.html');
+  const PUBLIC_DIR = path.resolve(__dirname, '..', 'public');
 
   function listarFicherosTs(dir: string): string[] {
     const resultado: string[] = [];
@@ -20,9 +21,22 @@ describe('guardias de repo: vocabulario y CSP', () => {
     return resultado;
   }
 
+  function listarFicherosHtml(dir: string): string[] {
+    const resultado: string[] = [];
+    for (const entrada of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rutaCompleta = path.join(dir, entrada.name);
+      if (entrada.isDirectory()) {
+        resultado.push(...listarFicherosHtml(rutaCompleta));
+      } else if (entrada.name.endsWith('.html')) {
+        resultado.push(rutaCompleta);
+      }
+    }
+    return resultado;
+  }
+
   describe('vocabulario prohibido en src/', () => {
     const ficheros = listarFicherosTs(SRC_DIR);
-    const indexHtml = INDEX_HTML;
+    const htmlPublic = listarFicherosHtml(PUBLIC_DIR);
 
     const PALABRAS_PROHIBIDAS = ['anonimiz', 'certific', 'rgpd garantizado', 'inteligencia artificial', ' ia '];
 
@@ -38,10 +52,21 @@ describe('guardias de repo: vocabulario y CSP', () => {
     });
 
     it('index.html no contiene vocabulario prohibido', () => {
-      const contenido = fs.readFileSync(indexHtml, 'utf-8').toLowerCase();
+      const contenido = fs.readFileSync(INDEX_HTML, 'utf-8').toLowerCase();
       for (const palabra of PALABRAS_PROHIBIDAS) {
         expect(contenido).not.toContain(palabra);
       }
+    });
+
+    it('recorre al menos un fichero .html de public/ (el escaneo no está vacío)', () => {
+      expect(htmlPublic.length).toBeGreaterThan(0);
+    });
+
+    it.each(PALABRAS_PROHIBIDAS)('ningún .html de public/ contiene "%s"', (palabra) => {
+      const infractores = htmlPublic.filter((fichero) =>
+        fs.readFileSync(fichero, 'utf-8').toLowerCase().includes(palabra),
+      );
+      expect(infractores).toEqual([]);
     });
   });
 
