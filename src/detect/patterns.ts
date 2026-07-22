@@ -54,6 +54,14 @@ export function esNussValido(v: string): boolean {
   return esperado === control;
 }
 
+export function esRefCatastralValido(v: string): boolean {
+  const n = normalizar(v);
+  if (!/^[A-Z0-9]{20}$/.test(n)) return false;
+  if (/^\d{20}$/.test(n)) return false;
+  if (/^[A-Z]{20}$/.test(n)) return false;
+  return true;
+}
+
 interface Candidato {
   kind: Hit['kind'];
   regex: RegExp;
