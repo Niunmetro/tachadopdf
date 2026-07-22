@@ -111,3 +111,17 @@ servir, aplicar este plan (~5 min):
   desglosa términos individuales; vigilar tras el primer clic.
 - Búsquedas de marca de agua aún visibles en la tarjeta pero corresponden a los días 19-21,
   previos a las negativas del Plan B; no duplicar.
+
+### Cirugía de Ads mié 22-07 ~20:45 (plan 14 días, D1)
+- AÑADIDAS 6 keywords de FRASE con búsqueda real detectada por el comité (todas entran
+  "En revisión" + "volumen bajo", quedan latentes a coste 0): "anonimizar pdf firmado",
+  "anonimizar sentencias", "anonimizar documentos justicia", "anonimizar acta comunidad",
+  "censurar pdf sin subir", "tachar pdf en negro gratis". Total grupo: 26 keywords.
+- Dato del grupo: casi todas las impresiones (15 de ~20) vienen de "eliminar datos
+  personales pdf" (amplia) — es la keyword que descubre; mantener siempre activa.
+- PENDIENTE MENOR (no bloqueante): pausar las 3 de intención tipográfica ("tachar texto
+  pdf", "ocultar texto pdf", "censurar texto pdf", ~2 impresiones acumuladas) — la UI de
+  selección remapea refs entre renders y no registró los toggles; reintentar en la
+  próxima pasada de Ads. NO pausar "censurar pdf sin subir" (es de las nuevas).
+- Las landings /actas/ y /nominas/ ya están vivas para usarlas como URL final si se
+  crean grupos dedicados por vertical (siguiente iteración de Ads).
