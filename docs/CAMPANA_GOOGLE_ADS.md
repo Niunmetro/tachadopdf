@@ -100,3 +100,14 @@ servir, aplicar este plan (~5 min):
 - Truco de UI que funcionó: los enlaces de drill-down de la consola ignoran el click
   sintético; foco con click + tecla Enter SÍ navega. El selector de grupo del botón "+"
   a nivel cuenta se cierra solo: añadir keywords SIEMPRE desde la vista del grupo.
+
+### Revisión mié 22-07 ~14:20
+- Acumulado 19-22 jul: 18 impresiones, 0 clics, 0,00 €. Pico el martes 21, caída el 22
+  (campaña sigue "aprendiendo"; keywords de frase aún en revisión).
+- La tarjeta de búsquedas de la Vista general muestra temas "i love pdf" y "love pdf"
+  (marca de la competencia): la negativa "ilovepdf" NO cubre variantes con espacios.
+  Añadidas "i love pdf" y "love pdf" en amplia a nivel campaña → 33 negativas totales.
+- El informe de Términos de búsqueda exacto sigue vacío (0 de 0): sin clics, Google no
+  desglosa términos individuales; vigilar tras el primer clic.
+- Búsquedas de marca de agua aún visibles en la tarjeta pero corresponden a los días 19-21,
+  previos a las negativas del Plan B; no duplicar.
