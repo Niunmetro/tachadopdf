@@ -36,6 +36,16 @@ Núcleo: la primera señal se sale a buscar. 250-400 emails 1:1 con 2 seguimient
 - Instrumentación día 1: eventos visita→herramienta→doc procesado→vista precios→
   clic checkout, con UTM por canal. Sin esto no se distingue "no llegan" de
   "llegan y no activan" de "activan y no pagan".
+  **ENMIENDA (22-07 noche, doctrina de producto):** la instrumentación on-page
+  CONTRADICE la promesa verificable del producto ("cero analítica, cero scripts
+  de terceros, ningún egress salvo la verificación de licencia" — es parte del
+  pitch al DPD y es comprobable en el repo público). NO se añade analítica a la
+  web. El funnel se mide por los EXTREMOS que ya controlamos: clics de Ads
+  (consola), UTMs que llegan a Gumroad (referrer del checkout), vistas/ventas de
+  Gumroad, respuestas de email y Search Console. Se pierde granularidad de
+  visitas a cambio de mantener el diferencial. El umbral "150 visitas sin
+  activación" del veredicto se sustituye por "N clics/aperturas sin respuesta ni
+  venta" medidos en esos extremos.
 - Gate de pago correcto: informe SHA-256 con marca de agua "DEMO — no válido como
   evidencia" en el free; free pasa de 5 docs TOTALES a 5 docs/MES. Lo que se paga
   es la evidencia de cumplimiento, no un contador.
