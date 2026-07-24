@@ -15,6 +15,10 @@ describe('landing /nominas/', () => {
     expect(html).toContain('utm_campaign=nominas');
   });
 
+  it('contiene un enlace a /comprobador/', () => {
+    expect(html).toContain('/comprobador/');
+  });
+
   it('tiene <link rel="canonical"> con la URL de la landing de nóminas', () => {
     expect(html).toMatch(/<link\b[^>]*\srel=["']canonical["'][^>]*\shref=["']https:\/\/www\.tachadopdf\.com\/nominas\/["']/);
   });
