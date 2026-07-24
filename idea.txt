@@ -140,3 +140,30 @@ Cuatro mejoras, cada una con tests y `npm test` COMPLETO en verde:
    honesto: "el tachado gratis es completo; lo que diferencia Pro es el informe sin marca,
    documentos ilimitados y el procesado por lotes". Tests: free genera informe con marca,
    Pro sin ella.
+
+=== RUN 6 (24-07-2026): ANALIZADOR DE RIESGO /comprobador/ ===
+Encargo del comite (acta 2026-07-24, D2). Presupuesto <=$6.
+NO tocar: scripts/deploy-pages.mjs, motor de tachado, CSP (cero egress nuevo),
+vocabulario legal (nada de "anonimizar/certificar/IA" en textos publicos), precio.
+
+QUE ES: pagina /comprobador/ (public/comprobador/index.html + modulo TS propio en
+src/comprobador/) — el escalon 0 del funnel: el usuario arrastra un PDF y ve QUE
+datos personales contiene, SIN tacharlos. Convierte curiosidad en activacion.
+
+Mejoras, cada una con tests y `npm test` COMPLETO en verde:
+1) PAGINA /comprobador/: drag&drop o selector de PDF; procesa 100% en el navegador
+   REUTILIZANDO el detector existente (mismos patrones: DNI, NIE, IBAN, NUSS,
+   telefonos, emails, referencia catastral). Muestra: recuento por categoria con
+   los 2-3 primeros ejemplos ENMASCARADOS (p.ej. "12.***.***-Z"), paginas sin capa
+   de texto con el aviso rojo existente (escaneadas: la deteccion no puede leerlas),
+   y un veredicto simple: "Este PDF contiene N datos personales detectables".
+   JAMAS mostrar el dato completo en pantalla; enmascarar siempre.
+2) CTA UNICO al final: "Tachalos ahora (gratis, 5 documentos al mes)" →
+   /?utm_source=comprobador. Aviso legal breve reutilizando textos existentes
+   (la comprobacion se limita al texto extraible; no sustituye revision humana).
+3) INTEGRACION: enlace "Comprueba gratis que datos contiene tu PDF" desde
+   /actas/, /nominas/ y el pie de la home. Anadir /comprobador/ a sitemap.xml.
+   Canonical, OG, JSON-LD WebApplication. Titulo orientado a busqueda real:
+   "Comprobador: que datos personales contiene tu PDF".
+4) El PDF nunca sale del equipo (igual que la herramienta): sin red, verificable.
+   Si el fichero no es PDF o esta cifrado sin contrasena valida: mensaje claro.
