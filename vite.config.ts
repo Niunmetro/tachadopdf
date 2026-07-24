@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
@@ -8,6 +9,12 @@ export default defineConfig({
   build: {
     // mupdf (wasm) usa top-level await: el target debe soportarlo o el build falla.
     target: 'esnext',
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        comprobador: fileURLToPath(new URL('./comprobador/index.html', import.meta.url)),
+      },
+    },
   },
   optimizeDeps: {
     // El pre-bundle de esbuild del dev server tiene su propio target; sin esto, cargar

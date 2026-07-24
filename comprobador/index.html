@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 'wasm-unsafe-eval' es OBLIGATORIO para instanciar mupdf-wasm; permite compilar WebAssembly
+         pero NO eval() de JS arbitrario (a diferencia de 'unsafe-eval'). connect-src limita el
+         egress a Gumroad; ningun documento sale del navegador. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+
+    <title>Comprobador TachadoPDF</title>
+  </head>
+  <body>
+    <div id="cp-dropzone">
+      <form id="cp-password-form">
+        <input type="file" id="cp-file" accept="application/pdf" />
+        <input type="password" id="cp-password" />
+      </form>
+    </div>
+    <div id="cp-resultado"></div>
+    <div id="cp-error"></div>
+    <script type="module" src="/src/comprobador/main.ts"></script>
+  </body>
+</html>
