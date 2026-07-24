@@ -15,6 +15,10 @@ describe('landing /actas/ para administradores de fincas', () => {
     expect(html).toContain('utm_campaign=actas');
   });
 
+  it('contiene un enlace a /comprobador/', () => {
+    expect(html).toContain('/comprobador/');
+  });
+
   it('tiene rel="canonical" con la URL de /actas/', () => {
     expect(html).toMatch(/rel="canonical"\s+href="https:\/\/www\.tachadopdf\.com\/actas\/"/);
   });
