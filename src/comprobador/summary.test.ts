@@ -74,7 +74,7 @@ describe('construirResumen', () => {
     const resumen = construirResumen(hits, []);
 
     expect(resumen.categorias).toHaveLength(1);
-    expect(resumen.categorias[0].kind).toBe('nie');
+    expect(resumen.categorias[0]?.kind).toBe('nie');
   });
 
   it('produce el veredicto literal con el total de datos', () => {
