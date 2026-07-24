@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 'wasm-unsafe-eval' es OBLIGATORIO para instanciar mupdf-wasm; permite compilar WebAssembly
+         pero NO eval() de JS arbitrario (a diferencia de 'unsafe-eval'). connect-src limita el
+         egress a Gumroad; ningun documento sale del navegador. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+
+    <title>Comprobador: qué datos personales contiene tu PDF</title>
+    <meta name="description" content="Sube un PDF y descubre qué datos personales contiene (DNI, IBAN, teléfonos, direcciones...) antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo. Esta comprobación no tacha nada." />
+    <link rel="canonical" href="https://www.tachadopdf.com/comprobador/" />
+
+    <meta property="og:title" content="Comprobador: qué datos personales contiene tu PDF" />
+    <meta property="og:description" content="Descubre qué datos personales contiene tu PDF antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo." />
+    <meta property="og:url" content="https://www.tachadopdf.com/comprobador/" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Comprobador TachadoPDF",
+        "applicationCategory": "SecurityApplication",
+        "url": "https://www.tachadopdf.com/comprobador/",
+        "inLanguage": "es",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        }
+      }
+    </script>
+
+    <style>
+      :root {
+        color-scheme: light dark;
+        --cp-fondo: #0f172a;
+        --cp-texto: #e2e8f0;
+        --cp-acento: #38bdf8;
+        --cp-borde: #334155;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        background: var(--cp-fondo);
+        color: var(--cp-texto);
+        line-height: 1.55;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 4rem;
+      }
+      h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+      .cp-intro {
+        font-size: 1.05rem;
+      }
+      #cp-dropzone {
+        border: 2px dashed var(--cp-borde);
+        border-radius: 12px;
+        padding: 2rem 1.25rem;
+        text-align: center;
+        margin: 1.75rem 0;
+        background: rgba(148, 163, 184, 0.06);
+      }
+      #cp-dropzone label {
+        display: inline-block;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      #cp-password-form {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      #cp-password {
+        max-width: 260px;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        border: 1px solid var(--cp-borde);
+        background: transparent;
+        color: inherit;
+      }
+      .cp-aviso {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        border-left: 3px solid var(--cp-borde);
+        padding-left: 0.9rem;
+        margin: 1.5rem 0;
+      }
+      #cp-error {
+        color: #fca5a5;
+      }
+      .cp-cta {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.85rem 1.5rem;
+        background: var(--cp-acento);
+        color: #0f172a;
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 8px;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/comprobador-OAPCyyk7.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/report-Bbl6ogcz.js">
+  </head>
+  <body>
+    <main>
+      <h1>Comprobador: ¿qué datos personales contiene tu PDF?</h1>
+      <p class="cp-intro">
+        Esta herramienta analiza tu PDF y te dice <strong>qué datos personales contiene</strong>
+        (DNI, NIE, IBAN, teléfonos, direcciones, correos...) mediante detección automática por
+        patrones. Es un diagnóstico, <strong>no tacha ni modifica</strong> el archivo.
+      </p>
+      <p>
+        El PDF <strong>nunca sale de tu equipo</strong>: todo el análisis ocurre 100% en tu
+        navegador, de forma verificable. No se sube ningún documento a ningún servidor.
+      </p>
+
+      <div id="cp-dropzone">
+        <label for="cp-file">Arrastra tu PDF aquí o haz clic para seleccionarlo</label>
+        <form id="cp-password-form">
+          <input type="file" id="cp-file" accept="application/pdf" />
+          <input type="password" id="cp-password" placeholder="Contraseña del PDF (si tiene)" />
+        </form>
+      </div>
+
+      <div id="cp-resultado"></div>
+      <div id="cp-error"></div>
+
+      <p class="cp-aviso">
+        Aviso de alcance: la comprobación se limita al texto extraíble del PDF. Las páginas
+        escaneadas (imágenes sin capa de texto) se señalan aparte y requieren revisión humana;
+        esta herramienta no sustituye esa revisión.
+      </p>
+
+      <a class="cp-cta" href="/?utm_source=comprobador">Tachalos ahora (gratis, 5 documentos al mes)</a>
+    </main>
+  </body>
+</html>
