@@ -125,3 +125,15 @@ servir, aplicar este plan (~5 min):
   próxima pasada de Ads. NO pausar "censurar pdf sin subir" (es de las nuevas).
 - Las landings /actas/ y /nominas/ ya están vivas para usarlas como URL final si se
   crean grupos dedicados por vertical (siguiente iteración de Ads).
+
+### Revisión vie 24-07 ~11:50 — PRIMER CLIC
+- Acumulado 19-24 jul: 39 impresiones (se duplicaron en 2 días), 1 CLIC, CPC 0,20 €,
+  coste total 0,20 €. Hito de la fase de aprendizaje: "Clics" recibidos el 23-jul.
+- El clic vino del término de búsqueda "pdf" (deriva de amplia, CTR 14% pero intención
+  nula). El informe de términos ya desglosa: intención real solo en "anonimizar
+  documentos" (2 imp) y "como ocultar datos en un pdf" (exacta, 1 imp).
+- Negativas quirúrgicas añadidas (38 totales): [pdf], [eliminar], [editar documentos]
+  en EXACTA (bloquean solo la consulta suelta, no frases) + sejda, adarasa en amplia.
+- ⚠ Banner de Google: "Verifica tu identidad" del anunciante, fecha límite 22-09-2026.
+  Es del owner (verificación de identidad); si no se hace, los anuncios se pausan.
+  Recordar en agosto, no urgente.
