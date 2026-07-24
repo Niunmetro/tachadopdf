@@ -36,4 +36,13 @@ describe('renderLegalFooter', () => {
     expect(hrefs.some((href) => href.endsWith('actas/'))).toBe(true);
     expect(hrefs.some((href) => href.endsWith('nominas/'))).toBe(true);
   });
+
+  it('incluye enlace relativo a comprobador', () => {
+    const root = document.createElement('div');
+    renderLegalFooter(root);
+
+    const hrefs = Array.from(root.querySelectorAll('a')).map((a) => a.getAttribute('href') ?? '');
+
+    expect(hrefs.some((href) => href.endsWith('comprobador/'))).toBe(true);
+  });
 });
