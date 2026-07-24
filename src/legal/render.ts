@@ -87,6 +87,11 @@ export function renderLegalFooter(root: HTMLElement): void {
   enlaceNominas.textContent = 'Para gestorías y RRHH';
   enlacesSector.appendChild(enlaceNominas);
 
+  const enlaceComprobador = doc.createElement('a');
+  enlaceComprobador.href = 'comprobador/';
+  enlaceComprobador.textContent = 'Comprueba gratis que datos contiene tu PDF';
+  enlacesSector.appendChild(enlaceComprobador);
+
   footer.appendChild(enlacesSector);
 
   root.appendChild(footer);
