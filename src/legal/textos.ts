@@ -52,8 +52,25 @@ export const CASOS_USO: string[] = [
 // (verificable: cifras reales de la AEPD), después la solución. Sin garantías absolutas.
 export const LANDING_TITULAR = 'El dato que tachaste con un rectángulo negro sigue dentro del PDF';
 
+// FUENTES DE LAS AFIRMACIONES DE ESTE PÁRRAFO (comprobadas el 2026-08-08 contra la fuente
+// primaria; si tocas la cifra, vuelve a comprobarla y actualiza esta nota):
+//  - RGPD art. 5.1.f): los datos serán «tratados de tal manera que se garantice una seguridad
+//    adecuada [...] incluida la protección contra el tratamiento no autorizado o ilícito».
+//    RGPD art. 32.2: al evaluar el nivel de seguridad se tendrá en cuenta el riesgo de «la
+//    comunicación o acceso no autorizados» a los datos. Reglamento (UE) 2016/679, DOUE L 119.
+//  - Sanción de 15.000 €: AEPD, procedimiento sancionador PS/00378/2019, resuelto por infracción
+//    del art. 5.1.f) del RGPD. Hechos probados: exposición del acta de una junta en los ascensores
+//    del edificio identificando con nombre, apellidos, piso y puerta a asistentes y representados.
+//    Texto íntegro: https://www.aepd.es/documento/ps-00378-2019.pdf
+//
+// ⚠ RETIRADO EL 2026-08-08 POR NO TENER RESPALDO: «la AEPD ha sancionado a más de 200 comunidades
+// de propietarios entre 2020 y 2024» y «6.000 € por un listado de morosos». Ninguna de las dos
+// procede de la AEPD: ambas se rastrean hasta un mismo blog comercial sin cita, cuyo caso de
+// 6.000 € es un ejemplo ilustrativo sin expediente. La nota de prensa de la memoria 2024 de la
+// AEPD (281 sanciones en todos los sectores, 35,6 M€) no menciona las comunidades de propietarios.
+// No las devuelvas sin un expediente detrás.
 export const LANDING_DOLOR =
-  'Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a evitar esas comunicaciones no autorizadas (art. 32), y la AEPD ha sancionado a más de 200 comunidades de propietarios entre 2020 y 2024 — 6.000 € por un listado de morosos, 15.000 € por un acta con datos expuestos. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.';
+  'Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a proteger los datos frente a la comunicación no autorizada (arts. 5.1.f y 32), y la AEPD ya ha multado con 15.000 € a una comunidad de propietarios por exponer el acta de una junta con los nombres, pisos y puertas de los vecinos — expediente PS/00378/2019. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.';
 
 export const LANDING_SUBTITULO =
   'TachadoPDF elimina el texto del propio archivo en lugar de taparlo: el dato deja de ser extraíble. Y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.';

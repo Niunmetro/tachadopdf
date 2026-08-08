@@ -206,6 +206,14 @@ export const es = {
   nombreIdioma: 'Español',
   marca: 'TachadoPDF',
 
+  // «la AEPD ya ha sancionado actas y listados con datos expuestos» (metas de abajo) se apoya en
+  // DOS expedientes comprobados el 2026-08-08 contra el texto íntegro de la resolución:
+  //  - acta: PS/00378/2019, multa de 15.000 € (art. 5.1.f RGPD), acta de junta expuesta en los
+  //    ascensores. https://www.aepd.es/documento/ps-00378-2019.pdf
+  //  - listado: PS/00143/2020, sanción de apercibimiento (art. 5.1.f RGPD), convocatoria en el
+  //    tablón con el nombre de un vecino y su deuda. https://www.aepd.es/documento/ps-00143-2020.pdf
+  // Nota: un apercibimiento ES una sanción (art. 58.2.b RGPD), pero NO es una multa: si algún día
+  // esta frase pasa de «sancionado» a «multado», el caso del listado deja de sostenerla.
   home: {
     metaTitulo: 'TachadoPDF · El rectángulo negro no borra: tacha de verdad los datos de un PDF',
     metaDescripcion:
