@@ -13,6 +13,93 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · diseño · El informe contesta en un vistazo si el archivo se puede mandar (rama `diseno/informe-veredicto-de-un-vistazo`, fusionada)
+
+**Hecho:** primera pasada de DISEÑO del producto — hasta hoy no se había tocado ni un píxel; todo
+el trabajo había sido corrección. Cinco commits, uno por familia. Suite **794 → 835**.
+`npx --no-install tsc --noEmit`, `npm test` y `npm run build` en verde con exit code real.
+Fusionada a `master` con `--no-ff`; **no desplegada** (publicar es del dueño).
+
+El método fue el que exige la casa y no otro: **generar, rasterizar y MIRAR**. Los siete informes
+se abrieron uno a uno, en color y en escala de grises, antes y después. La app y la web se
+midieron en un navegador real sobre el `dist/` construido — computed styles y geometría, porque
+esta sesión no tenía captura de pantalla disponible. Nada de esto se ve leyendo el código.
+
+**Lo que estaba mal, medido y no supuesto:**
+
+1. *El veredicto era el tercer elemento de la página y solo existía en la primera hoja.* Altura de
+   mayúscula a 180 dpi: marca «TachadoPDF» 38 px, título genérico 27 px, veredicto 25 px — los dos
+   elementos mayores del papel eran justamente los dos IDÉNTICOS en los cinco estados. Y la página
+   2 del informe que dice TACHADO NO SUPERADO y la del que dice TACHADO VERIFICADO eran el mismo
+   texto palabra por palabra: quien imprime y grapa, archiva o reenvía una hoja suelta no tenía
+   delante ningún resultado.
+2. *En escala de grises los cinco sellos eran la misma caja.* Los cinco rellenos caben en SEIS
+   niveles de 255. El informe se imprime, se fotocopia y se archiva: en cuanto sale de la pantalla,
+   el bit que importa desaparecía.
+3. *El estado que se lee el 86 % de las veces era el más difícil de leer del documento.* Contraste
+   del rótulo sobre su propio relleno: ámbar 3,68:1, gris 4,06, verde 4,16, rojo 5,07. El único que
+   pasaba era el estado que casi nadie ve.
+4. *El falso verde sobrevivía en los píxeles.* En un documento entero escaneado —sello ROJO, cero
+   páginas releídas— se dibujaban SIETE puntos verdes bajo «0 ocurrencias en el texto extraíble».
+   La frase es cierta; el punto verde decía otra cosa.
+5. *La app enseñaba las detecciones como tachados ya hechos.* `.hit-box` y `.hit-box--selected` no
+   tenían NI UNA regla de estilo: heredaban el estilo global de `button` (navy macizo), o sea que
+   una detección propuesta, una elegida y un tachado consumado eran el mismo objeto visual.
+6. *Los dos CTA de `/actas/` y `/nominas/` desaparecían en modo oscuro.* Relleno y fondo, los dos
+   `rgb(15,23,42)`: contraste 1:1, cero borde. En claro se ven perfectamente.
+
+**Decisiones y porqués:**
+
+- *El ámbar deja de llevar un glifo de alerta y pasa a llevar un MEDIDOR DE COBERTURA* (círculo
+  medio lleno, dibujado con primitivas de `pdf-lib`). El disco con «!» es el glifo de error de
+  cualquier cuadro de diálogo del sistema, y desde que cualquier imagen degrada el sello el ámbar
+  es el resultado NORMAL: un cartel de error como respuesta habitual o se ignora o espanta, y las
+  dos cosas son peores que decir la verdad. El medidor no tranquiliza ni alarma: cuantifica, y
+  encaja con la familia entera leída como cobertura (lleno, medio, vacío, ninguna, fallida).
+- *E1 pasa a banda roja maciza con texto en blanco, y E2 se queda en el rojo pálido.* Los dos
+  compartían el MISMO rojo, el mismo relleno y el mismo círculo, y solo se distinguían en si el
+  aspa era maciza o hueca — siendo mensajes casi opuestos («el dato sigue dentro» frente a «es un
+  escaneo, míralo tú»). **Descartado sacar E2 del rojo**, que es lo que pedía una de las lentes:
+  `CLAUDE.md` línea 10 dice que las páginas sin capa de texto SIEMPRE se advierten en rojo, eso
+  tiene base legal y no lo deroga un diseñador. La diferencia se hace DENTRO del rojo. Efecto
+  colateral que resuelve el punto 2: en gris, E1 queda en ~75 frente a ~240 de los demás.
+- **Descartado partir el sello ámbar en «HECHO ✓» arriba y «PENDIENTE» debajo.** Era la propuesta
+  más peligrosa del lote: un titular con tick, sobre fondo neutro, en la posición de entrada del
+  ojo, es una afirmación verde-adyacente encabezando el estado que por definición NO está
+  verificado del todo. Es exactamente el defecto que se acaba de pasar dos días cerrando. Hoy el
+  ámbar abre por el hecho de cobertura, que es el orden honesto.
+- **Descartado dar a cada estado una silueta distinta** (octógono / triángulo / cuadrado) con marco
+  macizo y trama diagonal. La medida que lo motivaba es correcta, pero la trama y el marco
+  discontinuo leen como «anulado», que es justo lo que el ámbar no puede parecer; el octógono es la
+  forma internacional de STOP puesta sobre «tu documento es un escaneo»; y un marco grueso con
+  silueta geométrica empieza a parecerse a un sello de conformidad — y «certificado» está prohibido
+  también cuando lo dice el DIBUJO, no la palabra. El sello sigue sin orla, sin escudo y sin cinta.
+- **Descartado colapsar los siete patrones a una línea.** Quitaría evidencia de un documento cuyo
+  trabajo es ser evidencia: «qué siete formatos se buscaron» es exactamente lo que un tercero
+  quiere itemizado. La molestia real no era que estuvieran, era que gritaban en verde, y eso lo
+  resuelve el punto de tres estados sin borrar nada.
+- *La fila con reserva se destaca; la de inventario, no.* El recurso no es nuevo: es el mismo
+  «NO EXAMINADO» en versalita ámbar que el inventario de objetos ya usaba bien, extendido a la
+  tabla que sostiene el veredicto. **No se subieron las páginas pendientes AL sello**: el ámbar ya
+  es la banda más alta del producto y alargarla más es empeorar lo que se venía a arreglar.
+- *El acuse de entrega reutiliza LITERALMENTE las cadenas del informe.* `processDocument` devuelve
+  ahora su `reportData` para que la pantalla no tenga que recalcular ni redactar nada: dos
+  redacciones del mismo hecho es deriva garantizada, y devolver el dato la hace imposible.
+- *El texto del informe no cambia ni una coma.* Todo lo de arriba es jerarquía, color, forma,
+  orden y espacio. Lo que sí es cambio de AFIRMACIÓN queda anotado en `ESTADO.md` para el dueño.
+
+**⚠ Dos guardas estaban al revés y fijaban el defecto que venían a evitar:**
+`estilo.test.ts` exigía `text-overflow: ellipsis` en el botón de «tachar todas las apariciones»,
+que es literalmente lo que lo recortaba a un carácter en el móvil. Se reescribió a la regla
+contraria. Y el resto de guardas nuevas se probaron TODAS con su mutación, pegada en cada commit.
+
+**Bloqueos / pendiente:** ver las tres entradas nuevas en `docs/ESTADO.md` (§ Bandeja del dueño:
+el rótulo de las páginas pendientes, el PDF de ejemplo y el reparto de la última hoja).
+
+**Enlaces:** rama `diseno/informe-veredicto-de-un-vistazo`, 5 commits + merge `--no-ff`. Sin deploy.
+
+---
+
 ## 2026-08-08 · integración · El ataque encontró 17 falsos verdes: nueve arreglos y un bug de destrucción de datos (rama `fix/imagenes-escondites-y-glifos`, fusionada)
 
 **Hecho:** un atacante interno ejecutó `fix/sello-por-estados` contra 14 baterías y consiguió **17

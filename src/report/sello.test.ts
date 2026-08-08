@@ -216,6 +216,62 @@ describe('el inventario de objetos es una lista FIJA', () => {
   });
 });
 
+/**
+ * G11 · EL VEREDICTO VIAJA CON EL PAPEL.
+ *
+ * El defecto medido: la pagina 2 del informe que dice TACHADO NO SUPERADO y la pagina 2 del que
+ * dice TACHADO VERIFICADO eran el MISMO texto, palabra por palabra. El veredicto vivia solo en la
+ * mitad superior de la primera pagina, asi que una hoja suelta —impresa, grapada, archivada o
+ * reenviada— no decia si el archivo se podia entregar. Un sello que solo esta en un sitio no es un
+ * sello: es un parrafo.
+ *
+ * Los rotulos van CONGELADOS y ENTEROS: la regla G8 (ningun rotulo es subcadena de otro) es lo que
+ * permite que este test distinga los estados, y abreviar el pie a «PARCIAL» la rompe.
+ */
+describe('G11: el rótulo del estado consta en TODAS las páginas, no solo en la primera', () => {
+  const ROTULOS: Record<string, string> = {
+    E1: 'TACHADO NO SUPERADO',
+    E2: 'SIN COMPROBACIÓN AUTOMÁTICA',
+    E3: 'COMPROBACIÓN PARCIAL',
+    E4: 'SIN TACHADOS',
+    E5: 'TACHADO VERIFICADO',
+  };
+
+  const CASOS: { nombre: keyof typeof ROTULOS; data: ReportData }[] = [
+    { nombre: 'E1', data: datos({ verify: { clean: false, residues: [] } }) },
+    { nombre: 'E2', data: datos({ paginasSinCapaDeTexto: [0, 1, 2] }) },
+    { nombre: 'E3', data: datos({ paginasConImagen: [1] }) },
+    { nombre: 'E4', data: datos({ boxesPerPage: [] }) },
+    { nombre: 'E5', data: datos() },
+  ];
+
+  async function porPagina(data: ReportData): Promise<string[]> {
+    const doc = await loadPdf(await buildReport(data, COPIA));
+    const paginas = doc.extractAllText().map((t) => t.replace(/\s+/g, ' '));
+    doc.close();
+    return paginas;
+  }
+
+  it.each(CASOS)('$nombre imprime su rótulo en cada página', async ({ nombre, data }) => {
+    const paginas = await porPagina(data);
+    expect(paginas.length).toBeGreaterThan(1);
+    for (const [i, texto] of paginas.entries()) {
+      expect(texto, `página ${i + 1}`).toContain(ROTULOS[nombre]);
+    }
+  });
+
+  it('la última página de un informe bloqueado ya NO es igual que la de uno verificado', async () => {
+    const bloqueado = await porPagina(datos({ verify: { clean: false, residues: [] } }));
+    const verificado = await porPagina(datos());
+    const ultimaBloqueado = bloqueado[bloqueado.length - 1] ?? '';
+    const ultimaVerificado = verificado[verificado.length - 1] ?? '';
+
+    expect(ultimaBloqueado).not.toBe(ultimaVerificado);
+    expect(ultimaBloqueado).toContain('TACHADO NO SUPERADO');
+    expect(ultimaVerificado).not.toContain('TACHADO NO SUPERADO');
+  });
+});
+
 // G9 · lista negra de sobre-afirmacion. Lo que el informe NO puede llegar a decir nunca.
 describe('G9: ningún estado del sello sobre-afirma', () => {
   const CASOS: { nombre: string; data: ReportData }[] = [

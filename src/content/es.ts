@@ -51,9 +51,9 @@ const APP_ES: CopiaApp = {
   ejemploFallido: 'No se pudo cargar el documento de ejemplo. Prueba a subir tu propio PDF.',
   tipoDocumento: 'Tipo de documento',
   presets: {
-    generico: 'Generico',
+    generico: 'Genérico',
     acta: 'Acta de comunidad',
-    nomina: 'Nomina/expediente',
+    nomina: 'Nómina/expediente',
   },
   checkboxRevisado: CHECKBOX_LABEL,
   botonDescargar: 'Descargar documentos e informes',
@@ -79,14 +79,14 @@ const APP_ES: CopiaApp = {
   avisoEscaneadas: (paginas) =>
     `Atención: páginas sin capa de texto (probablemente escaneadas), revísalas manualmente: ${paginas}.`,
   comoTachar:
-    'Los datos detectados aparecen marcados: haz clic para elegir cuáles tachar. Para tachar cualquier otra cosa (un nombre, una firma, una foto), arrastra el ratón sobre ella dibujando un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.',
+    'Los datos detectados aparecen marcados: haz clic para elegir cuáles tachar. Para tachar cualquier otra cosa (un nombre, una firma, una foto), arrastra sobre ella dibujando un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.',
   revisionVisual: (paginas) =>
     `Páginas que requieren revisión visual (sin capa de texto o con imagen a página completa): ${paginas}.`,
   paginaEscaneada: (numero) =>
     `Página ${numero}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`,
   tacharTodas: (valor, ocurrencias) =>
     `Tachar todas las apariciones de «${valor}» (${ocurrencias})`,
-  seleccionarHits: (pagina) => `Página ${pagina}: seleccionar todos los hits`,
+  seleccionarHits: (pagina) => `Página ${pagina}: seleccionar todos los datos detectados`,
   quitarTachado: 'Quitar este tachado',
 };
 

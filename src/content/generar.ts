@@ -458,8 +458,11 @@ const CSS_COMPROBADOR = `  :root {
   .idiomas a {
     color: var(--cp-acento);
   }
+  /* El borde de la zona de soltar era var(--cp-borde) (#334155) sobre el navy del fondo: 1,72:1.
+     La afordancia principal de la pagina estaba delineada por un borde que casi no se ve, y lo
+     unico que la salvaba era el texto de dentro. El minimo para el contorno de un control es 3:1. */
   #cp-dropzone {
-    border: 2px dashed var(--cp-borde);
+    border: 2px dashed #94a3b8;
     border-radius: 12px;
     padding: 2rem 1.25rem;
     text-align: center;
@@ -478,8 +481,12 @@ const CSS_COMPROBADOR = `  :root {
     gap: 0.5rem;
     align-items: center;
   }
+  /* El marcador de posicion se cortaba a media frase y sin cerrar el parentesis —«Contraseña del
+     PDF (si tiene»— porque el campo era mas estrecho que su propio texto. Un campo que no cabe lo
+     que dice lee como pagina rota, y esta es la herramienta gratuita que hace de embudo. */
   #cp-password {
-    max-width: 260px;
+    width: 100%;
+    max-width: 340px;
     padding: 0.4rem 0.6rem;
     border-radius: 6px;
     border: 1px solid var(--cp-borde);

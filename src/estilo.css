@@ -6,10 +6,22 @@
 :root {
   --tinta: #0f172a;
   --tinta-suave: #475569;
-  --gris: #94a3b8;
+  /* --gris era #94a3b8: un gris pensado para tema OSCURO aplicado tal cual sobre blanco, donde
+     da 2,56:1. Y le habia tocado, por casualidad, a las dos frases que peor pueden faltar: la que
+     le dice al visitante «esto es para ti» (.hero__nicho, el reconocimiento del comprador en una
+     landing de anuncio) y la que sostiene la promesa central del producto —que el documento no
+     sale del navegador— junto con la licencia (.pie). A 2,56:1 desaparecen en cualquier pantalla
+     con reflejos. */
+  --gris: #64748b;
   --linea: #e2e8f0;
   --fondo: #f8fafc;
   --acento: #0284c7;
+  /* Color de ENLACE, separado del acento. El acento (#0284c7) vive de fondo bajo texto blanco y
+     ahi funciona, pero como color de texto sobre blanco da 4,10:1 y no llega al 4,5 que necesita.
+     Y donde no habia regla ninguna —la lista de guias y el pie de la portada— el navegador ponia
+     su azul por defecto (#0000EE) subrayado: HTML crudo de 1996 dentro de una pagina cuidada, y
+     justo donde el visitante va a profundizar. */
+  --enlace: #0369a1;
   --acento-oscuro: #075985;
   --verde: #16a34a;
   --rojo: #b91c1c;
@@ -27,6 +39,10 @@ body {
   background: #fff;
   line-height: 1.6;
 }
+
+/* Un SOLO color de enlace en toda la superficie clara. El subrayado se conserva: es la unica
+   señal no cromatica que tiene un enlace. */
+a { color: var(--enlace); }
 
 #app { max-width: 880px; margin: 0 auto; padding: 0 20px 64px; }
 
@@ -74,7 +90,24 @@ body {
   border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; margin: 0 0 20px;
 }
 
-input[type="file"] { font: inherit; font-size: 14px; max-width: 100%; }
+/* La ÚNICA forma de cargar un archivo en el producto de pago era el control nativo del sistema,
+   sin estilar: «[Seleccionar archivo] Ningún archivo seleccionado», ~22 px de alto, truncado a
+   media palabra en el móvil. En la herramienta GRATUITA (/comprobador/) sí hay recuadro punteado
+   con «Arrastra tu PDF aquí», y la guía dice literalmente «abre la herramienta y arrastra tu PDF».
+   La afordancia estaba construida, pero en la página que no cobra.
+   El `<input type=file>` acepta soltar ficheros de forma nativa: dándole cuerpo de zona de carga,
+   el gesto que promete la guía funciona de verdad, sin una línea de texto nueva. */
+input[type="file"] {
+  font: inherit; font-size: 14.5px; width: 100%; max-width: 100%;
+  padding: 20px 16px; background: #fff; color: var(--tinta-suave);
+  border: 2px dashed var(--acento); border-radius: var(--radio); cursor: pointer;
+}
+input[type="file"]:hover { background: #f0f9ff; }
+input[type="file"]::file-selector-button {
+  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  margin-right: 12px; padding: 9px 16px; border-radius: 8px;
+  border: 1px solid var(--acento); background: var(--acento); color: #fff;
+}
 input[type="text"] {
   font: inherit; font-size: 15px; padding: 9px 12px; border: 1px solid var(--linea);
   border-radius: 8px; background: #fff; min-width: 260px; color: var(--tinta);
@@ -143,8 +176,8 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   white-space: pre-wrap; font-family: var(--fuente); font-size: 13.5px;
   color: var(--tinta-suave); margin: 0 0 16px; padding: 0 2px;
 }
-.pie { font-size: 12.5px; color: var(--gris); margin-top: 22px; }
-.pie a { color: var(--gris); }
+.pie { font-size: 12.5px; color: var(--tinta-suave); margin-top: 22px; }
+.pie a { color: var(--enlace); }
 
 @media (max-width: 640px) {
   .hero { padding: 32px 0 24px; }
@@ -158,11 +191,18 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   gap: 10px;
 }
 
+/* El botón AJUSTA en varias líneas y no se recorta. Recortándolo, los 33 primeros caracteres de
+   los nueve botones eran idénticos («Tachar todas las apariciones de «») y lo único que los
+   distingue —el valor— iba al final y quedaba en tres caracteres en escritorio y en UNO en el
+   móvil: «1…», «8…», «Y…», «E…». Nueve barras negras indistinguibles y una lista inutilizable
+   justo en la pantalla donde se decide qué se tacha. Vale más un botón de dos líneas que un botón
+   que no dice qué hace. */
 .tachar-todas button {
-  max-width: 300px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+  line-height: 1.35;
 }
 
 /* ---------- Selector de idioma ---------- */
@@ -175,8 +215,81 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   font-size: 14px;
 }
 .idiomas__actual { font-weight: 700; color: var(--tinta); }
-.idiomas__enlace { color: var(--acento); text-decoration: none; }
+.idiomas__enlace { color: var(--enlace); text-decoration: none; }
 .idiomas__enlace:hover { text-decoration: underline; }
+
+/* ---------- Datos detectados sobre el documento ----------
+   LO HUECO SIGUE AHÍ, LO MACIZO SE VA.
+
+   `.hit-box` y `.hit-box--selected` no tenían NI UNA regla de estilo, así que las detecciones
+   heredaban el estilo global de `button`: rectángulos navy macizos de esquinas redondeadas,
+   visualmente idénticos a un tachado ya consumado — y dibujados ANTES de haber tachado nada.
+   El usuario abría su PDF, lo veía cubierto de barras negras y concluía, razonablemente, que el
+   trabajo ya estaba hecho. Cuando el dibujo y el texto se contradicen, gana el dibujo.
+
+   Peor todavía: una detección elegida y una sin elegir se dibujaban EXACTAMENTE igual. Elegir qué
+   se tacha ES la interacción del producto, y su estado no se representaba en ninguna parte: había
+   que pulsar a ciegas y esperar al PDF final para saber si se había acertado. En una herramienta
+   cuyo fallo típico es silencioso, ese es el defecto más caro posible.
+
+   Candidato sin elegir = contorno discontinuo y relleno translúcido, con el dato LEGIBLE debajo
+   (que además deja comprobar si la detección acertó). Elegido = macizo con su marca. */
+button.hit-box {
+  padding: 0;
+  border-radius: 2px;
+  background: rgba(180, 83, 9, 0.14);
+  border: 2px dashed #b45309;
+  cursor: pointer;
+}
+button.hit-box:hover:not([disabled]) { background: rgba(180, 83, 9, 0.3); }
+button.hit-box--selected {
+  background: var(--tinta);
+  border: 2px solid var(--tinta);
+}
+button.hit-box--selected:hover:not([disabled]) { background: #1e293b; }
+button.hit-box--selected::after {
+  content: "✓";
+  position: absolute; top: -9px; right: -8px;
+  width: 16px; height: 16px; line-height: 16px;
+  border-radius: 50%; background: var(--tinta); color: #fff;
+  font-size: 10px; font-weight: 700; text-align: center;
+}
+
+/* ---------- Acuse de entrega ----------
+   Entre antes y después de pulsar «Descargar documentos e informes» cambiaban exactamente dos
+   cosas: la marca de la casilla y el color del botón. Se escribían DOS ficheros en el disco y la
+   pantalla no lo reconocía. Y el veredicto de cinco estados —el trabajo entero del informe— no
+   aparecía en NINGÚN sitio de la interfaz: solo existía dentro de un PDF que hay que abrir en otro
+   programa. Un comprador que espera verde y va a recibir ámbar se entera fuera del producto.
+
+   El panel reutiliza LITERALMENTE las cadenas del informe (rótulo del sello y su línea): dos
+   redacciones del mismo hecho es deriva garantizada. */
+.entrega {
+  background: #fff; border: 1px solid var(--linea); border-left: 6px solid var(--gris);
+  border-radius: var(--radio); padding: 16px 18px; margin: 18px 0 0;
+}
+.entrega__estado { font-size: 15.5px; font-weight: 700; letter-spacing: .03em; margin: 0 0 6px; }
+.entrega__linea { font-size: 14px; line-height: 1.55; color: var(--tinta-suave);
+  margin: 0 0 12px; max-width: 70ch; }
+.entrega__ficheros { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px;
+  font-size: 14px; color: var(--tinta); }
+.entrega__ficheros li::before { content: "↓ "; color: var(--gris); font-weight: 700; }
+.entrega[data-estado="E1"] { border-left-color: #9b1c1c; }
+.entrega[data-estado="E1"] .entrega__estado { color: #9b1c1c; }
+.entrega[data-estado="E2"] { border-left-color: #9b1c1c; }
+.entrega[data-estado="E2"] .entrega__estado { color: #9b1c1c; }
+.entrega[data-estado="E3"] { border-left-color: #7c4a03; background: #fffdf7; }
+.entrega[data-estado="E3"] .entrega__estado { color: #7c4a03; }
+.entrega[data-estado="E4"] { border-left-color: #4a5568; }
+.entrega[data-estado="E4"] .entrega__estado { color: #4a5568; }
+.entrega[data-estado="E5"] { border-left-color: #0f6b41; }
+.entrega[data-estado="E5"] .entrega__estado { color: #0f6b41; }
+
+/* La casilla de revisión y el botón de descarga NO existen hasta que hay documento: ofrecer la
+   declaración legal más cargada del producto cuando no hay nada que revisar enseña a marcarla por
+   inercia, y un botón deshabilitado era el elemento de más peso visual de la pantalla inicial
+   mientras la acción real era el control menos diseñado de la página. */
+.confirmacion[hidden], button[hidden] { display: none; }
 
 /* Alcance real de la deteccion automatica. Va VISIBLE en la landing a proposito: los patrones
    validan identificadores españoles con su digito de control, asi que insinuar una cobertura mas
