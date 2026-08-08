@@ -13,6 +13,92 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · diseño · El medidor de cobertura tenía forma de medidor y no medía nada (rama `diseno/medidor-de-cobertura-que-mide`, fusionada)
+
+**Hecho:** el icono del sello ámbar —un disco que se llena, llamado «medidor de cobertura» desde la
+pasada anterior— salía **medio lleno siempre**, porque el relleno era un dibujo fijo por estado.
+Ahora se llena en la proporción real de páginas comprobadas del todo. Suite **835 → 842**.
+`npx --no-install tsc --noEmit`, `npx --no-install vitest run` y `npm run build` en verde con exit
+code real. Fusionada a `master` con `--no-ff`; **no desplegada** (publicar es del dueño).
+
+**Lo que estaba mal, medido y no supuesto:** rasterizados y comparados píxel a píxel, los dos
+informes parciales de ejemplo —uno que comprueba del todo **3 de sus 6** páginas y otro que no
+puede comprobar del todo **ninguna de sus 4**, porque todas llevan imágenes— dibujaban exactamente
+la misma media luna. El segundo es el que importa: **cobertura real cero, dibujo de media
+cobertura**. Es la familia de defecto que este producto lleva dos pasadas cerrando, la presentación
+insinuando lo que el motor no ha hecho, y va en la dirección que nos favorece, que es siempre la
+peor. Efecto colateral: las dos variantes del ámbar —el estado que se lee el 86 % de las veces—
+solo se distinguían leyendo el párrafo.
+
+**Decisiones y porqués:**
+
+- *La proporción es «páginas sin ninguna reserva» sobre «páginas del documento»*
+  (`coberturaComprobada`, en `report/estado.ts`). Son los MISMOS números que ya imprime el sello
+  («En N página(s) la comprobación automática no llega a todo el contenido», «lo que queda fuera es
+  el contenido de N página(s) con imágenes») y que ya destaca en ámbar la tabla «Cobertura»: el
+  dibujo y el texto no pueden decir cosas distintas.
+- **Descartado «páginas releídas / total»**, que es la otra cifra que el sello imprime, por dos
+  razones y las dos son la misma: una página releída con la foto de un DNI pegada dentro SÍ se
+  releyó, pero la comprobación no alcanza lo que hay en la imagen, así que contarla como cubierta
+  es el falso verde que `paginasConReserva` existe para evitar. Y en el caso corriente —el 86 % de
+  los documentos: un logo en el membrete— todas las páginas se releen, o sea que esa medida
+  marcaría **el máximo** justo en el estado que por definición no está completo, y los dos informes
+  de ejemplo seguirían siendo el mismo dibujo. `sinReserva <= releidas` siempre: de las dos
+  medidas, la elegida es la conservadora.
+- *Los extremos, que es donde un medidor miente.* **Cero** se dibuja con el disco vacío y la PISTA
+  blanca pintada debajo: se ve un recipiente vacío, no un hueco donde falta un icono, y no hay
+  suelo de relleno que finja una pizca de cobertura donde no la hay (cero es cero). **Cien** no
+  llena el disco: la línea de lleno total está al 80 % del diámetro y el casquete de arriba se
+  queda siempre sin pintar. No es adorno: el 100 % se da cuando lo único pendiente es un objeto del
+  archivo, así que en E3 SIEMPRE queda algo, y un disco lleno del todo junto a «COMPROBACIÓN
+  PARCIAL» insinuaría el verde que el motor no ha dado y sería además el mismo disco macizo del
+  estado verificado. Un círculo relleno hasta el borde con su orla, encima, es la forma que empieza
+  a leerse como un sello de conformidad, y eso está prohibido también cuando lo dice el DIBUJO: es
+  el mismo motivo por el que la pasada anterior descartó las siluetas geométricas con marco. La
+  escala sigue siendo lineal y monótona, así que el medidor **nunca dibuja más cobertura de la que
+  hay**; como mucho, un poco menos.
+- *En escala de grises se lee igual*, que es la prueba que este informe no puede perder: el
+  contraste no está entre dos ámbares parecidos sino entre la tinta del relleno y el blanco de la
+  pista, con el aro cerrando la silueta. Medido sobre el informe convertido a gris: el nivel de
+  llenado sale el mismo que en color en los cuatro casos, y pista y relleno se separan por más de
+  100 niveles de 255.
+- *El segmento circular se dibuja con `drawSvgPath`* (un arco partido en dos mitades de menos de
+  180°). Sigue sin haber nada remoto: es una primitiva de `pdf-lib`, no un icono descargado.
+- **El texto del informe no cambia ni una coma.** Lo que sería texto nuevo queda anotado en
+  `ESTADO.md` para el dueño (la cifra «0 de 4» junto al icono, y una frase repetida que se
+  encontró de paso).
+
+**Guarda nueva, probada con su mutación:** `report/medidor` (G18) mide el NIVEL DE LLENADO sobre el
+informe **rasterizado** —localiza el disco por su aro, busca la línea de llenado y la compara con
+la proporción real, en color y en gris—. Mutación: devolver el relleno a `const f = 0.5`. Salida
+real, 5 de los 7 tests en rojo:
+
+```
+× el relleno del disco sigue a la proporción real, y no a un dibujo fijo
+  → expected 0.49776785714285715 to be close to +0
+× los dos informes parciales de ejemplo dejan de ser el mismo dibujo
+  → expected 0.49776785714285715 to be less than 0.49776785714285715
+× cobertura cero se dibuja como un recipiente VACÍO, no como un icono ausente
+  → expected 0.5 to be greater than 0.9
+× en ESCALA DE GRISES el medidor se lee igual: el informe se imprime y se fotocopia
+  → expected 0.49777777777777776 to be close to +0
+× el tope escala la medida, no la recorta: 5 de 6 y 4 de 4 no dibujan lo mismo
+  → expected 0 to be greater than 0.08
+```
+
+**Y se miró.** Los siete informes regenerados, rasterizados y abiertos uno a uno, más un montaje de
+los cinco iconos en color y en gris, antes y después. Antes: cuatro medias lunas idénticas para
+0/4, 3/6, 5/6 y 4/4. Después: disco vacío, 40 %, 67 % y 80 % del diámetro, y los cinco estados
+siguen distinguiéndose sin color (E1 banda maciza, E2 aro con aspa, E3 medidor, E4 disco con guion,
+E5 disco con marca).
+
+**Bloqueos / pendiente:** dos entradas nuevas en la bandeja del dueño de `docs/ESTADO.md`
+(PARADA 0.b y PARADA 0.c).
+
+**Enlaces:** rama `diseno/medidor-de-cobertura-que-mide`, merge `--no-ff`. Sin deploy.
+
+---
+
 ## 2026-08-08 · diseño · El informe contesta en un vistazo si el archivo se puede mandar (rama `diseno/informe-veredicto-de-un-vistazo`, fusionada)
 
 **Hecho:** primera pasada de DISEÑO del producto — hasta hoy no se había tocado ni un píxel; todo
