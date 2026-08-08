@@ -150,18 +150,26 @@ export function alternatesDe(pagina: PaginaRegistro): Alternate[] {
   return alternates;
 }
 
-/** Selector de idioma: enlaces <a> reales (funciona sin JavaScript, también en las guías, que no
- *  cargan ningún script). Nunca redirige por `navigator.language`: manda la ruta. */
+/**
+ * Selector de idioma: enlaces <a> reales, así que funciona con JavaScript desactivado y también
+ * en las guías, que no cargan ningún script. Manda la RUTA, nunca `navigator.language`.
+ * Va en TODAS las páginas mientras el sitio tenga más de un idioma: si esta página concreta no
+ * existe en el otro idioma (las guías no son traducciones cruzadas), el enlace lleva a la
+ * portada de ese idioma en vez de desaparecer y dejar al lector sin salida.
+ * Cada idioma se rotula en SU PROPIO idioma; nunca banderas: una bandera es un país.
+ */
 function selectorIdioma(pagina: PaginaRegistro, locale: Locale): string {
-  const idiomas = localesDe(pagina);
-  if (idiomas.length < 2) return '';
+  if (LOCALES.length < 2) return '';
   const desde = rutaDe(pagina, locale) ?? '';
-  const enlaces = idiomas.map((l) => {
-    // Se leen ANTES de comparar: con un solo idioma declarado, TypeScript estrecha la rama
-    // «otro idioma» a `never` y `CONTENIDOS[l]` dejaría de compilar por un motivo temporal.
+  const home = paginaPorId('home');
+  const enlaces = LOCALES.map((l) => {
+    // Se lee ANTES de comparar: con un solo idioma declarado, TypeScript estrecha la rama «otro
+    // idioma» a `never` y `CONTENIDOS[l]` dejaría de compilar por un motivo temporal.
     const otro = CONTENIDOS[l];
     const codigo: string = l;
-    const destino = rutaDe(pagina, l) ?? '';
+    const propia = rutaDe(pagina, l);
+    const portada = home === undefined ? '' : (rutaDe(home, l) ?? '');
+    const destino = propia ?? portada;
     if (l === locale) {
       return `<span class="idiomas__actual" lang="${esc(otro.htmlLang)}">${esc(otro.nombreIdioma)}</span>`;
     }
@@ -231,6 +239,7 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
           texto('p', { class: 'hero__dolor' }, c.landing.dolor),
           texto('p', { class: 'hero__sub' }, c.landing.subtitulo),
           `<ul class="hero__bullets">\n${sangrar(c.landing.bullets.map((b) => texto('li', {}, b)), 1)}\n</ul>`,
+          texto('p', { class: 'hero__deteccion' }, c.landing.notaDeteccion),
           texto('p', { class: 'hero__local' }, c.landing.procesadoLocal),
           texto('p', { class: 'hero__nicho' }, c.landing.nicho),
         ],
@@ -579,6 +588,37 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
 
 // --- guías ------------------------------------------------------------------
 
+/** Estilo de artículo, con el mismo aspecto que las guías españolas escritas a mano: claro por
+ *  defecto, oscuro si el sistema lo pide. En línea, sin hoja externa (lo exige la CSP). */
+const CSS_GUIA = `  :root { color-scheme: light dark; }
+  body {
+    max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
+    font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b; background: #fff;
+  }
+  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
+  h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+  a { color: #0369a1; }
+  ul, ol { padding-left: 1.3rem; }
+  li { margin: .35rem 0; }
+  .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
+  .idiomas__actual { font-weight: 700; }
+  .nota {
+    background: #fef2f2; border-left: 4px solid #ef4444;
+    padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d;
+  }
+  .cp-cta {
+    display: block; margin: 2.4rem 0 0; padding: 1.2rem 1.4rem;
+    background: #0f172a; color: #7dd3fc; border-radius: 10px;
+    text-decoration: none; font-weight: 600;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #0f172a; color: #e2e8f0; }
+    a { color: #7dd3fc; }
+    .nota { background: #450a0a; color: #fecaca; border-color: #ef4444; }
+    .cp-cta { background: #1e293b; }
+  }`;
+
 function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia): string {
   const c = CONTENIDOS[locale];
   const canonical = urlCanonica(pagina, locale) ?? `${SITIO}/`;
@@ -598,7 +638,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       publisher: { '@type': 'Organization', name: c.marca },
     }),
     '',
-    `<style>\n${CSS_COMPROBADOR}\n</style>`,
+    `<style>\n${CSS_GUIA}\n</style>`,
   ];
 
   const selector = selectorIdioma(pagina, locale);

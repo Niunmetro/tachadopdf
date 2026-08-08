@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <title>Sending payslips and HR documents as PDFs without exposing personal data · TachadoPDF</title>
+    <meta name="description" content="Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="Sending payslips and HR documents as PDFs without exposing personal data" />
+    <meta property="og:description" content="Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/" />
+    <meta property="og:locale" content="en_GB" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Sending payslips and HR documents as PDFs without exposing personal data",
+      "description": "Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone.",
+      "inLanguage": "en",
+      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
+        font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1e293b; background: #fff;
+      }
+      h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
+      h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+      a { color: #0369a1; }
+      ul, ol { padding-left: 1.3rem; }
+      li { margin: .35rem 0; }
+      .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
+      .idiomas__actual { font-weight: 700; }
+      .nota {
+        background: #fef2f2; border-left: 4px solid #ef4444;
+        padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d;
+      }
+      .cp-cta {
+        display: block; margin: 2.4rem 0 0; padding: 1.2rem 1.4rem;
+        background: #0f172a; color: #7dd3fc; border-radius: 10px;
+        text-decoration: none; font-weight: 600;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0f172a; color: #e2e8f0; }
+        a { color: #7dd3fc; }
+        .nota { background: #450a0a; color: #fecaca; border-color: #ef4444; }
+        .cp-cta { background: #1e293b; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="idiomas" aria-label="Language">
+        <a class="idiomas__enlace" hreflang="es" lang="es" href="../../../">Español</a>
+        <span class="idiomas__actual" lang="en">English</span>
+      </nav>
+      <h1>Sending payslips and HR documents as PDFs without exposing personal data</h1>
+      <p>Payroll and HR documents are shared constantly — with an employee, an accountant, a lender, a tribunal — and almost every one of them carries more personal data than the recipient needs.</p>
+      <h2>What is usually in there</h2>
+      <ul>
+        <li>Bank account details, used for the salary payment and needed by nobody else.</li>
+        <li>National identifiers and tax or social security numbers.</li>
+        <li>Home address and personal phone number.</li>
+        <li>Absence, sickness or disciplinary information, which is often special-category data.</li>
+        <li>Other employees, when the document is a payroll summary rather than a single payslip.</li>
+      </ul>
+      <h2>The rule of thumb</h2>
+      <p>Send what the recipient needs for the purpose they asked for, and nothing else. A lender verifying income needs gross pay and an employer name; it does not need a bank account number or a colleague's salary.</p>
+      <h2>Doing it safely</h2>
+      <ol>
+        <li>Work on a copy, never on the original record.</li>
+        <li>Mark every field the recipient does not need and remove it from the file — not with a black box.</li>
+        <li>Strip the metadata: exported payroll PDFs frequently carry the system user name and the original file path.</li>
+        <li>Check the finished file: extract its text again and search it for the account number and the identifiers you removed.</li>
+        <li>If any page is a scan, look at it yourself — no automatic check can read it.</li>
+      </ol>
+      <p>TachadoPDF does steps 2 to 4 in your browser, without the document leaving your machine, and blocks the download if anything you redacted is still extractable from the result. Automatic detection currently covers email addresses and Spanish identifiers; in a payslip from any other country you mark the fields yourself, and the removal and the verification are identical either way.</p>
+      <p class="nota">General information, not legal advice, and not a statement about your obligations as an employer.</p>
+      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+    </main>
+  </body>
+</html>

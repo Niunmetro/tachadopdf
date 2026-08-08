@@ -1,3 +1,4 @@
+import { en } from './en';
 import { es, type Contenido } from './es';
 import { LOCALE_POR_DEFECTO, type Locale } from './registro';
 
@@ -6,7 +7,7 @@ import { LOCALE_POR_DEFECTO, type Locale } from './registro';
  * idioma entra en LOCALES, este mapa deja de compilar hasta que su fichero de contenido existe
  * y está completo (`Contenido` es `typeof es`, así que una clave sin traducir tampoco compila).
  */
-export const CONTENIDOS: Record<Locale, Contenido> = { es };
+export const CONTENIDOS: Record<Locale, Contenido> = { es, en };
 
 export function contenidoDe(locale: Locale): Contenido {
   return CONTENIDOS[locale];

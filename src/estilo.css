@@ -177,3 +177,12 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 .idiomas__actual { font-weight: 700; color: var(--tinta); }
 .idiomas__enlace { color: var(--acento); text-decoration: none; }
 .idiomas__enlace:hover { text-decoration: underline; }
+
+/* Alcance real de la deteccion automatica. Va VISIBLE en la landing a proposito: los patrones
+   validan identificadores españoles con su digito de control, asi que insinuar una cobertura mas
+   amplia seria un falso verde en forma de marketing. */
+.hero__deteccion {
+  font-size: 14.5px; line-height: 1.6; color: var(--tinta-suave);
+  background: var(--fondo); border: 1px solid var(--linea); border-radius: 8px;
+  padding: 12px 14px; margin: 16px 0 0; max-width: 68ch;
+}

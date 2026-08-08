@@ -225,6 +225,8 @@ export const es = {
       'Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.',
       'Informe de comprobación técnica descargable para tu expediente.',
     ],
+    notaDeteccion:
+      'Qué se detecta automáticamente: correos electrónicos, y los identificadores españoles DNI, NIE, IBAN español, número de la Seguridad Social, referencia catastral y teléfonos en formato español. Todo lo demás —nombres, direcciones, firmas, fotografías, importes— lo marcas tú arrastrando un recuadro; lo que se borra y lo que se comprueba después es exactamente igual en los dos casos.',
     nicho: LANDING_CASOS_USO_TEXTO,
     procesadoLocal: LANDING_PUBLICIDAD_GENERICA,
     avisoPrincipal: AVISO_PRINCIPAL,

@@ -3,10 +3,10 @@
 // DERIVAN de aquí. Añadir un idioma debe ser añadir datos a este fichero, nunca escribir código
 // nuevo (lo vigila src/content/alta-de-idioma.test.ts).
 
-export type Locale = 'es';
+export type Locale = 'es' | 'en';
 
 /** Orden de presentación del selector de idioma. El primero es el idioma por defecto del sitio. */
-export const LOCALES: Locale[] = ['es'];
+export const LOCALES: Locale[] = ['es', 'en'];
 
 export const LOCALE_POR_DEFECTO: Locale = 'es';
 
@@ -43,13 +43,13 @@ export interface PaginaRegistro {
 }
 
 export const PAGINAS: PaginaRegistro[] = [
-  { id: 'home', tipo: 'app', origen: 'generado', destino: 'entrada', slugs: { es: '' } },
+  { id: 'home', tipo: 'app', origen: 'generado', destino: 'entrada', slugs: { es: '', en: '' } },
   {
     id: 'comprobador',
     tipo: 'comprobador',
     origen: 'generado',
     destino: 'entrada',
-    slugs: { es: 'comprobador' },
+    slugs: { es: 'comprobador', en: 'checker' },
   },
   { id: 'actas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'actas' } },
   { id: 'nominas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'nominas' } },
@@ -95,6 +95,53 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/enviar-nominas-pdf-datos-personales' },
   },
+
+  // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
+  // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen
+  // audiencia inglesa, y tres de las inglesas (Rule 5.2, DSAR, comprobar el tachado) no tienen
+  // original español. Emparejar páginas que no son equivalentes es peor que no emparejarlas.
+  {
+    id: 'guia-en-caja-negra',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/black-box-pdf-not-redacted' },
+  },
+  {
+    id: 'guia-en-comprobar',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/check-pdf-redaction' },
+  },
+  {
+    id: 'guia-en-tribunales',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-court-filing' },
+  },
+  {
+    id: 'guia-en-dsar',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-subject-access-request' },
+  },
+  {
+    id: 'guia-en-sin-subir',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-pdf-without-uploading' },
+  },
+  {
+    id: 'guia-en-nominas',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-payslips-hr-documents' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {
@@ -114,8 +161,8 @@ export function localesDe(pagina: PaginaRegistro): Locale[] {
   return LOCALES.filter((l) => pagina.slugs[l] !== undefined);
 }
 
-function profundidad(ruta: string): number {
-  return ruta.split('/').filter((seg) => seg.length > 0).length;
+function segmentos(ruta: string): string[] {
+  return ruta.split('/').filter((seg) => seg.length > 0);
 }
 
 /**
@@ -123,11 +170,23 @@ function profundidad(ruta: string): number {
  * Relativo y no absoluto a propósito: con base '/tachadopdf/' (modo de emergencia, el que se usa
  * justo cuando el dominio está caído) un href que empiece por '/' apunta fuera del sitio. Los
  * enlaces escritos a mano de las guías ya tienen ese defecto; lo generado no lo tendrá.
+ * Se descarta el prefijo común para que el enlace sea el más corto posible: de /en/checker/ a
+ * /en/ sale '../' y no '../../en/', que resuelve igual pero se lee mal en la revisión.
  */
 export function navHref(desde: string, hacia: string): string {
-  const subidas = '../'.repeat(profundidad(desde));
-  const destino = `${subidas}${hacia}`;
-  return destino === '' ? './' : destino;
+  const origen = segmentos(desde);
+  const destino = segmentos(hacia);
+  let comun = 0;
+  while (comun < origen.length && comun < destino.length && origen[comun] === destino[comun]) {
+    comun += 1;
+  }
+  const subidas = '../'.repeat(origen.length - comun);
+  const bajada = destino
+    .slice(comun)
+    .map((seg) => `${seg}/`)
+    .join('');
+  const href = `${subidas}${bajada}`;
+  return href === '' ? './' : href;
 }
 
 /** URL absoluta de producción: identidad de la página (canonical, og:url, sitemap, hreflang). */

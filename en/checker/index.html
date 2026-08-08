@@ -1,31 +1,31 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
-    <title>Comprobador: qué datos personales contiene tu PDF</title>
-    <meta name="description" content="Sube un PDF y descubre qué datos personales contiene (DNI, IBAN, teléfonos, direcciones...) antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo. Esta comprobación no tacha nada." />
-    <link rel="canonical" href="https://www.tachadopdf.com/comprobador/" />
+    <title>Check what personal data your PDF actually contains</title>
+    <meta name="description" content="Load a PDF and find out what personal data it contains before you share it. Free, entirely in your browser: the file never leaves your machine. This check does not redact anything." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/checker/" />
     <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/comprobador/" />
     <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/checker/" />
     <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/comprobador/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
-    <meta property="og:title" content="Comprobador: qué datos personales contiene tu PDF" />
-    <meta property="og:description" content="Descubre qué datos personales contiene tu PDF antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo." />
+    <meta property="og:title" content="Check what personal data your PDF actually contains" />
+    <meta property="og:description" content="Find out what personal data your PDF contains before you share it. Free, entirely in your browser: the file never leaves your machine." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
-    <meta property="og:url" content="https://www.tachadopdf.com/comprobador/" />
-    <meta property="og:locale" content="es_ES" />
-    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/checker/" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="es_ES" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Comprobador TachadoPDF",
+      "name": "TachadoPDF checker",
       "applicationCategory": "SecurityApplication",
-      "url": "https://www.tachadopdf.com/comprobador/",
-      "inLanguage": "es",
+      "url": "https://www.tachadopdf.com/en/checker/",
+      "inLanguage": "en",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -127,24 +127,24 @@
   </head>
   <body>
     <main>
-      <nav class="idiomas" aria-label="Idioma">
-        <span class="idiomas__actual" lang="es">Español</span>
-        <a class="idiomas__enlace" hreflang="en" lang="en" href="../en/checker/">English</a>
+      <nav class="idiomas" aria-label="Language">
+        <a class="idiomas__enlace" hreflang="es" lang="es" href="../../comprobador/">Español</a>
+        <span class="idiomas__actual" lang="en">English</span>
       </nav>
-      <h1>Comprobador: ¿qué datos personales contiene tu PDF?</h1>
-      <p class="cp-intro">Esta herramienta analiza tu PDF y te dice qué datos personales contiene (DNI, NIE, IBAN, teléfonos, direcciones, correos...) mediante detección automática por patrones. Es un diagnóstico: no tacha ni modifica el archivo.</p>
-      <p>El PDF nunca sale de tu equipo: todo el análisis ocurre 100% en tu navegador, de forma verificable. No se sube ningún documento a ningún servidor.</p>
+      <h1>Check what personal data your PDF actually contains</h1>
+      <p class="cp-intro">This tool analyses your PDF and tells you what personal data it contains, using automatic pattern detection. It is a diagnosis: it does not redact or modify the file.</p>
+      <p>The PDF never leaves your machine: the whole analysis happens in your browser, verifiably. No document is sent to any server.</p>
       <div id="cp-dropzone">
-        <label for="cp-file">Arrastra tu PDF aquí o haz clic para seleccionarlo</label>
+        <label for="cp-file">Drag your PDF here, or click to select it</label>
         <form id="cp-password-form">
           <input type="file" id="cp-file" accept="application/pdf" />
-          <input type="password" id="cp-password" placeholder="Contraseña del PDF (si tiene)" />
+          <input type="password" id="cp-password" placeholder="PDF password (if it has one)" />
         </form>
       </div>
       <div id="cp-resultado" data-cta-href="../?utm_source=comprobador"></div>
       <div id="cp-error"></div>
-      <p class="cp-aviso">Aviso de alcance: la comprobación se limita al texto extraíble del PDF. Las páginas escaneadas (imágenes sin capa de texto) se señalan aparte y requieren revisión humana; esta herramienta no sustituye esa revisión.</p>
-      <a class="cp-cta" href="../?utm_source=comprobador">Táchalos ahora (gratis, 5 documentos al mes)</a>
+      <p class="cp-aviso">Scope: this check covers the extractable text of the PDF. Scanned pages (images with no text layer) are listed separately and need human review; this tool does not replace that review.</p>
+      <a class="cp-cta" href="../?utm_source=comprobador">Redact them now — free, 5 documents a month</a>
     </main>
     <script type="module" src="/src/comprobador/main.ts"></script>
   </body>

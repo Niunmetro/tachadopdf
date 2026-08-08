@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <title>Why the black box over your PDF does not delete the text · TachadoPDF</title>
+    <meta name="description" content="A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="Why the black box over your PDF does not delete the text" />
+    <meta property="og:description" content="A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/" />
+    <meta property="og:locale" content="en_GB" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Why the black box over your PDF does not delete the text",
+      "description": "A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real.",
+      "inLanguage": "en",
+      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
+        font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1e293b; background: #fff;
+      }
+      h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
+      h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+      a { color: #0369a1; }
+      ul, ol { padding-left: 1.3rem; }
+      li { margin: .35rem 0; }
+      .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
+      .idiomas__actual { font-weight: 700; }
+      .nota {
+        background: #fef2f2; border-left: 4px solid #ef4444;
+        padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d;
+      }
+      .cp-cta {
+        display: block; margin: 2.4rem 0 0; padding: 1.2rem 1.4rem;
+        background: #0f172a; color: #7dd3fc; border-radius: 10px;
+        text-decoration: none; font-weight: 600;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0f172a; color: #e2e8f0; }
+        a { color: #7dd3fc; }
+        .nota { background: #450a0a; color: #fecaca; border-color: #ef4444; }
+        .cp-cta { background: #1e293b; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="idiomas" aria-label="Language">
+        <a class="idiomas__enlace" hreflang="es" lang="es" href="../../../">Español</a>
+        <span class="idiomas__actual" lang="en">English</span>
+      </nav>
+      <h1>Why the black box over your PDF does not delete the text</h1>
+      <p>It is the most common mistake made when preparing a document for release: covering the confidential part with a black rectangle. The data is still there, and whoever receives the file can recover it with no technical knowledge at all.</p>
+      <h2>Why the rectangle does nothing</h2>
+      <p>A PDF stores its text separately from what you see on screen. Drawing a black rectangle over a name, an account number or an address only adds a shape in front. The original text is still stored in the file, underneath. So:</p>
+      <ul>
+        <li>Select across the rectangle with the mouse, copy, and the hidden text appears.</li>
+        <li>Open the PDF in a different program, or convert it, and the data comes back.</li>
+        <li>Move or delete the rectangle and the data is simply on display again.</li>
+      </ul>
+      <p class="nota">Check it yourself: open a PDF where you covered something with a rectangle, select across it, and paste into a text editor. If the words come out, they were never deleted.</p>
+      <h2>This is not theoretical</h2>
+      <p>In January 2019, lawyers for Paul Manafort filed a court document with passages blacked out. Reporters copied the text out within minutes and the redacted material was public the same day. In July 2025 the UK's Information Commissioner's Office published dedicated guidance on hidden personal information in documents released to the public, issued after breaches at the Ministry of Defence and the Police Service of Northern Ireland.</p>
+      <h2>What to do instead</h2>
+      <p>For the data to be gone it has to be removed from the contents of the file, not covered. And if the data sits inside a scanned image, the pixels of that area have to be cleared — not patched over.</p>
+      <p>Doing that by hand with professional PDF software is possible but slow, and the step people skip is the one that matters: checking the finished file afterwards. A redaction you did not verify is a redaction you are only assuming worked.</p>
+      <h2>How TachadoPDF does it</h2>
+      <p>TachadoPDF removes the text from the file and clears the pixels of the areas you mark, strips the metadata, and then reopens the PDF it just produced and searches it again — including the metadata — for everything you redacted. If any of it comes back, the download is blocked and you are told which page. You also get a verification report with the SHA-256 fingerprint of the file you deliver. Everything runs in your browser; the document is never uploaded.</p>
+      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+    </main>
+  </body>
+</html>

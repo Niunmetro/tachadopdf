@@ -67,7 +67,13 @@ describe('navHref: enlaces relativos AL DOCUMENTO, nunca raíz-absolutos', () =>
 
   it('desde dos niveles sube dos', () => {
     expect(navHref('en/checker/', '')).toBe('../../');
-    expect(navHref('en/checker/', 'en/')).toBe('../../en/');
+    expect(navHref('en/checker/', 'comprobador/')).toBe('../../comprobador/');
+  });
+
+  it('descarta el prefijo común: dentro del mismo idioma no sube hasta la raíz', () => {
+    expect(navHref('en/checker/', 'en/')).toBe('../');
+    expect(navHref('en/', 'en/guide/x/')).toBe('guide/x/');
+    expect(navHref('en/guide/x/', 'en/')).toBe('../../');
   });
 
   it('nunca devuelve una cadena vacía ni algo que empiece por "/"', () => {
