@@ -110,7 +110,7 @@ const INFORME_ES: CopiaInforme = {
   lineaSinComprobacion: (totalPaginas) =>
     `Ninguna de las ${totalPaginas} páginas tiene capa de texto: no queda nada que releer, así que la comprobación automática no se ha podido aplicar a este documento. Los píxeles de las zonas que marcaste sí se han borrado. Revísalo visualmente, página a página.`,
   lineaParcial: (releidas, total, conReserva) =>
-    `Se han releído ${releidas} de ${total} páginas y no queda en ellas ningún dato de los patrones buscados. En ${conReserva} página(s) la comprobación automática no llega a todo el contenido: las páginas sin capa de texto, las que llevan imágenes y los tachados sin confirmar constan una a una en «Cobertura». Revísalas visualmente.`,
+    `Se han releído ${releidas} de ${total} páginas y no queda en ellas ningún dato de los patrones buscados. En ${conReserva} página(s) la comprobación automática no llega a todo el contenido: las páginas sin capa de texto, las que llevan imágenes, las que dibujan texto que no se puede releer y los tachados sin confirmar constan una a una en «Cobertura». Revísalas visualmente.`,
   lineaParcialSoloImagenes: (total, paginasConImagen) =>
     `Se han releído las ${total} páginas del archivo entregado y sus metadatos, y en el texto no queda ningún dato de los patrones buscados. Lo que queda fuera es el contenido de ${paginasConImagen} página(s) con imágenes: esta herramienta no lee lo que hay dentro de una imagen, así que un dato fotografiado o escaneado no se detecta. Revísalas visualmente; constan en «Cobertura».`,
   lineaParcialSoloObjetos: (total) =>
