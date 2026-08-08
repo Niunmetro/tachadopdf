@@ -40,6 +40,7 @@ describe('src/types.ts', () => {
       paginasImagenCompleta: [],
       paginasConImagen: [],
       unverifiableManualPages: [],
+      paginasTextoNoLegible: [],
       freeVersion: true,
     };
     const license: LicenseStatus = { pro: false, reason: 'absent' };

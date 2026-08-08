@@ -61,6 +61,7 @@ function datos(over: Partial<ReportData>): ReportData {
     paginasImagenCompleta: [],
     paginasConImagen: [],
     unverifiableManualPages: [],
+    paginasTextoNoLegible: [],
     freeVersion: false,
     verify: { clean: true, residues: [] },
     ...over,

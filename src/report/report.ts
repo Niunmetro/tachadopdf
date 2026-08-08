@@ -391,6 +391,16 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
     y -= 2;
   }
 
+  // El texto que se DIBUJA y no se puede releer. Lo ve el que abre el documento y no lo ve la
+  // comprobacion: ahi cabia un DNI entero bajo un sello verde.
+  if (data.paginasTextoNoLegible.length > 0) {
+    subLabel(copia.subTextoNoLegible);
+    for (const entrada of data.paginasTextoNoLegible) {
+      bullet(copia.paginaTextoNoLegible(entrada.page + 1, entrada.caracteres), BAD);
+    }
+    y -= 2;
+  }
+
   // Una caja manual sobre una pagina sin texto SI borra pixeles, pero no deja nada que releer:
   // no se puede confirmar. Callarlo seria dar por verificado lo que no lo esta.
   if (data.unverifiableManualPages.length > 0) {
@@ -407,6 +417,11 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   row(copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), 9.5);
   row(copia.filaZonasTachadas, copia.zonasEnPaginas(zonasTachadas(data), paginasConZonas(data)), 9.5);
   row(copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), 9.5);
+  row(
+    copia.filaPaginasTextoNoLegible,
+    cifraConPaginas(copia, data.paginasTextoNoLegible.map((p) => p.page)),
+    9.5,
+  );
 
   // --- objetos del archivo: lista FIJA, con su agujero dicho en voz alta ----
   heading(copia.encabezadoObjetos);

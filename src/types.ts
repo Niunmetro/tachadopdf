@@ -92,6 +92,11 @@ export interface ReportData {
   /** Paginas donde una caja manual no cubrio texto extraible: el borrado se aplico, pero NO se
    *  pudo confirmar releyendo el fichero. Constan en el informe; no se dan por buenas. */
   unverifiableManualPages: number[];
+  /** Paginas que DIBUJAN texto que la herramienta no puede releer (un `/ToUnicode` que miente,
+   *  una fuente subconjunto mal generada), con cuantos caracteres son. El humano lee lo que se
+   *  dibuja; el detector lee lo que dice el `/ToUnicode`: ahi cabia un DNI entero, sin detectar,
+   *  sin tachar y sin reencontrar, bajo un sello verde. */
+  paginasTextoNoLegible: { page: number; caracteres: number }[];
   freeVersion: boolean;
   verify?: VerifyResult;
 }

@@ -98,6 +98,8 @@ export interface CopiaInforme {
   filaPaginasConImagen: string;
   filaZonasTachadas: string;
   filaTachadosSinConfirmar: string;
+  /** Páginas que DIBUJAN texto que la herramienta no puede releer. */
+  filaPaginasTextoNoLegible: string;
   conPaginas: (cifra: number, paginas: string) => string;
   zonasEnPaginas: (zonas: number, paginas: number) => string;
 
@@ -121,6 +123,9 @@ export interface CopiaInforme {
   // sobre un documento cuyos tachados manuales NUNCA fueron verificables (una caja sobre una
   // pagina sin texto no deja nada que releer). El peor fallo posible es un falso verde.
   subNoVerificables: string;
+  subTextoNoLegible: string;
+  /** La CIFRA es la mitad del dato: «4 caracteres» y «180 caracteres» piden conductas distintas. */
+  paginaTextoNoLegible: (pagina: number, caracteres: number) => string;
   noVerificablePagina: (pagina: number) => string;
   paginaSinCapaDeTexto: (pagina: number) => string;
   /** Página CON texto tapada por una imagen grande. Antes se imprimía con la frase de «sin capa

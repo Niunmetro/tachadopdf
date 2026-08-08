@@ -140,6 +140,7 @@ const INFORME_ES: CopiaInforme = {
   filaPaginasConImagen: 'Páginas con imágenes (su contenido visual no se ha comprobado)',
   filaZonasTachadas: 'Zonas tachadas',
   filaTachadosSinConfirmar: 'Tachados sin confirmación posterior',
+  filaPaginasTextoNoLegible: 'Páginas con texto dibujado que no se puede releer',
   conPaginas: (cifra, paginas) => `${cifra}   ·   páginas ${paginas}`,
   zonasEnPaginas: (zonas, paginas) => `${zonas} en ${paginas} página(s)`,
   objetoInfo: 'Metadatos Info (Título, Autor, Asunto, Palabras clave, Productor, Creador)',
@@ -159,6 +160,9 @@ const INFORME_ES: CopiaInforme = {
   subSinCapaDeTexto: 'Páginas sin capa de texto',
   subImagenCompleta: 'Páginas con imagen a página completa',
   subNoVerificables: 'Tachados que no se han podido verificar',
+  subTextoNoLegible: 'Páginas con texto que la herramienta no puede releer',
+  paginaTextoNoLegible: (pagina, caracteres) =>
+    `Página ${pagina}: hay ${caracteres} caracteres dibujados en la página que la herramienta no puede releer (el archivo declara para ellos un código que no corresponde a lo que se ve). Se ven al abrir el documento, pero la detección automática no los alcanza: revísala visualmente.`,
   noVerificablePagina: (pagina) =>
     `Página ${pagina}: la zona tachada no contenía texto extraíble, así que el borrado no se ha podido confirmar releyendo el archivo. Revísala visualmente.`,
   paginaSinCapaDeTexto: (pagina) =>

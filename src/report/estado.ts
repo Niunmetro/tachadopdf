@@ -70,6 +70,7 @@ export function paginasConReserva(data: ReportData): number[] {
       ...data.paginasImagenCompleta,
       ...data.paginasConImagen,
       ...data.unverifiableManualPages,
+      ...data.paginasTextoNoLegible.map((p) => p.page),
     ]),
   ].sort((a, b) => a - b);
 }
@@ -84,7 +85,8 @@ export function reservaSoloPorImagenes(data: ReportData): boolean {
     data.paginasConImagen.length > 0 &&
     data.paginasSinCapaDeTexto.length === 0 &&
     data.paginasImagenCompleta.length === 0 &&
-    data.unverifiableManualPages.length === 0
+    data.unverifiableManualPages.length === 0 &&
+    data.paginasTextoNoLegible.length === 0
   );
 }
 

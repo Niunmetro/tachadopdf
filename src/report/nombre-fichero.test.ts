@@ -38,6 +38,7 @@ function datos(fileName: string): ReportData {
     paginasImagenCompleta: [],
     paginasConImagen: [],
     unverifiableManualPages: [],
+    paginasTextoNoLegible: [],
     freeVersion: false,
     verify: { clean: true, residues: [] },
   };

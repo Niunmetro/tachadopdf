@@ -91,6 +91,10 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
   // pagina CON texto tapada por una imagen que no tenia texto: falso, literalmente.
   const paginasImagenCompleta = visualReviewPages.filter((p) => !scannedPages.includes(p));
   const paginasConImagen = doc.pagesWithImages();
+  // Texto que se DIBUJA y no se puede releer: lo ve quien abre el documento y no lo ve la
+  // comprobacion. Se mide sobre el documento de partida, igual que las paginas escaneadas y las
+  // que llevan imagenes: el tachado no cambia lo que una fuente declara de sus propios glifos.
+  const paginasTextoNoLegible = doc.pagesWithUnreadableText();
 
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
   const selectedAutomatic = input.selectedAutomatic ?? automaticBoxes.map(() => true);
@@ -151,6 +155,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     paginasImagenCompleta,
     paginasConImagen,
     unverifiableManualPages,
+    paginasTextoNoLegible,
     freeVersion: input.freeVersion,
     verify,
   };

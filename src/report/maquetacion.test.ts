@@ -86,6 +86,7 @@ const DENSO: ReportData = {
   paginasImagenCompleta: [3],
   paginasConImagen: [3, 5],
   unverifiableManualPages: [6],
+  paginasTextoNoLegible: [{ page: 8, caracteres: 137 }],
   freeVersion: false,
   verify: { clean: true, residues: [] },
 };

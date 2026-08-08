@@ -185,6 +185,7 @@ const INFORME_EN: CopiaInforme = {
   filaPaginasConImagen: 'Pages containing images (their visual content was not checked)',
   filaZonasTachadas: 'Areas redacted',
   filaTachadosSinConfirmar: 'Redactions with no later confirmation',
+  filaPaginasTextoNoLegible: 'Pages drawing text that cannot be re-read',
   conPaginas: (cifra, paginas) => `${cifra}   ·   pages ${paginas}`,
   zonasEnPaginas: (zonas, paginas) => `${zonas} across ${paginas} page(s)`,
   objetoInfo: 'Info metadata (Title, Author, Subject, Keywords, Producer, Creator)',
@@ -204,6 +205,9 @@ const INFORME_EN: CopiaInforme = {
   subSinCapaDeTexto: 'Pages with no text layer',
   subImagenCompleta: 'Pages with a full-page image',
   subNoVerificables: 'Redactions that could not be verified',
+  subTextoNoLegible: 'Pages with text the tool cannot re-read',
+  paginaTextoNoLegible: (pagina, caracteres) =>
+    `Page ${pagina}: ${caracteres} characters are drawn on this page that the tool cannot re-read (the file declares codes for them that do not match what is shown). They are visible when the document is opened, but automatic detection cannot reach them: review this page visually.`,
   noVerificablePagina: (pagina) =>
     `Page ${pagina}: the redacted area contained no extractable text, so removal could not be confirmed by re-reading the file. Check this page visually.`,
   paginaSinCapaDeTexto: (pagina) =>

@@ -38,6 +38,24 @@ function rectArea(rect: BoxRect): number {
  */
 export const IMAGE_COVERAGE_THRESHOLD = 0.6;
 
+/**
+ * Glifos SEGUIDOS que hacen falta para que un texto ilegible cuente. No es una cifra al gusto:
+ * el dato mas corto que busca esta herramienta son seis caracteres (`a@b.co`), asi que en una
+ * racha mas corta no cabe ninguno de los formatos declarados. Cuatro deja margen.
+ */
+export const MIN_RACHA_ILEGIBLE = 4;
+
+/**
+ * Un glifo dibujado del que no se puede recuperar el caracter: sin unicode, sustituido, o en una
+ * zona de uso privado (que es donde acaba un `/ToUnicode` que miente, y una fuente subconjunto
+ * mal generada).
+ */
+function esIlegible(unicode: number): boolean {
+  if (unicode <= 0 || unicode === 0xfffd) return true;
+  if (unicode >= 0xe000 && unicode <= 0xf8ff) return true;
+  return unicode >= 0xf0000;
+}
+
 export class PdfDoc {
   private readonly doc: mupdf.PDFDocument;
   private closed = false;
@@ -192,6 +210,69 @@ export class PdfDoc {
       if (tieneImagen) result.push(i);
     }
     return result;
+  }
+
+  /**
+   * Paginas en las que se DIBUJA texto que la herramienta no puede releer, con cuantos caracteres
+   * son. Devuelve la cuenta por pagina, no una lista de paginas, porque en el informe la cifra es
+   * la mitad del dato: «3 caracteres» y «180 caracteres» piden conductas distintas.
+   *
+   * El caso real: un PDF puede dibujar `12345678Z` y declarar a la vez, en su `/ToUnicode`, que
+   * esos codigos significan otra cosa. Es el defecto mas comun del mundo PDF — el «copio de un
+   * PDF y sale basura» — y no hace falta mala fe para producirlo. El humano lee lo que se dibuja;
+   * el detector y la guarda leen lo que dice el `/ToUnicode`, asi que ese DNI no se detectaba, no
+   * se tachaba, no se reencontraba, y el informe firmaba «TACHADO VERIFICADO» con el dato a
+   * tamaño de titular en el archivo entregado.
+   *
+   * Medido sobre 2.125 paginas de PDF reales del disco: 13 dibujan texto y no extraen nada, y 11
+   * pasan del 10 % de caracteres no mapeables. No es un caso de laboratorio.
+   *
+   * Se cuentan RACHAS de al menos `MIN_RACHA_ILEGIBLE` glifos seguidos, no glifos sueltos, y el
+   * numero no es arbitrario: el dato mas corto que esta herramienta busca son seis caracteres
+   * (`a@b.co`), asi que en una racha mas corta no cabe ninguno de los formatos declarados. Un
+   * simbolo suelto de una fuente rara —una viñeta, una ligadura— no puede esconder nada y no
+   * tiene por que degradar el sello de nadie. Medido: contando glifos sueltos se marcarian 27 de
+   * 665 paginas reales; contando rachas de cuatro, 9.
+   */
+  pagesWithUnreadableText(): { page: number; caracteres: number }[] {
+    const total = this.pageCount();
+    const resultado: { page: number; caracteres: number }[] = [];
+    for (let i = 0; i < total; i++) {
+      let racha = 0;
+      let ilegibles = 0;
+      const contar = (text: mupdf.Text): void => {
+        text.walk({
+          showGlyph(_font, _trm, _gid, unicode) {
+            if (!esIlegible(unicode)) {
+              racha = 0;
+              return;
+            }
+            racha++;
+            // La racha se cuenta entera en cuanto alcanza el minimo, y luego glifo a glifo.
+            if (racha === MIN_RACHA_ILEGIBLE) ilegibles += MIN_RACHA_ILEGIBLE;
+            else if (racha > MIN_RACHA_ILEGIBLE) ilegibles++;
+          },
+        });
+      };
+      const dispositivo = new mupdf.Device({
+        fillText: contar,
+        strokeText: contar,
+        clipText: contar,
+        clipStrokeText: contar,
+        // El texto invisible (modo 3) es justo donde vive la capa de OCR de un escaneo.
+        ignoreText: contar,
+      } as unknown as ConstructorParameters<typeof mupdf.Device>[0]);
+      try {
+        this.page(i).run(dispositivo, mupdf.Matrix.identity);
+      } catch {
+        // Una pagina que ni siquiera se puede recorrer no se puede declarar comprobada: cuenta
+        // como texto no legible en vez de desaparecer del informe.
+        ilegibles = Math.max(ilegibles, MIN_RACHA_ILEGIBLE);
+      }
+      dispositivo.close();
+      if (ilegibles > 0) resultado.push({ page: i, caracteres: ilegibles });
+    }
+    return resultado;
   }
 
   applyRedactions(marks: PageMark[]): void {
