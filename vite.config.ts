@@ -1,5 +1,16 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { entradasVite } from './src/content/registro';
+
+// Las entradas HTML se DERIVAN del registro de páginas (src/content/registro.ts): añadir un
+// idioma no debe obligar a tocar este fichero. `registro.ts` es un módulo hoja sin dependencias
+// para que importarlo aquí no arrastre la aplicación al config.
+const input = Object.fromEntries(
+  Object.entries(entradasVite()).map(([nombre, ruta]) => [
+    nombre,
+    fileURLToPath(new URL(`./${ruta}`, import.meta.url)),
+  ]),
+);
 
 export default defineConfig({
   // GitHub Pages sirve bajo /<repo>/, así que el build de Pages necesita base='/tachadopdf/'.
@@ -9,12 +20,7 @@ export default defineConfig({
   build: {
     // mupdf (wasm) usa top-level await: el target debe soportarlo o el build falla.
     target: 'esnext',
-    rollupOptions: {
-      input: {
-        main: fileURLToPath(new URL('./index.html', import.meta.url)),
-        comprobador: fileURLToPath(new URL('./comprobador/index.html', import.meta.url)),
-      },
-    },
+    rollupOptions: { input },
   },
   optimizeDeps: {
     // El pre-bundle de esbuild del dev server tiene su propio target; sin esto, cargar

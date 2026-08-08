@@ -27,6 +27,7 @@ describe('src/types.ts', () => {
       boxesPerPage: [{ page: 1, count: 1 }],
       metadataRemoved: [],
       scannedPages: [],
+      unverifiableManualPages: [],
       freeVersion: true,
     };
     const license: LicenseStatus = { pro: false, reason: 'absent' };

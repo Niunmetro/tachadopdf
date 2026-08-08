@@ -63,15 +63,6 @@ export function addBox(marks: PageMark[], page: number, rect: BoxRect): PageMark
   return marks.map((mark, i) => (i === idx ? { page: mark.page, rects: [...mark.rects, rect] } : mark));
 }
 
-export function renderBoxes(container: HTMLElement, marks: PageMark[]): void {
-  container.innerHTML = '';
-  for (const mark of marks) {
-    const item = document.createElement('p');
-    item.textContent = `Página ${mark.page + 1}: ${mark.rects.length} zona(s) tachada(s).`;
-    container.appendChild(item);
-  }
-}
-
 export function addManualBox(s: SelectionState, page: number, rect: BoxRect): SelectionState {
   const idx = s.manual.findIndex((mark) => mark.page === page);
   if (idx === -1) {

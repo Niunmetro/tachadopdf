@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.tachadopdf.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/tachar-dni-pdf/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/actas/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/nominas/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/comprobador/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.tachadopdf.com/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/" />
+  </url>
+  <url>
+    <loc>https://www.tachadopdf.com/en/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/" />
+  </url>
+  <url>
+    <loc>https://www.tachadopdf.com/comprobador/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/comprobador/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/checker/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/comprobador/" />
+  </url>
+  <url>
+    <loc>https://www.tachadopdf.com/en/checker/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/comprobador/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/checker/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/comprobador/" />
+  </url>
+  <url><loc>https://www.tachadopdf.com/actas/</loc></url>
+  <url><loc>https://www.tachadopdf.com/nominas/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/tachar-dni-pdf/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/</loc></url>
+  <url><loc>https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/</loc></url>
+  <url><loc>https://www.tachadopdf.com/en/guide/check-pdf-redaction/</loc></url>
+  <url><loc>https://www.tachadopdf.com/en/guide/redact-court-filing/</loc></url>
+  <url><loc>https://www.tachadopdf.com/en/guide/redact-subject-access-request/</loc></url>
+  <url><loc>https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/</loc></url>
+  <url><loc>https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/</loc></url>
 </urlset>

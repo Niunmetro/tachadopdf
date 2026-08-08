@@ -1,4 +1,5 @@
 import { buildReport, computeSha256 } from '../report/report';
+import type { CopiaInforme } from '../content/tipos';
 import { detect } from '../detect/patterns';
 import type { BoxRect, PageMark, PatternKind, ReportData, VerifyResult } from '../types';
 import { addBox } from '../ui/boxes';
@@ -6,13 +7,26 @@ import { loadPdf, type PdfDoc } from './engine';
 import { extractMetadataStrings, stripMetadata } from './metadata';
 import { verifyRedaction } from './verify';
 
-const ALL_PATTERNS: PatternKind[] = ['dni', 'nie', 'iban', 'nuss', 'telefono', 'email'];
+// Los SIETE tipos que detect() reconoce. Faltaba 'catastro': el informe declaraba menos
+// patrones buscados de los que de verdad se buscan y se verifican.
+const ALL_PATTERNS: PatternKind[] = [
+  'dni',
+  'nie',
+  'iban',
+  'nuss',
+  'telefono',
+  'email',
+  'catastro',
+];
 
 export interface ProcessInput {
   bytes: Uint8Array;
   fileName: string;
   freeVersion: boolean;
   manual: PageMark[];
+  /** Textos del informe. Obligatorio: un idioma sin cablear debe romper la compilación, no
+   *  entregarle al comprador un informe en un idioma que no es el suyo. */
+  copia: CopiaInforme;
   selectedAutomatic?: boolean[];
   password?: string;
 }
@@ -127,10 +141,11 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     boxesPerPage,
     metadataRemoved: removed,
     scannedPages: visualReviewPages,
+    unverifiableManualPages,
     freeVersion: input.freeVersion,
     verify,
   };
-  const reportBytes = await buildReport(reportData);
+  const reportBytes = await buildReport(reportData, input.copia);
 
   return {
     fileName: input.fileName,

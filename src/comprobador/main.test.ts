@@ -61,7 +61,7 @@ describe('procesarFichero', () => {
 
     await procesarFichero(crearFicheroPdf(), elementos);
 
-    expect(analizarPdfMock).toHaveBeenCalledWith(expect.any(Uint8Array), 'secreta');
+    expect(analizarPdfMock).toHaveBeenCalledWith(expect.any(Uint8Array), expect.any(Object), 'secreta');
   });
 
   it('muestra el mensaje de contraseña cuando el PDF está protegido', async () => {

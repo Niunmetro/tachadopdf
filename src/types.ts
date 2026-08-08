@@ -38,6 +38,9 @@ export interface ReportData {
   boxesPerPage: { page: number; count: number }[];
   metadataRemoved: string[];
   scannedPages: number[];
+  /** Paginas donde una caja manual no cubrio texto extraible: el borrado se aplico, pero NO se
+   *  pudo confirmar releyendo el fichero. Constan en el informe; no se dan por buenas. */
+  unverifiableManualPages: number[];
   freeVersion: boolean;
   verify?: VerifyResult;
 }

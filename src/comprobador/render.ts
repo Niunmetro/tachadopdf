@@ -1,23 +1,18 @@
-import type { PatternKind } from '../types';
-import { SCOPE_TEXT } from '../report/report';
+import type { CopiaComprobador, CopiaInforme } from '../content/tipos';
 import type { ResumenComprobacion } from './types';
 
-const PATTERN_LABELS: Record<PatternKind, string> = {
-  dni: 'DNI',
-  nie: 'NIE',
-  iban: 'IBAN',
-  nuss: 'Número de la Seguridad Social',
-  telefono: 'Teléfono',
-  email: 'Correo electrónico',
-  catastro: 'Referencia catastral',
-};
+// El destino del CTA lo publica el HTML generado en `data-cta-href`, ya calculado RELATIVO AL
+// DOCUMENTO. Antes era '/?utm_source=comprobador': una ruta raíz-absoluta que, con la base de
+// emergencia '/tachadopdf/', apunta fuera del sitio — justo en el modo pensado para cuando el
+// dominio está caído.
+const CTA_HREF_POR_DEFECTO = '../?utm_source=comprobador';
 
-const AVISO_ESCANEADAS =
-  'Esta página no contiene texto extraíble (probablemente escaneada). La detección automática no puede leerla: revísala visualmente.';
-
-const CTA_TEXT = 'Táchalos ahora (gratis, 5 documentos al mes)';
-
-export function renderResumen(root: HTMLElement, resumen: ResumenComprobacion): void {
+export function renderResumen(
+  root: HTMLElement,
+  resumen: ResumenComprobacion,
+  copia: CopiaComprobador,
+  alcance: CopiaInforme['alcance'],
+): void {
   root.textContent = '';
 
   const veredicto = document.createElement('div');
@@ -31,7 +26,7 @@ export function renderResumen(root: HTMLElement, resumen: ResumenComprobacion): 
 
     const label = document.createElement('span');
     label.className = 'cp-categoria-label';
-    label.textContent = PATTERN_LABELS[categoria.kind];
+    label.textContent = copia.etiquetas[categoria.kind];
     bloque.appendChild(label);
 
     const count = document.createElement('span');
@@ -56,13 +51,13 @@ export function renderResumen(root: HTMLElement, resumen: ResumenComprobacion): 
     escaneadas.className = 'cp-escaneadas';
 
     const aviso = document.createElement('p');
-    aviso.textContent = AVISO_ESCANEADAS;
+    aviso.textContent = copia.avisoEscaneadas;
     escaneadas.appendChild(aviso);
 
     const lista = document.createElement('ul');
     for (const pagina of resumen.paginasEscaneadas) {
       const li = document.createElement('li');
-      li.textContent = `Página ${pagina + 1}`;
+      li.textContent = copia.pagina(pagina + 1);
       lista.appendChild(li);
     }
     escaneadas.appendChild(lista);
@@ -72,12 +67,12 @@ export function renderResumen(root: HTMLElement, resumen: ResumenComprobacion): 
 
   const cta = document.createElement('a');
   cta.className = 'cp-cta';
-  cta.href = '/?utm_source=comprobador';
-  cta.textContent = CTA_TEXT;
+  cta.href = root.dataset['ctaHref'] ?? CTA_HREF_POR_DEFECTO;
+  cta.textContent = copia.cta;
   root.appendChild(cta);
 
   const aviso = document.createElement('div');
   aviso.className = 'cp-aviso';
-  aviso.textContent = SCOPE_TEXT;
+  aviso.textContent = alcance;
   root.appendChild(aviso);
 }

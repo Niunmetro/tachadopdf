@@ -6,6 +6,7 @@ import {
   canDownloadReport,
   canProcess,
   performBatchDownload,
+  reportFileName,
   withinFreePageLimit,
   type AppState,
   type DownloadableFile,
@@ -157,8 +158,40 @@ describe('canDownloadBatch', () => {
 describe('performBatchDownload', () => {
   it('no invoca download para ningún fichero si el lote tiene uno sucio, aunque el checkbox esté marcado', () => {
     const download = vi.fn();
-    performBatchDownload([fileSucio, fileLimpio], true, download);
+    performBatchDownload([fileSucio, fileLimpio], true, download, 'informe');
     expect(download).not.toHaveBeenCalledWith(fileSucio.cleanedBytes, expect.anything());
     expect(download).not.toHaveBeenCalled();
+  });
+});
+
+// El documento tachado y su informe se descargaban con el MISMO nombre: el usuario recibia
+// `acta.pdf` y `acta (1).pdf` sin saber cual era cual — y el informe ES el producto.
+describe('reportFileName', () => {
+  it('inserta el sufijo antes de la extension', () => {
+    expect(reportFileName('acta.pdf', 'informe')).toBe('acta-informe.pdf');
+    expect(reportFileName('acta.pdf', 'report')).toBe('acta-report.pdf');
+  });
+
+  it('respeta los puntos intermedios del nombre', () => {
+    expect(reportFileName('acta.2026.final.pdf', 'informe')).toBe('acta.2026.final-informe.pdf');
+  });
+
+  it('sin extension anade .pdf', () => {
+    expect(reportFileName('acta', 'informe')).toBe('acta-informe.pdf');
+  });
+
+  it('un nombre que empieza por punto no se parte por ese punto', () => {
+    expect(reportFileName('.oculto', 'informe')).toBe('.oculto-informe.pdf');
+  });
+});
+
+describe('performBatchDownload: nombres distintos para documento e informe', () => {
+  it('descarga el documento con su nombre y el informe con el sufijo', () => {
+    const download = vi.fn();
+    performBatchDownload([fileLimpio], true, download, 'informe');
+
+    const nombres = download.mock.calls.map((c) => c[1]);
+    expect(nombres).toEqual([fileLimpio.fileName, reportFileName(fileLimpio.fileName, 'informe')]);
+    expect(new Set(nombres).size).toBe(2);
   });
 });

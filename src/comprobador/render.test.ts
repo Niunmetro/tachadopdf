@@ -1,7 +1,10 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { SCOPE_TEXT } from '../report/report';
+import { es } from '../content/es';
 import { renderResumen } from './render';
+
+const COPIA = es.comprobadorUi;
+const SCOPE_TEXT = es.informe.alcance;
 import type { ResumenComprobacion } from './types';
 
 function crearRoot(): HTMLElement {
@@ -19,7 +22,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [],
       veredicto: 'No se han encontrado datos personales en el texto extraíble.',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     const veredicto = root.querySelector('.cp-veredicto');
     expect(veredicto).not.toBeNull();
     expect(veredicto?.textContent).toBe('No se han encontrado datos personales en el texto extraíble.');
@@ -33,7 +36,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [],
       veredicto: 'Se han encontrado datos personales.',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     const texto = root.textContent ?? '';
     expect(texto).toContain('12345***Z');
     expect(texto).not.toContain('12345678Z');
@@ -48,7 +51,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [],
       veredicto: 'ok',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     expect(root.querySelector('.cp-escaneadas')).toBeNull();
   });
 
@@ -60,7 +63,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [0, 2],
       veredicto: 'ok',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     const bloque = root.querySelector('.cp-escaneadas');
     expect(bloque).not.toBeNull();
     expect(bloque?.textContent).toContain('Página 1');
@@ -76,7 +79,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [],
       veredicto: 'ok',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     const cta = root.querySelector<HTMLAnchorElement>('.cp-cta');
     expect(cta).not.toBeNull();
     expect(cta?.getAttribute('href')).toContain('utm_source=comprobador');
@@ -90,7 +93,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [],
       veredicto: 'ok',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     const aviso = root.querySelector('.cp-aviso');
     expect(aviso).not.toBeNull();
     expect(aviso?.textContent).toContain(SCOPE_TEXT);
@@ -105,7 +108,7 @@ describe('renderResumen', () => {
       paginasEscaneadas: [],
       veredicto: 'ok',
     };
-    renderResumen(root, resumen);
+    renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     expect(root.querySelectorAll('span').length).toBe(0);
   });
 });

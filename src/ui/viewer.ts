@@ -105,7 +105,12 @@ export interface ManualBoxesOptions {
   page: number;
   getState: () => SelectionState;
   setState: (state: SelectionState) => void;
+  /** Etiqueta accesible del boton que deshace un tachado manual. Llega desde la copia. */
+  etiquetaQuitar: string;
 }
+
+/** Glifo del boton de deshacer. No es texto: es un simbolo, igual en todos los idiomas. */
+const SIMBOLO_QUITAR = '×';
 
 /**
  * Pinta las cajas MANUALES de la página como rectángulos negros visibles, cada uno con una «×»
@@ -113,7 +118,7 @@ export interface ManualBoxesOptions {
  * Igual que renderHitOverlay, borra solo sus propios nodos (.manual-box), nunca el contenedor.
  */
 export function renderManualBoxes(options: ManualBoxesOptions): void {
-  const { container, viewport, page, getState, setState } = options;
+  const { container, viewport, page, getState, setState, etiquetaQuitar } = options;
   for (const previa of Array.from(container.querySelectorAll(':scope > .manual-box'))) {
     previa.remove();
   }
@@ -133,8 +138,8 @@ export function renderManualBoxes(options: ManualBoxesOptions): void {
     const quitar = document.createElement('button');
     quitar.type = 'button';
     quitar.className = 'manual-box__remove';
-    quitar.textContent = '×';
-    quitar.setAttribute('aria-label', 'Quitar este tachado');
+    quitar.textContent = SIMBOLO_QUITAR;
+    quitar.setAttribute('aria-label', etiquetaQuitar);
     quitar.style.position = 'absolute';
     quitar.style.top = '-10px';
     quitar.style.right = '-10px';

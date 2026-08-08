@@ -1,6 +1,8 @@
 // Analiza el HTML de una landing y detecta referencias a recursos EXTERNOS que violarían la
-// CSP estricta (cero CDNs, cero fuentes remotas). Metadatos como <link rel=canonical>, og:url y
-// og:image no cuentan: no generan una petición de red al cargar la página.
+// CSP estricta (cero CDNs, cero fuentes remotas). Metadatos como <link rel=canonical>,
+// <link rel=alternate hreflang>, og:url y og:image no cuentan: no generan una petición de red al
+// cargar la página. Las etiquetas hreflang DEBEN ser URLs absolutas de producción (son identidad,
+// no navegación), así que si contaran, el sitio multiidioma no podría existir.
 
 const EXTERNAL_URL = /^(?:[a-z]+:)?\/\/|^https?:\/\//i;
 
@@ -22,7 +24,7 @@ export function externalResourceRefs(html: string): string[] {
     const hrefMatch = attrs.match(/\shref=["']([^"']+)["']/i);
     const rel = (relMatch?.[1] ?? '').toLowerCase();
     const href = hrefMatch?.[1] ?? '';
-    if (rel === 'canonical') continue;
+    if (rel === 'canonical' || rel === 'alternate') continue;
     if (href && isExternal(href)) hallazgos.push(match[0]);
   }
 

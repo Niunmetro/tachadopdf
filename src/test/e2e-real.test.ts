@@ -3,6 +3,9 @@
 // y email), lo pasa por processOne y comprueba que los datos DESAPARECEN del binario final.
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import { describe, expect, it } from 'vitest';
+import { es } from '../content/es';
+
+const COPIA = es.informe;
 import { loadPdf } from '../pdf/engine';
 import { processDocument } from '../pdf/pipeline';
 
@@ -29,6 +32,7 @@ describe('e2e con un contrato real', () => {
       bytes,
       fileName: 'contrato.pdf',
       freeVersion: true,
+      copia: COPIA,
       manual: [],
     });
 

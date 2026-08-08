@@ -6,6 +6,7 @@
   "license": "AGPL-3.0",
   "scripts": {
     "dev": "vite",
+    "gen:pages": "vite-node scripts/gen-pages.ts",
     "build": "vite build",
     "test": "vitest run",
     "preview": "vite preview",

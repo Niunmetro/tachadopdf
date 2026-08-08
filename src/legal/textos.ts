@@ -92,7 +92,7 @@ export const FAQ: { pregunta: string; respuesta: string }[] = [
   {
     pregunta: '¿Funciona con documentos escaneados?',
     respuesta:
-      'Sobre una imagen escaneada se borran los píxeles de la zona que marches a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.',
+      'Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.',
   },
   {
     pregunta: '¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?',

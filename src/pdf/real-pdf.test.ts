@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { es } from '../content/es';
+
+const COPIA = es.informe;
 import { detect } from '../detect/patterns';
 import { loadPdf } from './engine';
 import { processDocument } from './pipeline';
@@ -29,6 +32,7 @@ describe('PDF realista: detección y tachado end-to-end sobre formatos reales', 
       bytes: actaReal(),
       fileName: 'acta-real.pdf',
       freeVersion: false,
+      copia: COPIA,
       manual: [],
     });
 
