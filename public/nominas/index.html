@@ -39,7 +39,17 @@
   .precio { background: #f1f5f9; border-radius: 10px; padding: 1rem 1.2rem; margin: 1.2rem 0; }
   .precio ul { margin: .4rem 0 0; padding-left: 1.2rem; }
   footer { margin-top: 3rem; font-size: .9rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
-  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; } .lede { color: #94a3b8; } .nota { background: #1e293b; color: #cbd5e1; } .alerta { background: #2a1215; color: #fecaca; } .precio { background: #1e293b; } a { color: #7dd3fc; } footer { color: #94a3b8; border-color: #334155; } }
+  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; }
+    /* El CTA INVIERTE en oscuro. Medido: el relleno del boton y el fondo de la pagina eran los
+       dos #0f172a — contraste 1:1, cero borde: los dos unicos botones de conversion de esta
+       landing DESAPARECIAN y solo quedaba el texto blanco flotando. En claro se ven perfectamente,
+       asi que no salta en ninguna revision que no mire la pagina en oscuro.
+       Regla para toda la casa: ningun elemento pulsable puede compartir color de relleno con su
+       fondo; si lo comparte, lleva borde si o si.
+       Es un cambio SOLO de CSS: la copia comercial de esta pagina sigue congelada (PARADA 2). */
+    .cta { background: #38bdf8; color: #0b1220; }
+    .cta strong { color: #0b1220; }
+    .lede { color: #94a3b8; } .nota { background: #1e293b; color: #cbd5e1; } .alerta { background: #2a1215; color: #fecaca; } .precio { background: #1e293b; } a { color: #7dd3fc; } footer { color: #94a3b8; border-color: #334155; } }
 </style>
 </head>
 <body>

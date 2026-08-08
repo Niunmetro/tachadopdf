@@ -6,10 +6,22 @@
 :root {
   --tinta: #0f172a;
   --tinta-suave: #475569;
-  --gris: #94a3b8;
+  /* --gris era #94a3b8: un gris pensado para tema OSCURO aplicado tal cual sobre blanco, donde
+     da 2,56:1. Y le habia tocado, por casualidad, a las dos frases que peor pueden faltar: la que
+     le dice al visitante «esto es para ti» (.hero__nicho, el reconocimiento del comprador en una
+     landing de anuncio) y la que sostiene la promesa central del producto —que el documento no
+     sale del navegador— junto con la licencia (.pie). A 2,56:1 desaparecen en cualquier pantalla
+     con reflejos. */
+  --gris: #64748b;
   --linea: #e2e8f0;
   --fondo: #f8fafc;
   --acento: #0284c7;
+  /* Color de ENLACE, separado del acento. El acento (#0284c7) vive de fondo bajo texto blanco y
+     ahi funciona, pero como color de texto sobre blanco da 4,10:1 y no llega al 4,5 que necesita.
+     Y donde no habia regla ninguna —la lista de guias y el pie de la portada— el navegador ponia
+     su azul por defecto (#0000EE) subrayado: HTML crudo de 1996 dentro de una pagina cuidada, y
+     justo donde el visitante va a profundizar. */
+  --enlace: #0369a1;
   --acento-oscuro: #075985;
   --verde: #16a34a;
   --rojo: #b91c1c;
@@ -27,6 +39,10 @@ body {
   background: #fff;
   line-height: 1.6;
 }
+
+/* Un SOLO color de enlace en toda la superficie clara. El subrayado se conserva: es la unica
+   señal no cromatica que tiene un enlace. */
+a { color: var(--enlace); }
 
 #app { max-width: 880px; margin: 0 auto; padding: 0 20px 64px; }
 
@@ -160,8 +176,8 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   white-space: pre-wrap; font-family: var(--fuente); font-size: 13.5px;
   color: var(--tinta-suave); margin: 0 0 16px; padding: 0 2px;
 }
-.pie { font-size: 12.5px; color: var(--gris); margin-top: 22px; }
-.pie a { color: var(--gris); }
+.pie { font-size: 12.5px; color: var(--tinta-suave); margin-top: 22px; }
+.pie a { color: var(--enlace); }
 
 @media (max-width: 640px) {
   .hero { padding: 32px 0 24px; }
@@ -199,7 +215,7 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   font-size: 14px;
 }
 .idiomas__actual { font-weight: 700; color: var(--tinta); }
-.idiomas__enlace { color: var(--acento); text-decoration: none; }
+.idiomas__enlace { color: var(--enlace); text-decoration: none; }
 .idiomas__enlace:hover { text-decoration: underline; }
 
 /* ---------- Datos detectados sobre el documento ----------
