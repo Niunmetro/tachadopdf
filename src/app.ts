@@ -40,14 +40,26 @@ export function canDownloadBatch(files: DownloadableFile[], checkboxConfirmed: b
   return files.length > 0 && files.every((f) => f.verify.clean) && checkboxConfirmed;
 }
 
+/**
+ * Nombre del informe a partir del nombre del documento. El documento tachado y su informe se
+ * descargaban con el MISMO nombre: el usuario recibia `acta.pdf` y `acta (1).pdf` sin saber cual
+ * era cual — y el informe ES el producto.
+ */
+export function reportFileName(fileName: string, sufijo: string): string {
+  const punto = fileName.lastIndexOf('.');
+  if (punto <= 0) return `${fileName}-${sufijo}.pdf`;
+  return `${fileName.slice(0, punto)}-${sufijo}${fileName.slice(punto)}`;
+}
+
 export function performBatchDownload(
   files: DownloadableFile[],
   checkboxConfirmed: boolean,
   download: (bytes: Uint8Array, name: string) => void,
+  sufijoInforme: string,
 ): void {
   if (!canDownloadBatch(files, checkboxConfirmed)) return;
   for (const f of files) {
     download(f.cleanedBytes, f.fileName);
-    download(f.reportBytes, f.fileName);
+    download(f.reportBytes, reportFileName(f.fileName, sufijoInforme));
   }
 }

@@ -7,7 +7,17 @@ import { loadPdf, type PdfDoc } from './engine';
 import { extractMetadataStrings, stripMetadata } from './metadata';
 import { verifyRedaction } from './verify';
 
-const ALL_PATTERNS: PatternKind[] = ['dni', 'nie', 'iban', 'nuss', 'telefono', 'email'];
+// Los SIETE tipos que detect() reconoce. Faltaba 'catastro': el informe declaraba menos
+// patrones buscados de los que de verdad se buscan y se verifican.
+const ALL_PATTERNS: PatternKind[] = [
+  'dni',
+  'nie',
+  'iban',
+  'nuss',
+  'telefono',
+  'email',
+  'catastro',
+];
 
 export interface ProcessInput {
   bytes: Uint8Array;
@@ -131,6 +141,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     boxesPerPage,
     metadataRemoved: removed,
     scannedPages: visualReviewPages,
+    unverifiableManualPages,
     freeVersion: input.freeVersion,
     verify,
   };

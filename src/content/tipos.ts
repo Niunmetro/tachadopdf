@@ -57,6 +57,15 @@ export interface CopiaInforme {
   subZonas: string;
   subMetadatos: string;
   subEscaneadas: string;
+  // `unverifiableManualPages` se calculaba y se tiraba: el informe podia estampar VERIFICADO
+  // sobre un documento cuyos tachados manuales NUNCA fueron verificables (una caja sobre una
+  // pagina sin texto no deja nada que releer). El peor fallo posible es un falso verde.
+  subNoVerificables: string;
+  noVerificablePagina: (pagina: number) => string;
+  /** Va DELANTE de la frase positiva y con un CONTADOR, no con la lista: encabezar con «no hay
+   *  residuos» es lo que hace que el aviso se lea de refilon, y la lista podria desbordar el
+   *  ancho del sello. El detalle por pagina va en su propia seccion del informe. */
+  lineaOkConNoVerificables: (cuantas: number) => string;
   patronLimpio: (etiqueta: string) => string;
   patronSucio: (etiqueta: string, ocurrencias: number, paginas: string) => string;
   zonasPagina: (pagina: number, cuenta: number) => string;
@@ -103,6 +112,8 @@ export interface CopiaApp {
   presets: Record<DocumentPreset, string>;
   checkboxRevisado: string;
   botonDescargar: string;
+  /** Sufijo del nombre de fichero del informe: `acta.pdf` -> `acta-informe.pdf`. */
+  sufijoInforme: string;
   comprarPro: string;
   comprarProCuotaAgotada: (limite: number) => string;
   cuotaPro: string;
@@ -121,4 +132,5 @@ export interface CopiaApp {
   paginaEscaneada: (numero: number) => string;
   tacharTodas: (valor: string, ocurrencias: number) => string;
   seleccionarHits: (pagina: number) => string;
+  quitarTachado: string;
 }

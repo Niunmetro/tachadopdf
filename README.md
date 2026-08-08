@@ -35,10 +35,11 @@ marcadas.
 
 ## Gratis y Pro
 
-- **Gratis**: 3 documentos al mes, de hasta 3 páginas por documento (`FREE_MAX_PAGES`), con todas
-  las funciones (incluida la detección automática). El informe lleva una línea "Generado con
-  TachadoPDF (versión gratuita)". El contador mensual vive en IndexedDB y es reseteable (no es un
-  muro); el tope de páginas SÍ es un muro robusto que empuja el trabajo real hacia Pro.
+- **Gratis**: 5 documentos al mes (`FREE_MONTHLY_LIMIT`), de hasta 3 páginas por documento
+  (`FREE_MAX_PAGES`), con todas las funciones (incluida la detección automática). El informe
+  lleva una línea "Generado con TachadoPDF (versión gratuita)" **y una marca de agua DEMO a
+  página completa**. El contador mensual vive en IndexedDB y es reseteable (no es un muro); el
+  tope de páginas SÍ es un muro robusto que empuja el trabajo real hacia Pro.
 - **Pro** (pago único): documentos y páginas ilimitados, procesado de varios archivos en lote, e
   informe sin esa línea. La licencia se compra y verifica a través de Gumroad.
 

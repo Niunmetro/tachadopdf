@@ -57,6 +57,7 @@ const APP_ES: CopiaApp = {
   },
   checkboxRevisado: CHECKBOX_LABEL,
   botonDescargar: 'Descargar documentos e informes',
+  sufijoInforme: 'informe',
   comprarPro: `Comprar Pro — ${PRECIO_PRO} (pago único)`,
   comprarProCuotaAgotada: (limite) =>
     `Has agotado los ${limite} documentos gratis de este mes · Comprar Pro — ${PRECIO_PRO} (pago único)`,
@@ -86,6 +87,7 @@ const APP_ES: CopiaApp = {
   tacharTodas: (valor, ocurrencias) =>
     `Tachar todas las apariciones de «${valor}» (${ocurrencias})`,
   seleccionarHits: (pagina) => `Página ${pagina}: seleccionar todos los hits`,
+  quitarTachado: 'Quitar este tachado',
 };
 
 const INFORME_ES: CopiaInforme = {
@@ -107,6 +109,11 @@ const INFORME_ES: CopiaInforme = {
   subZonas: 'Zonas tachadas por página',
   subMetadatos: 'Metadatos eliminados',
   subEscaneadas: 'Páginas sin capa de texto',
+  subNoVerificables: 'Tachados que no se han podido verificar',
+  noVerificablePagina: (pagina) =>
+    `Página ${pagina}: la zona tachada no contenía texto extraíble, así que el borrado no se ha podido confirmar releyendo el archivo. Revísala visualmente.`,
+  lineaOkConNoVerificables: (cuantas) =>
+    `AVISO: el tachado de ${cuantas} página(s) no se ha podido verificar (detalle abajo).`,
   patronLimpio: (etiqueta) => `${etiqueta}: 0 ocurrencias en el texto extraíble`,
   patronSucio: (etiqueta, ocurrencias, paginas) =>
     `${etiqueta}: ${ocurrencias} ocurrencia(s) en el texto extraíble (páginas: ${paginas})`,

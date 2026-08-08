@@ -105,6 +105,7 @@ const APP_EN: CopiaApp = {
   },
   checkboxRevisado: 'I have reviewed the finished document visually, page by page',
   botonDescargar: 'Download documents and reports',
+  sufijoInforme: 'report',
   comprarPro: `Get Pro — ${PRECIO_PRO} (one-time)`,
   comprarProCuotaAgotada: (limite) =>
     `You've used your ${limite} free documents this month · Get Pro — ${PRECIO_PRO} (one-time)`,
@@ -133,6 +134,7 @@ const APP_EN: CopiaApp = {
     `Page ${numero}: no text layer (scanned). No automatic detection here — redact the areas with data by hand.`,
   tacharTodas: (valor, ocurrencias) => `Redact all occurrences of "${valor}" (${ocurrencias})`,
   seleccionarHits: (pagina) => `Page ${pagina}: select all detected items`,
+  quitarTachado: 'Remove this redaction',
 };
 
 const INFORME_EN: CopiaInforme = {
@@ -155,6 +157,11 @@ const INFORME_EN: CopiaInforme = {
   subZonas: 'Areas redacted, by page',
   subMetadatos: 'Metadata removed',
   subEscaneadas: 'Pages with no text layer',
+  subNoVerificables: 'Redactions that could not be verified',
+  noVerificablePagina: (pagina) =>
+    `Page ${pagina}: the redacted area contained no extractable text, so removal could not be confirmed by re-reading the file. Check this page visually.`,
+  lineaOkConNoVerificables: (cuantas) =>
+    `NOTE: redactions on ${cuantas} page(s) could not be verified (details below).`,
   patronLimpio: (etiqueta) => `${etiqueta}: 0 occurrences in extractable text`,
   patronSucio: (etiqueta, ocurrencias, paginas) =>
     `${etiqueta}: ${ocurrencias} occurrence(s) in extractable text (pages: ${paginas})`,

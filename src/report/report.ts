@@ -148,7 +148,17 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   }
   write(clean ? copia.selloOk : copia.selloMal, MARGIN + 54, y - 24, 13, bold, fg);
   if (clean) {
-    write(copia.lineaOk, MARGIN + 54, y - 42, 9.3, font, SOFT_INK);
+    const noVerificables = data.unverifiableManualPages;
+    write(
+      noVerificables.length === 0
+        ? copia.lineaOk
+        : copia.lineaOkConNoVerificables(noVerificables.length),
+      MARGIN + 54,
+      y - 42,
+      9.3,
+      font,
+      SOFT_INK,
+    );
   } else {
     write(copia.lineaMal, MARGIN + 54, y - 42, 9.7, bold, BAD);
   }
@@ -199,6 +209,18 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   } else {
     for (const p of data.scannedPages) {
       bullet(copia.paginaEscaneada(p + 1), BAD);
+    }
+  }
+  y -= 2;
+
+  // Una caja manual sobre una pagina sin texto SI borra pixeles, pero no deja nada que releer:
+  // no se puede confirmar. Callarlo seria dar por verificado lo que no lo esta.
+  subLabel(copia.subNoVerificables);
+  if (data.unverifiableManualPages.length === 0) {
+    bullet(copia.ninguna, MUTED);
+  } else {
+    for (const p of data.unverifiableManualPages) {
+      bullet(copia.noVerificablePagina(p + 1), BAD);
     }
   }
 

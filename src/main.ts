@@ -178,6 +178,7 @@ async function renderFileVisor(
             page: entry.page,
             getState: entry.getState,
             setState: entry.setState,
+            etiquetaQuitar: copia.quitarTachado,
           });
         }
       });
@@ -238,11 +239,25 @@ async function renderFileVisor(
       for (let i = start; i < end; i++) fileWork.selected[i] = s.selected[i - start] ?? false;
       fileWork.manual = s.manual;
       renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
-      renderManualBoxes({ container: pageContainer, viewport, page, getState, setState });
+      renderManualBoxes({
+        container: pageContainer,
+        viewport,
+        page,
+        getState,
+        setState,
+        etiquetaQuitar: copia.quitarTachado,
+      });
     };
 
     renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
-    renderManualBoxes({ container: pageContainer, viewport, page, getState, setState });
+    renderManualBoxes({
+        container: pageContainer,
+        viewport,
+        page,
+        getState,
+        setState,
+        etiquetaQuitar: copia.quitarTachado,
+      });
     attachManualBoxDrawing({ canvas, viewport, page, getState, setState });
     pageEntries.push({ page, container: pageContainer, viewport, getState, setState });
 
@@ -530,7 +545,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
         : copia.residuosEnLote;
       refreshDownloadButton();
 
-      performBatchDownload(processedFiles, state.checkboxConfirmed, downloadBytes);
+      performBatchDownload(processedFiles, state.checkboxConfirmed, downloadBytes, copia.sufijoInforme);
     })();
   });
 

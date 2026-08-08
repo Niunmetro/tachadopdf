@@ -17,6 +17,7 @@ const BASE_DATA: ReportData = {
   boxesPerPage: [{ page: 0, count: 2 }],
   metadataRemoved: ['Title', 'Author', 'XMP'],
   scannedPages: [1],
+  unverifiableManualPages: [],
   freeVersion: true,
   verify: { clean: true, residues: [] },
 };
@@ -133,5 +134,28 @@ describe('computeSha256', () => {
   it('devuelve hexadecimal en minúsculas', async () => {
     const hash = await computeSha256(new TextEncoder().encode('TachadoPDF'));
     expect(hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+// `unverifiableManualPages` se calculaba en el pipeline y se TIRABA: no llegaba al informe. Una
+// caja manual sobre una pagina sin texto borra pixeles pero no deja nada que releer, asi que el
+// informe podia estampar VERIFICADO sobre un tachado que nunca fue verificable. El peor fallo
+// posible es un falso verde.
+describe('tachados no verificables', () => {
+  it('sin paginas no verificables, el informe lo dice explicitamente y el sello no se matiza', async () => {
+    const bytes = await buildReport(BASE_DATA, COPIA);
+    const texto = await extractNormalizedText(bytes);
+    expect(texto).toContain(COPIA.subNoVerificables);
+    expect(texto).toContain(COPIA.lineaOk);
+  });
+
+  it('con paginas no verificables, las lista y matiza la linea del sello VERIFICADO', async () => {
+    const bytes = await buildReport({ ...BASE_DATA, unverifiableManualPages: [0, 2] }, COPIA);
+    const texto = await extractNormalizedText(bytes);
+    expect(texto).toContain(COPIA.noVerificablePagina(1).slice(0, 40));
+    expect(texto).toContain(COPIA.noVerificablePagina(3).slice(0, 40));
+    // La frase «no hay nada extraible» a secas seria un verde sin matizar.
+    expect(texto).not.toContain(COPIA.lineaOk);
+    expect(texto).toContain(COPIA.lineaOkConNoVerificables(2));
   });
 });

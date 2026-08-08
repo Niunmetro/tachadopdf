@@ -191,7 +191,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
       {
         t: 'p',
         texto:
-          'A subject access request is the one disclosure where the reader is guaranteed to look hard at every line, has a statutory right to complain, and already suspects you of something. It also has a clock: normally one month.',
+          'A subject access request is the one disclosure where the reader will examine every line, has a statutory right to complain, and already suspects you of something. It also has a clock: normally one month.',
       },
       { t: 'h2', texto: 'Why the risk is concentrated here' },
       {
