@@ -13,6 +13,73 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · auditoria · Integracion de `feat/i18n-contenido-indexable` en master
+
+**Hecho:** revision de integracion de la rama del ingles y fusion `--no-ff` a master. Se verifico
+el ARTEFACTO CONSTRUIDO, no la fuente: `npm run build` y despues barrido fichero a fichero de las
+18 paginas de `dist/`.
+
+- *Contenido indexable, medido en `dist/`.* Ninguna pagina se publica vacia. Texto visible sin
+  ejecutar JavaScript: home ES 7.725 caracteres, home EN 10.227, guias entre 1.857 y 3.323.
+  Las dos mas cortas son las paginas-herramienta (`/comprobador/` 746, `/en/checker/` 631): son
+  cortas por diseño, pero llevan su H1, su intro y su aviso de alcance DENTRO del HTML.
+- *Vocabulario prohibido: 0 infracciones sobre los 26 ficheros de `dist/`* — las 18 paginas mas
+  los bundles JS, el CSS, el sitemap y el robots. Se barrio con el criterio ES (subcadena:
+  anonimiz, certific, «rgpd garantizado», «inteligencia artificial», « ia ») Y el EN con fronteras
+  de palabra (anonymi, certif, GDPR/HIPAA/CCPA compliant, «AI» suelto sensible a mayusculas,
+  AI-powered, machine learning, guarantee sin negacion, teatro de confianza, reclamos de
+  admisibilidad, promesas de ingresos). Se barrieron TAMBIEN los bundles, que el guardian del
+  repo no mira porque solo recorre `.html` y los `.ts` de la copia inglesa.
+- *hreflang: 18/18 correcto, fichero a fichero, no por muestreo.* Las dos parejas (home ES/EN y
+  comprobador/checker) se apuntan en los dos sentidos, ambas declaran `x-default` al español y
+  las 18 tienen canonical auto-referente. Las 14 paginas sin hermana no declaran alternos, que es
+  lo correcto: emparejar una guia de sanciones de la AEPD con una de la Rule 5.2 seria mentir.
+- *CNAME: presente en `dist/` tras un `npm run build` a secas.* Es el punto que costo 4 dias.
+- *CSP: 18/18 por meta, y cero recursos externos en las paginas construidas.* Los unicos hosts
+  absolutos de los bundles son `api.gumroad.com` (egress permitido), el enlace de compra de
+  Gumroad y el propio dominio.
+
+**Decisiones y porques:**
+- *El `auditor-interno` se ejecuto a mano, con su procedimiento, porque en este entorno no habia
+  herramienta para lanzar subagentes.* Se dice en voz alta en vez de dejar el paso por hecho.
+- *No se toco NADA de comportamiento.* Los tres hallazgos de la revision son un fallo de
+  documentacion, un guardian que falta y una cita sin contrastar: ninguno justifica cambiar
+  codigo en la integracion. `config.ts` no se ha tocado, asi que la fusion no cruza ninguna ruta
+  sensible de precios.
+- *Se corrigieron tres cifras falsas de `docs/ESTADO.md`*: decia «20 URLs (10 ES + 10 EN)» cuando
+  son **18 (10 ES + 8 EN)** — el ingles no tiene las dos landings de sector, que estan congeladas
+  por la PARADA 2 —, «CSP en las 20 paginas» y «616/616» cuando la suite da **614/614**. Un estado
+  con cifras inventadas es peor que no tener estado: la proxima sesion lo lee como verdad.
+
+**Hallazgo nuevo, y corrige lo que decia el estado anterior:**
+`origin/gh-pages` sirve `.claude/agents/*`, `.claude/hooks/guardia.sh`, `.claude/settings.json`,
+`.claude/launch.json`, `.github/pull_request_template.md`, `.gitignore` y un `public/.nojekyll`
+suelto. Eso ya constaba. Lo que NO constaba, y cambia la instruccion al owner:
+1. **No son credenciales.** Se busco forma de secreto en los tres ficheros: las unicas
+   coincidencias son la palabra «secret» dentro de la propia lista negra del hook, y cero cadenas
+   largas tipo clave. Es higiene, no incidente — decirlo importa tanto como la alarma.
+2. **No se limpia solo.** `gh-pages` pasa `dot: options.dotfiles` al glob de ORIGEN (linea 111 de
+   `lib/index.js`) pero NO al glob de BORRADO (linea 183). Reproducido con el propio globby
+   instalado: con patron `'.'` devuelve `index.html`; con `dot:true` devuelve ademas `.gitignore`
+   y `.claude/**`. **El paquete sabe subir dotfiles y no sabe borrarlos: sobreviven a todos los
+   despliegues.** El estado anterior decia «limpiar la rama y volver a publicar», que se lee como
+   si publicar bastara. No basta. Arreglo de una vez: `git push origin --delete gh-pages` y luego
+   `npm run deploy-pages`.
+   No se endurece el script de deploy: es el fichero cuya rotura costo 4 dias, el cambio no se
+   puede probar sin desplegar de verdad, y el unico camino que mete esos ficheros es publicar algo
+   que no sea `dist/`.
+
+**Bloqueos / pendiente:** las seis PARADAS del owner siguen intactas en `docs/ESTADO.md` (precio y
+moneda en ingles; las dos landings que venden 149 €/año y una garantia que los Terminos no
+recogen; el bloque completo del aviso legal ingles; alcance de la deteccion inglesa; `CLAUDE.md`
+linea 5; y la limpieza de `gh-pages`). Se añaden tres residuales verificados y NO arreglados, con
+su porque, en la seccion nueva de `docs/ESTADO.md`. Auditoria Codex externa: sigue pendiente.
+
+**Enlaces:** merge `--no-ff` de `feat/i18n-contenido-indexable` en `master`. **Sin desplegar**:
+publicar es decision del owner.
+
+---
+
 ## 2026-08-08 · ingeniero · La web en ingles, y la portada deja de publicarse vacia
 
 **Hecho:** rama `feat/i18n-contenido-indexable`, cuatro commits.
