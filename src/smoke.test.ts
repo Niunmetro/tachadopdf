@@ -33,6 +33,8 @@ describe('src/types.ts', () => {
         formularios: 'noHabia',
         adjuntos: 'noHabia',
         marcadores: 'noHabia',
+        alternativos: 'noHabia',
+        ocultos: 'noHabia',
       },
       paginasSinCapaDeTexto: [],
       paginasImagenCompleta: [],

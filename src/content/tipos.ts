@@ -93,6 +93,8 @@ export interface CopiaInforme {
   objetoFormularios: string;
   objetoAdjuntos: string;
   objetoMarcadores: string;
+  objetoAlternativos: string;
+  objetoOcultos: string;
   estadoEliminado: string;
   estadoNoHabia: string;
   estadoNoExaminado: string;

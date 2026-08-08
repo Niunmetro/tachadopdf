@@ -142,6 +142,8 @@ const INFORME_ES: CopiaInforme = {
   objetoFormularios: 'Campos de formulario',
   objetoAdjuntos: 'Ficheros adjuntos',
   objetoMarcadores: 'Marcadores del documento (índice)',
+  objetoAlternativos: 'Textos alternativos y etiquetas de accesibilidad',
+  objetoOcultos: 'Miniaturas de página, XMP anidado y datos privados de aplicación',
   estadoEliminado: 'eliminado del archivo',
   estadoNoHabia: 'no había',
   estadoNoExaminado: 'NO EXAMINADO',

@@ -123,3 +123,61 @@ export async function inyectarResiduo(base: Uint8Array, residuo: string): Promis
   page.drawText(residuo, { x: 50, y: 20, size: 10, font });
   return doc.save();
 }
+
+/**
+ * PDF con los escondites que el mapa de falsos verdes confirmo alcanzables: XMP colgado de un
+ * XObject (no del documento ni de la pagina), miniatura de pagina, datos privados de aplicacion
+ * y texto alternativo del arbol de estructura. Word y LibreOffice generan los tres ultimos solos.
+ * El mismo dato se planta en los cuatro para poder comprobar los cuatro de una pasada.
+ */
+export async function pdfConEscondites(dato: string): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const page = doc.addPage(PAGE_SIZE);
+  page.drawText('Documento con escondites.', { x: 50, y: 780, size: 14, font });
+
+  const xmp = doc.context.stream(
+    `<?xpacket begin=""?><x:xmpmeta xmlns:x="adobe:ns:meta/">${dato}</x:xmpmeta><?xpacket end="w"?>`,
+    { Type: 'Metadata', Subtype: 'XML' },
+  );
+  const xmpRef = doc.context.register(xmp);
+  const form = doc.context.stream('', {
+    Type: 'XObject',
+    Subtype: 'Form',
+    BBox: [0, 0, 10, 10],
+  });
+  form.dict.set(PDFName.of('Metadata'), xmpRef);
+  page.node.setXObject(PDFName.of('Oculto'), doc.context.register(form));
+
+  const thumb = doc.context.stream(`miniatura ${dato}`, {
+    Type: 'XObject',
+    Subtype: 'Image',
+    Width: 1,
+    Height: 1,
+    ColorSpace: 'DeviceGray',
+    BitsPerComponent: 8,
+  });
+  page.node.set(PDFName.of('Thumb'), doc.context.register(thumb));
+
+  page.node.set(
+    PDFName.of('PieceInfo'),
+    doc.context.obj({
+      MiAplicacion: { LastModified: PDFString.of('D:20260101000000Z'), Private: PDFString.of(dato) },
+    }),
+  );
+
+  const elemRef = doc.context.nextRef();
+  const structRef = doc.context.nextRef();
+  doc.context.assign(
+    elemRef,
+    doc.context.obj({ Type: 'StructElem', S: 'Figure', P: structRef, Alt: PDFString.of(dato) }),
+  );
+  doc.context.assign(
+    structRef,
+    doc.context.obj({ Type: 'StructTreeRoot', K: elemRef }),
+  );
+  doc.catalog.set(PDFName.of('StructTreeRoot'), structRef);
+  doc.catalog.set(PDFName.of('MarkInfo'), doc.context.obj({ Marked: true }));
+
+  return doc.save();
+}

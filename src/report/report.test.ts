@@ -24,6 +24,8 @@ const BASE_DATA: ReportData = {
     formularios: 'noHabia',
     adjuntos: 'noHabia',
     marcadores: 'noHabia',
+    alternativos: 'noHabia',
+    ocultos: 'noHabia',
   },
   paginasSinCapaDeTexto: [1],
   paginasImagenCompleta: [],

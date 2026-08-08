@@ -187,6 +187,8 @@ const INFORME_EN: CopiaInforme = {
   objetoFormularios: 'Form fields',
   objetoAdjuntos: 'Attached files',
   objetoMarcadores: 'Document bookmarks (outline)',
+  objetoAlternativos: 'Alternative text and accessibility tags',
+  objetoOcultos: 'Page thumbnails, nested XMP and private application data',
   estadoEliminado: 'removed from the file',
   estadoNoHabia: 'none present',
   estadoNoExaminado: 'NOT EXAMINED',

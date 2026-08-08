@@ -27,6 +27,8 @@ function objetos(over: Partial<InventarioObjetos> = {}): InventarioObjetos {
     formularios: 'noHabia',
     adjuntos: 'noHabia',
     marcadores: 'noHabia',
+    alternativos: 'noHabia',
+    ocultos: 'noHabia',
   };
   return { ...base, ...over };
 }

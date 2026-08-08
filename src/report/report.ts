@@ -123,6 +123,8 @@ function etiquetaObjeto(copia: CopiaInforme, categoria: (typeof CATEGORIAS_OBJET
     formularios: copia.objetoFormularios,
     adjuntos: copia.objetoAdjuntos,
     marcadores: copia.objetoMarcadores,
+    alternativos: copia.objetoAlternativos,
+    ocultos: copia.objetoOcultos,
   };
   return mapa[categoria];
 }

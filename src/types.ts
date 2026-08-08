@@ -51,6 +51,10 @@ export interface InventarioObjetos {
   formularios: EstadoObjeto;
   adjuntos: EstadoObjeto;
   marcadores: EstadoObjeto;
+  /** Textos alternativos y etiquetas de accesibilidad (`/Alt`, `/ActualText`, `/E`). */
+  alternativos: EstadoObjeto;
+  /** Miniaturas de pagina, XMP anidado en cualquier objeto y datos privados de aplicacion. */
+  ocultos: EstadoObjeto;
 }
 
 export const CATEGORIAS_OBJETO = [
@@ -60,6 +64,8 @@ export const CATEGORIAS_OBJETO = [
   'formularios',
   'adjuntos',
   'marcadores',
+  'alternativos',
+  'ocultos',
 ] as const satisfies readonly (keyof InventarioObjetos)[];
 
 export interface ReportData {

@@ -57,6 +57,97 @@ function outlineTitles(doc: mupdf.PDFDocument): string[] {
   return titulos;
 }
 
+/**
+ * Claves que llevan datos y que ningun lector muestra: se borran esten donde esten.
+ *
+ *  - `Metadata`: XMP. `stripMetadata` solo miraba `/Root` y cada `/Page`, asi que un paquete XMP
+ *    colgado de un XObject sobrevivia entero.
+ *  - `Thumb`: la miniatura de la pagina es un retrato de la pagina SIN tachar.
+ *  - `PieceInfo`: datos privados de la aplicacion que genero el PDF.
+ */
+const CLAVES_OCULTAS = ['Metadata', 'Thumb', 'PieceInfo'] as const;
+
+/** Texto de accesibilidad del arbol de estructura: es donde Word deja el «texto alternativo». */
+const CLAVES_TEXTO_ESTRUCTURA = ['Alt', 'ActualText', 'E'] as const;
+
+/**
+ * Barrido por NUMERO DE OBJETO, no por el arbol de paginas: el punto ciego era justamente que
+ * se recorrian dos sitios concretos y el dato estaba en un tercero. Devuelve si habia algo.
+ */
+function barrerClavesOcultas(doc: mupdf.PDFDocument): boolean {
+  let habia = false;
+  const total = doc.countObjects();
+  for (let num = 1; num < total; num++) {
+    const obj = doc.newIndirect(num).resolve();
+    if (!obj.isDictionary()) continue;
+    for (const clave of CLAVES_OCULTAS) {
+      if (obj.get(clave).isNull()) continue;
+      obj.delete(clave);
+      habia = true;
+    }
+  }
+  return habia;
+}
+
+/**
+ * Recorre el arbol de estructura (`/StructTreeRoot`). `leer` devuelve los textos alternativos;
+ * `borrar` los quita. Se recorre el arbol de verdad, y no todos los objetos, para no tocar
+ * claves homonimas de otras estructuras: `/E` y `/T` significan otra cosa fuera de aqui.
+ *
+ * El tope de nodos y la memoria de indirectos ya vistos no son adorno: un `/K` circular es un
+ * bucle infinito, y aqui entran ficheros de desconocidos.
+ */
+function recorrerArbolDeEstructura(
+  doc: mupdf.PDFDocument,
+  accion: 'leer' | 'borrar',
+): string[] {
+  const raiz = doc.getTrailer().get('Root').get('StructTreeRoot');
+  if (raiz.isNull()) return [];
+
+  const textos: string[] = [];
+  const vistos = new Set<number>();
+  const pendientes: mupdf.PDFObject[] = [raiz];
+  let nodos = 0;
+
+  while (pendientes.length > 0 && nodos < 20000) {
+    const nodo = pendientes.pop();
+    if (nodo === undefined || nodo.isNull()) continue;
+    nodos++;
+    if (nodo.isIndirect()) {
+      const numero = nodo.asIndirect();
+      if (vistos.has(numero)) continue;
+      vistos.add(numero);
+    }
+    if (nodo.isArray()) {
+      nodo.forEach((hijo) => pendientes.push(hijo));
+      continue;
+    }
+    if (!nodo.isDictionary()) continue;
+
+    for (const clave of CLAVES_TEXTO_ESTRUCTURA) {
+      const valor = nodo.get(clave);
+      if (valor.isNull()) continue;
+      if (valor.isString()) textos.push(valor.asString());
+      if (accion === 'borrar') nodo.delete(clave);
+    }
+    pendientes.push(nodo.get('K'));
+  }
+  return textos;
+}
+
+/** Igual que el barrido, pero sin tocar nada: se usa para comprobar que el borrado se aplico. */
+function tieneClavesOcultas(doc: mupdf.PDFDocument): boolean {
+  const total = doc.countObjects();
+  for (let num = 1; num < total; num++) {
+    const obj = doc.newIndirect(num).resolve();
+    if (!obj.isDictionary()) continue;
+    for (const clave of CLAVES_OCULTAS) {
+      if (!obj.get(clave).isNull()) return true;
+    }
+  }
+  return false;
+}
+
 function documentHasXmp(doc: mupdf.PDFDocument): boolean {
   const root = doc.getTrailer().get('Root');
   if (!root.get('Metadata').isNull()) return true;
@@ -80,6 +171,8 @@ export async function stripMetadata(
   let hadFormFields = false;
   let hadAttachments = false;
   let hadOutlines = false;
+  let hadStructText = false;
+  let hadHiddenKeys = false;
 
   try {
     const trailer = doc.getTrailer();
@@ -142,6 +235,15 @@ export async function stripMetadata(
       // enseñaria un panel vacio. Se quita el modo, no el documento.
       if (root.get('PageMode').asName() === 'UseOutlines') root.delete('PageMode');
     }
+
+    // Texto alternativo del arbol de estructura. Se pierde la descripcion de accesibilidad de
+    // las imagenes, y eso es un coste real; pero es el sitio donde Word deja el «texto
+    // alternativo» que el usuario escribio, y ahi es donde acaba el pie de una imagen escaneada.
+    // Un texto que ningun lector enseña y que la guarda no releia es un escondite, no una
+    // funcionalidad. Consta como categoria propia en el informe.
+    hadStructText = recorrerArbolDeEstructura(doc, 'borrar').length > 0;
+
+    hadHiddenKeys = barrerClavesOcultas(doc);
 
     cleaned = doc.saveToBuffer({ garbage: 4, compress: true }).asUint8Array().slice();
   } finally {
@@ -207,6 +309,11 @@ export async function stripMetadata(
         hadOutlines,
         !finalTrailer.get('Root').get('Outlines').isNull(),
       ),
+      alternativos: estadoTras(
+        hadStructText,
+        recorrerArbolDeEstructura(finalDoc, 'leer').length > 0,
+      ),
+      ocultos: estadoTras(hadHiddenKeys, tieneClavesOcultas(finalDoc)),
     };
   } finally {
     finalDoc.destroy();
@@ -257,6 +364,27 @@ export async function extractMetadataStrings(bytes: Uint8Array): Promise<string[
     }
 
     strings.push(...outlineTitles(doc));
+    strings.push(...recorrerArbolDeEstructura(doc, 'leer'));
+
+    // XMP alla donde este, no solo en `/Root` y en las paginas: el paquete colgado de un
+    // XObject era invisible para las dos lecturas de arriba.
+    const total = doc.countObjects();
+    for (let num = 1; num < total; num++) {
+      const obj = doc.newIndirect(num).resolve();
+      if (!obj.isDictionary()) continue;
+      const meta = obj.get('Metadata');
+      if (!meta.isNull() && meta.isStream()) strings.push(meta.readStream().asString());
+      const piece = obj.get('PieceInfo');
+      if (!piece.isNull()) {
+        piece.forEach((valor) => {
+          if (valor.isDictionary()) {
+            valor.forEach((v) => {
+              if (v.isString()) strings.push(v.asString());
+            });
+          }
+        });
+      }
+    }
 
     return strings;
   } finally {

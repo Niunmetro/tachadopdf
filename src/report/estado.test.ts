@@ -37,6 +37,8 @@ function objetos(marcadores: EstadoObjeto): InventarioObjetos {
     formularios: 'noHabia',
     adjuntos: 'noHabia',
     marcadores,
+    alternativos: 'noHabia',
+    ocultos: 'noHabia',
   };
 }
 
