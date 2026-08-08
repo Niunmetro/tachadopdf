@@ -1,6 +1,7 @@
-// @vitest-environment happy-dom
 import { describe, expect, it } from 'vitest';
-import { legalSections, renderLegalFooter } from './render';
+import { legalSections } from './render';
+import { generarPagina } from '../content/generar';
+import { paginaPorId } from '../content/registro';
 
 describe('legalSections', () => {
   const secciones = legalSections();
@@ -26,23 +27,33 @@ describe('legalSections', () => {
   });
 });
 
-describe('renderLegalFooter', () => {
-  it('incluye enlaces relativos a las landings de actas y nóminas', () => {
-    const root = document.createElement('div');
-    renderLegalFooter(root);
+// El pie legal y el índice de guías ya NO los pinta JavaScript: van en el HTML que emite el
+// generador, para que los lea también quien no ejecuta scripts (la LSSI exige acceso directo al
+// aviso legal). Las mismas invariantes de antes, comprobadas donde ahora viven.
+describe('pie legal en el HTML generado de la home', () => {
+  const home = paginaPorId('home');
+  if (home === undefined) throw new Error('falta la página "home" en el registro');
+  const html = generarPagina(home, 'es');
 
-    const hrefs = Array.from(root.querySelectorAll('a')).map((a) => a.getAttribute('href') ?? '');
-
-    expect(hrefs.some((href) => href.endsWith('actas/'))).toBe(true);
-    expect(hrefs.some((href) => href.endsWith('nominas/'))).toBe(true);
+  it('los enlaces a las landings de actas y nóminas son relativos al documento', () => {
+    expect(html).toContain('<a href="actas/">');
+    expect(html).toContain('<a href="nominas/">');
   });
 
-  it('incluye enlace relativo a comprobador', () => {
-    const root = document.createElement('div');
-    renderLegalFooter(root);
+  it('el enlace al comprobador es relativo al documento', () => {
+    expect(html).toContain('<a href="comprobador/">');
+  });
 
-    const hrefs = Array.from(root.querySelectorAll('a')).map((a) => a.getAttribute('href') ?? '');
+  it('ningún enlace de navegación empieza por "/" (rompería la base de emergencia)', () => {
+    const hrefs = Array.from(html.matchAll(/<a [^>]*href="([^"]+)"/g)).map((m) => m[1] ?? '');
+    expect(hrefs.length).toBeGreaterThan(0);
+    expect(hrefs.filter((h) => h.startsWith('/'))).toEqual([]);
+  });
 
-    expect(hrefs.some((href) => href.endsWith('comprobador/'))).toBe(true);
+  it('las tres secciones legales están en el HTML con su cuerpo íntegro', () => {
+    for (const seccion of legalSections()) {
+      expect(html).toContain(`<details id="${seccion.id}">`);
+      expect(html).toContain(seccion.cuerpo.slice(0, 60));
+    }
   });
 });

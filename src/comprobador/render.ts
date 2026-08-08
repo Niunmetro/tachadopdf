@@ -17,6 +17,12 @@ const AVISO_ESCANEADAS =
 
 const CTA_TEXT = 'Táchalos ahora (gratis, 5 documentos al mes)';
 
+// El destino del CTA lo publica el HTML generado en `data-cta-href`, ya calculado RELATIVO AL
+// DOCUMENTO. Antes era '/?utm_source=comprobador': una ruta raíz-absoluta que, con la base de
+// emergencia '/tachadopdf/', apunta fuera del sitio — justo en el modo pensado para cuando el
+// dominio está caído.
+const CTA_HREF_POR_DEFECTO = '../?utm_source=comprobador';
+
 export function renderResumen(root: HTMLElement, resumen: ResumenComprobacion): void {
   root.textContent = '';
 
@@ -72,7 +78,7 @@ export function renderResumen(root: HTMLElement, resumen: ResumenComprobacion): 
 
   const cta = document.createElement('a');
   cta.className = 'cp-cta';
-  cta.href = '/?utm_source=comprobador';
+  cta.href = root.dataset['ctaHref'] ?? CTA_HREF_POR_DEFECTO;
   cta.textContent = CTA_TEXT;
   root.appendChild(cta);
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.tachadopdf.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/tachar-dni-pdf/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/actas/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/nominas/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.tachadopdf.com/comprobador/</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url><loc>https://www.tachadopdf.com/</loc></url>
+  <url><loc>https://www.tachadopdf.com/comprobador/</loc></url>
+  <url><loc>https://www.tachadopdf.com/actas/</loc></url>
+  <url><loc>https://www.tachadopdf.com/nominas/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/tachar-dni-pdf/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/</loc></url>
+  <url><loc>https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/</loc></url>
 </urlset>

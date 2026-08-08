@@ -10,15 +10,6 @@ import {
 import { PRECIO_PRO, PRO_URL } from './config';
 import { FREE_MAX_PAGES, getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
-import { renderGuias, renderLegalFooter } from './legal/render';
-import {
-  AVISO_PRINCIPAL,
-  FAQ,
-  LANDING_CASOS_USO_TEXTO,
-  LANDING_DOLOR,
-  LANDING_SUBTITULO,
-  LANDING_TITULAR,
-} from './legal/textos';
 import { detect } from './detect/patterns';
 import { patternsForPreset, type DocumentPreset } from './detect/presets';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
@@ -273,73 +264,23 @@ function downloadBytes(bytes: Uint8Array, fileName: string): void {
   URL.revokeObjectURL(url);
 }
 
-/** El hero: lo primero que ve un desconocido. Sin esto la app era HTML crudo que no explicaba
- *  qué es ni por qué pagar — y este comprador compra CONFIANZA antes que funciones. Los textos
- *  vienen de legal/textos.ts (fuente única, ya filtrada de vocabulario prohibido). */
-function renderHero(root: HTMLElement): void {
-  const hero = el('header', { class: 'hero' });
-
-  const marca = el('p', { class: 'hero__marca' });
-  marca.textContent = 'TachadoPDF';
-
-  const titular = el('h1', { class: 'hero__titular' });
-  titular.textContent = LANDING_TITULAR;
-
-  // El dolor ANTES que la solución: quien no sabe que esto es sancionable no siente
-  // urgencia. Cifras reales de la AEPD (verificadas), nada de miedo inventado.
-  const dolor = el('p', { class: 'hero__dolor' });
-  dolor.textContent = LANDING_DOLOR;
-
-  const sub = el('p', { class: 'hero__sub' });
-  sub.textContent = LANDING_SUBTITULO;
-
-  const bullets = el('ul', { class: 'hero__bullets' });
-  for (const t of [
-    'El texto se elimina del archivo, no se tapa con un rectángulo negro.',
-    'Todo ocurre en tu navegador: el documento no se sube a ningún servidor.',
-    'Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.',
-    'Informe de comprobación técnica descargable para tu expediente.',
-  ]) {
-    const li = el('li');
-    li.textContent = t;
-    bullets.appendChild(li);
-  }
-
-  const nicho = el('p', { class: 'hero__nicho' });
-  nicho.textContent = LANDING_CASOS_USO_TEXTO;
-
-  hero.append(marca, titular, dolor, sub, bullets, nicho);
-  root.appendChild(hero);
-}
-
-/** Preguntas frecuentes: responden las objeciones que frenan la compra (Acrobat, seguridad, si de
- *  verdad borra). Se renderiza como <details> para no ocupar pantalla; el contenido está en el DOM
- *  desde el inicio (bueno para SEO) y a un clic para el usuario. */
-function renderFaq(root: HTMLElement): void {
-  const doc = root.ownerDocument;
-  const section = doc.createElement('section');
-  section.className = 'panel faq';
-  section.setAttribute('aria-label', 'Preguntas frecuentes');
-  const titulo = doc.createElement('h2');
-  titulo.className = 'panel__titulo';
-  titulo.textContent = 'Preguntas frecuentes';
-  section.appendChild(titulo);
-  for (const item of FAQ) {
-    const details = doc.createElement('details');
-    details.className = 'faq__item';
-    const summary = doc.createElement('summary');
-    summary.textContent = item.pregunta;
-    const respuesta = doc.createElement('p');
-    respuesta.textContent = item.respuesta;
-    details.append(summary, respuesta);
-    section.appendChild(details);
-  }
-  root.appendChild(section);
+/**
+ * Localiza un hueco del HTML estático. El texto de la página (hero, FAQ, guías, legales) YA VIENE
+ * en el HTML que emite src/content/generar.ts: la aplicación solo monta aquí dentro los controles
+ * interactivos. Si el hueco no existiera —solo posible sirviendo un HTML que no salga del
+ * generador— se crea, para que la herramienta siga funcionando aunque la página esté mal.
+ */
+function hueco(root: HTMLElement, id: string): HTMLElement {
+  const encontrado = root.querySelector(`#${id}`);
+  if (encontrado instanceof HTMLElement) return encontrado;
+  const creado = el('section', { class: 'panel', id });
+  root.appendChild(creado);
+  return creado;
 }
 
 export function initApp(root: HTMLElement): void {
-  root.innerHTML = '';
-  renderHero(root);
+  const panelTrabajo = hueco(root, 'herramienta');
+  const panelPro = hueco(root, 'licencia');
 
   const licenseInput = el('input', { type: 'text', placeholder: 'Clave de licencia Pro (Gumroad)' });
   const licenseButton = el('button', { type: 'button' });
@@ -366,9 +307,6 @@ export function initApp(root: HTMLElement): void {
   downloadButton.textContent = 'Descargar documentos e informes';
   downloadButton.setAttribute('disabled', 'true');
 
-  const scopeNotice = el('p', { class: 'aviso-principal' });
-  scopeNotice.textContent = AVISO_PRINCIPAL;
-
   // Selector de tipo de documento: solo cambia qué categorías vienen premarcadas al montar el
   // visor de un fichero (T2). No altera la detección.
   const presetLabel = el('label', { for: 'preset-tipo-documento' });
@@ -387,31 +325,21 @@ export function initApp(root: HTMLElement): void {
   });
   proLink.textContent = `Comprar Pro — ${PRECIO_PRO} (pago único)`;
 
-  // Panel 1: el trabajo (subir el PDF y tacharlo).
-  const panelTrabajo = el('section', { class: 'panel' });
-  const tituloTrabajo = el('h2', { class: 'panel__titulo' });
-  tituloTrabajo.textContent = 'Tacha tu documento';
+  // Panel 1: el trabajo (subir el PDF y tacharlo). El título y el aviso de alcance ya vienen en
+  // el HTML estático; aquí solo se cuelgan los controles.
   const filaArchivo = el('div', { class: 'fila' });
   filaArchivo.append(fileInput, ejemploBtn);
   const confirmacion = el('div', { class: 'confirmacion' });
   confirmacion.append(checkbox, checkboxLabel);
   panelTrabajo.append(
-    tituloTrabajo, scopeNotice, filaPreset, filaArchivo, pistaEjemplo, quotaStatus,
+    filaPreset, filaArchivo, pistaEjemplo, quotaStatus,
     filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus,
   );
 
   // Panel 2: licencia y compra (separado del trabajo: no estorba a quien solo prueba).
-  const panelPro = el('section', { class: 'panel' });
-  const tituloPro = el('h2', { class: 'panel__titulo' });
-  tituloPro.textContent = 'Versión Pro';
   const filaLicencia = el('div', { class: 'fila' });
   filaLicencia.append(licenseInput, licenseButton);
-  panelPro.append(tituloPro, filaLicencia, licenseStatus, proLink);
-
-  root.append(panelTrabajo, panelPro);
-  renderFaq(root);
-  renderGuias(root);
-  renderLegalFooter(root);
+  panelPro.append(filaLicencia, licenseStatus, proLink);
 
   function refreshQuotaAndBatchUI(): void {
     if (canBatch(state)) {
@@ -555,9 +483,11 @@ export function initApp(root: HTMLElement): void {
     void (async () => {
       ejemploBtn.setAttribute('disabled', 'true');
       try {
-        // URL relativa al documento: sirve igual en el dominio propio (/) que en la ruta de
-        // GitHub Pages (/tachadopdf/), sin depender de import.meta.env.
-        const resp = await fetch('ejemplo-acta-comunidad.pdf');
+        // URL relativa AL DOCUMENTO, calculada por el generador y publicada en `data-ejemplo`:
+        // sirve igual en el dominio propio (/), en la ruta de GitHub Pages (/tachadopdf/) y en
+        // la portada de otro idioma (/en/), donde una ruta fija habría dado 404.
+        const ejemploUrl = root.dataset['ejemplo'] ?? 'ejemplo-acta-comunidad.pdf';
+        const resp = await fetch(ejemploUrl);
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const bytes = new Uint8Array(await resp.arrayBuffer());
         await cargarEntradas([{ bytes, nombre: 'acta-de-ejemplo.pdf' }], false);
