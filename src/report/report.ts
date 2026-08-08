@@ -313,11 +313,23 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // Las viñetas AJUSTAN el texto al ancho. Antes no: el aviso de un tachado no verificable mide
   // 150 caracteres y se dibujaba en una sola linea que se salia del papel — visible solo al abrir
   // el PDF, invisible para un test que extrae texto.
-  const bullet = (s: string, dotColor: Color): void => {
+  //
+  // El punto tiene TRES estados, no dos. Un punto macizo verde afirma «comprobado y sin
+  // hallazgos», y eso era falso justo donde mas duele: en un documento entero escaneado —sello
+  // ROJO, cero paginas releidas, ninguna capa de texto— se dibujaban SIETE puntos verdes en fila
+  // bajo «0 ocurrencias en el texto extraible». La frase es literalmente cierta (no habia texto
+  // que leer); el punto verde decia otra cosa. Es el falso verde que se cerro en el texto,
+  // sobreviviendo en los pixeles.
+  //   macizo verde  = se comprobo y no habia,
+  //   anillo hueco  = no se pudo comprobar,
+  //   macizo rojo   = encontrado.
+  // El texto de cada linea no cambia ni una coma: lo que deja de contradecirlo es el punto.
+  const bullet = (s: string, dotColor: Color, hueco = false): void => {
     const lineas = wrapText(s, font, 9.7, CONTENT_W - 15);
     const alto = 13.5 + (lineas.length - 1) * 12;
     ensure(alto + 2);
-    page.drawEllipse({ x: MARGIN + 4, y: y - 6.5, xScale: 2.4, yScale: 2.4, color: dotColor });
+    page.drawEllipse({ x: MARGIN + 4, y: y - 6.5, xScale: 2.7, yScale: 2.7, color: dotColor });
+    if (hueco) page.drawEllipse({ x: MARGIN + 4, y: y - 6.5, xScale: 1.4, yScale: 1.4, color: WHITE });
     lineas.forEach((ln, i) => write(ln, MARGIN + 15, y - 9.5 - i * 12, 9.7, font, INK));
     y -= alto;
   };
@@ -342,16 +354,33 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // La etiqueta AJUSTA, igual que el valor. Con la columna fija de 170 pt, «Paginas con imagenes
   // (su contenido visual no se ha comprobado)» se montaba encima de su propia cifra, y la huella
   // SHA-256 se salia del papel. Se ve abriendo el PDF; ningun test de texto lo nota.
+  //
+  // `reserva` marca la fila que EXIGE algo del lector. Es el recurso que el informe ya usaba bien
+  // en «Objetos del archivo» —«NO EXAMINADO» en versalita ámbar, el único valor que rompe el gris
+  // y lo rompe justo donde está la excepción— extendido a la tabla que sostiene el veredicto.
+  // Hasta ahora, «Páginas con imágenes … 4 · páginas 1, 2, 3, 4» (la ÚNICA línea accionable del
+  // informe ámbar) se dibujaba con el mismo gris, el mismo cuerpo y el mismo interlineado que
+  // «Páginas del documento 4» y que «Tachados sin confirmación posterior 0»: ocho filas idénticas.
+  // El sello delega ahí —«constan en «Cobertura»»— y ahí la instrucción no se distinguía del
+  // inventario. El «4» accionable y el «0» inocuo se dibujaban exactamente igual.
   const LABEL_W = 225;
-  const row = (label: string, value: string, valueSize = 10): void => {
+  const row = (label: string, value: string, valueSize = 10, reserva = false): void => {
+    const sangria = reserva ? 10 : 0;
     const vx = MARGIN + LABEL_W + 12;
-    const labelLines = wrapText(label, font, 9.5, LABEL_W);
+    const labelLines = wrapText(label, font, 9.5, LABEL_W - sangria);
     const valueLines = wrapText(value, font, valueSize, CONTENT_W - LABEL_W - 12);
-    const alto = Math.max(16, labelLines.length * 12, valueLines.length * (valueSize + 2.5)) + 4;
+    // La altura sale del texto REAL envuelto, no de una constante: con la altura fija, la fila que
+    // seguía a una etiqueta de dos líneas se pegaba a ella (medido: 7 px de hueco frente a 27 del
+    // resto) y las dos se leían como una sola.
+    const alto = Math.max(labelLines.length * 12, valueLines.length * (valueSize + 2.5), 12) + 8;
     ensure(alto);
-    labelLines.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.5, font, MUTED));
+    if (reserva) {
+      page.drawRectangle({ x: MARGIN, y: y - alto + 2, width: CONTENT_W, height: alto - 2, color: AMBAR_BG });
+      page.drawRectangle({ x: MARGIN, y: y - alto + 2, width: 3, height: alto - 2, color: AMBAR_TINTA });
+    }
+    labelLines.forEach((ln, i) => write(ln, MARGIN + sangria, y - 11 - i * 12, 9.5, font, reserva ? AMBAR_TINTA : MUTED));
     valueLines.forEach((ln, i) =>
-      write(ln, vx, y - 9.5 - i * (valueSize + 2.5), valueSize, font, INK),
+      write(ln, vx, y - 11 - i * (valueSize + 2.5), valueSize, reserva ? bold : font, reserva ? AMBAR_TINTA : INK),
     );
     y -= alto;
   };
@@ -427,11 +456,18 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   heading(copia.encabezadoComprobaciones);
   const residues = data.verify?.residues ?? [];
 
+  // El punto verde afirma «comprobado y limpio». Cuando no hubo NADA que releer —ninguna página
+  // con capa de texto— o la comprobación no llegó a ejecutarse, esa afirmación es falsa aunque la
+  // frase que la acompaña sea cierta. Ojo con la regla: NO es «el estado es rojo o ámbar». En un
+  // ámbar por imágenes la cobertura de TEXTO es completa y el verde ahí es correcto; la reserva
+  // está en la imagen, y de eso habla el sello.
+  const sinTextoQueReleer = paginasReleidas(data) === 0 || data.verify === undefined;
+
   subLabel(copia.subPatrones);
   for (const kind of data.patternsSearched) {
     const matching = residues.filter((r) => r.kind === kind);
     if (matching.length === 0) {
-      bullet(copia.patronLimpio(copia.etiquetas[kind]), OK);
+      bullet(copia.patronLimpio(copia.etiquetas[kind]), sinTextoQueReleer ? MUTED : OK, sinTextoQueReleer);
     } else {
       const pages = matching.map((r) => (r.page === null ? '?' : r.page + 1)).join(', ');
       bullet(copia.patronSucio(copia.etiquetas[kind], matching.length, pages), BAD);
@@ -480,19 +516,19 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   }
 
   // --- cobertura: los numeros, con su denominador --------------------------
+  // Las filas con RESERVA se destacan; las de inventario, no. Son exactamente las que componen
+  // `paginasConReserva`, o sea las que bajan el sello: lo que el veredicto delega a esta tabla se
+  // encuentra ahora de un vistazo en vez de rastrearse entre ocho filas grises.
   heading(copia.encabezadoCobertura);
+  const noLegibles = data.paginasTextoNoLegible.map((p) => p.page);
   row(copia.filaPaginasTotal, String(data.totalPaginas), 9.5);
   row(copia.filaPaginasReleidas, String(paginasReleidas(data)), 9.5);
-  row(copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), 9.5);
-  row(copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), 9.5);
-  row(copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), 9.5);
+  row(copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), 9.5, data.paginasSinCapaDeTexto.length > 0);
+  row(copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), 9.5, data.paginasImagenCompleta.length > 0);
+  row(copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), 9.5, data.paginasConImagen.length > 0);
   row(copia.filaZonasTachadas, copia.zonasEnPaginas(zonasTachadas(data), paginasConZonas(data)), 9.5);
-  row(copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), 9.5);
-  row(
-    copia.filaPaginasTextoNoLegible,
-    cifraConPaginas(copia, data.paginasTextoNoLegible.map((p) => p.page)),
-    9.5,
-  );
+  row(copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), 9.5, data.unverifiableManualPages.length > 0);
+  row(copia.filaPaginasTextoNoLegible, cifraConPaginas(copia, noLegibles), 9.5, noLegibles.length > 0);
 
   // --- objetos del archivo: lista FIJA, con su agujero dicho en voz alta ----
   heading(copia.encabezadoObjetos);
