@@ -20,6 +20,43 @@ function pagesOf(doc: mupdf.PDFDocument): mupdf.PDFObject[] {
   return pages;
 }
 
+/**
+ * Titulos de TODOS los marcadores del documento (el indice lateral), recorriendo el arbol
+ * `/Outlines` entero, no solo el primer nivel.
+ *
+ * Word y LibreOffice construyen los marcadores solos con los titulos del documento, asi que un
+ * «Nomina de Fulanito - 12345678Z» acaba ahi sin que nadie lo escriba. Ese texto NO aparece en
+ * `extractAllText()`, asi que ni el detector lo veia ni la guarda podia reencontrarlo.
+ *
+ * El recorrido va con tope de nodos y con memoria de los objetos indirectos ya vistos: un PDF
+ * con `/Next` circular es un bucle infinito, y aqui entran ficheros de desconocidos.
+ */
+function outlineTitles(doc: mupdf.PDFDocument): string[] {
+  const raiz = doc.getTrailer().get('Root').get('Outlines');
+  if (raiz.isNull()) return [];
+
+  const titulos: string[] = [];
+  const vistos = new Set<number>();
+  const pendientes: mupdf.PDFObject[] = [raiz.get('First')];
+  let nodos = 0;
+
+  while (pendientes.length > 0 && nodos < 5000) {
+    const nodo = pendientes.pop();
+    if (nodo === undefined || nodo.isNull()) continue;
+    nodos++;
+    if (nodo.isIndirect()) {
+      const numero = nodo.asIndirect();
+      if (vistos.has(numero)) continue;
+      vistos.add(numero);
+    }
+    const titulo = nodo.get('Title');
+    if (titulo.isString()) titulos.push(titulo.asString());
+    pendientes.push(nodo.get('First'));
+    pendientes.push(nodo.get('Next'));
+  }
+  return titulos;
+}
+
 function documentHasXmp(doc: mupdf.PDFDocument): boolean {
   const root = doc.getTrailer().get('Root');
   if (!root.get('Metadata').isNull()) return true;
@@ -95,10 +132,16 @@ export async function stripMetadata(
       if (!hasOtherKeys) root.delete('Names');
     }
 
-    // Los marcadores del documento (el indice) NO se tocan todavia. Se mide solo su presencia,
-    // porque un objeto que el motor no examina tiene que constar en el informe y degradar el
-    // sello: un agujero conocido dicho en voz alta no es un falso verde.
+    // Marcadores del documento (el indice lateral). Sobrevivian al tachado enteros: el texto de
+    // un marcador no sale en `extractAllText()`, asi que ni se detectaba ni se reencontraba, y
+    // el informe lo firmaba en verde. Se van con el resto de los metadatos.
     hadOutlines = !root.get('Outlines').isNull();
+    if (hadOutlines) {
+      root.delete('Outlines');
+      // Sin marcadores, un visor que abra el panel del indice por `/PageMode /UseOutlines`
+      // enseñaria un panel vacio. Se quita el modo, no el documento.
+      if (root.get('PageMode').asName() === 'UseOutlines') root.delete('PageMode');
+    }
 
     cleaned = doc.saveToBuffer({ garbage: 4, compress: true }).asUint8Array().slice();
   } finally {
@@ -136,6 +179,10 @@ export async function stripMetadata(
       if (!stillHasAcroForm) removed.push('formFields');
     }
 
+    if (hadOutlines && finalTrailer.get('Root').get('Outlines').isNull()) {
+      removed.push('outlines');
+    }
+
     // Inventario para el informe. `removed` solo sabe de SEIS etiquetas de Info, asi que un PDF
     // con una clave propia (`/Cliente`) se borraba y el informe declaraba «Metadatos eliminados:
     // Ninguno»: infra-declaraba lo que habia hecho. El inventario mira si quedo alguna clave.
@@ -154,7 +201,12 @@ export async function stripMetadata(
       ),
       formularios: estadoTras(hadFormFields, !finalTrailer.get('Root').get('AcroForm').isNull()),
       adjuntos: estadoTras(hadAttachments, Object.keys(finalDoc.getEmbeddedFiles()).length > 0),
-      marcadores: hadOutlines ? 'noExaminado' : 'noHabia',
+      // Se mira el ARBOL, no los titulos: un indice que sobreviva sin `/Title` legible sigue
+      // siendo un objeto no examinado, y tiene que degradar el sello igual.
+      marcadores: estadoTras(
+        hadOutlines,
+        !finalTrailer.get('Root').get('Outlines').isNull(),
+      ),
     };
   } finally {
     finalDoc.destroy();
@@ -166,8 +218,14 @@ export async function stripMetadata(
 /**
  * Devuelve, releyendo el PDF final, todas las cadenas de metadatos
  * rastreables: cada clave del Info dict (también las no estándar), el
- * texto XMP de documento y de página, y los nombres de los adjuntos.
+ * texto XMP de documento y de página, los nombres de los adjuntos y los
+ * títulos de los marcadores.
  * Se usa para la verificación ampliada anti-falso-verde.
+ *
+ * Los marcadores están AQUÍ además de borrarse en `stripMetadata` a propósito: el borrado es la
+ * acción y esto es la red. Si un día el borrado falla, o un PDF trae un índice que mupdf no
+ * reescribe como esperamos, el dato reaparece en esta lista y el informe sale bloqueado en vez
+ * de en verde. Una acción sin su comprobación es exactamente lo que produce un falso verde.
  */
 export async function extractMetadataStrings(bytes: Uint8Array): Promise<string[]> {
   const doc = new mupdf.PDFDocument(bytes.slice());
@@ -197,6 +255,8 @@ export async function extractMetadataStrings(bytes: Uint8Array): Promise<string[
     for (const name of Object.keys(doc.getEmbeddedFiles())) {
       strings.push(name);
     }
+
+    strings.push(...outlineTitles(doc));
 
     return strings;
   } finally {
