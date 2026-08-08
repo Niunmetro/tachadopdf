@@ -148,7 +148,7 @@ describe('G6: un objeto presente y no examinado degrada el sello y consta en el 
 
     expect(t).not.toContain(VERDE_A_SECAS);
     expect(t).toContain('COMPROBACIÓN PARCIAL');
-    expect(t).toContain('Los marcadores del documento no se examinan');
+    expect(t).toContain('objetos que la comprobación no examina');
     expect(t).toContain('Marcadores del documento (índice)');
     expect(t).toContain('NO EXAMINADO');
   });

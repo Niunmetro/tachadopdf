@@ -68,7 +68,13 @@ export interface CopiaInforme {
   lineaParcialSoloImagenes: (total: number, paginasConImagen: number) => string;
   /** E3 cuando todas las páginas se releyeron y lo que falta es un objeto del archivo. */
   lineaParcialSoloObjetos: (total: number) => string;
-  clausulaMarcadores: string;
+  /**
+   * Coletilla de E3 cuando ADEMÁS queda un objeto del archivo sin examinar. Nombraba solo los
+   * marcadores, pero el inventario tiene ocho categorías y cualquiera de ellas puede quedar en
+   * «no examinado»: con una imagen en la página (reserva) y, por ejemplo, una clave interna
+   * superviviente, la línea del sello se callaba el objeto. El sello nombra su reserva.
+   */
+  clausulaObjetosSinExaminar: string;
   lineaSinTachados: (total: number) => string;
   lineaVerificado: (total: number, zonas: number) => string;
 

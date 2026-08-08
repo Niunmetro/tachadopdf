@@ -5,6 +5,7 @@ import { detect } from '../detect/patterns';
 import { CATEGORIAS_OBJETO, type EstadoObjeto, type EstadoSello, type ReportData } from '../types';
 import {
   estadoDelSello,
+  hayObjetoNoExaminado,
   paginasConReserva,
   paginasConZonas,
   paginasReleidas,
@@ -137,7 +138,7 @@ export function lineaDelSello(estado: EstadoSello, data: ReportData, copia: Copi
         : reservaSoloPorImagenes(data)
           ? copia.lineaParcialSoloImagenes(total, data.paginasConImagen.length)
           : copia.lineaParcial(paginasReleidas(data), total, reservas);
-    return data.objetos.marcadores === 'noExaminado' ? `${base} ${copia.clausulaMarcadores}` : base;
+    return hayObjetoNoExaminado(data) ? `${base} ${copia.clausulaObjetosSinExaminar}` : base;
   }
   if (estado === 'E4') return copia.lineaSinTachados(total);
   return copia.lineaVerificado(total, zonasTachadas(data));

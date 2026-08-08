@@ -116,13 +116,14 @@ describe('escondites en la estructura del archivo', () => {
     expect(bytesLegibles(limpio)).not.toContain(DNI);
   });
 
-  it.each(CASOS)('$nombre: y el informe no sella verde con el dato dentro', async ({ bytes }) => {
+  // El verde tiene que ser un verde LIMPIO, no un bloqueo. Se afirman las dos cosas a la vez y sin
+  // condicionales: un `if` alrededor de la asercion la vuelve vacia en cuanto el arreglo funciona,
+  // y un test que solo puede pasar no vigila nada.
+  it.each(CASOS)('$nombre: el archivo sale limpio Y el sello puede ser verde', async ({ bytes }) => {
     const { limpio, informe } = await tachar(bytes());
-    if (bytesLegibles(limpio).includes(DNI)) {
-      expect(informe, 'el dato sigue en el fichero: el informe NO puede decir VERIFICADO').not.toContain(
-        'VERIFICADO',
-      );
-    }
+
+    expect(bytesLegibles(limpio)).not.toContain(DNI);
+    expect(informe).toContain('TACHADO VERIFICADO');
   });
 });
 
