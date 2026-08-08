@@ -72,6 +72,11 @@ export interface CopiaInforme {
   encabezadoVerificacion: string;
 
   filaArchivo: string;
+  /** Marcador que sustituye a un dato encontrado DENTRO del nombre del archivo. El informe
+   *  imprimia `data.fileName` tal cual: con `nomina-12345678Z-julio.pdf`, el DNI quedaba
+   *  dentro del entregable, y sellado en verde. */
+  nombreOculto: string;
+  avisoNombreOculto: string;
   filaFecha: string;
   filaReferencia: string;
   filaHuella: string;

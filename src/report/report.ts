@@ -1,6 +1,7 @@
 import { type Color, degrees, type PDFFont, type PDFPage, PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { VERSION_APP } from '../config';
 import type { CopiaInforme } from '../content/tipos';
+import { detect } from '../detect/patterns';
 import { CATEGORIAS_OBJETO, type EstadoObjeto, type EstadoSello, type ReportData } from '../types';
 import {
   estadoDelSello,
@@ -107,6 +108,29 @@ export function lineaDelSello(estado: EstadoSello, data: ReportData, copia: Copi
   }
   if (estado === 'E4') return copia.lineaSinTachados(total);
   return copia.lineaVerificado(total, zonasTachadas(data));
+}
+
+/**
+ * El informe imprimia `data.fileName` TAL CUAL. Con la convencion de nombrado de cualquier
+ * gestoria — `nomina-12345678Z-julio.pdf` — el DNI quedaba dentro del entregable, y el
+ * entregable es el informe que se guarda como registro de diligencia. El propio producto
+ * publicaba el dato que acababa de tachar.
+ *
+ * Se sustituyen las coincidencias de los MISMOS patrones que busca el resto del informe, de
+ * derecha a izquierda para no invalidar los indices.
+ */
+export function nombreSinDatos(fileName: string, marcador: string): string {
+  const hits = [...detect(fileName)].sort((a, b) => b.start - a.start);
+  let salida = fileName;
+  let ultimoInicio = Number.POSITIVE_INFINITY;
+  for (const hit of hits) {
+    // Dos patrones pueden solapar sobre el mismo trozo (un NUSS dentro de un telefono, p. ej.):
+    // se salta el que ya quedo dentro de una sustitucion.
+    if (hit.end > ultimoInicio) continue;
+    salida = salida.slice(0, hit.start) + marcador + salida.slice(hit.end);
+    ultimoInicio = hit.start;
+  }
+  return salida;
 }
 
 function palabraEstado(copia: CopiaInforme, estado: EstadoObjeto): string {
@@ -273,10 +297,19 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
 
   // --- datos del documento -------------------------------------------------
   heading(copia.encabezadoDatos);
-  row(copia.filaArchivo, data.fileName);
+  const nombreMostrado = nombreSinDatos(data.fileName, copia.nombreOculto);
+  row(copia.filaArchivo, nombreMostrado);
   row(copia.filaFecha, data.date);
   row(copia.filaReferencia, ref);
   row(copia.filaHuella, data.sha256, 8.5);
+  if (nombreMostrado !== data.fileName) {
+    for (const linea of wrapText(copia.avisoNombreOculto, font, 8.7, CONTENT_W)) {
+      ensure(14);
+      write(linea, MARGIN, y - 8.5, 8.7, font, BAD);
+      y -= 11;
+    }
+    y -= 4;
+  }
 
   // --- comprobaciones ------------------------------------------------------
   heading(copia.encabezadoComprobaciones);

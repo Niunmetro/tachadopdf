@@ -125,6 +125,9 @@ const INFORME_ES: CopiaInforme = {
   encabezadoAlcance: 'Alcance y límites',
   encabezadoVerificacion: 'Cómo comprobar este informe',
   filaArchivo: 'Archivo comprobado',
+  nombreOculto: '[dato oculto]',
+  avisoNombreOculto:
+    'El nombre del archivo contenía un dato de los patrones buscados y se ha ocultado aquí. El nombre del fichero que entregas lo eliges tú y esta herramienta no lo cambia: revísalo antes de enviarlo.',
   filaFecha: 'Fecha de emisión',
   filaReferencia: 'Referencia del informe',
   filaHuella: 'Huella SHA-256 del documento entregado',

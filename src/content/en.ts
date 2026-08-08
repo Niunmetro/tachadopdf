@@ -170,6 +170,9 @@ const INFORME_EN: CopiaInforme = {
   encabezadoAlcance: 'Scope and limits',
   encabezadoVerificacion: 'How to check this report',
   filaArchivo: 'File checked',
+  nombreOculto: '[data hidden]',
+  avisoNombreOculto:
+    'The file name contained data matching the searched patterns and has been hidden here. The name of the file you deliver is your own choice and this tool does not change it: check it before sending.',
   filaFecha: 'Date issued',
   filaReferencia: 'Report reference',
   filaHuella: 'SHA-256 fingerprint of the delivered file',
