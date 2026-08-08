@@ -1,4 +1,4 @@
-import type { CopiaComprobador, CopiaInforme } from '../content/tipos';
+import type { CopiaComprobador } from '../content/tipos';
 import type { ResumenComprobacion } from './types';
 
 // El destino del CTA lo publica el HTML generado en `data-cta-href`, ya calculado RELATIVO AL
@@ -11,7 +11,7 @@ export function renderResumen(
   root: HTMLElement,
   resumen: ResumenComprobacion,
   copia: CopiaComprobador,
-  alcance: CopiaInforme['alcance'],
+  alcance: CopiaComprobador['alcance'],
 ): void {
   root.textContent = '';
 

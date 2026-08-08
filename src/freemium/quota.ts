@@ -3,13 +3,23 @@ import type { QuotaStatus } from '../types';
 // 5 documentos/mes gratis. OJO: este contador vive en IndexedDB local y es RESETEABLE (borrando
 // datos del navegador / incógnito). No es —ni puede ser— un muro: la app no tiene servidor ni
 // cuentas a propósito (nada sale del navegador). Es un umbral de conveniencia sostenido por
-// honradez. El muro DE VERDAD contra el uso profesional gratis es FREE_MAX_PAGES (ver abajo).
+// honradez.
 export const FREE_MONTHLY_LIMIT = 5;
 
-// Tope de páginas por documento en la versión gratuita. A diferencia del contador, esto SÍ es un
-// muro robusto: se aplica en CADA uso, lo reseteen o no, y el trabajo real (actas de comunidad,
-// listados de morosos, expedientes) tiene muchas páginas → el profesional necesita Pro sí o sí.
-// La versión gratuita sigue siendo un test HONESTO: tacha de verdad hasta este número de páginas.
+// Tope de páginas por documento en la versión gratuita.
+//
+// AQUÍ HUBO UNA PREMISA FALSA, y se corrige porque sostenía una decisión de negocio: este comentario
+// decía que el tope de páginas «SÍ es un muro robusto: se aplica en CADA uso, lo reseteen o no».
+// No lo es. `withinFreePageLimit` es `s.license.pro || pageCount <= maxPages`, y `s.license.pro`
+// lo enciende la misma verificación de licencia que corre en el navegador del usuario: cuatro
+// líneas en la consola que devuelvan `{success:true}` a la llamada de Gumroad activan el Pro
+// entero — tope de páginas, lote y marca de agua del informe caen juntos. Reproducido.
+//
+// En un producto SIN SERVIDOR esto no tiene arreglo técnico, y no se pretende: el compromiso de
+// que ningún documento sale del navegador es más valioso que el candado. Lo que sí hacía daño era
+// el comentario, porque hacía creer que había un muro donde solo hay una convención. El freemium
+// se sostiene en que la versión gratuita es HONESTA (tacha de verdad) y en que el comprador es un
+// profesional que no va a falsificar su propia licencia.
 export const FREE_MAX_PAGES = 3;
 
 const DB_NAME = 'tachadopdf-freemium';

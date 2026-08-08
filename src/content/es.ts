@@ -92,40 +92,107 @@ const APP_ES: CopiaApp = {
 
 const INFORME_ES: CopiaInforme = {
   titulo: 'Informe de comprobación técnica',
-  subtituloBanda: 'Comprobación técnica de tachado de datos personales en PDF',
+  // Nombra lo que ES. «Comprobación de datos personales en PDF» encuadraba TODOS los datos
+  // personales como el objeto de la comprobación, cuando el alcance real son siete formatos.
+  subtituloBanda: 'Registro técnico del tachado y de su comprobación posterior',
   referencia: (ref, fecha) => `Referencia ${ref}   ·   Emitido el ${fecha}`,
-  selloOk: 'VERIFICADO',
-  selloMal: 'NO APTO',
-  lineaOk: 'Ningún dato de los patrones buscados es extraíble del texto del PDF resultante.',
-  lineaMal: 'RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado',
+  sellos: {
+    E1: 'TACHADO NO SUPERADO',
+    E2: 'SIN COMPROBACIÓN AUTOMÁTICA',
+    E3: 'COMPROBACIÓN PARCIAL',
+    E4: 'SIN TACHADOS',
+    E5: 'TACHADO VERIFICADO',
+  },
+  lineaBloqueadoResiduos:
+    'Se han vuelto a encontrar datos de los patrones buscados en el archivo resultante. No entregues este archivo: repite el tachado.',
+  lineaBloqueadoSinComprobacion:
+    'La comprobación posterior al tachado no ha podido ejecutarse sobre este archivo. Nada de lo que sigue está confirmado.',
+  lineaSinComprobacion: (totalPaginas) =>
+    `Ninguna de las ${totalPaginas} páginas tiene capa de texto: no queda nada que releer, así que la comprobación automática no se ha podido aplicar a este documento. Los píxeles de las zonas que marcaste sí se han borrado. Revísalo visualmente, página a página.`,
+  lineaParcial: (releidas, total, conReserva) =>
+    `Se han releído ${releidas} de ${total} páginas y no queda en ellas ningún dato de los patrones buscados. En ${conReserva} página(s) la comprobación automática no llega a todo el contenido: las páginas sin capa de texto, las que llevan imágenes y los tachados sin confirmar constan una a una en «Cobertura». Revísalas visualmente.`,
+  lineaParcialSoloImagenes: (total, paginasConImagen) =>
+    `Se han releído las ${total} páginas del archivo entregado y sus metadatos, y en el texto no queda ningún dato de los patrones buscados. Lo que queda fuera es el contenido de ${paginasConImagen} página(s) con imágenes: esta herramienta no lee lo que hay dentro de una imagen, así que un dato fotografiado o escaneado no se detecta. Revísalas visualmente; constan en «Cobertura».`,
+  lineaParcialSoloObjetos: (total) =>
+    `Se han releído las ${total} páginas del archivo y sus metadatos, y no queda en ellas ningún dato de los patrones buscados. Pero este documento contiene objetos que la comprobación no examina: constan en «Objetos del archivo».`,
+  clausulaObjetosSinExaminar:
+    'Además, este documento contiene objetos que la comprobación no examina: constan en «Objetos del archivo».',
+  lineaSinTachados: (total) =>
+    `No se ha eliminado ningún dato de este documento: no se marcó ninguna zona. Se han releído sus ${total} páginas y sus metadatos, y no aparece ningún dato de los patrones buscados. Este informe no registra ningún borrado.`,
+  lineaVerificado: (total, zonas) =>
+    `Se han releído las ${total} páginas del archivo entregado y sus metadatos: no queda ningún dato de los patrones buscados, ni el texto que había en las ${zonas} zonas que tachaste. Alcance y límites, abajo.`,
   encabezadoDatos: 'Datos del documento',
   encabezadoComprobaciones: 'Comprobaciones realizadas',
-  encabezadoAlcance: 'Alcance y limitaciones',
+  encabezadoCobertura: 'Cobertura de esta comprobación',
+  encabezadoObjetos: 'Objetos del archivo',
+  encabezadoAlcance: 'Alcance y límites',
+  encabezadoVerificacion: 'Cómo comprobar este informe',
   filaArchivo: 'Archivo comprobado',
+  nombreOculto: '[dato oculto]',
+  avisoNombreOculto:
+    'El nombre del archivo contenía un dato de los patrones buscados y se ha ocultado aquí. El nombre del fichero que entregas lo eliges tú y esta herramienta no lo cambia: revísalo antes de enviarlo.',
   filaFecha: 'Fecha de emisión',
   filaReferencia: 'Referencia del informe',
   filaHuella: 'Huella SHA-256 del documento entregado',
+  filaPaginasTotal: 'Páginas del documento',
+  filaPaginasReleidas: 'Páginas releídas tras el tachado',
+  filaPaginasSinTexto: 'Páginas sin capa de texto (no comprobables)',
+  filaPaginasImagenCompleta: 'Páginas con imagen a página completa',
+  filaPaginasConImagen: 'Páginas con imágenes (su contenido visual no se ha comprobado)',
+  filaZonasTachadas: 'Zonas tachadas',
+  filaTachadosSinConfirmar: 'Tachados sin confirmación posterior',
+  filaPaginasTextoNoLegible: 'Páginas con texto dibujado que no se puede releer',
+  conPaginas: (cifra, paginas) => `${cifra}   ·   páginas ${paginas}`,
+  zonasEnPaginas: (zonas, paginas) => `${zonas} en ${paginas} página(s)`,
+  objetoInfo: 'Metadatos Info (Título, Autor, Asunto, Palabras clave, Productor, Creador)',
+  objetoXmp: 'Metadatos XMP (documento y páginas)',
+  objetoAnotaciones: 'Anotaciones y comentarios',
+  objetoFormularios: 'Campos de formulario',
+  objetoAdjuntos: 'Ficheros adjuntos',
+  objetoMarcadores: 'Marcadores del documento (índice)',
+  objetoAlternativos: 'Textos alternativos y etiquetas de accesibilidad',
+  objetoOcultos:
+    'Objetos internos con texto que ningún lector enseña (miniaturas, XMP anidado, datos privados, etiquetas de página, nombres de capa, acciones y JavaScript)',
+  estadoEliminado: 'eliminado del archivo',
+  estadoNoHabia: 'no había',
+  estadoNoExaminado: 'NO EXAMINADO',
   subPatrones: 'Patrones de datos buscados en el texto',
   subZonas: 'Zonas tachadas por página',
-  subMetadatos: 'Metadatos eliminados',
-  subEscaneadas: 'Páginas sin capa de texto',
+  subSinCapaDeTexto: 'Páginas sin capa de texto',
+  subImagenCompleta: 'Páginas con imagen a página completa',
   subNoVerificables: 'Tachados que no se han podido verificar',
+  subTextoNoLegible: 'Páginas con texto que la herramienta no puede releer',
+  paginaTextoNoLegible: (pagina, caracteres) =>
+    `Página ${pagina}: hay ${caracteres} caracteres dibujados en la página que la herramienta no puede releer (el archivo declara para ellos un código que no corresponde a lo que se ve). Se ven al abrir el documento, pero la detección automática no los alcanza: revísala visualmente.`,
   noVerificablePagina: (pagina) =>
     `Página ${pagina}: la zona tachada no contenía texto extraíble, así que el borrado no se ha podido confirmar releyendo el archivo. Revísala visualmente.`,
-  lineaOkConNoVerificables: (cuantas) =>
-    `AVISO: el tachado de ${cuantas} página(s) no se ha podido verificar (detalle abajo).`,
+  paginaSinCapaDeTexto: (pagina) =>
+    `Página ${pagina}: sin capa de texto, no hay nada que releer. No comprobada automáticamente.`,
+  paginaImagenCompleta: (pagina) =>
+    `Página ${pagina}: una imagen cubre la página. Su texto sí se ha comprobado; el contenido de la imagen, no.`,
   patronLimpio: (etiqueta) => `${etiqueta}: 0 ocurrencias en el texto extraíble`,
   patronSucio: (etiqueta, ocurrencias, paginas) =>
     `${etiqueta}: ${ocurrencias} ocurrencia(s) en el texto extraíble (páginas: ${paginas})`,
   zonasPagina: (pagina, cuenta) => `Página ${pagina}: ${cuenta} zona(s)`,
-  ninguna: 'Ninguna',
-  ninguno: 'Ninguno',
-  paginaEscaneada: (pagina) =>
-    `Página ${pagina}: sin capa de texto, no verificable automáticamente`,
-  alcance:
-    'Esta comprobación se limita al texto extraíble del archivo PDF resultante y a los píxeles de las zonas marcadas. No analiza el contenido visual de las imágenes no marcadas ni garantiza la ausencia de datos personales en el documento. No sustituye la revisión humana.',
+  // Cuatro párrafos, y cada enunciado negativo va PEGADO al positivo que acota. Un bloque de
+  // descargos suelto no acota nada: solo asusta. Las listas son cerradas y contables a
+  // propósito — «y cualquier otra cosa» no es un límite, es una excusa.
+  alcanceParrafos: [
+    'Qué se ha comprobado. Después de aplicar el tachado, TachadoPDF ha vuelto a abrir el archivo que se te entrega y ha releído el texto de sus páginas, sus campos de metadatos y las demás cadenas de texto que el archivo guarda por dentro, buscando siete formatos: DNI, NIE, IBAN español, número de la Seguridad Social, teléfono español, referencia catastral y correo electrónico. Salvo el correo, todos son formatos españoles y llevan dígito de control: no reconocen documentos de otros países. También se ha comprobado que no reaparece el texto que había dentro de las zonas que marcaste a mano.',
+    'Qué NO se ha buscado. La detección automática por patrones no reconoce nombres ni apellidos, direcciones postales, firmas, fotografías, matrículas ni cuentas extranjeras: eso lo marcas tú. Tampoco se ha leído el contenido visual de las imágenes que no marcaste: las páginas que llevan imágenes constan en «Cobertura». Las páginas sin capa de texto no se pueden comprobar automáticamente: en ellas se borran los píxeles de las zonas marcadas, pero no queda texto que releer, así que el borrado no se confirma. Las páginas afectadas constan una a una en «Cobertura», y los objetos del archivo que no se examinan, en «Objetos del archivo».',
+    'Qué rastro deja el tachado. El texto se elimina del archivo, no se tapa. Lo que permanece es el hueco que ocupaba, y su anchura se puede medir con exactitud porque el archivo conserva el desplazamiento del texto que venía detrás. Con esa medida se acota cuánto texto había ahí y, cuando los candidatos son pocos —un nombre dentro de una lista conocida—, puede bastar para distinguir cuál era: nombres distintos miden distinto. Si eso importa en un documento concreto, conviértelo a imagen antes de entregarlo.',
+    'Qué no dice este informe. No dice que el documento esté libre de datos personales, ni valora si lo que había que tachar era esto o era otra cosa: eso lo decide quien firma el envío. Es el registro técnico de lo que la herramienta eliminó y de lo que volvió a comprobar después, con la huella del archivo para que cualquiera pueda contrastarlo. No sustituye a la revisión humana.',
+  ],
+  verificacionParrafos: [
+    'Comprobación por un tercero. El archivo que acompaña a este informe debe tener exactamente la huella SHA-256 indicada arriba. En Windows: certutil -hashfile archivo.pdf SHA256. En macOS o Linux: shasum -a 256 archivo.pdf. Si no coincide, el archivo no es el que se comprobó.',
+    'Revisión humana. Descargar este informe exige marcar antes la casilla de haber revisado visualmente el documento final página a página. Es una declaración de quien usó la herramienta, no una comprobación de la herramienta.',
+  ],
+  lineaHerramienta: (version, fecha) =>
+    `Herramienta: TachadoPDF v${version} · motor mupdf · emitido el ${fecha}`,
   lineaGratis: 'Generado con TachadoPDF (versión gratuita)',
-  marcaAgua: 'DEMO — no válido como evidencia',
+  // «no válido como evidencia» afirmaba por contraste que el informe de pago SÍ lo es: la
+  // promesa más cara del producto, escondida en la marca de agua, y contraria al propio FAQ.
+  marcaAgua: 'DEMO — versión gratuita',
   pie: 'Documento generado automáticamente por TachadoPDF · tachadopdf.com',
   numeroPagina: (indice, total) => `Página ${indice} de ${total}`,
   etiquetas: ETIQUETAS_PATRON,
@@ -133,6 +200,8 @@ const INFORME_ES: CopiaInforme = {
 
 const COMPROBADOR_ES: CopiaComprobador = {
   etiquetas: ETIQUETAS_PATRON,
+  alcance:
+    'Este diagnóstico solo LEE el archivo: no tacha nada y no modifica tu documento. Busca siete formatos españoles (DNI, NIE, IBAN, número de la Seguridad Social, teléfono, referencia catastral) y direcciones de correo en el texto que se puede extraer. No reconoce nombres, direcciones postales, firmas ni fotografías, y no lee el contenido visual de las imágenes ni de las páginas sin capa de texto. No sustituye a la revisión humana.',
   analizando: 'Analizando el PDF en tu navegador…',
   noEsPdf: 'El fichero no parece un PDF. Selecciona un archivo .pdf válido.',
   passwordRequerida:

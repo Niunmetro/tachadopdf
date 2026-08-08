@@ -38,12 +38,57 @@ function rectArea(rect: BoxRect): number {
  */
 export const IMAGE_COVERAGE_THRESHOLD = 0.6;
 
+/**
+ * Glifos SEGUIDOS que hacen falta para que un texto ilegible cuente. No es una cifra al gusto:
+ * el dato mas corto que busca esta herramienta son seis caracteres (`a@b.co`), asi que en una
+ * racha mas corta no cabe ninguno de los formatos declarados. Cuatro deja margen.
+ */
+export const MIN_RACHA_ILEGIBLE = 4;
+
+/**
+ * Un glifo dibujado del que no se puede recuperar el caracter: sin unicode, sustituido, o en una
+ * zona de uso privado (que es donde acaba un `/ToUnicode` que miente, y una fuente subconjunto
+ * mal generada).
+ */
+function esIlegible(unicode: number): boolean {
+  if (unicode <= 0 || unicode === 0xfffd) return true;
+  if (unicode >= 0xe000 && unicode <= 0xf8ff) return true;
+  return unicode >= 0xf0000;
+}
+
 export class PdfDoc {
   private readonly doc: mupdf.PDFDocument;
   private closed = false;
 
   constructor(doc: mupdf.PDFDocument) {
     this.doc = doc;
+  }
+
+  /**
+   * Enciende TODAS las capas opcionales del documento antes de leerlo, y devuelve cuantas
+   * estaban apagadas.
+   *
+   * Una capa apagada (`/OCProperties /D /OFF`) es contenido que esta DIBUJADO en la pagina y que
+   * `extractText` no devuelve: ni el detector ofrecia caja para el, ni la guarda podia
+   * reencontrarlo, y en Acrobat se ve con un clic en el panel de capas. Era un falso verde con el
+   * dato en el contenido de la pagina, no en un metadato oscuro.
+   *
+   * Encenderlas aqui arregla las tres mitades de una vez: se detecta, se tacha y se relee.
+   *
+   * Y NO cambia el archivo que se entrega: comprobado que `setLayerVisible` es estado de lectura
+   * de mupdf y que el `/OFF` sigue en los bytes guardados, asi que el documento se sigue viendo
+   * como su autor lo dejo. Lo unico que cambia es la vista previa del editor, que ahora enseña lo
+   * que el fichero lleva dentro — que es justo lo que hay que poder tachar.
+   */
+  revealHiddenLayers(): number {
+    const total = this.doc.countLayers();
+    let ocultas = 0;
+    for (let i = 0; i < total; i++) {
+      if (this.doc.isLayerVisible(i)) continue;
+      ocultas++;
+      this.doc.setLayerVisible(i, true);
+    }
+    return ocultas;
   }
 
   private page(index: number): mupdf.PDFPage {
@@ -142,6 +187,94 @@ export class PdfDoc {
     return result;
   }
 
+  /**
+   * Paginas que contienen al menos una imagen, SIN umbral.
+   *
+   * `pagesNeedingVisualReview` solo avisa a partir de IMAGE_COVERAGE_THRESHOLD, asi que una foto
+   * al 59 % del area no producia ningun aviso: una foto de un DNI pegada en un acta pasaba muda.
+   * Aqui no hay umbral a proposito — cualquier cifra seria igual de arbitraria —: el informe
+   * enumera las paginas con imagenes y dice que su contenido visual no se comprueba.
+   */
+  pagesWithImages(): number[] {
+    const total = this.pageCount();
+    const result: number[] = [];
+    for (let i = 0; i < total; i++) {
+      let tieneImagen = false;
+      this.page(i)
+        .toStructuredText('preserve-images')
+        .walk({
+          onImageBlock() {
+            tieneImagen = true;
+          },
+        });
+      if (tieneImagen) result.push(i);
+    }
+    return result;
+  }
+
+  /**
+   * Paginas en las que se DIBUJA texto que la herramienta no puede releer, con cuantos caracteres
+   * son. Devuelve la cuenta por pagina, no una lista de paginas, porque en el informe la cifra es
+   * la mitad del dato: «3 caracteres» y «180 caracteres» piden conductas distintas.
+   *
+   * El caso real: un PDF puede dibujar `12345678Z` y declarar a la vez, en su `/ToUnicode`, que
+   * esos codigos significan otra cosa. Es el defecto mas comun del mundo PDF — el «copio de un
+   * PDF y sale basura» — y no hace falta mala fe para producirlo. El humano lee lo que se dibuja;
+   * el detector y la guarda leen lo que dice el `/ToUnicode`, asi que ese DNI no se detectaba, no
+   * se tachaba, no se reencontraba, y el informe firmaba «TACHADO VERIFICADO» con el dato a
+   * tamaño de titular en el archivo entregado.
+   *
+   * Medido sobre 2.125 paginas de PDF reales del disco: 13 dibujan texto y no extraen nada, y 11
+   * pasan del 10 % de caracteres no mapeables. No es un caso de laboratorio.
+   *
+   * Se cuentan RACHAS de al menos `MIN_RACHA_ILEGIBLE` glifos seguidos, no glifos sueltos, y el
+   * numero no es arbitrario: el dato mas corto que esta herramienta busca son seis caracteres
+   * (`a@b.co`), asi que en una racha mas corta no cabe ninguno de los formatos declarados. Un
+   * simbolo suelto de una fuente rara —una viñeta, una ligadura— no puede esconder nada y no
+   * tiene por que degradar el sello de nadie. Medido: contando glifos sueltos se marcarian 27 de
+   * 665 paginas reales; contando rachas de cuatro, 9.
+   */
+  pagesWithUnreadableText(): { page: number; caracteres: number }[] {
+    const total = this.pageCount();
+    const resultado: { page: number; caracteres: number }[] = [];
+    for (let i = 0; i < total; i++) {
+      let racha = 0;
+      let ilegibles = 0;
+      const contar = (text: mupdf.Text): void => {
+        text.walk({
+          showGlyph(_font, _trm, _gid, unicode) {
+            if (!esIlegible(unicode)) {
+              racha = 0;
+              return;
+            }
+            racha++;
+            // La racha se cuenta entera en cuanto alcanza el minimo, y luego glifo a glifo.
+            if (racha === MIN_RACHA_ILEGIBLE) ilegibles += MIN_RACHA_ILEGIBLE;
+            else if (racha > MIN_RACHA_ILEGIBLE) ilegibles++;
+          },
+        });
+      };
+      const dispositivo = new mupdf.Device({
+        fillText: contar,
+        strokeText: contar,
+        clipText: contar,
+        clipStrokeText: contar,
+        // El texto invisible (modo 3) es justo donde vive la capa de OCR de un escaneo.
+        ignoreText: contar,
+      } as unknown as ConstructorParameters<typeof mupdf.Device>[0]);
+      try {
+        this.page(i).run(dispositivo, mupdf.Matrix.identity);
+      } catch {
+        // Una pagina que ni siquiera se puede recorrer no se puede declarar comprobada: cuenta
+        // como texto no legible en vez de desaparecer del informe.
+        ilegibles = Math.max(ilegibles, MIN_RACHA_ILEGIBLE);
+      }
+      dispositivo.close();
+      if (ilegibles > 0) resultado.push({ page: i, caracteres: ilegibles });
+    }
+    return resultado;
+  }
+
   applyRedactions(marks: PageMark[]): void {
     for (const mark of marks) {
       const page = this.page(mark.page);
@@ -188,5 +321,10 @@ export async function loadPdf(bytes: Uint8Array, password?: string): Promise<Pdf
       throw new PdfPasswordError();
     }
   }
-  return new PdfDoc(doc);
+  const abierto = new PdfDoc(doc);
+  // Todo el que abre un PDF en este producto lo abre para LEERLO ENTERO: el detector, la
+  // verificacion posterior y el diagnostico gratuito. Una capa apagada es contenido dibujado que
+  // no se extrae, asi que encenderla es parte de abrir, no una opcion.
+  abierto.revealHiddenLayers();
+  return abierto;
 }

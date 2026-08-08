@@ -1,6 +1,17 @@
 import { type Color, degrees, type PDFFont, type PDFPage, PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { VERSION_APP } from '../config';
 import type { CopiaInforme } from '../content/tipos';
-import type { ReportData } from '../types';
+import { detect } from '../detect/patterns';
+import { CATEGORIAS_OBJETO, type EstadoObjeto, type EstadoSello, type ReportData } from '../types';
+import {
+  estadoDelSello,
+  hayObjetoNoExaminado,
+  paginasConReserva,
+  paginasConZonas,
+  paginasReleidas,
+  reservaSoloPorImagenes,
+  zonasTachadas,
+} from './estado';
 
 // Todo el texto del informe llega por parámetro (`copia`). No hay valor por defecto a propósito:
 // un idioma sin cablear tiene que romper la compilación, no imprimir en español sin avisar.
@@ -8,6 +19,10 @@ import type { ReportData } from '../types';
 const PAGE: [number, number] = [595, 842];
 const MARGIN = 50;
 const CONTENT_W = PAGE[0] - MARGIN * 2;
+// La caja de TINTA que mide un lector es un pelo mas ancha que la suma de anchuras de avance con
+// la que ajusta pdf-lib: ajustar al ancho exacto se sale del margen por ~2 pt. Medido, no supuesto
+// (`maquetacion.test.ts` lo vigila glifo a glifo).
+const HOLGURA = 8;
 
 // Paleta sobria de despacho: tinta oscura, gris de etiqueta, línea fina, acento cielo, verde/rojo
 // de veredicto. El objetivo es que parezca un documento formal, no un volcado de texto.
@@ -21,9 +36,22 @@ const OK = rgb(0.086, 0.53, 0.32);
 const OK_BG = rgb(0.925, 0.976, 0.945);
 const BAD = rgb(0.77, 0.14, 0.14);
 const BAD_BG = rgb(0.988, 0.929, 0.929);
+const AMBER = rgb(0.71, 0.44, 0.03);
+const AMBER_BG = rgb(0.996, 0.965, 0.886);
+const GREY_BG = rgb(0.945, 0.953, 0.965);
 const SOFT_BG = rgb(0.969, 0.98, 0.988);
 const WHITE = rgb(1, 1, 1);
 const BAND_SUB = rgb(0.72, 0.78, 0.87);
+
+// Un color y un icono por estado. E3 va en ambar y no en rojo, pero las viñetas por pagina de
+// las escaneadas siguen imprimiendose en rojo: lo que se atenua es el agregado, no el aviso.
+const ESTILO_SELLO: Record<EstadoSello, { fg: Color; bg: Color; icono: 'aspa' | 'aspaHueca' | 'admiracion' | 'guion' | 'check' }> = {
+  E1: { fg: BAD, bg: BAD_BG, icono: 'aspa' },
+  E2: { fg: BAD, bg: BAD_BG, icono: 'aspaHueca' },
+  E3: { fg: AMBER, bg: AMBER_BG, icono: 'admiracion' },
+  E4: { fg: MUTED, bg: GREY_BG, icono: 'guion' },
+  E5: { fg: OK, bg: OK_BG, icono: 'check' },
+};
 
 // pdf-lib usa fuentes estándar con codificación WinAnsi. Un nombre de fichero con emoji o CJK
 // haría reventar drawText; sustituimos lo no codificable por '?' para no romper el informe.
@@ -44,6 +72,23 @@ export async function computeSha256(bytes: Uint8Array): Promise<string> {
     .join('');
 }
 
+/** Parte una palabra que NO cabe entera. Una huella SHA-256 son 64 caracteres sin un solo
+ *  espacio: sin esto se dibujaba en una linea unica que se salia del papel. */
+function partirPalabra(word: string, font: PDFFont, size: number, maxWidth: number): string[] {
+  const trozos: string[] = [];
+  let actual = '';
+  for (const ch of word) {
+    if (actual.length > 0 && font.widthOfTextAtSize(actual + ch, size) > maxWidth) {
+      trozos.push(actual);
+      actual = ch;
+    } else {
+      actual += ch;
+    }
+  }
+  if (actual.length > 0) trozos.push(actual);
+  return trozos;
+}
+
 function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
   const words = safe(text).split(' ');
   const lines: string[] = [];
@@ -56,9 +101,126 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): 
     } else {
       current = tentative;
     }
+    if (font.widthOfTextAtSize(current, size) > maxWidth) {
+      const trozos = partirPalabra(current, font, size, maxWidth);
+      lines.push(...trozos.slice(0, -1));
+      current = trozos[trozos.length - 1] ?? '';
+    }
   }
   if (current.length > 0) lines.push(current);
   return lines;
+}
+
+/**
+ * La linea que va DEBAJO del rotulo del sello. Nombra el objeto y da los numeros: es la frase
+ * que impide que el lector complete «el documento esta verificado» por su cuenta.
+ */
+export function lineaDelSello(estado: EstadoSello, data: ReportData, copia: CopiaInforme): string {
+  const total = data.totalPaginas;
+  if (estado === 'E1') {
+    return data.verify?.clean === false
+      ? copia.lineaBloqueadoResiduos
+      : copia.lineaBloqueadoSinComprobacion;
+  }
+  if (estado === 'E2') return copia.lineaSinComprobacion(total);
+  if (estado === 'E3') {
+    const reservas = paginasConReserva(data).length;
+    // Dos cifras con significado exacto: las paginas RELEIDAS (total menos las que no tienen capa
+    // de texto) y las que llevan alguna reserva. La redaccion anterior, «Comprobadas N de M»,
+    // restaba las reservas del numerador: una pagina releida con un logo se contaba como no
+    // comprobada, que es tan falso como lo contrario.
+    // Y cuando la UNICA reserva son imagenes —el caso corriente, un membrete— el sello lo dice
+    // con todas las letras en vez de mandar al lector a la tabla: un ambar que siempre dice lo
+    // mismo se deja de leer, y entonces el ambar deja de proteger a nadie.
+    const base =
+      reservas === 0
+        ? copia.lineaParcialSoloObjetos(total)
+        : reservaSoloPorImagenes(data)
+          ? copia.lineaParcialSoloImagenes(total, data.paginasConImagen.length)
+          : copia.lineaParcial(paginasReleidas(data), total, reservas);
+    return hayObjetoNoExaminado(data) ? `${base} ${copia.clausulaObjetosSinExaminar}` : base;
+  }
+  if (estado === 'E4') return copia.lineaSinTachados(total);
+  return copia.lineaVerificado(total, zonasTachadas(data));
+}
+
+/**
+ * El informe imprimia `data.fileName` TAL CUAL. Con la convencion de nombrado de cualquier
+ * gestoria — `nomina-12345678Z-julio.pdf` — el DNI quedaba dentro del entregable, y el
+ * entregable es el informe que se guarda como registro de diligencia. El propio producto
+ * publicaba el dato que acababa de tachar.
+ *
+ * Se sustituyen las coincidencias de los MISMOS patrones que busca el resto del informe, de
+ * derecha a izquierda para no invalidar los indices.
+ */
+export function nombreSinDatos(fileName: string, marcador: string): string {
+  const hits = [...detect(fileName)].sort((a, b) => b.start - a.start);
+  let salida = fileName;
+  let ultimoInicio = Number.POSITIVE_INFINITY;
+  for (const hit of hits) {
+    // Dos patrones pueden solapar sobre el mismo trozo (un NUSS dentro de un telefono, p. ej.):
+    // se salta el que ya quedo dentro de una sustitucion.
+    if (hit.end > ultimoInicio) continue;
+    salida = salida.slice(0, hit.start) + marcador + salida.slice(hit.end);
+    ultimoInicio = hit.start;
+  }
+  return salida;
+}
+
+function palabraEstado(copia: CopiaInforme, estado: EstadoObjeto): string {
+  if (estado === 'eliminado') return copia.estadoEliminado;
+  if (estado === 'noHabia') return copia.estadoNoHabia;
+  return copia.estadoNoExaminado;
+}
+
+function etiquetaObjeto(copia: CopiaInforme, categoria: (typeof CATEGORIAS_OBJETO)[number]): string {
+  const mapa: Record<(typeof CATEGORIAS_OBJETO)[number], string> = {
+    info: copia.objetoInfo,
+    xmp: copia.objetoXmp,
+    anotaciones: copia.objetoAnotaciones,
+    formularios: copia.objetoFormularios,
+    adjuntos: copia.objetoAdjuntos,
+    marcadores: copia.objetoMarcadores,
+    alternativos: copia.objetoAlternativos,
+    ocultos: copia.objetoOcultos,
+  };
+  return mapa[categoria];
+}
+
+/** Toda cifra de cobertura lleva su numero, tambien cuando es cero; si hay paginas, van al lado. */
+function cifraConPaginas(copia: CopiaInforme, paginas: number[]): string {
+  if (paginas.length === 0) return '0';
+  return copia.conPaginas(paginas.length, paginas.map((p) => p + 1).join(', '));
+}
+
+function dibujarIcono(
+  page: PDFPage,
+  icono: (typeof ESTILO_SELLO)[EstadoSello]['icono'],
+  cx: number,
+  cy: number,
+  fg: Color,
+  bg: Color,
+): void {
+  if (icono === 'aspaHueca') {
+    page.drawEllipse({ x: cx, y: cy, xScale: 11, yScale: 11, color: fg });
+    page.drawEllipse({ x: cx, y: cy, xScale: 8.6, yScale: 8.6, color: bg });
+    page.drawLine({ start: { x: cx - 4, y: cy - 4 }, end: { x: cx + 4, y: cy + 4 }, thickness: 1.8, color: fg });
+    page.drawLine({ start: { x: cx - 4, y: cy + 4 }, end: { x: cx + 4, y: cy - 4 }, thickness: 1.8, color: fg });
+    return;
+  }
+  page.drawEllipse({ x: cx, y: cy, xScale: 11, yScale: 11, color: fg });
+  if (icono === 'check') {
+    page.drawLine({ start: { x: cx - 5, y: cy }, end: { x: cx - 1.5, y: cy - 4 }, thickness: 1.8, color: WHITE });
+    page.drawLine({ start: { x: cx - 1.5, y: cy - 4 }, end: { x: cx + 5.5, y: cy + 4.5 }, thickness: 1.8, color: WHITE });
+  } else if (icono === 'aspa') {
+    page.drawLine({ start: { x: cx - 4, y: cy - 4 }, end: { x: cx + 4, y: cy + 4 }, thickness: 1.8, color: WHITE });
+    page.drawLine({ start: { x: cx - 4, y: cy + 4 }, end: { x: cx + 4, y: cy - 4 }, thickness: 1.8, color: WHITE });
+  } else if (icono === 'admiracion') {
+    page.drawLine({ start: { x: cx, y: cy + 5.5 }, end: { x: cx, y: cy - 1 }, thickness: 2, color: WHITE });
+    page.drawEllipse({ x: cx, y: cy - 4.5, xScale: 1.3, yScale: 1.3, color: WHITE });
+  } else {
+    page.drawLine({ start: { x: cx - 5, y: cy }, end: { x: cx + 5, y: cy }, thickness: 2, color: WHITE });
+  }
 }
 
 export async function buildReport(data: ReportData, copia: CopiaInforme): Promise<Uint8Array> {
@@ -95,20 +257,50 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
     y -= 15;
   };
 
+  // Las viñetas AJUSTAN el texto al ancho. Antes no: el aviso de un tachado no verificable mide
+  // 150 caracteres y se dibujaba en una sola linea que se salia del papel — visible solo al abrir
+  // el PDF, invisible para un test que extrae texto.
   const bullet = (s: string, dotColor: Color): void => {
-    ensure(15);
+    const lineas = wrapText(s, font, 9.7, CONTENT_W - 15);
+    const alto = 13.5 + (lineas.length - 1) * 12;
+    ensure(alto + 2);
     page.drawEllipse({ x: MARGIN + 4, y: y - 6.5, xScale: 2.4, yScale: 2.4, color: dotColor });
-    write(s, MARGIN + 15, y - 9.5, 9.7, font, INK);
-    y -= 13.5;
+    lineas.forEach((ln, i) => write(ln, MARGIN + 15, y - 9.5 - i * 12, 9.7, font, INK));
+    y -= alto;
   };
 
+  const filaObjeto = (label: string, estadoObjeto: EstadoObjeto): void => {
+    const labelLines = wrapText(label, font, 9.5, 300);
+    const alto = Math.max(16, labelLines.length * 12 + 4);
+    ensure(alto);
+    labelLines.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.5, font, MUTED));
+    const destacado = estadoObjeto === 'noExaminado';
+    write(
+      palabraEstado(copia, estadoObjeto),
+      MARGIN + 320,
+      y - 9.5,
+      9.5,
+      destacado ? bold : font,
+      destacado ? AMBER : INK,
+    );
+    y -= alto;
+  };
+
+  // La etiqueta AJUSTA, igual que el valor. Con la columna fija de 170 pt, «Paginas con imagenes
+  // (su contenido visual no se ha comprobado)» se montaba encima de su propia cifra, y la huella
+  // SHA-256 se salia del papel. Se ve abriendo el PDF; ningun test de texto lo nota.
+  const LABEL_W = 225;
   const row = (label: string, value: string, valueSize = 10): void => {
-    const vx = MARGIN + 170;
-    const lines = wrapText(value, font, valueSize, CONTENT_W - 170);
-    ensure(Math.max(16, lines.length * (valueSize + 2.5) + 4));
-    write(label, MARGIN, y - 9.5, 9.5, font, MUTED);
-    lines.forEach((ln, i) => write(ln, vx, y - 9.5 - i * (valueSize + 2.5), valueSize, font, INK));
-    y -= Math.max(16, lines.length * (valueSize + 2.5) + 3);
+    const vx = MARGIN + LABEL_W + 12;
+    const labelLines = wrapText(label, font, 9.5, LABEL_W);
+    const valueLines = wrapText(value, font, valueSize, CONTENT_W - LABEL_W - 12);
+    const alto = Math.max(16, labelLines.length * 12, valueLines.length * (valueSize + 2.5)) + 4;
+    ensure(alto);
+    labelLines.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.5, font, MUTED));
+    valueLines.forEach((ln, i) =>
+      write(ln, vx, y - 9.5 - i * (valueSize + 2.5), valueSize, font, INK),
+    );
+    y -= alto;
   };
 
   // --- cabecera de marca ---------------------------------------------------
@@ -131,45 +323,35 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   y -= 16;
 
   // --- sello de resultado --------------------------------------------------
-  const clean = data.verify?.clean === true;
-  const fg = clean ? OK : BAD;
-  const badgeH = 58;
-  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: clean ? OK_BG : BAD_BG });
-  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 5, height: badgeH, color: fg });
-  const cx = MARGIN + 30;
-  const cy = y - badgeH / 2;
-  page.drawEllipse({ x: cx, y: cy, xScale: 11, yScale: 11, color: fg });
-  if (clean) {
-    page.drawLine({ start: { x: cx - 5, y: cy }, end: { x: cx - 1.5, y: cy - 4 }, thickness: 1.8, color: WHITE });
-    page.drawLine({ start: { x: cx - 1.5, y: cy - 4 }, end: { x: cx + 5.5, y: cy + 4.5 }, thickness: 1.8, color: WHITE });
-  } else {
-    page.drawLine({ start: { x: cx - 4, y: cy - 4 }, end: { x: cx + 4, y: cy + 4 }, thickness: 1.8, color: WHITE });
-    page.drawLine({ start: { x: cx - 4, y: cy + 4 }, end: { x: cx + 4, y: cy - 4 }, thickness: 1.8, color: WHITE });
-  }
-  write(clean ? copia.selloOk : copia.selloMal, MARGIN + 54, y - 24, 13, bold, fg);
-  if (clean) {
-    const noVerificables = data.unverifiableManualPages;
-    write(
-      noVerificables.length === 0
-        ? copia.lineaOk
-        : copia.lineaOkConNoVerificables(noVerificables.length),
-      MARGIN + 54,
-      y - 42,
-      9.3,
-      font,
-      SOFT_INK,
-    );
-  } else {
-    write(copia.lineaMal, MARGIN + 54, y - 42, 9.7, bold, BAD);
-  }
+  // El sello NO es `clean ? verde : rojo`. Es funcion de (cobertura ∧ resultado): un resultado
+  // limpio sobre una cobertura del 0 % (documento escaneado) no es verde, y un documento del que
+  // no se elimino nada tampoco. La escalera vive en `./estado.ts` y es la unica fuente.
+  const estado = estadoDelSello(data);
+  const estilo = ESTILO_SELLO[estado];
+  const lineasSello = wrapText(lineaDelSello(estado, data, copia), font, 9.3, CONTENT_W - 68);
+  const badgeH = Math.max(58, 57 + (lineasSello.length - 1) * 11.5);
+  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: estilo.bg });
+  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 5, height: badgeH, color: estilo.fg });
+  dibujarIcono(page, estilo.icono, MARGIN + 30, y - 24, estilo.fg, estilo.bg);
+  write(copia.sellos[estado], MARGIN + 54, y - 28, 13, bold, estilo.fg);
+  lineasSello.forEach((ln, i) => write(ln, MARGIN + 54, y - 46 - i * 11.5, 9.3, font, SOFT_INK));
   y -= badgeH + 13;
 
   // --- datos del documento -------------------------------------------------
   heading(copia.encabezadoDatos);
-  row(copia.filaArchivo, data.fileName);
+  const nombreMostrado = nombreSinDatos(data.fileName, copia.nombreOculto);
+  row(copia.filaArchivo, nombreMostrado);
   row(copia.filaFecha, data.date);
   row(copia.filaReferencia, ref);
   row(copia.filaHuella, data.sha256, 8.5);
+  if (nombreMostrado !== data.fileName) {
+    for (const linea of wrapText(copia.avisoNombreOculto, font, 8.7, CONTENT_W - HOLGURA)) {
+      ensure(14);
+      write(linea, MARGIN, y - 8.5, 8.7, font, BAD);
+      y -= 11;
+    }
+    y -= 4;
+  }
 
   // --- comprobaciones ------------------------------------------------------
   heading(copia.encabezadoComprobaciones);
@@ -187,52 +369,91 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   }
   y -= 2;
 
-  subLabel(copia.subZonas);
-  if (data.boxesPerPage.length === 0) {
-    bullet(copia.ninguna, MUTED);
-  } else {
+  // Las listas de detalle solo se imprimen cuando NO estan vacias. El cero, con su denominador,
+  // vive en «Cobertura»: un «Ninguna» suelto no distingue «no habia» de «no miramos».
+  if (data.boxesPerPage.length > 0) {
+    subLabel(copia.subZonas);
     for (const entry of data.boxesPerPage) bullet(copia.zonasPagina(entry.page + 1, entry.count), ACCENT);
+    y -= 2;
   }
-  y -= 2;
 
-  subLabel(copia.subMetadatos);
-  if (data.metadataRemoved.length === 0) {
-    bullet(copia.ninguno, MUTED);
-  } else {
-    for (const categoria of data.metadataRemoved) bullet(categoria, ACCENT);
+  // Dos listas, no una. Antes se imprimian juntas con la frase «sin capa de texto», alimentadas
+  // con `visualReviewPages`: de una pagina que SI tiene texto y esta tapada por una imagen el
+  // informe afirmaba, literalmente, que no tenia capa de texto.
+  if (data.paginasSinCapaDeTexto.length > 0) {
+    subLabel(copia.subSinCapaDeTexto);
+    for (const p of data.paginasSinCapaDeTexto) bullet(copia.paginaSinCapaDeTexto(p + 1), BAD);
+    y -= 2;
   }
-  y -= 2;
 
-  subLabel(copia.subEscaneadas);
-  if (data.scannedPages.length === 0) {
-    bullet(copia.ninguna, MUTED);
-  } else {
-    for (const p of data.scannedPages) {
-      bullet(copia.paginaEscaneada(p + 1), BAD);
+  if (data.paginasImagenCompleta.length > 0) {
+    subLabel(copia.subImagenCompleta);
+    for (const p of data.paginasImagenCompleta) bullet(copia.paginaImagenCompleta(p + 1), AMBER);
+    y -= 2;
+  }
+
+  // El texto que se DIBUJA y no se puede releer. Lo ve el que abre el documento y no lo ve la
+  // comprobacion: ahi cabia un DNI entero bajo un sello verde.
+  if (data.paginasTextoNoLegible.length > 0) {
+    subLabel(copia.subTextoNoLegible);
+    for (const entrada of data.paginasTextoNoLegible) {
+      bullet(copia.paginaTextoNoLegible(entrada.page + 1, entrada.caracteres), BAD);
     }
+    y -= 2;
   }
-  y -= 2;
 
   // Una caja manual sobre una pagina sin texto SI borra pixeles, pero no deja nada que releer:
   // no se puede confirmar. Callarlo seria dar por verificado lo que no lo esta.
-  subLabel(copia.subNoVerificables);
-  if (data.unverifiableManualPages.length === 0) {
-    bullet(copia.ninguna, MUTED);
-  } else {
-    for (const p of data.unverifiableManualPages) {
-      bullet(copia.noVerificablePagina(p + 1), BAD);
-    }
+  if (data.unverifiableManualPages.length > 0) {
+    subLabel(copia.subNoVerificables);
+    for (const p of data.unverifiableManualPages) bullet(copia.noVerificablePagina(p + 1), BAD);
+  }
+
+  // --- cobertura: los numeros, con su denominador --------------------------
+  heading(copia.encabezadoCobertura);
+  row(copia.filaPaginasTotal, String(data.totalPaginas), 9.5);
+  row(copia.filaPaginasReleidas, String(paginasReleidas(data)), 9.5);
+  row(copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), 9.5);
+  row(copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), 9.5);
+  row(copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), 9.5);
+  row(copia.filaZonasTachadas, copia.zonasEnPaginas(zonasTachadas(data), paginasConZonas(data)), 9.5);
+  row(copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), 9.5);
+  row(
+    copia.filaPaginasTextoNoLegible,
+    cifraConPaginas(copia, data.paginasTextoNoLegible.map((p) => p.page)),
+    9.5,
+  );
+
+  // --- objetos del archivo: lista FIJA, con su agujero dicho en voz alta ----
+  heading(copia.encabezadoObjetos);
+  for (const categoria of CATEGORIAS_OBJETO) {
+    filaObjeto(etiquetaObjeto(copia, categoria), data.objetos[categoria]);
   }
 
   // --- alcance -------------------------------------------------------------
   heading(copia.encabezadoAlcance);
-  const scopeLines = wrapText(copia.alcance, font, 9.5, CONTENT_W - 26);
-  const boxH = scopeLines.length * 13 + 18;
-  ensure(boxH + 6);
-  page.drawRectangle({ x: MARGIN, y: y - boxH, width: CONTENT_W, height: boxH, color: SOFT_BG });
-  page.drawRectangle({ x: MARGIN, y: y - boxH, width: 3, height: boxH, color: MUTED });
-  scopeLines.forEach((ln, i) => write(ln, MARGIN + 14, y - 14 - i * 13, 9.5, font, SOFT_INK));
-  y -= boxH + 10;
+  for (const parrafo of copia.alcanceParrafos) {
+    const scopeLines = wrapText(parrafo, font, 9.5, CONTENT_W - 26);
+    const boxH = scopeLines.length * 12.5 + 15;
+    ensure(boxH + 8);
+    page.drawRectangle({ x: MARGIN, y: y - boxH, width: CONTENT_W, height: boxH, color: SOFT_BG });
+    page.drawRectangle({ x: MARGIN, y: y - boxH, width: 3, height: boxH, color: MUTED });
+    scopeLines.forEach((ln, i) => write(ln, MARGIN + 14, y - 13.5 - i * 12.5, 9.5, font, SOFT_INK));
+    y -= boxH + 7;
+  }
+  y -= 3;
+
+  // --- como lo comprueba un tercero ----------------------------------------
+  heading(copia.encabezadoVerificacion);
+  for (const parrafo of copia.verificacionParrafos) {
+    const lineas = wrapText(parrafo, font, 9.3, CONTENT_W - HOLGURA);
+    ensure(lineas.length * 12 + 10);
+    lineas.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.3, font, SOFT_INK));
+    y -= lineas.length * 12 + 6;
+  }
+  ensure(16);
+  write(copia.lineaHerramienta(VERSION_APP, data.date), MARGIN, y - 9, 8.5, font, MUTED);
+  y -= 14;
 
   if (data.freeVersion) {
     ensure(16);

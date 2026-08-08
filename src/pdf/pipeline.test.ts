@@ -84,7 +84,9 @@ describe('el informe recibe las paginas no verificables', () => {
     informe.close();
     expect(texto).toContain(COPIA.subNoVerificables);
     expect(texto).toContain(COPIA.noVerificablePagina(1).slice(0, 40));
-    expect(texto).toContain(COPIA.lineaOkConNoVerificables(1));
+    // Literales congelados: el sello NO puede ser verde y el motivo se nombra.
+    expect(texto).not.toContain('VERIFICADO');
+    expect(texto).toContain('SIN COMPROBACIÓN AUTOMÁTICA');
   });
 });
 

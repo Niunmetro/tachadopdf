@@ -1,5 +1,5 @@
 import { contenidoDe, localeDelDocumento } from '../content/index';
-import type { CopiaComprobador, CopiaInforme } from '../content/tipos';
+import type { CopiaComprobador } from '../content/tipos';
 import { PdfPasswordError } from '../pdf/engine';
 import { FicheroNoPdfError, analizarPdf } from './analyze';
 import { renderResumen } from './render';
@@ -7,7 +7,9 @@ import { renderResumen } from './render';
 // El idioma sale de la RUTA: el HTML generado ya fija <html lang> según dónde vive la página.
 const CONTENIDO = contenidoDe(localeDelDocumento(document));
 const COPIA: CopiaComprobador = CONTENIDO.comprobadorUi;
-const ALCANCE: CopiaInforme['alcance'] = CONTENIDO.informe.alcance;
+// El alcance del COMPROBADOR, no el del informe: aqui no se tacha nada, asi que reutilizar el
+// texto del informe («los pixeles de las zonas marcadas») describia algo que no ocurre.
+const ALCANCE: CopiaComprobador['alcance'] = COPIA.alcance;
 
 export interface ElementosComprobador {
   dropzone: HTMLElement;

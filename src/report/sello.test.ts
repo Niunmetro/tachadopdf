@@ -1,0 +1,300 @@
+import { describe, expect, it } from 'vitest';
+import { es } from '../content/es';
+import { loadPdf } from '../pdf/engine';
+import type { InventarioObjetos, PatternKind, ReportData } from '../types';
+import { buildReport } from './report';
+
+const COPIA = es.informe;
+
+/**
+ * EL PAPEL. Se renderiza el informe de verdad, se extrae su texto y se afirma sobre LITERALES
+ * CONGELADOS, nunca sobre `COPIA.loQueSea`: un test que se compara con su propio generador da
+ * verde pase lo que pase (es lo que le ocurria a `toContain(COPIA.alcance)`).
+ *
+ * El literal que se usa para negar el verde es 'VERIFICADO' a secas, no 'TACHADO VERIFICADO':
+ * asi la misma asercion caza tambien el sello ANTERIOR, que era exactamente ese participio
+ * suelto. Cada uno de estos cuatro casos estampaba VERIFICADO antes de este cambio.
+ */
+const VERDE_A_SECAS = 'VERIFICADO';
+
+const PATRONES: PatternKind[] = ['dni', 'nie', 'iban', 'nuss', 'telefono', 'email', 'catastro'];
+
+function objetos(over: Partial<InventarioObjetos> = {}): InventarioObjetos {
+  const base: InventarioObjetos = {
+    info: 'eliminado',
+    xmp: 'noHabia',
+    anotaciones: 'noHabia',
+    formularios: 'noHabia',
+    adjuntos: 'noHabia',
+    marcadores: 'noHabia',
+    alternativos: 'noHabia',
+    ocultos: 'noHabia',
+  };
+  return { ...base, ...over };
+}
+
+function datos(over: Partial<ReportData> = {}): ReportData {
+  return {
+    fileName: 'contrato.pdf',
+    sha256: 'a'.repeat(64),
+    date: '2026-08-08',
+    patternsSearched: PATRONES,
+    totalPaginas: 3,
+    boxesPerPage: [{ page: 0, count: 2 }],
+    objetos: objetos(),
+    paginasSinCapaDeTexto: [],
+    paginasImagenCompleta: [],
+    paginasConImagen: [],
+    unverifiableManualPages: [],
+    paginasTextoNoLegible: [],
+    freeVersion: false,
+    verify: { clean: true, residues: [] },
+    ...over,
+  };
+}
+
+/**
+ * Los cuatro casos de mas abajo estampaban VERIFICADO antes de este cambio. Para que eso se pueda
+ * COMPROBAR —y no solo afirmar— este fichero se ejecuta tal cual contra el codigo anterior:
+ * `git stash push -- src` y `npx vitest run src/report/sello.test.ts`. Lo unico que hace falta
+ * son los dos campos del esquema viejo que el informe anterior leia. Ni el codigo nuevo ni las
+ * aserciones los tocan; existen para que la demostracion fail-to-pass siga siendo reproducible.
+ */
+function datosConAliasDelEsquemaAnterior(over: Partial<ReportData> = {}): ReportData {
+  const base = datos(over);
+  return { ...base, scannedPages: base.paginasSinCapaDeTexto, metadataRemoved: [] } as ReportData;
+}
+
+async function texto(data: ReportData): Promise<string> {
+  const doc = await loadPdf(await buildReport(data, COPIA));
+  const t = doc.extractAllText().join(' ');
+  doc.close();
+  return t.replace(/\s+/g, ' ');
+}
+
+// G2 · el falso verde numero uno: 26,8 % de los PDF reales tienen alguna pagina sin capa de texto.
+describe('G2: una página sin capa de texto no puede salir verde', () => {
+  it('sella COMPROBACIÓN PARCIAL, dice cuántas páginas comprobó y no dice VERIFICADO', async () => {
+    const t = await texto(datosConAliasDelEsquemaAnterior({ paginasSinCapaDeTexto: [1] }));
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('COMPROBACIÓN PARCIAL');
+    // Dos cifras, cada una con su significado: RELEIDAS (2 de 3) y CON RESERVA (1). La redaccion
+    // anterior, «Comprobadas 2 de 3», restaba las reservas del numerador — y con las imagenes
+    // dentro de las reservas eso convertia una pagina releida con un logo en «no comprobada».
+    expect(t).toContain('Se han releído 2 de 3 páginas');
+    expect(t).toContain('En 1 página(s) la comprobación automática no llega a todo el contenido');
+    expect(t).toContain('Página 2: sin capa de texto, no hay nada que releer');
+  });
+});
+
+// G3 · «Zonas tachadas: Ninguna» bajo un sello verde era el contrasentido que abrio todo esto.
+describe('G3: sin zonas tachadas no puede salir verde', () => {
+  it('sella SIN TACHADOS y dice en voz alta que no eliminó nada', async () => {
+    const t = await texto(datosConAliasDelEsquemaAnterior({ boxesPerPage: [] }));
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('SIN TACHADOS');
+    expect(t).toContain('No se ha eliminado ningún dato de este documento');
+    expect(t).toContain('Este informe no registra ningún borrado');
+  });
+});
+
+// G4 · el documento escaneado entero: no es que falte una parte, es que no hubo comprobacion.
+describe('G4: un documento entero sin capa de texto no es «parcial», es «sin comprobación»', () => {
+  it('sella SIN COMPROBACIÓN AUTOMÁTICA, ni verde ni parcial', async () => {
+    const t = await texto(datosConAliasDelEsquemaAnterior({ paginasSinCapaDeTexto: [0, 1, 2] }));
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).not.toContain('COMPROBACIÓN PARCIAL');
+    expect(t).toContain('SIN COMPROBACIÓN AUTOMÁTICA');
+    expect(t).toContain('Ninguna de las 3 páginas tiene capa de texto');
+  });
+});
+
+// G5 · falla cerrado. Los dos motivos comparten sello porque piden la misma conducta.
+describe('G5: la comprobación que no corre, y los residuos, bloquean igual', () => {
+  it('sin `verify` el informe queda bloqueado y lo dice', async () => {
+    const { verify, ...sinVerify } = datos();
+    const t = await texto(sinVerify as ReportData);
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('TACHADO NO SUPERADO');
+    expect(t).toContain('Nada de lo que sigue está confirmado');
+  });
+
+  it('con residuos re-encontrados, el informe manda repetir el tachado', async () => {
+    const t = await texto(
+      datos({ verify: { clean: false, residues: [{ kind: 'dni', value: '12345678Z', page: 0 }] } }),
+    );
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('TACHADO NO SUPERADO');
+    expect(t).toContain('No entregues este archivo: repite el tachado');
+    expect(t).toContain('DNI: 1 ocurrencia(s) en el texto extraíble');
+  });
+
+  it('un documento de cero páginas no puede sellar nada verde', async () => {
+    const t = await texto(datos({ totalPaginas: 0 }));
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('TACHADO NO SUPERADO');
+  });
+});
+
+// G6 · la guarda que impide que el agujero de los marcadores vuelva en silencio.
+describe('G6: un objeto presente y no examinado degrada el sello y consta en el inventario', () => {
+  it('con marcadores sin examinar no hay verde, y el informe lo nombra', async () => {
+    const t = await texto(datosConAliasDelEsquemaAnterior({ objetos: objetos({ marcadores: 'noExaminado' }) }));
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('COMPROBACIÓN PARCIAL');
+    expect(t).toContain('objetos que la comprobación no examina');
+    expect(t).toContain('Marcadores del documento (índice)');
+    expect(t).toContain('NO EXAMINADO');
+  });
+});
+
+describe('el verde, cuando de verdad toca', () => {
+  it('con cobertura total, resultado limpio y algo eliminado, sella TACHADO VERIFICADO', async () => {
+    const t = await texto(datos());
+
+    expect(t).toContain('TACHADO VERIFICADO');
+    expect(t).toContain('Se han releído las 3 páginas del archivo entregado y sus metadatos');
+    expect(t).toContain('ni el texto que había en las 2 zonas que tachaste');
+  });
+});
+
+// El informe afirmaba de una pagina CON texto tapada por una imagen que no tenia capa de texto.
+describe('imagen a página completa y «sin capa de texto» son dos cosas distintas', () => {
+  it('una página tapada por una imagen no se declara «sin capa de texto»', async () => {
+    const t = await texto(datos({ paginasImagenCompleta: [2] }));
+
+    expect(t).not.toContain(VERDE_A_SECAS);
+    expect(t).toContain('Página 3: una imagen cubre la página');
+    expect(t).toContain('Su texto sí se ha comprobado; el contenido de la imagen, no');
+    expect(t).not.toContain('Página 3: sin capa de texto');
+  });
+});
+
+describe('la cobertura lleva SIEMPRE su cifra y su denominador', () => {
+  it('imprime las seis filas de cobertura, también las que valen cero', async () => {
+    const t = await texto(datos());
+
+    expect(t).toContain('Cobertura de esta comprobación'.toUpperCase());
+    expect(t).toContain('Páginas del documento 3');
+    expect(t).toContain('Páginas releídas tras el tachado 3');
+    expect(t).toContain('Páginas sin capa de texto (no comprobables) 0');
+    expect(t).toContain('Páginas con imagen a página completa 0');
+    expect(t).toContain('Zonas tachadas 2 en 1 página(s)');
+    expect(t).toContain('Tachados sin confirmación posterior 0');
+  });
+
+  it('«Ninguna» ya no aparece en el informe: un cero se escribe con su número', async () => {
+    const t = await texto(datos());
+    expect(t).not.toContain('Ninguna');
+    expect(t).not.toContain('Ninguno');
+  });
+
+  it('cuando hay páginas afectadas, la cifra va acompañada de la lista', async () => {
+    const t = await texto(datos({ paginasSinCapaDeTexto: [0, 2] }));
+    expect(t).toContain('Páginas sin capa de texto (no comprobables) 2 · páginas 1, 3');
+  });
+});
+
+describe('el inventario de objetos es una lista FIJA', () => {
+  it('las seis categorías salen siempre, con su estado', async () => {
+    const t = await texto(datos({ objetos: objetos({ xmp: 'eliminado', adjuntos: 'noHabia' }) }));
+
+    expect(t).toContain('Metadatos Info (Título, Autor, Asunto, Palabras clave, Productor, Creador)');
+    expect(t).toContain('Metadatos XMP (documento y páginas)');
+    expect(t).toContain('Anotaciones y comentarios');
+    expect(t).toContain('Campos de formulario');
+    expect(t).toContain('Ficheros adjuntos');
+    expect(t).toContain('Marcadores del documento (índice)');
+    expect(t).toContain('eliminado del archivo');
+    expect(t).toContain('no había');
+  });
+});
+
+// G9 · lista negra de sobre-afirmacion. Lo que el informe NO puede llegar a decir nunca.
+describe('G9: ningún estado del sello sobre-afirma', () => {
+  const CASOS: { nombre: string; data: ReportData }[] = [
+    { nombre: 'E1', data: datos({ verify: { clean: false, residues: [] } }) },
+    { nombre: 'E2', data: datos({ paginasSinCapaDeTexto: [0, 1, 2] }) },
+    { nombre: 'E3', data: datos({ paginasSinCapaDeTexto: [1] }) },
+    { nombre: 'E4', data: datos({ boxesPerPage: [] }) },
+    { nombre: 'E5', data: datos() },
+  ];
+
+  const PROHIBIDAS = [
+    'documento limpio',
+    'sin datos personales',
+    'garantiza',
+    'anonimiz',
+    'certific',
+    'rgpd garantizado',
+    'inteligencia artificial',
+    ' ia ',
+    'válido como evidencia',
+    'prueba de tachado',
+  ];
+
+  it.each(CASOS)('$nombre no contiene ninguna afirmación prohibida', async ({ data }) => {
+    const t = (await texto(data)).toLowerCase();
+    for (const prohibida of PROHIBIDAS) {
+      expect(t, `prohibida: ${prohibida}`).not.toContain(prohibida);
+    }
+  });
+
+  it.each(CASOS)('$nombre solo nombra «libre de datos personales» para NEGARLO', async ({ data }) => {
+    const t = (await texto(data)).toLowerCase();
+    let desde = 0;
+    let encontrado = false;
+    for (;;) {
+      const i = t.indexOf('libre de datos personales', desde);
+      if (i === -1) break;
+      encontrado = true;
+      expect(t.slice(Math.max(0, i - 60), i)).toMatch(/\bno\b/);
+      desde = i + 1;
+    }
+    expect(encontrado).toBe(true);
+  });
+});
+
+// G10 · el alcance no puede encogerse. Sustituye al `toContain(COPIA.alcance)` tautologico.
+describe('G10: el alcance enumera, ítem por ítem, lo que NO se ha buscado', () => {
+  const ITEMS = [
+    // qué se buscó: los siete formatos, por su nombre
+    'DNI',
+    'NIE',
+    'IBAN español',
+    'número de la Seguridad Social',
+    'teléfono español',
+    'referencia catastral',
+    'correo electrónico',
+    // qué NO se buscó
+    'nombres ni apellidos',
+    'direcciones postales',
+    'firmas',
+    'fotografías',
+    'matrículas',
+    'cuentas extranjeras',
+    'contenido visual de las imágenes que no marcaste',
+    'sin capa de texto',
+    // el límite conocido que no tiene arreglo sin rehacer el motor: se DECLARA
+    'el hueco que ocupaba',
+    'su anchura se puede medir con exactitud',
+    'puede bastar para distinguir cuál era',
+    'conviértelo a imagen antes de entregarlo',
+    // qué no dice, y cómo lo contrasta un tercero
+    'No sustituye a la revisión humana',
+    'certutil -hashfile',
+    'shasum -a 256',
+    'TachadoPDF v',
+    'motor mupdf',
+  ];
+
+  it.each(ITEMS)('el informe declara «%s»', async (item) => {
+    expect(await texto(datos())).toContain(item);
+  });
+});

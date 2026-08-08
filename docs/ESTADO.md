@@ -12,8 +12,46 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **615/615 en 48 ficheros**. Verificación: `npm ci` · `npx --no-install tsc --noEmit` ·
-  `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
+- Suite: **794/794 en 63 ficheros** en `master`. Verificación: `npm ci` ·
+  `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
+- ✅ **`fix/sello-por-estados` y `fix/imagenes-escondites-y-glifos` FUSIONADAS en master** (8 + 9
+  commits). La primera rehízo el sello; la segunda cerró los 17 falsos verdes que un ataque interno
+  consiguió contra ella, **incluido un bug de destrucción de datos que la primera introdujo** (el
+  escaneo del cliente volvía en blanco). Ver la bitácora del 2026-08-08.
+- ⚠ **NO desplegado.** Publicar es decisión del dueño: `master` va por delante de lo que hay vivo
+  en https://www.tachadopdf.com.
+
+## El sello del informe
+- El sello **ya no es `clean ? verde : rojo`**. Es función de (cobertura ∧ resultado), en una
+  escalera de cinco estados que vive en `src/report/estado.ts` como función pura y **única fuente**:
+  `E1 TACHADO NO SUPERADO` · `E2 SIN COMPROBACIÓN AUTOMÁTICA` · `E3 COMPROBACIÓN PARCIAL` ·
+  `E4 SIN TACHADOS` · `E5 TACHADO VERIFICADO`.
+- **CUALQUIER imagen en una página degrada a E3.** Medido: 111 de 129 PDF reales llevan alguna
+  (el logo del membrete), así que **el estado normal del producto es el ámbar** y el verde queda
+  para documentos de solo texto. Es deliberado: «no queda ningún dato de los patrones buscados»
+  sobre un acta con la foto de un DNI dentro es una frase citable en una reclamación. Para que el
+  ámbar no se vuelva ruido, cuando la ÚNICA reserva son imágenes el sello lo DICE con todas las
+  letras en vez de mandar al lector a la tabla (`lineaParcialSoloImagenes`). **No subir esto a un
+  umbral: por debajo del umbral no degradaba nada, y ese era el falso verde más comercial.**
+- **Reservas que bajan el sello a E3** (`paginasConReserva`): páginas sin capa de texto, con imagen
+  a página completa, **con cualquier imagen**, con un tachado manual sin confirmar, y **con texto
+  dibujado que no se puede releer**.
+- **Regla de diseño que no se puede relajar:** ningún rótulo puede ser subcadena de otro. Si el
+  ámbar se llamara «VERIFICADO CON RESERVAS», el test «una página escaneada no puede salir verde»
+  sería imposible de escribir. Lo vigila `report/estado` (G8).
+- **P3, la regla a prueba de futuro:** un objeto **presente y no examinado** en el inventario
+  degrada el sello solo. Añadir una categoría a «no examinado» degrada los documentos que la lleven
+  en vez de ampliar el agujero en silencio; y el día que el motor la trate, el sello deja de
+  degradarse **sin tocar el texto**.
+- **Al tocar el informe hay DOS mitades siempre: borrar y releer.** Lo que se elimina del PDF entra
+  además en `extractMetadataStrings`, para que un borrado que falle bloquee en vez de firmar.
+- **Y la relectura NO elige dónde mirar.** `extractMetadataStrings` recoge TODA cadena de TODO
+  objeto del archivo, no una lista de sitios: contra un escondite no hay lista blanca que valga,
+  siempre queda el sitio número diez. Esa pasada, nada más ponerse, destapó que **el fichero
+  adjunto no se iba** (el `/AF` del catálogo lo mantenía vivo mientras el informe lo declaraba
+  eliminado). Medido: 0 de 145 PDF reales bloquean por un residuo inventado.
+- Los tests del informe afirman sobre **literales congelados**, nunca sobre `COPIA.loQueSea`:
+  comparar el informe con su propio generador es un test que no puede fallar.
 
 ## Guardas vivas (todas probadas con su mutación)
 - `content/pages-generadas` — el HTML del disco == lo que produce el generador (prohíbe editarlo a mano).
@@ -26,6 +64,21 @@
 - `guard-en` — vocabulario prohibido en inglés, con fronteras de palabra, sobre TODO `.html` del repo.
 - `csp` — CSP por meta en las 18 páginas (antes solo en 2).
 - `precios-coherentes` — una sola fuente para cuota, tope de páginas y precio.
+- `report/estado` (rama) — rejilla exhaustiva de 144 combinaciones del sello, invariante maestra de
+  E5, orden de la escalera, rótulos disjuntos, y patrones declarados == los que `detect()` emite.
+- `report/sello` (rama) — sobre el PDF **renderizado**: página escaneada, documento sin tachados,
+  escaneado entero y objeto no examinado **no pueden** imprimir «VERIFICADO»; lista negra de
+  sobre-afirmación; el alcance no puede encogerse.
+- `report/maquetacion` (rama) — mide la POSICIÓN de cada glifo: nada se sale de los márgenes y dos
+  textos de la misma línea no se pisan. Es la clase de guarda que faltaba: extraer el texto da
+  verde aunque una etiqueta se dibuje encima de su valor.
+- `pdf/marcadores` · `pdf/escondites` · `pdf/escondites-estructura` · `pdf/dos-lineas` ·
+  `pdf/imagenes` · `pdf/capas-ocultas` · `pdf/texto-no-legible` · `pdf/hueco-de-glifos` ·
+  `detect/separadores` — un fichero por escondite cerrado, cada uno con el defecto medido en su
+  cabecera.
+- `pdf/escaneo-conservado` — la nómina escaneada conserva su imagen tras el tachado. **Mide TINTA
+  EN EL PAPEL, no bloques de imagen**: `onImageBlock` sigue contando 1 aunque la imagen ya no se
+  pueda decodificar, así que contar bloques da verde sobre una página en blanco.
 - `despliegue` — `public/CNAME` existe, con su byte exacto (antes solo lo escribía el script de
   deploy tras el build), y `.gitattributes` lo fija a LF.
 
@@ -69,7 +122,47 @@
      No hace falta tocar el script de deploy: el único camino que mete esos ficheros es publicar
      algo que no sea `dist/`.
 
+## Trampas del motor (medidas, no supuestas: no volver a caer)
+- **`garbage >= 2` + recorrer los objetos = mupdf pierde la imagen redactada.** Es lo que dejaba la
+  nómina escaneada en blanco. `stripMetadata` guarda por eso en DOS pasadas: `garbage: 1` con el
+  barrido, y luego reabrir y compactar con `garbage: 4` **sin tocar ni un objeto**. No juntarlas.
+- **`REDACT_IMAGE_PIXELS` funciona**: borra los píxeles de la caja y respeta el resto de la imagen.
+  Si alguna vez parece que destruye el escaneo, el culpable está en `stripMetadata`, no en el motor.
+- **`setLayerVisible` es estado de LECTURA**: enciende las capas para extraer texto y el `/OFF`
+  sigue en los bytes guardados. Por eso se pueden leer las capas ocultas sin cambiar el entregable.
+- **Un grep sobre el PDF entregado da falso negativo** si no se descomprimen antes los flujos
+  (`saveToBuffer({ decompress: true })`).
+- **El espacio de página de mupdf tiene la Y hacia ABAJO.** Una caja con la Y del espacio PDF cae
+  en el sitio equivocado y el test parece decir que la redacción no toca la imagen.
+
 ## Residuales conocidos (verificados, NO arreglados, con su porqué)
+- **El coste de rendimiento de la ronda no está medido.** `processDocument` hace ahora una pasada
+  más por página (el dispositivo que cuenta glifos ilegibles) sobre las que ya hacía. En documentos
+  largos puede notarse; nadie lo ha cronometrado.
+- **El patrón de teléfono admite separador en cualquier posición y no lleva dígito de control.**
+  `6 1 2 3 4 5 6 7 8` se detecta. Es de antes de esta ronda, no es efecto de la ampliación del
+  detector, y queda constancia con un test en `detect/separadores`.
+- **El tope de páginas de la versión gratuita NO es un muro.** Cuelga de `license.pro`, que lo
+  enciende la verificación que corre en el navegador del usuario. Sin servidor no tiene arreglo
+  técnico y no se pretende; lo que se ha corregido es el comentario que afirmaba lo contrario.
+- **Hueco de glifos.** Al tachar, el texto posterior NO se mueve: queda un hueco cuya anchura es
+  exactamente la del texto borrado (medido: 61,765 pt para ` 12345678Z ` en Helvetica 11, y el
+  texto de después no se desplaza ni 0,01 pt). No tiene arreglo con este motor —mupdf solo ofrece
+  `REDACT_TEXT_REMOVE`/`NONE`, y rasterizar destruiría la capa de texto sobre la que se sostiene
+  toda la comprobación—, así que **se declara en el informe** y `pdf/hueco-de-glifos` ata la
+  declaración a la medida. La declaración dice ahora que la anchura **se puede medir con exactitud**
+  y que dentro de una lista corta de candidatos **puede bastar para distinguir cuál era**: el propio
+  banco mide que veinte nombres de pila dan veinte anchuras distintas, y declarar el límite a la
+  baja es una promesa encubierta.
+- **Teléfono y referencia catastral partidos por un salto de línea** no se reencuentran. Juntar dos
+  líneas puede *fabricar* una coincidencia de esos dos patrones (no llevan dígito de control útil),
+  y un bloqueo por un residuo inventado no tendría salida. Frontera fijada por un test.
+- **El informe bloqueado (E1) no llega a nadie:** `canDownloadReport` exige `verify.clean`. El
+  informe que dice «me negué, y por esto» también es diligencia y hoy se tira. Entregarlo solo a él
+  toca el flujo de descarga y la UI: decisión pendiente.
+- **Se pierde el texto alternativo de accesibilidad de las imágenes**, porque es donde Word deja
+  texto escrito por el usuario y la guarda no lo releía. Consta como categoría propia del inventario
+  del informe en vez de desaparecer en silencio.
 - **Sin guarda de canonical en las 8 páginas estáticas españolas.** `content/hreflang` solo mira
   las páginas con `origen: 'generado'`. Hoy las ocho tienen su canonical auto-referente correcto
   (comprobado fichero a fichero sobre `dist/` en la integración), pero nada lo vigila: si alguien

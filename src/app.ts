@@ -15,8 +15,10 @@ export function canProcess(s: AppState): boolean {
   return s.license.pro || s.quota.allowed;
 }
 
-// Muro de páginas de la versión gratuita: Pro no tiene tope; en gratis, hasta FREE_MAX_PAGES.
-// Es el gate robusto (no depende del contador reseteable) que empuja el trabajo real hacia Pro.
+// Tope de páginas de la versión gratuita: Pro no tiene tope; en gratis, hasta FREE_MAX_PAGES.
+// NO es un gate robusto, aunque aquí ponía que sí: cuelga de `s.license.pro`, que lo enciende la
+// verificación de licencia que corre en el navegador del usuario. Ver el porqué largo, y lo que
+// de verdad sostiene el freemium, en `freemium/quota.ts`.
 export function withinFreePageLimit(s: AppState, pageCount: number): boolean {
   return s.license.pro || pageCount <= FREE_MAX_PAGES;
 }
