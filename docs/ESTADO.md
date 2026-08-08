@@ -12,8 +12,11 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **794/794 en 63 ficheros** en `master`. Verificación: `npm ci` ·
+- Suite: **835/835 en 68 ficheros** en `master`. Verificación: `npm ci` ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
+- ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
+  Primera pasada de DISEÑO: hasta esa fecha no se había tocado un solo píxel del producto. Ver
+  §«Diseño del informe» y §«Diseño de la aplicación y de la web».
 - ✅ **`fix/sello-por-estados` y `fix/imagenes-escondites-y-glifos` FUSIONADAS en master** (8 + 9
   commits). La primera rehízo el sello; la segunda cerró los 17 falsos verdes que un ataque interno
   consiguió contra ella, **incluido un bug de destrucción de datos que la primera introdujo** (el
@@ -53,6 +56,52 @@
 - Los tests del informe afirman sobre **literales congelados**, nunca sobre `COPIA.loQueSea`:
   comparar el informe con su propio generador es un test que no puede fallar.
 
+## Diseño del informe (primera pasada, 2026-08-08)
+- **El veredicto es ahora el texto MAYOR de la página** (19 pt) y va por delante de la marca (12) y
+  del antetítulo (9,5). Antes la escala estaba invertida: los dos elementos mayores del papel eran
+  la marca y el título genérico, o sea los dos IDÉNTICOS en los cinco estados.
+- **El rótulo del estado consta en el pie de TODAS las páginas**, con el filete teñido. Antes la
+  página 2 de un informe bloqueado y la de uno verificado eran el mismo texto palabra por palabra.
+  El rótulo va **ENTERO**: la regla G8 (ningún rótulo es subcadena de otro) es lo que permite
+  escribir los tests, y un «PARCIAL» a secas la rompe. Lo vigila `report/sello` (G11).
+- **E1 es la única banda maciza** (roja con texto en blanco). En escala de grises queda en ~75
+  frente a ~240 de las otras cuatro: la única alarma del producto se distingue SIN color. E2 sigue
+  en la familia roja porque `CLAUDE.md` línea 10 lo exige; lo que cambia es que una está invertida.
+- **El ámbar lleva un medidor de cobertura, no un signo de admiración.** Los cinco iconos se
+  dibujan con primitivas de `pdf-lib`: nada remoto, nada descargado.
+- **Cuatro canales por estado, no uno:** relleno de banda, tinta dentro, acento sobre blanco y
+  forma del icono. Los rótulos y las formas son lo que sobrevive a la fotocopia y al daltonismo.
+- **Los puntos de patrón tienen TRES estados**: macizo verde = comprobado y no había · anillo hueco
+  = no se pudo comprobar · macizo rojo = encontrado. La regla es `páginas releídas == 0 o no hubo
+  comprobación`, **NO** «el estado es rojo o ámbar»: en un ámbar por imágenes la cobertura de texto
+  es completa y el verde ahí es correcto. Lo mide `report/vinetas` contando TINTA sobre el PDF
+  rasterizado.
+- **En «Cobertura», las cinco filas que bajan el sello se destacan** (fondo ámbar, barra y cifra en
+  negrita) y las de inventario no. Lo mide `report/cobertura-destacada` sobre la FUENTE de cada
+  cifra en el PDF renderizado.
+- **Viudas y huérfanas:** ningún encabezado cierra una hoja sin su sección, y las tablas planifican
+  el corte para no dejar menos de dos filas a ningún lado. Lo vigila `report/paginacion` (G14).
+- **La marca de agua DEMO ya no cruza el sello ni la huella SHA-256**: vive en la mitad inferior.
+  Lo vigila `report/paginacion` (G15), localizando la banda por su color de relleno.
+- **Al tocar el sello hay que rasterizar y mirar el E5 y el E3 uno al lado del otro.** El ámbar
+  bonito y el verde grande son el mismo fallo con dos caras, y ninguna guarda mide «cuánta
+  tranquilidad transmite un titular». El guion de vistas vive fuera de `src/` (`_vistas/`).
+
+## Diseño de la aplicación y de la web (misma pasada)
+- **Lo hueco sigue ahí, lo macizo se va.** Una detección sin elegir es un contorno discontinuo con
+  el dato legible debajo; elegida, macizo con su marca. Antes `.hit-box` no tenía NI UNA regla y
+  heredaba el estilo de `button`: propuesta, elegida y tachado consumado eran el mismo dibujo.
+- **La entrega se acusa y enseña el veredicto** (`src/ui/entrega.ts`), reutilizando LITERALMENTE
+  `sellos[estado]` y `lineaDelSello`. Para eso `processDocument` devuelve su `reportData`: la
+  pantalla no redacta nada por su cuenta. Guarda `ui/entrega` (G16).
+- **La casilla de revisión y el botón de descarga no existen hasta que hay documento cargado.**
+- **Regla de la casa: ningún elemento pulsable puede compartir color de relleno con su fondo.** Los
+  CTA de `/actas/` y `/nominas/` estaban a 1:1 en modo oscuro. Guarda `legal/cta-visible` (G17).
+- **`--gris` era un gris de tema oscuro sobre blanco** (2,56:1) y le tocaba a la frase que nombra al
+  comprador y al pie que sostiene la promesa de privacidad. Token `--enlace` propio (5,7:1) para
+  todo enlace: donde no había regla, el navegador ponía su #0000EE. Lo miden los tests de
+  `estilo.css`, calculando el contraste de verdad.
+
 ## Guardas vivas (todas probadas con su mutación)
 - `content/pages-generadas` — el HTML del disco == lo que produce el generador (prohíbe editarlo a mano).
 - `content/contenido-indexable` — >1.500 caracteres de texto visible sin JS, en fuente y en `dist/`.
@@ -72,6 +121,21 @@
 - `report/maquetacion` (rama) — mide la POSICIÓN de cada glifo: nada se sale de los márgenes y dos
   textos de la misma línea no se pisan. Es la clase de guarda que faltaba: extraer el texto da
   verde aunque una etiqueta se dibuje encima de su valor.
+- `report/vinetas` (rama) — mide TINTA sobre el informe rasterizado: **cero píxeles del verde de
+  viñeta** cuando no hubo nada que releer. Un test de texto no ve esto y por eso duró tanto.
+- `report/cobertura-destacada` (rama) — mide la FUENTE de cada cifra sobre el PDF renderizado: la
+  de una fila con reserva va en negrita y la de inventario no. A cero no se destaca.
+- `report/paginacion` (rama) — ninguna hoja termina en un encabezado ni empieza por una fila
+  huérfana, en los cinco estados; y los píxeles que distinguen la versión gratuita de la de pago
+  (la marca de agua) caen todos por debajo de la banda del sello, que se localiza por su color.
+- `ui/entrega` — el acuse de entrega enseña el MISMO veredicto que el informe, con literales
+  congelados, y un documento escaneado entero no se anuncia como verde en pantalla.
+- `legal/cta-visible` — en las dos landings de sector, el relleno del CTA en tema oscuro no puede
+  ser el mismo que el del cuerpo, y si el relleno se aclara el texto no puede quedarse en blanco.
+- `estilo` — los tokens de texto (`--gris`, `--enlace`, `--tinta-suave`) se leen sobre blanco a
+  4,5:1 o mejor, **calculando el contraste**, no comprobando que la cadena esté escrita. Y el botón
+  de «tachar todas las apariciones» no recorta el valor: esa guarda **estaba al revés y exigía el
+  `text-overflow: ellipsis` que lo dejaba en un carácter en el móvil**.
 - `pdf/marcadores` · `pdf/escondites` · `pdf/escondites-estructura` · `pdf/dos-lineas` ·
   `pdf/imagenes` · `pdf/capas-ocultas` · `pdf/texto-no-legible` · `pdf/hueco-de-glifos` ·
   `detect/separadores` — un fichero por escondite cerrado, cada uno con el defecto medido en su
@@ -98,6 +162,25 @@
    respuesta del tipo «¿por qué mi informe dice COMPROBACIÓN PARCIAL?» que explique que el ámbar
    es el estado honesto de casi cualquier documento con un logo, y que el verde está reservado a
    los de solo texto.
+0.b **Tres cosas del diseño que cambian lo que el producto AFIRMA y por eso NO se han tocado.**
+   Ruta sensible: las decide el dueño.
+   - *Rótulo propio para las páginas pendientes dentro del sello.* Hoy el sello ámbar delega
+     («constan en «Cobertura»») y la tabla ya destaca la fila. Subir los números de página al sello
+     con una frase del tipo «Revisar a ojo: páginas 1, 2, 3, 4» sería la lectura más directa
+     posible del ámbar, pero es **texto nuevo** que afirma una instrucción, y además alarga la que
+     ya es la banda más alta del producto. Decisión: ¿se añade esa frase y con qué palabras?
+   - *El acta de ejemplo enseña una detección aparentemente aleatoria y la firma en verde.* En tres
+     líneas consecutivas del anexo, el IBAN `ES6600491500051234567892` y el DNI `11223344H` quedan
+     a la vista mientras el nº de la Seguridad Social de al lado sí se tacha. El motor obra bien
+     (mod-97 da 7 y la letra correcta sería B), pero es el ÚNICO documento que ve todo el que llega
+     de un anuncio y lo que enseña es «tapo unos datos y otros idénticos no, sin decir por qué».
+     **NO se ha cambiado el PDF de ejemplo**: una demo donde todo valida enseñaría una herramienta
+     que lo caza todo, que es el falso verde reubicado en marketing. Las dos salidas honestas
+     —rotular esas líneas como «no detectado automáticamente» o rehacer el acta— son decisión suya.
+   - *Rótulos para los dos ficheros del acuse de entrega.* El panel los nombra pero no explica cuál
+     es cuál («el PDF que entregas» / «el informe que archivas» sería texto nuevo en dos idiomas).
+     De momento solo se listan los nombres, que es lo que no requiere inventar nada.
+
 1. **Precio y moneda en inglés.** `config.ts` tiene un único `PRECIO_PRO = '59 €'`. La web inglesa
    muestra 59 € y pago único. ¿Se queda así o pasa a $/£?
 2. **`public/actas/` y `public/nominas/` venden lo que no existe**: «59 €/año» y «149 €/año Tier
@@ -146,6 +229,22 @@
   en el sitio equivocado y el test parece decir que la redacción no toca la imagen.
 
 ## Residuales conocidos (verificados, NO arreglados, con su porqué)
+- **La última hoja de dos informes sigue muy vacía.** Medido el hueco final de cada página: el
+  documento escaneado entero (E2) entrega una tercera hoja con 705 pt en blanco y el parcial con
+  todas las reservas, 539. La causa **no es el corte** —el control de viudas y huérfanas ya está
+  puesto— sino el volumen: lo que sobra no cabe en la hoja anterior. Arreglarlo de verdad pide
+  equilibrar el reparto en una **segunda pasada de composición** (componer, ver cuánto cae en la
+  última hoja y recomponer con el suelo subido), que es trabajo aparte. Lo que sí mejoró: el
+  informe bloqueado volvió a caber en dos páginas y la versión GRATUITA del caso corriente bajó de
+  tres hojas a dos (antes entregaba una tercera con 347 pt de blanco).
+- **El acuse de entrega hereda una frase pensada para el papel.** Reutiliza `lineaDelSello` tal
+  cual, y en E5 esa línea termina en «Alcance y límites, abajo» — en la pantalla no hay ningún
+  «abajo». Es el precio de NO escribir una segunda redacción, que es lo que garantiza que las dos
+  superficies no deriven. Arreglarlo bien pide tocar el texto del informe: puerta del dueño.
+- **La app no se ha visto en captura.** Esta sesión no tenía captura de pantalla disponible, así
+  que la aplicación y la web se verificaron **midiendo en un navegador real** sobre el `dist/`
+  construido (computed styles, geometría y contrastes calculados), no mirando una imagen. El
+  informe sí se miró rasterizado, uno a uno, en color y en gris.
 - **El coste de rendimiento de la ronda no está medido.** `processDocument` hace ahora una pasada
   más por página (el dispositivo que cuenta glifos ilegibles) sobre las que ya hacía. En documentos
   largos puede notarse; nadie lo ha cronometrado.
