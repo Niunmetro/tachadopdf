@@ -1,3 +1,4 @@
+import type { CopiaComprobador } from '../content/tipos';
 import type { Hit } from '../types';
 import type { ResumenComprobacion } from './types';
 import { loadPdf } from '../pdf/engine';
@@ -13,7 +14,11 @@ function tieneFirmaPdf(bytes: Uint8Array): boolean {
   return FIRMA_PDF.every((byte, i) => bytes[i] === byte);
 }
 
-export async function analizarPdf(bytes: Uint8Array, password?: string): Promise<ResumenComprobacion> {
+export async function analizarPdf(
+  bytes: Uint8Array,
+  copia: CopiaComprobador,
+  password?: string,
+): Promise<ResumenComprobacion> {
   if (!tieneFirmaPdf(bytes)) {
     throw new FicheroNoPdfError('El fichero no es un PDF válido: falta la firma %PDF');
   }
@@ -25,7 +30,7 @@ export async function analizarPdf(bytes: Uint8Array, password?: string): Promise
       hits.push(...detect(texto));
     }
     const paginasEscaneadas = doc.scannedPages();
-    return construirResumen(hits, paginasEscaneadas);
+    return construirResumen(hits, paginasEscaneadas, copia);
   } finally {
     doc.close();
   }

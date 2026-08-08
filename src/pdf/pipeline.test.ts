@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import { es } from '../content/es';
+
+const COPIA = es.informe;
 import { pdfConTexto, pdfSoloImagen } from '../test/fixtures';
 import { loadPdf } from './engine';
 import { processDocument } from './pipeline';
@@ -17,6 +20,7 @@ describe('processDocument (T10: pipeline DOM-free)', () => {
       bytes,
       fileName: 'contrato.pdf',
       freeVersion: true,
+      copia: COPIA,
       manual: [{ page: 0, rects }],
     });
 
@@ -36,6 +40,7 @@ describe('processDocument (T10: pipeline DOM-free)', () => {
       bytes,
       fileName: 'imagen.pdf',
       freeVersion: true,
+      copia: COPIA,
       manual: [{ page: 0, rects: [{ x: 40, y: 700, w: 500, h: 100 }] }],
     });
 
@@ -49,6 +54,7 @@ describe('processDocument (T10: pipeline DOM-free)', () => {
       bytes,
       fileName: 'dni.pdf',
       freeVersion: true,
+      copia: COPIA,
       manual: [],
     });
 

@@ -1,13 +1,13 @@
 import './estilo.css';
 import {
-  CHECKBOX_LABEL,
   canBatch,
   canProcess,
   performBatchDownload,
   withinFreePageLimit,
   type AppState,
 } from './app';
-import { PRECIO_PRO, PRO_URL } from './config';
+import { PRO_URL } from './config';
+import { contenidoDe, localeDelDocumento, type Contenido } from './content/index';
 import { FREE_MAX_PAGES, getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
 import { detect } from './detect/patterns';
@@ -22,6 +22,11 @@ import { mergeOccurrenceMarks } from './ui/tachar-todas';
 import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
 const RENDER_DPI = 96;
+
+// loadPng se usa fuera de initApp y solo produce un mensaje de diagnostico interno que la
+// interfaz vuelve a envolver en copia.errorProcesado; se resuelve una vez con el idioma del
+// documento en lugar de arrastrar la copia por toda la cadena.
+const ERROR_RENDER = contenidoDe(localeDelDocumento(document)).app.errorRender;
 
 interface ProcessedFile {
   fileName: string;
@@ -76,7 +81,7 @@ function loadPng(bytes: Uint8Array): Promise<HTMLImageElement> {
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('No se pudo renderizar la página'));
+      reject(new Error(ERROR_RENDER));
     };
     img.src = url;
   });
@@ -106,6 +111,7 @@ async function renderFileVisor(
   doc: PdfDoc,
   fileWork: FileWork,
   preset: DocumentPreset,
+  copia: Contenido['app'],
 ): Promise<void> {
   const visualReviewPages = doc.pagesNeedingVisualReview();
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
@@ -119,17 +125,12 @@ async function renderFileVisor(
   // Instrucción visible del tachado manual. Sin ella, nadie sabía que se podía tachar a mano
   // arrastrando el ratón (la queja "no deja tachar" del 2026-07-17).
   const comoTachar = el('p', { class: 'como-tachar' });
-  comoTachar.textContent =
-    'Los datos detectados aparecen marcados: haz clic para elegir cuáles tachar. Para tachar ' +
-    'cualquier otra cosa (un nombre, una firma, una foto), arrastra el ratón sobre ella dibujando ' +
-    'un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.';
+  comoTachar.textContent = copia.comoTachar;
   container.appendChild(comoTachar);
 
   if (visualReviewPages.length > 0) {
     const notice = el('p');
-    notice.textContent =
-      `Páginas que requieren revisión visual (sin capa de texto o con imagen a página completa): ` +
-      `${visualReviewPages.map((p) => p + 1).join(', ')}.`;
+    notice.textContent = copia.revisionVisual(visualReviewPages.map((p) => p + 1).join(', '));
     container.appendChild(notice);
   }
 
@@ -167,7 +168,7 @@ async function renderFileVisor(
       const n = occ.reduce((acc, m) => acc + m.rects.length, 0);
       if (n === 0) continue;
       const boton = el('button', { type: 'button' });
-      boton.textContent = `Tachar todas las apariciones de «${valor}» (${n})`;
+      boton.textContent = copia.tacharTodas(valor, n);
       boton.addEventListener('click', () => {
         fileWork.manual = mergeOccurrenceMarks(fileWork.manual, occ);
         for (const entry of pageEntries) {
@@ -213,7 +214,7 @@ async function renderFileVisor(
     // img y el canvas, perfectamente superpuestos.
     if (necesitaRevisionVisual) {
       const rotulo = el('p', { class: 'aviso-rojo' });
-      rotulo.textContent = `Página ${page + 1}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`;
+      rotulo.textContent = copia.paginaEscaneada(page + 1);
       container.appendChild(rotulo);
     }
 
@@ -247,7 +248,7 @@ async function renderFileVisor(
 
     if (hitRects.length > 0) {
       const selectAllButton = el('button', { type: 'button' });
-      selectAllButton.textContent = `Página ${page + 1}: seleccionar todos los hits`;
+      selectAllButton.textContent = copia.seleccionarHits(page + 1);
       selectAllButton.addEventListener('click', () => setState(selectAll(getState())));
       pageContainer.appendChild(selectAllButton);
     }
@@ -278,22 +279,21 @@ function hueco(root: HTMLElement, id: string): HTMLElement {
   return creado;
 }
 
-export function initApp(root: HTMLElement): void {
+export function initApp(root: HTMLElement, contenido: Contenido): void {
+  const copia = contenido.app;
   const panelTrabajo = hueco(root, 'herramienta');
   const panelPro = hueco(root, 'licencia');
 
-  const licenseInput = el('input', { type: 'text', placeholder: 'Clave de licencia Pro (Gumroad)' });
+  const licenseInput = el('input', { type: 'text', placeholder: copia.licenciaPlaceholder });
   const licenseButton = el('button', { type: 'button' });
-  licenseButton.textContent = 'Verificar licencia';
+  licenseButton.textContent = copia.verificarLicencia;
   const licenseStatus = el('p', { class: 'estado-licencia' });
 
   const fileInput = el('input', { type: 'file', accept: 'application/pdf' });
   const ejemploBtn = el('button', { type: 'button', class: 'ejemplo' });
-  ejemploBtn.textContent = 'Probar con un documento de ejemplo';
+  ejemploBtn.textContent = copia.botonEjemplo;
   const pistaEjemplo = el('p', { class: 'pista-ejemplo' });
-  pistaEjemplo.textContent =
-    '¿No tienes un PDF a mano, o prefieres no subir todavía un documento real? Carga un acta de ' +
-    'comunidad de ejemplo (datos ficticios) y comprueba en cinco segundos cómo detecta y tacha.';
+  pistaEjemplo.textContent = copia.pistaEjemplo;
   const quotaStatus = el('p', { class: 'estado-cuota' });
   const filesContainer = el('div', { id: 'files' });
   const scannedWarning = el('p', { class: 'aviso-rojo' });
@@ -301,19 +301,23 @@ export function initApp(root: HTMLElement): void {
 
   const checkbox = el('input', { type: 'checkbox', id: 'checkbox-confirmado' });
   const checkboxLabel = el('label', { for: 'checkbox-confirmado' });
-  checkboxLabel.textContent = CHECKBOX_LABEL;
+  checkboxLabel.textContent = copia.checkboxRevisado;
 
   const downloadButton = el('button', { type: 'button' });
-  downloadButton.textContent = 'Descargar documentos e informes';
+  downloadButton.textContent = copia.botonDescargar;
   downloadButton.setAttribute('disabled', 'true');
 
   // Selector de tipo de documento: solo cambia qué categorías vienen premarcadas al montar el
   // visor de un fichero (T2). No altera la detección.
   const presetLabel = el('label', { for: 'preset-tipo-documento' });
-  presetLabel.textContent = 'Tipo de documento';
-  const presetSelector = buildPresetSelector(document, (preset) => {
-    currentPreset = preset;
-  });
+  presetLabel.textContent = copia.tipoDocumento;
+  const presetSelector = buildPresetSelector(
+    document,
+    (preset) => {
+      currentPreset = preset;
+    },
+    copia.presets,
+  );
   const filaPreset = el('div', { class: 'fila' });
   filaPreset.append(presetLabel, presetSelector);
 
@@ -323,7 +327,7 @@ export function initApp(root: HTMLElement): void {
     href: PRO_URL, target: '_blank', rel: 'noopener noreferrer',
     id: 'comprar-pro', class: 'comprar',
   });
-  proLink.textContent = `Comprar Pro — ${PRECIO_PRO} (pago único)`;
+  proLink.textContent = copia.comprarPro;
 
   // Panel 1: el trabajo (subir el PDF y tacharlo). El título y el aviso de alcance ya vienen en
   // el HTML estático; aquí solo se cuelgan los controles.
@@ -348,22 +352,20 @@ export function initApp(root: HTMLElement): void {
       fileInput.removeAttribute('multiple');
     }
     quotaStatus.textContent = state.license.pro
-      ? 'Licencia Pro activa: documentos ilimitados, procesado en lote.'
-      : `Modo gratuito: ${state.quota.usedThisMonth}/${state.quota.limit} documentos este mes · hasta ${FREE_MAX_PAGES} páginas por documento.`;
+      ? copia.cuotaPro
+      : copia.cuotaGratis(state.quota.usedThisMonth, state.quota.limit, FREE_MAX_PAGES);
     // A quien ya pagó no se le enseña el enlace de compra; a quien agotó la cuota, más visible.
     proLink.hidden = state.license.pro;
     proLink.textContent = state.quota.allowed
-      ? `Comprar Pro — ${PRECIO_PRO} (pago único)`
-      : `Has agotado los ${state.quota.limit} documentos gratis de este mes · Comprar Pro — ${PRECIO_PRO} (pago único)`;
+      ? copia.comprarPro
+      : copia.comprarProCuotaAgotada(state.quota.limit);
   }
 
   function refreshDownloadButton(): void {
     downloadButton.toggleAttribute('disabled', !(fileWorks.length > 0 && state.checkboxConfirmed));
     scannedWarning.textContent =
       state.scannedPages.length > 0
-        ? `Atención: páginas sin capa de texto (probablemente escaneadas), revísalas manualmente: ${state.scannedPages
-            .map((p) => p + 1)
-            .join(', ')}.`
+        ? copia.avisoEscaneadas(state.scannedPages.map((p) => p + 1).join(', '))
         : '';
   }
 
@@ -377,8 +379,8 @@ export function initApp(root: HTMLElement): void {
       state.license = await verifyLicense(licenseInput.value.trim());
       licenseStatus.textContent =
         state.license.reason === 'valid'
-          ? 'Licencia Pro verificada.'
-          : `Licencia no activa (${state.license.reason}). Modo gratuito.`;
+          ? copia.licenciaValida
+          : copia.licenciaNoActiva(state.license.reason);
       refreshQuotaAndBatchUI();
       refreshDownloadButton();
     })();
@@ -404,9 +406,9 @@ export function initApp(root: HTMLElement): void {
       for (const entrada of entradas) {
         let doc: PdfDoc;
         try {
-          doc = await loadWithPassword(entrada.bytes, () => window.prompt('Contraseña del PDF'));
+          doc = await loadWithPassword(entrada.bytes, () => window.prompt(copia.passwordPrompt));
         } catch {
-          resultStatus.textContent = `No se pudo abrir "${entrada.nombre}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`;
+          resultStatus.textContent = copia.noSePudoAbrir(entrada.nombre);
           continue;
         }
 
@@ -416,16 +418,14 @@ export function initApp(root: HTMLElement): void {
         const pageCount = doc.pageCount();
         if (!withinFreePageLimit(state, pageCount)) {
           doc.close();
-          resultStatus.textContent =
-            `"${entrada.nombre}" tiene ${pageCount} páginas. La versión gratuita tacha documentos de ` +
-            `hasta ${FREE_MAX_PAGES} páginas; para archivos más largos, consigue la licencia Pro (${PRECIO_PRO}, pago único).`;
+          resultStatus.textContent = copia.limitePaginas(entrada.nombre, pageCount, FREE_MAX_PAGES);
           continue;
         }
 
         const fileWork: FileWork = { fileName: entrada.nombre, bytes: entrada.bytes, manual: [], selected: [] };
         const fileContainer = el('div', { class: 'file-visor' });
         try {
-          await renderFileVisor(fileContainer, doc, fileWork, currentPreset);
+          await renderFileVisor(fileContainer, doc, fileWork, currentPreset, copia);
         } finally {
           doc.close();
         }
@@ -439,10 +439,9 @@ export function initApp(root: HTMLElement): void {
         }
       }
     } catch (err) {
-      resultStatus.textContent =
-        'Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; ' +
-        'si persiste, el archivo puede no ser compatible. (Detalle técnico: ' +
-        `${err instanceof Error ? err.message : String(err)})`;
+      resultStatus.textContent = copia.errorProcesado(
+        err instanceof Error ? err.message : String(err),
+      );
     }
 
     refreshQuotaAndBatchUI();
@@ -455,11 +454,11 @@ export function initApp(root: HTMLElement): void {
       if (files.length === 0) return;
 
       if (!canProcess(state)) {
-        quotaStatus.textContent = 'Cuota gratuita agotada este mes. Consigue una licencia Pro para continuar.';
+        quotaStatus.textContent = copia.cuotaAgotada;
         return;
       }
       if (files.length > 1 && !canBatch(state)) {
-        quotaStatus.textContent = 'El procesado en lote requiere licencia Pro.';
+        quotaStatus.textContent = copia.loteRequierePro;
         return;
       }
 
@@ -492,8 +491,7 @@ export function initApp(root: HTMLElement): void {
         const bytes = new Uint8Array(await resp.arrayBuffer());
         await cargarEntradas([{ bytes, nombre: 'acta-de-ejemplo.pdf' }], false);
       } catch {
-        resultStatus.textContent =
-          'No se pudo cargar el documento de ejemplo. Prueba a subir tu propio PDF.';
+        resultStatus.textContent = copia.ejemploFallido;
       } finally {
         ejemploBtn.removeAttribute('disabled');
       }
@@ -513,6 +511,7 @@ export function initApp(root: HTMLElement): void {
           freeVersion: !state.license.pro,
           manual: fw.manual,
           selectedAutomatic: fw.selected,
+          copia: contenido.informe,
         });
         processedFiles.push({
           fileName: result.fileName,
@@ -528,7 +527,7 @@ export function initApp(root: HTMLElement): void {
       state.scannedPages = scannedUnion;
       resultStatus.textContent = processedFiles.every((f) => f.verify.clean)
         ? ''
-        : 'Se han detectado residuos en algún documento del lote: no se ha descargado ningún fichero.';
+        : copia.residuosEnLote;
       refreshDownloadButton();
 
       performBatchDownload(processedFiles, state.checkboxConfirmed, downloadBytes);
@@ -542,7 +541,9 @@ export function initApp(root: HTMLElement): void {
   })();
 }
 
+// El idioma sale de la RUTA (el HTML generado fija <html lang> segun donde vive la pagina),
+// nunca de `navigator.language`.
 const appRoot = document.getElementById('app');
 if (appRoot) {
-  initApp(appRoot);
+  initApp(appRoot, contenidoDe(localeDelDocumento(document)));
 }

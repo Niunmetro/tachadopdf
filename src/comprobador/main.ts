@@ -1,13 +1,13 @@
+import { contenidoDe, localeDelDocumento } from '../content/index';
+import type { CopiaComprobador, CopiaInforme } from '../content/tipos';
 import { PdfPasswordError } from '../pdf/engine';
 import { FicheroNoPdfError, analizarPdf } from './analyze';
 import { renderResumen } from './render';
 
-const MENSAJE_NO_PDF = 'El fichero no parece un PDF. Selecciona un archivo .pdf válido.';
-const MENSAJE_PASSWORD =
-  'Este PDF está protegido con contraseña. Escríbela en el campo de contraseña y vuelve a seleccionar el archivo.';
-const MENSAJE_ERROR_GENERICO =
-  'No se ha podido analizar el PDF. Comprueba que el archivo no esté dañado e inténtalo de nuevo.';
-const MENSAJE_ANALIZANDO = 'Analizando el PDF en tu navegador…';
+// El idioma sale de la RUTA: el HTML generado ya fija <html lang> según dónde vive la página.
+const CONTENIDO = contenidoDe(localeDelDocumento(document));
+const COPIA: CopiaComprobador = CONTENIDO.comprobadorUi;
+const ALCANCE: CopiaInforme['alcance'] = CONTENIDO.informe.alcance;
 
 export interface ElementosComprobador {
   dropzone: HTMLElement;
@@ -36,19 +36,19 @@ function localizarElementos(): ElementosComprobador | null {
 }
 
 function mensajeDeError(causa: unknown): string {
-  if (causa instanceof FicheroNoPdfError) return MENSAJE_NO_PDF;
-  if (causa instanceof PdfPasswordError) return MENSAJE_PASSWORD;
-  return MENSAJE_ERROR_GENERICO;
+  if (causa instanceof FicheroNoPdfError) return COPIA.noEsPdf;
+  if (causa instanceof PdfPasswordError) return COPIA.passwordRequerida;
+  return COPIA.errorGenerico;
 }
 
 export async function procesarFichero(fichero: File, elementos: ElementosComprobador): Promise<void> {
   elementos.error.textContent = '';
-  elementos.resultado.textContent = MENSAJE_ANALIZANDO;
+  elementos.resultado.textContent = COPIA.analizando;
   try {
     const bytes = new Uint8Array(await fichero.arrayBuffer());
     const password = elementos.password.value.length > 0 ? elementos.password.value : undefined;
-    const resumen = await analizarPdf(bytes, password);
-    renderResumen(elementos.resultado, resumen);
+    const resumen = await analizarPdf(bytes, COPIA, password);
+    renderResumen(elementos.resultado, resumen, COPIA, ALCANCE);
   } catch (causa) {
     elementos.resultado.textContent = '';
     elementos.error.textContent = mensajeDeError(causa);

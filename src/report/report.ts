@@ -1,23 +1,9 @@
 import { type Color, degrees, type PDFFont, type PDFPage, PDFDocument, StandardFonts, rgb } from 'pdf-lib';
-import type { PatternKind, ReportData } from '../types';
+import type { CopiaInforme } from '../content/tipos';
+import type { ReportData } from '../types';
 
-export const REPORT_TITLE = 'Informe de comprobación técnica';
-
-export const SCOPE_TEXT =
-  'Esta comprobación se limita al texto extraíble del archivo PDF resultante y a los píxeles de las zonas marcadas. No analiza el contenido visual de las imágenes no marcadas ni garantiza la ausencia de datos personales en el documento. No sustituye la revisión humana.';
-
-const FREE_VERSION_LINE = 'Generado con TachadoPDF (versión gratuita)';
-const WATERMARK_TEXT = 'DEMO — no valido como evidencia';
-
-const PATTERN_LABELS: Record<PatternKind, string> = {
-  dni: 'DNI',
-  nie: 'NIE',
-  iban: 'IBAN',
-  nuss: 'Número de la Seguridad Social',
-  telefono: 'Teléfono',
-  email: 'Correo electrónico',
-  catastro: 'Referencia catastral',
-};
+// Todo el texto del informe llega por parámetro (`copia`). No hay valor por defecto a propósito:
+// un idioma sin cablear tiene que romper la compilación, no imprimir en español sin avisar.
 
 const PAGE: [number, number] = [595, 842];
 const MARGIN = 50;
@@ -75,7 +61,7 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): 
   return lines;
 }
 
-export async function buildReport(data: ReportData): Promise<Uint8Array> {
+export async function buildReport(data: ReportData, copia: CopiaInforme): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const bold = await doc.embedFont(StandardFonts.HelveticaBold);
@@ -130,16 +116,16 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
   page.drawRectangle({ x: 0, y: PAGE[1] - bandH, width: PAGE[0], height: bandH, color: BRAND });
   page.drawRectangle({ x: 0, y: PAGE[1] - bandH - 3, width: PAGE[0], height: 3, color: ACCENT });
   write('TachadoPDF', MARGIN, PAGE[1] - 46, 21, bold, WHITE);
-  write('Comprobación técnica de tachado de datos personales en PDF', MARGIN, PAGE[1] - 65, 9.5, font, BAND_SUB);
+  write(copia.subtituloBanda, MARGIN, PAGE[1] - 65, 9.5, font, BAND_SUB);
   const domain = 'tachadopdf.com';
   write(domain, PAGE[0] - MARGIN - font.widthOfTextAtSize(domain, 9.5), PAGE[1] - 46, 9.5, font, BAND_SUB);
   y = PAGE[1] - bandH - 24;
 
   // --- título y referencia -------------------------------------------------
-  write(REPORT_TITLE, MARGIN, y - 15, 15, bold, INK);
+  write(copia.titulo, MARGIN, y - 15, 15, bold, INK);
   y -= 24;
   const ref = `TP-${data.date.replace(/-/g, '')}-${data.sha256.slice(0, 8).toUpperCase()}`;
-  write(`Referencia ${ref}   ·   Emitido el ${data.date}`, MARGIN, y - 9.5, 9.5, font, MUTED);
+  write(copia.referencia(ref, data.date), MARGIN, y - 9.5, 9.5, font, MUTED);
   y -= 22;
   page.drawRectangle({ x: MARGIN, y, width: CONTENT_W, height: 0.8, color: LINE });
   y -= 16;
@@ -160,75 +146,65 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
     page.drawLine({ start: { x: cx - 4, y: cy - 4 }, end: { x: cx + 4, y: cy + 4 }, thickness: 1.8, color: WHITE });
     page.drawLine({ start: { x: cx - 4, y: cy + 4 }, end: { x: cx + 4, y: cy - 4 }, thickness: 1.8, color: WHITE });
   }
-  write(clean ? 'VERIFICADO' : 'NO APTO', MARGIN + 54, y - 24, 13, bold, fg);
+  write(clean ? copia.selloOk : copia.selloMal, MARGIN + 54, y - 24, 13, bold, fg);
   if (clean) {
-    write(
-      'Ningún dato de los patrones buscados es extraíble del texto del PDF resultante.',
-      MARGIN + 54,
-      y - 42,
-      9.3,
-      font,
-      SOFT_INK,
-    );
+    write(copia.lineaOk, MARGIN + 54, y - 42, 9.3, font, SOFT_INK);
   } else {
-    write('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado', MARGIN + 54, y - 42, 9.7, bold, BAD);
+    write(copia.lineaMal, MARGIN + 54, y - 42, 9.7, bold, BAD);
   }
   y -= badgeH + 13;
 
   // --- datos del documento -------------------------------------------------
-  heading('Datos del documento');
-  row('Archivo comprobado', data.fileName);
-  row('Fecha de emisión', data.date);
-  row('Referencia del informe', ref);
-  row('Huella SHA-256 del documento entregado', data.sha256, 8.5);
+  heading(copia.encabezadoDatos);
+  row(copia.filaArchivo, data.fileName);
+  row(copia.filaFecha, data.date);
+  row(copia.filaReferencia, ref);
+  row(copia.filaHuella, data.sha256, 8.5);
 
   // --- comprobaciones ------------------------------------------------------
-  heading('Comprobaciones realizadas');
+  heading(copia.encabezadoComprobaciones);
   const residues = data.verify?.residues ?? [];
 
-  subLabel('Patrones de datos buscados en el texto');
+  subLabel(copia.subPatrones);
   for (const kind of data.patternsSearched) {
     const matching = residues.filter((r) => r.kind === kind);
     if (matching.length === 0) {
-      bullet(`${PATTERN_LABELS[kind]}: 0 ocurrencias en el texto extraíble`, OK);
+      bullet(copia.patronLimpio(copia.etiquetas[kind]), OK);
     } else {
       const pages = matching.map((r) => (r.page === null ? '?' : r.page + 1)).join(', ');
-      bullet(
-        `${PATTERN_LABELS[kind]}: ${matching.length} ocurrencia(s) en el texto extraíble (páginas: ${pages})`,
-        BAD,
-      );
+      bullet(copia.patronSucio(copia.etiquetas[kind], matching.length, pages), BAD);
     }
   }
   y -= 2;
 
-  subLabel('Zonas tachadas por página');
+  subLabel(copia.subZonas);
   if (data.boxesPerPage.length === 0) {
-    bullet('Ninguna', MUTED);
+    bullet(copia.ninguna, MUTED);
   } else {
-    for (const entry of data.boxesPerPage) bullet(`Página ${entry.page + 1}: ${entry.count} zona(s)`, ACCENT);
+    for (const entry of data.boxesPerPage) bullet(copia.zonasPagina(entry.page + 1, entry.count), ACCENT);
   }
   y -= 2;
 
-  subLabel('Metadatos eliminados');
+  subLabel(copia.subMetadatos);
   if (data.metadataRemoved.length === 0) {
-    bullet('Ninguno', MUTED);
+    bullet(copia.ninguno, MUTED);
   } else {
     for (const categoria of data.metadataRemoved) bullet(categoria, ACCENT);
   }
   y -= 2;
 
-  subLabel('Páginas sin capa de texto');
+  subLabel(copia.subEscaneadas);
   if (data.scannedPages.length === 0) {
-    bullet('Ninguna', MUTED);
+    bullet(copia.ninguna, MUTED);
   } else {
     for (const p of data.scannedPages) {
-      bullet(`Página ${p + 1}: sin capa de texto, no verificable automáticamente`, BAD);
+      bullet(copia.paginaEscaneada(p + 1), BAD);
     }
   }
 
   // --- alcance -------------------------------------------------------------
-  heading('Alcance y limitaciones');
-  const scopeLines = wrapText(SCOPE_TEXT, font, 9.5, CONTENT_W - 26);
+  heading(copia.encabezadoAlcance);
+  const scopeLines = wrapText(copia.alcance, font, 9.5, CONTENT_W - 26);
   const boxH = scopeLines.length * 13 + 18;
   ensure(boxH + 6);
   page.drawRectangle({ x: MARGIN, y: y - boxH, width: CONTENT_W, height: boxH, color: SOFT_BG });
@@ -238,7 +214,7 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
 
   if (data.freeVersion) {
     ensure(16);
-    write(FREE_VERSION_LINE, MARGIN, y - 9, 8.5, font, MUTED);
+    write(copia.lineaGratis, MARGIN, y - 9, 8.5, font, MUTED);
     y -= 14;
   }
 
@@ -246,20 +222,20 @@ export async function buildReport(data: ReportData): Promise<Uint8Array> {
   const allPages: PDFPage[] = doc.getPages();
   allPages.forEach((p, i) => {
     p.drawRectangle({ x: MARGIN, y: 58, width: CONTENT_W, height: 0.8, color: LINE });
-    p.drawText(safe('Documento generado automáticamente por TachadoPDF · tachadopdf.com'), {
+    p.drawText(safe(copia.pie), {
       x: MARGIN,
       y: 44,
       size: 8,
       font,
       color: MUTED,
     });
-    const pn = `Página ${i + 1} de ${allPages.length}`;
+    const pn = copia.numeroPagina(i + 1, allPages.length);
     p.drawText(safe(pn), { x: PAGE[0] - MARGIN - font.widthOfTextAtSize(pn, 8), y: 44, size: 8, font, color: MUTED });
   });
 
   // --- marca de agua DEMO (solo versión gratuita) --------------------------
   if (data.freeVersion) {
-    const wmText = safe(WATERMARK_TEXT);
+    const wmText = safe(copia.marcaAgua);
     const wmSize = 32;
     const wmColor = rgb(0.6, 0.6, 0.6);
     const wmWidth = bold.widthOfTextAtSize(wmText, wmSize);

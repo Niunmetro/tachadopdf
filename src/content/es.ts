@@ -6,6 +6,7 @@
 // Los textos legales y de landing siguen viviendo en src/legal/textos.ts (ruta sensible,
 // APROBADO-ANGEL): aquí se importan, no se copian.
 
+import { CHECKBOX_LABEL } from '../app';
 import { PRECIO_PRO } from '../config';
 import { FREE_MAX_PAGES, FREE_MONTHLY_LIMIT } from '../freemium/quota';
 import {
@@ -18,7 +19,130 @@ import {
   LANDING_TITULAR,
 } from '../legal/textos';
 import { legalSections } from '../legal/render';
-import type { ContenidoGuia, EntradaFaq } from './tipos';
+import type {
+  ContenidoGuia,
+  CopiaApp,
+  CopiaComprobador,
+  CopiaInforme,
+  EntradaFaq,
+  EtiquetasPatron,
+} from './tipos';
+
+// Etiquetas de los tipos de dato detectados. Son texto de cara al usuario, no claves internas:
+// las claves (`dni`, `iban`, ...) no se traducen nunca.
+const ETIQUETAS_PATRON: EtiquetasPatron = {
+  dni: 'DNI',
+  nie: 'NIE',
+  iban: 'IBAN',
+  nuss: 'Número de la Seguridad Social',
+  telefono: 'Teléfono',
+  email: 'Correo electrónico',
+  catastro: 'Referencia catastral',
+};
+
+const APP_ES: CopiaApp = {
+  licenciaPlaceholder: 'Clave de licencia Pro (Gumroad)',
+  verificarLicencia: 'Verificar licencia',
+  licenciaValida: 'Licencia Pro verificada.',
+  licenciaNoActiva: (motivo) => `Licencia no activa (${motivo}). Modo gratuito.`,
+  botonEjemplo: 'Probar con un documento de ejemplo',
+  pistaEjemplo:
+    '¿No tienes un PDF a mano, o prefieres no subir todavía un documento real? Carga un acta de comunidad de ejemplo (datos ficticios) y comprueba en cinco segundos cómo detecta y tacha.',
+  ejemploFallido: 'No se pudo cargar el documento de ejemplo. Prueba a subir tu propio PDF.',
+  tipoDocumento: 'Tipo de documento',
+  presets: {
+    generico: 'Generico',
+    acta: 'Acta de comunidad',
+    nomina: 'Nomina/expediente',
+  },
+  checkboxRevisado: CHECKBOX_LABEL,
+  botonDescargar: 'Descargar documentos e informes',
+  comprarPro: `Comprar Pro — ${PRECIO_PRO} (pago único)`,
+  comprarProCuotaAgotada: (limite) =>
+    `Has agotado los ${limite} documentos gratis de este mes · Comprar Pro — ${PRECIO_PRO} (pago único)`,
+  cuotaPro: 'Licencia Pro activa: documentos ilimitados, procesado en lote.',
+  cuotaGratis: (usados, limite, maxPaginas) =>
+    `Modo gratuito: ${usados}/${limite} documentos este mes · hasta ${maxPaginas} páginas por documento.`,
+  cuotaAgotada: 'Cuota gratuita agotada este mes. Consigue una licencia Pro para continuar.',
+  loteRequierePro: 'El procesado en lote requiere licencia Pro.',
+  limitePaginas: (fichero, paginas, maxPaginas) =>
+    `"${fichero}" tiene ${paginas} páginas. La versión gratuita tacha documentos de hasta ${maxPaginas} páginas; para archivos más largos, consigue la licencia Pro (${PRECIO_PRO}, pago único).`,
+  noSePudoAbrir: (fichero) =>
+    `No se pudo abrir "${fichero}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`,
+  passwordPrompt: 'Contraseña del PDF',
+  errorRender: 'No se pudo renderizar la página',
+  errorProcesado: (detalle) =>
+    `Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; si persiste, el archivo puede no ser compatible. (Detalle técnico: ${detalle})`,
+  residuosEnLote:
+    'Se han detectado residuos en algún documento del lote: no se ha descargado ningún fichero.',
+  avisoEscaneadas: (paginas) =>
+    `Atención: páginas sin capa de texto (probablemente escaneadas), revísalas manualmente: ${paginas}.`,
+  comoTachar:
+    'Los datos detectados aparecen marcados: haz clic para elegir cuáles tachar. Para tachar cualquier otra cosa (un nombre, una firma, una foto), arrastra el ratón sobre ella dibujando un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.',
+  revisionVisual: (paginas) =>
+    `Páginas que requieren revisión visual (sin capa de texto o con imagen a página completa): ${paginas}.`,
+  paginaEscaneada: (numero) =>
+    `Página ${numero}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`,
+  tacharTodas: (valor, ocurrencias) =>
+    `Tachar todas las apariciones de «${valor}» (${ocurrencias})`,
+  seleccionarHits: (pagina) => `Página ${pagina}: seleccionar todos los hits`,
+};
+
+const INFORME_ES: CopiaInforme = {
+  titulo: 'Informe de comprobación técnica',
+  subtituloBanda: 'Comprobación técnica de tachado de datos personales en PDF',
+  referencia: (ref, fecha) => `Referencia ${ref}   ·   Emitido el ${fecha}`,
+  selloOk: 'VERIFICADO',
+  selloMal: 'NO APTO',
+  lineaOk: 'Ningún dato de los patrones buscados es extraíble del texto del PDF resultante.',
+  lineaMal: 'RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado',
+  encabezadoDatos: 'Datos del documento',
+  encabezadoComprobaciones: 'Comprobaciones realizadas',
+  encabezadoAlcance: 'Alcance y limitaciones',
+  filaArchivo: 'Archivo comprobado',
+  filaFecha: 'Fecha de emisión',
+  filaReferencia: 'Referencia del informe',
+  filaHuella: 'Huella SHA-256 del documento entregado',
+  subPatrones: 'Patrones de datos buscados en el texto',
+  subZonas: 'Zonas tachadas por página',
+  subMetadatos: 'Metadatos eliminados',
+  subEscaneadas: 'Páginas sin capa de texto',
+  patronLimpio: (etiqueta) => `${etiqueta}: 0 ocurrencias en el texto extraíble`,
+  patronSucio: (etiqueta, ocurrencias, paginas) =>
+    `${etiqueta}: ${ocurrencias} ocurrencia(s) en el texto extraíble (páginas: ${paginas})`,
+  zonasPagina: (pagina, cuenta) => `Página ${pagina}: ${cuenta} zona(s)`,
+  ninguna: 'Ninguna',
+  ninguno: 'Ninguno',
+  paginaEscaneada: (pagina) =>
+    `Página ${pagina}: sin capa de texto, no verificable automáticamente`,
+  alcance:
+    'Esta comprobación se limita al texto extraíble del archivo PDF resultante y a los píxeles de las zonas marcadas. No analiza el contenido visual de las imágenes no marcadas ni garantiza la ausencia de datos personales en el documento. No sustituye la revisión humana.',
+  lineaGratis: 'Generado con TachadoPDF (versión gratuita)',
+  marcaAgua: 'DEMO — no válido como evidencia',
+  pie: 'Documento generado automáticamente por TachadoPDF · tachadopdf.com',
+  numeroPagina: (indice, total) => `Página ${indice} de ${total}`,
+  etiquetas: ETIQUETAS_PATRON,
+};
+
+const COMPROBADOR_ES: CopiaComprobador = {
+  etiquetas: ETIQUETAS_PATRON,
+  analizando: 'Analizando el PDF en tu navegador…',
+  noEsPdf: 'El fichero no parece un PDF. Selecciona un archivo .pdf válido.',
+  passwordRequerida:
+    'Este PDF está protegido con contraseña. Escríbela en el campo de contraseña y vuelve a seleccionar el archivo.',
+  errorGenerico:
+    'No se ha podido analizar el PDF. Comprueba que el archivo no esté dañado e inténtalo de nuevo.',
+  avisoEscaneadas:
+    'Esta página no contiene texto extraíble (probablemente escaneada). La detección automática no puede leerla: revísala visualmente.',
+  pagina: (numero) => `Página ${numero}`,
+  cta: `Táchalos ahora (gratis, ${FREE_MONTHLY_LIMIT} documentos al mes)`,
+  veredictoNada: 'No se han encontrado datos personales en el texto de este PDF.',
+  veredictoDatos: (total) => `Este PDF contiene ${total} datos personales detectables`,
+  veredictoDatosYEscaneos: (total, escaneadas) =>
+    `Este PDF contiene ${total} datos personales detectables, y ${escaneadas} página(s) que no se han podido leer.`,
+  veredictoSoloEscaneos: (escaneadas) =>
+    `${escaneadas} página(s) de este PDF no tienen texto legible, así que no se han podido comprobar. En el resto no se ha encontrado nada detectable.`,
+};
 
 const GUIAS_ES: ContenidoGuia[] = [
   {
@@ -152,8 +276,12 @@ export const es = {
     passwordPlaceholder: 'Contraseña del PDF (si tiene)',
     avisoAlcance:
       'Aviso de alcance: la comprobación se limita al texto extraíble del PDF. Las páginas escaneadas (imágenes sin capa de texto) se señalan aparte y requieren revisión humana; esta herramienta no sustituye esa revisión.',
-    cta: `Táchalos ahora (gratis, ${FREE_MONTHLY_LIMIT} documentos al mes)`,
+    cta: COMPROBADOR_ES.cta,
   },
+
+  app: APP_ES,
+  informe: INFORME_ES,
+  comprobadorUi: COMPROBADOR_ES,
 };
 
 /** El español es el MOLDE: `en` (y cualquier idioma futuro) se declara con este tipo, así que

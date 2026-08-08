@@ -1,4 +1,5 @@
 import { buildReport, computeSha256 } from '../report/report';
+import type { CopiaInforme } from '../content/tipos';
 import { detect } from '../detect/patterns';
 import type { BoxRect, PageMark, PatternKind, ReportData, VerifyResult } from '../types';
 import { addBox } from '../ui/boxes';
@@ -13,6 +14,9 @@ export interface ProcessInput {
   fileName: string;
   freeVersion: boolean;
   manual: PageMark[];
+  /** Textos del informe. Obligatorio: un idioma sin cablear debe romper la compilación, no
+   *  entregarle al comprador un informe en un idioma que no es el suyo. */
+  copia: CopiaInforme;
   selectedAutomatic?: boolean[];
   password?: string;
 }
@@ -130,7 +134,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     freeVersion: input.freeVersion,
     verify,
   };
-  const reportBytes = await buildReport(reportData);
+  const reportBytes = await buildReport(reportData, input.copia);
 
   return {
     fileName: input.fileName,

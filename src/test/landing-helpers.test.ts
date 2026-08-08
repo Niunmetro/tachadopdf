@@ -21,6 +21,27 @@ describe('externalResourceRefs', () => {
     expect(externalResourceRefs(html)).toEqual([]);
   });
 
+  // Las etiquetas hreflang son identidad de la página, no una petición de red: si contaran como
+  // recurso externo, ninguna página multiidioma podría declarar sus alternos.
+  it('no cuenta <link rel="alternate" hreflang> con URL absoluta como recurso externo', () => {
+    const html = `
+      <html>
+        <head>
+          <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/" />
+          <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/" />
+          <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/" />
+        </head>
+        <body></body>
+      </html>
+    `;
+    expect(externalResourceRefs(html)).toEqual([]);
+  });
+
+  it('sigue detectando una hoja de estilo remota (el hueco de rel=alternate no abre la puerta)', () => {
+    const html = '<html><head><link rel="stylesheet" href="https://cdn.ejemplo.com/x.css" /></head></html>';
+    expect(externalResourceRefs(html).length).toBeGreaterThan(0);
+  });
+
   it('detecta un <script src> a un host externo', () => {
     const html = `
       <html>

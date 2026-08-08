@@ -164,3 +164,16 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ---------- Selector de idioma ---------- */
+/* Enlaces <a> reales, no un <select> con JavaScript: funciona con los scripts desactivados y
+   tambien en paginas que no cargan ninguno. Cada idioma se rotula en SU PROPIO idioma; nunca
+   banderas (una bandera es un pais, no un idioma). */
+.idiomas {
+  display: flex; gap: 14px; align-items: center;
+  padding: 12px 0 0; margin: 0;
+  font-size: 14px;
+}
+.idiomas__actual { font-weight: 700; color: var(--tinta); }
+.idiomas__enlace { color: var(--acento); text-decoration: none; }
+.idiomas__enlace:hover { text-decoration: underline; }
