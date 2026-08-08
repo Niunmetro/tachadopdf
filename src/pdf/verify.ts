@@ -43,13 +43,14 @@ export function verifyRedaction(
   const residues: VerifyResidue[] = [];
 
   pageTexts.forEach((texto, page) => {
-    for (const hit of detect(texto)) {
+    const directos = detect(texto);
+    for (const hit of directos) {
       residues.push({ kind: hit.kind, value: hit.value, page });
     }
 
     const unido = textoSinSaltos(texto);
     if (unido === texto) return;
-    const yaVistos = new Set(detect(texto).map((hit) => `${hit.kind}:${hit.value}`));
+    const yaVistos = new Set(directos.map((hit) => `${hit.kind}:${hit.value}`));
     for (const hit of detect(unido)) {
       if (!PATRONES_ROBUSTOS_AL_SALTO.has(hit.kind)) continue;
       if (yaVistos.has(`${hit.kind}:${hit.value}`)) continue;

@@ -13,6 +13,105 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · ingeniería · El sello del informe deja de mentir: cinco estados y alcance explícito (rama `fix/sello-por-estados`)
+
+**Hecho:** ocho arreglos, un commit cada uno, todos con un test que FALLA antes del cambio y pasa
+después (demostrado revirtiendo el fichero con `git stash push -- <ruta>` y pegando la salida roja).
+Rama desde `master` en `8f65c36`. **Sin fusionar**: la decisión de publicar es del dueño.
+
+El sello se emitía con la condición única `verify.clean === true`, que también es cierta **cuando no
+había nada que leer**. Un documento escaneado entero, del que la herramienta no tocó ni un píxel,
+salía con el mismo «VERIFICADO» que uno tachado y verificado. Y «VERIFICADO» es un participio sin
+objeto: el lector completa la frase él solo, y la completa mal.
+
+1. **`414eeb4` — el sello pasa a cinco estados.** `estadoDelSello()` en `src/report/estado.ts` es
+   función pura y única fuente. TACHADO NO SUPERADO · SIN COMPROBACIÓN AUTOMÁTICA · COMPROBACIÓN
+   PARCIAL · SIN TACHADOS · TACHADO VERIFICADO. Con ellos entran una sección de COBERTURA (seis
+   filas con su cifra **siempre**, también el cero, y su denominador), un inventario FIJO de
+   OBJETOS DEL ARCHIVO con estado por fila, un alcance de cuatro párrafos que enumera qué se buscó
+   y qué **no** —lista cerrada y contable—, y un bloque para que un tercero contraste la huella.
+   Se retiran «DEMO — no válido como evidencia» (afirmaba por contraste que el Pro **sí** lo es,
+   contra el propio FAQ) y «no apto como prueba de tachado».
+2. **`da86744` — los marcadores.** Un DNI en el título de un marcador sobrevivía entero y se
+   firmaba en verde. Se borran, **y** sus títulos entran en lo que la guarda relee.
+3. **`e14d037` — cuatro escondites más:** XMP colgado de un XObject, `/Thumb` (un retrato de la
+   página SIN tachar), `/PieceInfo`, y `/Alt` y `/ActualText` del árbol de estructura.
+4. **`90a33c5` — el informe publicaba el dato que acababa de tachar.** Imprimía `fileName` tal
+   cual: con `nomina-12345678Z-julio.pdf`, el DNI quedaba dentro del entregable.
+5. **`dc3ae78` — un dato partido por un salto de línea.** La guarda mira también el texto con los
+   saltos quitados y **bloquea**.
+6. **`f793bb7` — la imagen que no llega al umbral.** Al 59 % del área no había ningún aviso.
+7. **`f02b275` — el hueco de glifos**, atado a su medida (prueba de caracterización, sin cambio de
+   comportamiento).
+8. **`18b3776` — la maquetación.** Encontrado RASTERIZANDO el informe: una etiqueta se dibujaba
+   encima de su propio valor (5,3 pt de solape) y la huella SHA-256 se salía del papel.
+
+**Decisiones y porqués:**
+- *El estado es función de (cobertura ∧ resultado), no de resultado.* Y tres principios que
+  generan la escalera: el sello nombra su objeto; un objeto **presente y no examinado** degrada el
+  sello solo (así, añadir una categoría a «no examinado» degrada los documentos que la llevan en
+  vez de ampliar el agujero en silencio, y el día que el motor la trate el sello deja de
+  degradarse sin tocar el texto — eso es exactamente lo que pasó con los marcadores entre el
+  commit 1 y el 2).
+- *Cinco estados y no tres.* «Escaneado entero» no es «parcial»: no falta una parte, es que **no
+  hay comprobación**. Y «Zonas tachadas: Ninguna» bajo un verde era el contrasentido de partida.
+- *Ningún rótulo puede ser subcadena de otro*, y se testea. Si el ámbar se llamara «VERIFICADO CON
+  RESERVAS», el test «una página escaneada no puede salir verde» sería imposible de escribir y
+  alguien lo debilitaría.
+- *Cada arreglo tiene sus DOS mitades: borrar y releer.* Una acción sin su comprobación es
+  justamente como se fabrica un falso verde. Por eso los marcadores y los textos alternativos se
+  borran **y** entran en `extractMetadataStrings`.
+- *Los tests afirman sobre LITERALES CONGELADOS, nunca sobre `COPIA.loQueSea`.* El
+  `toContain(COPIA.alcance)` que había era un test comparándose consigo mismo: si `alcance` pasaba
+  a valer `'.'`, seguía verde. Es el mismo fallo que documentó la bitácora del 22-jul con
+  `hreflang`. Efecto colateral útil: como el literal para negar el verde es `'VERIFICADO'` a secas,
+  la misma aserción caza el sello anterior, y por eso el fichero de guardas se puede ejecutar tal
+  cual contra el código de master para demostrar el fallo.
+- *Límite elegido a propósito y medido, en el barrido de saltos de línea:* juntar dos líneas puede
+  **fabricar** una coincidencia (`7500` y `43210` en filas consecutivas dan nueve dígitos seguidos,
+  la forma exacta de un teléfono español). Así que solo cuenta para los patrones con dígito de
+  control más el correo. Un teléfono o una referencia catastral partidos NO se reencuentran: un
+  bloqueo por un residuo inventado no tendría salida —el usuario no puede quitar un dato que no
+  existe— y un informe que no se puede emitir nunca es peor que uno que declara su alcance. Hay un
+  test con una tabla de importes que fija esa frontera.
+- *Bloquear solo es aceptable porque hay salida.* El DNI partido no se puede tachar solo
+  (`searchText` no lo encuentra), pero una caja manual sobre las dos líneas sí lo elimina. Está
+  cubierto por un test, porque un bloqueo sin salida sería peor que el defecto.
+- *El hueco de glifos no se arregla, se declara.* Comprobado, no supuesto: mupdf solo ofrece
+  `REDACT_TEXT_REMOVE` y `REDACT_TEXT_NONE`; recomponer la línea sería reescribir los operadores de
+  posicionamiento de cada página (rehacer la maquetación); rellenar con glifos falsos no quita la
+  fuga porque la fuga **es** la anchura; y rasterizar destruye la capa de texto, que es sobre lo
+  que se sostiene toda la comprobación de este producto. Medido: tras tachar `12345678Z` en
+  Helvetica 11, el texto posterior no se mueve ni 0,01 pt y el hueco vale 61,765 pt.
+- *La imagen por debajo del umbral no se arregla bajando el umbral*, porque cualquier cifra es
+  igual de arbitraria: el informe enumera las páginas con imágenes, sin umbral.
+- *Leer el PDF renderizado encontró lo que ningún test de texto ve.* Dos defectos de maquetación
+  reales aparecieron al rasterizar. La guarda nueva mide la POSICIÓN de cada glifo.
+
+**Bloqueos / pendiente:**
+- **NO fusionada y NO desplegada**, a propósito.
+- **Decisión de producto no tomada:** hoy el informe bloqueado (E1) no llega a nadie, porque
+  `canDownloadReport` (`src/app.ts:24`) exige `verify.clean` para descargar. El informe que dice
+  «me negué, y por esto» también es diligencia y hoy se tira. Entregarlo **solo a él** (sin el
+  documento con residuos) toca el flujo de descarga y la UI, no el motor, y no estaba en el
+  encargo: queda apuntado, no hecho.
+- **Coste asumido y dicho en voz alta:** se pierde el texto alternativo de accesibilidad de las
+  imágenes. Es un texto que ningún lector enseña y que la guarda no releía —un escondite, no una
+  funcionalidad—, pero por eso pasa a ser una categoría propia del inventario en vez de
+  desaparecer en silencio.
+- **Residuales conocidos, declarados:** el hueco de glifos; teléfono y referencia catastral
+  partidos por un salto de línea; y el punto ciego del detector (nombres, direcciones, firmas,
+  documentos extranjeros), que ahora el informe enumera uno a uno en vez de taparlo con un
+  descargo genérico.
+- Auditoría Codex externa: pendiente. El `auditor-interno` se ejecutó a mano, con su procedimiento,
+  porque en este entorno no hay herramienta para lanzar subagentes.
+
+**Enlaces:** rama `fix/sello-por-estados` (8 commits, de `414eeb4` a `18b3776`). Verificación en
+cada commit: `npx --no-install tsc --noEmit` exit 0 · `npm test` exit 0 (615 → **732**) ·
+`npm run build` exit 0.
+
+---
+
 ## 2026-08-08 · auditoría · Comprobación de hechos de toda la web antes de publicar (rama `fix/afirmaciones-verificables`)
 
 **Hecho:** inventariadas y comprobadas contra FUENTE PRIMARIA las 13 afirmaciones de hecho
