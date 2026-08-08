@@ -1,6 +1,66 @@
+import * as mupdf from 'mupdf';
 import { PDFDocument, PDFName, PDFString, StandardFonts, rgb } from 'pdf-lib';
 
 const PAGE_SIZE: [number, number] = [595, 842];
+
+/**
+ * Una NOMINA ESCANEADA de verdad: se dibuja una pagina de texto, se rasteriza, se comprime en
+ * JPEG y se incrusta como imagen a pagina completa. Es el caso de uso numero uno del comprador y
+ * el unico que produce en el archivo un flujo de imagen grande — que es donde aparecio el
+ * defecto que `escaneo-conservado.test.ts` vigila.
+ */
+export async function pdfEscaneadoJpeg(lineas: string[]): Promise<Uint8Array> {
+  const origen = await PDFDocument.create();
+  const paginaOrigen = origen.addPage(PAGE_SIZE);
+  const fuente = await origen.embedFont(StandardFonts.Helvetica);
+  lineas.forEach((linea, i) => {
+    paginaOrigen.drawText(linea, { x: 60, y: 760 - i * 50, size: 20, font: fuente });
+  });
+  const doc = new mupdf.PDFDocument(await origen.save());
+  const pixmap = doc.loadPage(0).toPixmap(mupdf.Matrix.identity, mupdf.ColorSpace.DeviceRGB, false);
+  const jpeg = pixmap.asJPEG(85, false);
+  doc.destroy();
+
+  const salida = await PDFDocument.create();
+  const pagina = salida.addPage(PAGE_SIZE);
+  pagina.drawImage(await salida.embedJpg(jpeg), {
+    x: 0,
+    y: 0,
+    width: PAGE_SIZE[0],
+    height: PAGE_SIZE[1],
+  });
+  return salida.save();
+}
+
+/**
+ * Pixeles oscuros de una franja de la pagina. Contar bloques de imagen no vale: un `onImageBlock`
+ * sigue apareciendo aunque la imagen ya no se pueda decodificar. Lo que hay que mirar es si en el
+ * papel queda algo dibujado.
+ */
+export function tintaEnFranja(
+  bytes: Uint8Array,
+  pagina: number,
+  desdeY: number,
+  hastaY: number,
+): number {
+  const doc = new mupdf.PDFDocument(bytes.slice());
+  try {
+    const pixmap = doc
+      .loadPage(pagina)
+      .toPixmap(mupdf.Matrix.identity, mupdf.ColorSpace.DeviceRGB, false);
+    const ancho = pixmap.getWidth();
+    const pixeles = pixmap.getPixels();
+    let oscuros = 0;
+    for (let y = Math.max(0, desdeY); y < Math.min(pixmap.getHeight(), hastaY); y++) {
+      for (let x = 0; x < ancho; x++) {
+        if ((pixeles[(y * ancho + x) * 3] ?? 255) < 200) oscuros++;
+      }
+    }
+    return oscuros;
+  } finally {
+    doc.destroy();
+  }
+}
 
 export async function pdfConTexto(texto: string): Promise<Uint8Array> {
   const doc = await PDFDocument.create();

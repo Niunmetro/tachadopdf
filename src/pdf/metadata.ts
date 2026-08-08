@@ -135,6 +135,28 @@ function recorrerArbolDeEstructura(
   return textos;
 }
 
+/**
+ * Segunda pasada del guardado: reabre los bytes y compacta con `garbage: 4` SIN tocar ni un
+ * objeto. No es una manía: `garbage >= 2` renumera, y hacerlo en la MISMA pasada en la que se han
+ * resuelto todos los objetos (que es justo lo que hace `barrerClavesOcultas`) le hace perder a
+ * mupdf el flujo de la imagen redactada. Medido en la matriz completa sobre una nómina escaneada:
+ *
+ *   garbage:1 · objetos resueltos   ->  16.238 bytes, 2.402 píxeles de tinta   (bien)
+ *   garbage:2 · objetos resueltos   ->   3.711 bytes, 1.776 píxeles de tinta   (solo la barra)
+ *   garbage:4 · SIN resolver        ->  16.108 bytes, 2.402 píxeles de tinta   (bien)
+ *
+ * Es decir: el escaneo del cliente desaparecía del archivo entregado. En dos pasadas se conservan
+ * las dos propiedades — el barrido de claves ocultas Y la recolección completa de huérfanos.
+ */
+function compactar(bytes: Uint8Array): Uint8Array {
+  const doc = new mupdf.PDFDocument(bytes.slice());
+  try {
+    return doc.saveToBuffer({ garbage: 4, compress: true }).asUint8Array().slice();
+  } finally {
+    doc.destroy();
+  }
+}
+
 /** Igual que el barrido, pero sin tocar nada: se usa para comprobar que el borrado se aplico. */
 function tieneClavesOcultas(doc: mupdf.PDFDocument): boolean {
   const total = doc.countObjects();
@@ -245,10 +267,13 @@ export async function stripMetadata(
 
     hadHiddenKeys = barrerClavesOcultas(doc);
 
-    cleaned = doc.saveToBuffer({ garbage: 4, compress: true }).asUint8Array().slice();
+    // Ver `compactar`: la recoleccion completa va en una SEGUNDA pasada, sobre un documento en el
+    // que nadie ha resuelto objetos. Guardar aqui con `garbage: 4` borraba el escaneo del cliente.
+    cleaned = doc.saveToBuffer({ garbage: 1, compress: true }).asUint8Array().slice();
   } finally {
     doc.destroy();
   }
+  cleaned = compactar(cleaned);
 
   const removed: string[] = [];
   let objetos: InventarioObjetos;
