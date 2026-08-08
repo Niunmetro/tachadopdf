@@ -296,12 +296,19 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
     if (y - needed < SUELO) newPage();
   };
 
-  const heading = (title: string): void => {
-    ensure(34);
-    y -= 5;
+  //
+  // CONTROL DE VIUDAS Y HUERFANAS. `alto` es lo que la seccion necesita DEBAJO del encabezado para
+  // no quedarse colgando sola al final de una hoja. Sin esto: «COBERTURA DE ESTA COMPROBACION»
+  // cerraba la pagina 1 sin una sola fila debajo, la pagina 2 arrancaba con una fila suelta sin
+  // encabezado encima, y «COMO COMPROBAR ESTE INFORME» se quedaba en una hoja con su cuerpo en la
+  // siguiente. En un documento que se archiva como prueba, una hoja que empieza por una fila
+  // huerfana parece un fallo de impresion y le resta credibilidad al informe entero.
+  const heading = (title: string, alto = 40): void => {
+    ensure(32 + alto);
+    y -= 3;
     write(title.toUpperCase(), MARGIN, y - 10, 10.5, bold, INK);
     page.drawRectangle({ x: MARGIN, y: y - 17, width: 28, height: 2, color: ACCENT });
-    y -= 22;
+    y -= 20;
   };
 
   const subLabel = (s: string): void => {
@@ -326,7 +333,7 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // El texto de cada linea no cambia ni una coma: lo que deja de contradecirlo es el punto.
   const bullet = (s: string, dotColor: Color, hueco = false): void => {
     const lineas = wrapText(s, font, 9.7, CONTENT_W - 15);
-    const alto = 13.5 + (lineas.length - 1) * 12;
+    const alto = 13 + (lineas.length - 1) * 11.8;
     ensure(alto + 2);
     page.drawEllipse({ x: MARGIN + 4, y: y - 6.5, xScale: 2.7, yScale: 2.7, color: dotColor });
     if (hueco) page.drawEllipse({ x: MARGIN + 4, y: y - 6.5, xScale: 1.4, yScale: 1.4, color: WHITE });
@@ -334,9 +341,12 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
     y -= alto;
   };
 
+  const altoObjeto = (label: string): number =>
+    Math.max(16, wrapText(label, font, 9.5, 300).length * 12 + 4);
+
   const filaObjeto = (label: string, estadoObjeto: EstadoObjeto): void => {
     const labelLines = wrapText(label, font, 9.5, 300);
-    const alto = Math.max(16, labelLines.length * 12 + 4);
+    const alto = altoObjeto(label);
     ensure(alto);
     labelLines.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.5, font, MUTED));
     const destacado = estadoObjeto === 'noExaminado';
@@ -364,15 +374,22 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // El sello delega ahí —«constan en «Cobertura»»— y ahí la instrucción no se distinguía del
   // inventario. El «4» accionable y el «0» inocuo se dibujaban exactamente igual.
   const LABEL_W = 225;
+  // La altura sale del texto REAL envuelto, no de una constante: con la altura fija, la fila que
+  // seguía a una etiqueta de dos líneas se pegaba a ella (medido: 7 px de hueco frente a los 27 del
+  // resto) y las dos se leían como una sola. Salía en todos los informes.
+  const altoFila = (label: string, value: string, valueSize = 10, reserva = false): number =>
+    Math.max(
+      wrapText(label, font, 9.5, LABEL_W - (reserva ? 10 : 0)).length * 12,
+      wrapText(value, font, valueSize, CONTENT_W - LABEL_W - 12).length * (valueSize + 2.5),
+      12,
+    ) + 8;
+
   const row = (label: string, value: string, valueSize = 10, reserva = false): void => {
     const sangria = reserva ? 10 : 0;
     const vx = MARGIN + LABEL_W + 12;
     const labelLines = wrapText(label, font, 9.5, LABEL_W - sangria);
     const valueLines = wrapText(value, font, valueSize, CONTENT_W - LABEL_W - 12);
-    // La altura sale del texto REAL envuelto, no de una constante: con la altura fija, la fila que
-    // seguía a una etiqueta de dos líneas se pegaba a ella (medido: 7 px de hueco frente a 27 del
-    // resto) y las dos se leían como una sola.
-    const alto = Math.max(labelLines.length * 12, valueLines.length * (valueSize + 2.5), 12) + 8;
+    const alto = altoFila(label, value, valueSize, reserva);
     ensure(alto);
     if (reserva) {
       page.drawRectangle({ x: MARGIN, y: y - alto + 2, width: CONTENT_W, height: alto - 2, color: AMBAR_BG });
@@ -383,6 +400,39 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
       write(ln, vx, y - 11 - i * (valueSize + 2.5), valueSize, reserva ? bold : font, reserva ? AMBAR_TINTA : INK),
     );
     y -= alto;
+  };
+
+  /**
+   * VIUDAS Y HUÉRFANAS EN UNA TABLA. Un encabezado no puede cerrar la hoja sin filas debajo (lo
+   * cubre `heading`), pero tampoco puede caer una fila suelta al principio de la hoja siguiente:
+   * la página 2 arrancaba con «Páginas con texto dibujado que no se puede releer  0», sola y sin
+   * encabezado encima. En un documento que se archiva como prueba eso parece un fallo de impresión.
+   *
+   * Se planifica el corte ANTES de dibujar: se mide cada fila, se ve cuántas caben, y si al otro
+   * lado quedarían menos de tres se adelanta el corte. Si no caben tres a este lado, la tabla
+   * entera salta de página. Devuelve cuántas filas van antes del salto.
+   */
+  const MIN_FILAS_A_CADA_LADO = 2;
+  const planificarCorte = (alturas: number[]): number => {
+    let caben = 0;
+    let acumulado = 0;
+    for (const alto of alturas) {
+      if (y - acumulado - alto < SUELO) break;
+      acumulado += alto;
+      caben++;
+    }
+    if (caben >= alturas.length) return alturas.length;
+    if (alturas.length - caben < MIN_FILAS_A_CADA_LADO) caben = alturas.length - MIN_FILAS_A_CADA_LADO;
+    return caben >= MIN_FILAS_A_CADA_LADO ? caben : 0;
+  };
+
+  const tabla = (filas: { alto: number; pinta: () => void }[]): void => {
+    const corte = planificarCorte(filas.map((f) => f.alto));
+    if (corte === 0) newPage();
+    filas.forEach((fila, i) => {
+      if (i === corte && corte > 0) newPage();
+      fila.pinta();
+    });
   };
 
   // --- cabecera de marca ---------------------------------------------------
@@ -427,33 +477,39 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   const estilo = ESTILO_SELLO[estado];
   const SELLO_X = MARGIN + 62;
   const lineasSello = wrapText(lineaDelSello(estado, data, copia), font, 9.3, PAGE[0] - MARGIN - SELLO_X);
-  const badgeH = 56 + lineasSello.length * 12 + 8;
+  const badgeH = 52 + lineasSello.length * 12 + 7;
   page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: estilo.banda });
   page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 6, height: badgeH, color: estilo.barra });
   dibujarIcono(page, estilo.icono, MARGIN + 34, y - 30, estilo);
-  write(copia.sellos[estado], SELLO_X, y - 37, 19, bold, estilo.tinta);
+  write(copia.sellos[estado], SELLO_X, y - 35, 19, bold, estilo.tinta);
   const tintaLineas = estado === 'E1' ? WHITE : SOFT_INK;
-  lineasSello.forEach((ln, i) => write(ln, SELLO_X, y - 56 - i * 12, 9.3, font, tintaLineas));
-  y -= badgeH + 15;
+  lineasSello.forEach((ln, i) => write(ln, SELLO_X, y - 53 - i * 12, 9.3, font, tintaLineas));
+  y -= badgeH + 13;
 
   // --- datos del documento -------------------------------------------------
-  heading(copia.encabezadoDatos);
+  heading(copia.encabezadoDatos, 90);
   const nombreMostrado = nombreSinDatos(data.fileName, copia.nombreOculto);
   row(copia.filaArchivo, nombreMostrado);
+  // El aviso va PEGADO a la fila del archivo, que es a lo que se refiere, y con la misma anatomía
+  // que el sello en pequeño: barra roja, fondo teñido y una medida legible. Antes flotaba suelto
+  // entre dos secciones, detrás de la huella SHA-256, a sangre completa y con la línea más larga
+  // del informe (122 caracteres) — un aviso ACCIONABLE (hay que renombrar el fichero antes de
+  // enviarlo) presentado como si fuera texto de relleno mal colocado.
+  if (nombreMostrado !== data.fileName) {
+    const avisoLineas = wrapText(copia.avisoNombreOculto, font, 8.7, CONTENT_W - 30);
+    const avisoH = avisoLineas.length * 11.5 + 13;
+    ensure(avisoH + 6);
+    page.drawRectangle({ x: MARGIN, y: y - avisoH, width: CONTENT_W, height: avisoH, color: ROJO_BG });
+    page.drawRectangle({ x: MARGIN, y: y - avisoH, width: 3, height: avisoH, color: ROJO_TINTA });
+    avisoLineas.forEach((ln, i) => write(ln, MARGIN + 14, y - 12.5 - i * 11.5, 8.7, font, ROJO_TINTA));
+    y -= avisoH + 6;
+  }
   row(copia.filaFecha, data.date);
   row(copia.filaReferencia, ref);
   row(copia.filaHuella, data.sha256, 8.5);
-  if (nombreMostrado !== data.fileName) {
-    for (const linea of wrapText(copia.avisoNombreOculto, font, 8.7, CONTENT_W - HOLGURA)) {
-      ensure(14);
-      write(linea, MARGIN, y - 8.5, 8.7, font, BAD);
-      y -= 11;
-    }
-    y -= 4;
-  }
 
   // --- comprobaciones ------------------------------------------------------
-  heading(copia.encabezadoComprobaciones);
+  heading(copia.encabezadoComprobaciones, 60);
   const residues = data.verify?.residues ?? [];
 
   // El punto verde afirma «comprobado y limpio». Cuando no hubo NADA que releer —ninguna página
@@ -519,38 +575,49 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // Las filas con RESERVA se destacan; las de inventario, no. Son exactamente las que componen
   // `paginasConReserva`, o sea las que bajan el sello: lo que el veredicto delega a esta tabla se
   // encuentra ahora de un vistazo en vez de rastrearse entre ocho filas grises.
-  heading(copia.encabezadoCobertura);
   const noLegibles = data.paginasTextoNoLegible.map((p) => p.page);
-  row(copia.filaPaginasTotal, String(data.totalPaginas), 9.5);
-  row(copia.filaPaginasReleidas, String(paginasReleidas(data)), 9.5);
-  row(copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), 9.5, data.paginasSinCapaDeTexto.length > 0);
-  row(copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), 9.5, data.paginasImagenCompleta.length > 0);
-  row(copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), 9.5, data.paginasConImagen.length > 0);
-  row(copia.filaZonasTachadas, copia.zonasEnPaginas(zonasTachadas(data), paginasConZonas(data)), 9.5);
-  row(copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), 9.5, data.unverifiableManualPages.length > 0);
-  row(copia.filaPaginasTextoNoLegible, cifraConPaginas(copia, noLegibles), 9.5, noLegibles.length > 0);
+  const cobertura: [string, string, boolean][] = [
+    [copia.filaPaginasTotal, String(data.totalPaginas), false],
+    [copia.filaPaginasReleidas, String(paginasReleidas(data)), false],
+    [copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), data.paginasSinCapaDeTexto.length > 0],
+    [copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), data.paginasImagenCompleta.length > 0],
+    [copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), data.paginasConImagen.length > 0],
+    [copia.filaZonasTachadas, copia.zonasEnPaginas(zonasTachadas(data), paginasConZonas(data)), false],
+    [copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), data.unverifiableManualPages.length > 0],
+    [copia.filaPaginasTextoNoLegible, cifraConPaginas(copia, noLegibles), noLegibles.length > 0],
+  ];
+  heading(copia.encabezadoCobertura, 20 * MIN_FILAS_A_CADA_LADO);
+  tabla(
+    cobertura.map(([label, valor, reserva]) => ({
+      alto: altoFila(label, valor, 9.5, reserva),
+      pinta: () => row(label, valor, 9.5, reserva),
+    })),
+  );
 
   // --- objetos del archivo: lista FIJA, con su agujero dicho en voz alta ----
-  heading(copia.encabezadoObjetos);
-  for (const categoria of CATEGORIAS_OBJETO) {
-    filaObjeto(etiquetaObjeto(copia, categoria), data.objetos[categoria]);
-  }
+  heading(copia.encabezadoObjetos, 20 * MIN_FILAS_A_CADA_LADO);
+  tabla(
+    CATEGORIAS_OBJETO.map((categoria) => {
+      const label = etiquetaObjeto(copia, categoria);
+      return { alto: altoObjeto(label), pinta: () => filaObjeto(label, data.objetos[categoria]) };
+    }),
+  );
 
   // --- alcance -------------------------------------------------------------
-  heading(copia.encabezadoAlcance);
+  heading(copia.encabezadoAlcance, 95);
   for (const parrafo of copia.alcanceParrafos) {
     const scopeLines = wrapText(parrafo, font, 9.5, CONTENT_W - 26);
-    const boxH = scopeLines.length * 12.5 + 15;
-    ensure(boxH + 8);
+    const boxH = scopeLines.length * 12.2 + 13;
+    ensure(boxH + 6);
     page.drawRectangle({ x: MARGIN, y: y - boxH, width: CONTENT_W, height: boxH, color: SOFT_BG });
     page.drawRectangle({ x: MARGIN, y: y - boxH, width: 3, height: boxH, color: MUTED });
-    scopeLines.forEach((ln, i) => write(ln, MARGIN + 14, y - 13.5 - i * 12.5, 9.5, font, SOFT_INK));
-    y -= boxH + 7;
+    scopeLines.forEach((ln, i) => write(ln, MARGIN + 14, y - 12.5 - i * 12.2, 9.5, font, SOFT_INK));
+    y -= boxH + 6;
   }
   y -= 3;
 
   // --- como lo comprueba un tercero ----------------------------------------
-  heading(copia.encabezadoVerificacion);
+  heading(copia.encabezadoVerificacion, 60);
   for (const parrafo of copia.verificacionParrafos) {
     const lineas = wrapText(parrafo, font, 9.3, CONTENT_W - HOLGURA);
     ensure(lineas.length * 12 + 10);
@@ -590,19 +657,32 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   });
 
   // --- marca de agua DEMO (solo versión gratuita) --------------------------
+  // La diagonal salia del centro de la pagina hacia arriba y a la derecha, o sea que atravesaba
+  // justo la banda del sello: medido, 7.621 pixeles de marca de agua DENTRO del veredicto, por el
+  // centro de las lineas que explican que queda pendiente, y de paso por encima de la fila de la
+  // huella SHA-256. La version gratuita es la que ve el 100 % de los usuarios nuevos: el trazo
+  // publicitario degradaba exactamente la pieza que responde a la unica pregunta que importa y el
+  // dato con el que un tercero contrasta el archivo.
+  //
+  // Se reencamina por la mitad INFERIOR, que es donde el informe respira, y se baja la opacidad.
+  // Sigue cruzando la hoja entera de lado a lado —su funcion comercial no cambia— sin pisar ni el
+  // sello ni la huella.
   if (data.freeVersion) {
     const wmText = safe(copia.marcaAgua);
-    const wmSize = 32;
+    const wmSize = 30;
     const wmColor = rgb(0.6, 0.6, 0.6);
     const wmWidth = bold.widthOfTextAtSize(wmText, wmSize);
+    // El texto girado 45 grados avanza lo mismo en X que en Y: se centra su proyeccion en el
+    // ancho util y se arranca lo bastante abajo para que la punta no llegue al sello.
+    const avance = wmWidth / Math.SQRT2;
     allPages.forEach((p) => {
       p.drawText(wmText, {
-        x: PAGE[0] / 2 - wmWidth / 2,
-        y: PAGE[1] / 2,
+        x: PAGE[0] / 2 - avance / 2,
+        y: 110,
         size: wmSize,
         font: bold,
         color: wmColor,
-        opacity: 0.28,
+        opacity: 0.22,
         rotate: degrees(45),
       });
     });
