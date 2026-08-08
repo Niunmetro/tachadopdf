@@ -24,6 +24,18 @@ describe('CNAME: el dominio no puede perderse por olvido', () => {
     expect(cname).toBe('www.tachadopdf.com\n');
   });
 
+  /**
+   * Si el test de arriba falla con `'www.tachadopdf.com\r\n'`, la causa es ESTA y no otra:
+   * `core.autocrlf` está a true en el repo, así que sin un pin en `.gitattributes` cualquier
+   * checkout en Windows materializa el CNAME con CRLF. Y lo que se publica es el ARCHIVO DEL
+   * ÁRBOL DE TRABAJO: Vite lo copia de `public/` a `dist/` tal cual, y `gh-pages` lo sube tal
+   * cual. El objeto de git siempre tuvo LF; el fichero que salía por la puerta, no.
+   */
+  it('.gitattributes fija el CNAME a LF (lo que se publica son los bytes del árbol de trabajo)', () => {
+    const attrs = readFileSync(resolve(RAIZ, '.gitattributes'), 'utf-8');
+    expect(attrs).toMatch(/^public\/CNAME\s+text\s+eol=lf$/m);
+  });
+
   it('public/.nojekyll sigue ahí (el mismo mecanismo que protege al CNAME)', () => {
     expect(() => readFileSync(resolve(RAIZ, 'public', '.nojekyll'))).not.toThrow();
   });

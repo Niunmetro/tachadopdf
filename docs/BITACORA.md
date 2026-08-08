@@ -13,6 +13,42 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · ingenieria · El CNAME que se PUBLICA llevaba CRLF (rama `fix/cname-eol-lf`)
+
+**Hecho:** el guardian del CNAME que traia la rama del ingles se puso ROJO en master nada mas
+fusionar, y tenia razon. No fallo antes porque en la rama se ejecutaba sobre los ficheros que
+escribio la sesion que los creo; en cuanto `git checkout` rematerializo el arbol, aparecio.
+
+Medido, en bytes:
+- objeto de git .................... `www.tachadopdf.com\n` (19 bytes)
+- arbol de trabajo tras checkout ... `www.tachadopdf.com\r\n` (20 bytes)
+- `dist/CNAME` tras `npm run build`  `www.tachadopdf.com\r\n` (20 bytes)
+
+`core.autocrlf` esta a true en el repo y NO habia `.gitattributes`. Vite copia `public/` a `dist/`
+tal cual y `gh-pages` sube `dist/` tal cual: **lo que se publica son los bytes del ARBOL DE
+TRABAJO, no los del objeto**. Es decir, en cualquier clon limpio en Windows —incluido el de un CI—
+el CNAME salia con CRLF.
+
+**Decisiones y porques:**
+- *Se arregla el fichero, no se relaja el test.* El test byte a byte estaba BIEN: es justo lo que
+  encontro el defecto. Relajarlo para que aceptara CRLF habria sido convertir en verde permanente
+  la unica señal que existia. Se le añade una asercion hermana que comprueba el pin y NOMBRA la
+  causa, para que el siguiente no pierda la tarde. Probada con su mutacion: borrado el pin, roja.
+- *`.gitattributes` quirurgico, no `* text=auto`.* Renormalizar el repo entero en una integracion
+  mezcla ruido de finales de linea con el cambio real. Solo se fija `public/CNAME`.
+- *Detalle que vindica una decision de la rama anterior:* hasta hoy el CNAME publicado salia con
+  LF por casualidad, porque el `writeFileSync('dist/CNAME', ...)` de `scripts/deploy-pages.mjs`
+  lo reescribe DESPUES del build. Esa linea se penso como redundante y se decidio conservarla
+  «porque quitarla añade riesgo sin añadir nada»: resulta que era lo unico que corregia el CRLF.
+  Pero la promesa de la rama era que CUALQUIER via de publicacion fuese segura, y por cualquier
+  otra via se publicaba CRLF. Ahora el fichero es correcto en origen y ya no depende del script.
+- *No se toca el script de deploy.* Sigue siendo el fichero cuya rotura costo 4 dias, el cambio no
+  se puede probar sin desplegar de verdad, y ya no hace falta.
+
+**Bloqueos / pendiente:** ninguno. Suite 615/615.
+
+**Enlaces:** rama `fix/cname-eol-lf`, fusionada `--no-ff` en master. Sin desplegar.
+
 ## 2026-08-08 · auditoria · Integracion de `feat/i18n-contenido-indexable` en master
 
 **Hecho:** revision de integracion de la rama del ingles y fusion `--no-ff` a master. Se verifico
