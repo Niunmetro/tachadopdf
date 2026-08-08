@@ -12,7 +12,7 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **614/614 en 48 ficheros**. Verificación: `npm ci` · `npx --no-install tsc --noEmit` ·
+- Suite: **615/615 en 48 ficheros**. Verificación: `npm ci` · `npx --no-install tsc --noEmit` ·
   `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 
 ## Guardas vivas (todas probadas con su mutación)
@@ -26,7 +26,8 @@
 - `guard-en` — vocabulario prohibido en inglés, con fronteras de palabra, sobre TODO `.html` del repo.
 - `csp` — CSP por meta en las 18 páginas (antes solo en 2).
 - `precios-coherentes` — una sola fuente para cuota, tope de páginas y precio.
-- `despliegue` — `public/CNAME` existe (antes solo lo escribía el script de deploy tras el build).
+- `despliegue` — `public/CNAME` existe, con su byte exacto (antes solo lo escribía el script de
+  deploy tras el build), y `.gitattributes` lo fija a LF.
 
 ## Embudo / marketing
 - Outreach y Ads: sin cambios desde el 22-07 (ver bitácora).
@@ -86,5 +87,9 @@
 - El CNAME vive ahora en `public/CNAME`, igual que `public/.nojekyll`: Vite lo copia en cada build.
   El script de deploy lo sigue escribiendo como segunda línea, y el modo `DOMINIO=0` sigue siendo
   el único camino que lo quita. **Verificado en la integración: `dist/CNAME` existe tras un
-  `npm run build` a secas, sin script de deploy de por medio.**
+  `npm run build` a secas, sin script de deploy de por medio, y con el byte exacto (LF).**
+- **El CNAME está fijado a LF en `.gitattributes`.** `core.autocrlf` está a true: sin ese pin,
+  cualquier checkout en Windows lo materializa con CRLF y eso es lo que Vite copia a `dist/` y
+  `gh-pages` publica. Lo que sale por la puerta son los bytes del árbol de trabajo, no los del
+  objeto de git. No quitar esa línea.
 - Webmail OX: NUNCA teclear antes de que el composer renderice; foco+Enter para drill-down en Ads.
