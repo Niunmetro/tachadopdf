@@ -46,6 +46,33 @@ export class PdfDoc {
     this.doc = doc;
   }
 
+  /**
+   * Enciende TODAS las capas opcionales del documento antes de leerlo, y devuelve cuantas
+   * estaban apagadas.
+   *
+   * Una capa apagada (`/OCProperties /D /OFF`) es contenido que esta DIBUJADO en la pagina y que
+   * `extractText` no devuelve: ni el detector ofrecia caja para el, ni la guarda podia
+   * reencontrarlo, y en Acrobat se ve con un clic en el panel de capas. Era un falso verde con el
+   * dato en el contenido de la pagina, no en un metadato oscuro.
+   *
+   * Encenderlas aqui arregla las tres mitades de una vez: se detecta, se tacha y se relee.
+   *
+   * Y NO cambia el archivo que se entrega: comprobado que `setLayerVisible` es estado de lectura
+   * de mupdf y que el `/OFF` sigue en los bytes guardados, asi que el documento se sigue viendo
+   * como su autor lo dejo. Lo unico que cambia es la vista previa del editor, que ahora enseña lo
+   * que el fichero lleva dentro — que es justo lo que hay que poder tachar.
+   */
+  revealHiddenLayers(): number {
+    const total = this.doc.countLayers();
+    let ocultas = 0;
+    for (let i = 0; i < total; i++) {
+      if (this.doc.isLayerVisible(i)) continue;
+      ocultas++;
+      this.doc.setLayerVisible(i, true);
+    }
+    return ocultas;
+  }
+
   private page(index: number): mupdf.PDFPage {
     return this.doc.loadPage(index);
   }
@@ -213,5 +240,10 @@ export async function loadPdf(bytes: Uint8Array, password?: string): Promise<Pdf
       throw new PdfPasswordError();
     }
   }
-  return new PdfDoc(doc);
+  const abierto = new PdfDoc(doc);
+  // Todo el que abre un PDF en este producto lo abre para LEERLO ENTERO: el detector, la
+  // verificacion posterior y el diagnostico gratuito. Una capa apagada es contenido dibujado que
+  // no se extrae, asi que encenderla es parte de abrir, no una opcion.
+  abierto.revealHiddenLayers();
+  return abierto;
 }
