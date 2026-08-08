@@ -9,7 +9,7 @@ import { verifyRedaction } from './verify';
 
 // Los SIETE tipos que detect() reconoce. Faltaba 'catastro': el informe declaraba menos
 // patrones buscados de los que de verdad se buscan y se verifican.
-const ALL_PATTERNS: PatternKind[] = [
+export const ALL_PATTERNS: PatternKind[] = [
   'dni',
   'nie',
   'iban',
@@ -83,8 +83,13 @@ function mergeMarks(...markLists: PageMark[][]): PageMark[] {
 export async function processDocument(input: ProcessInput): Promise<ProcessResult> {
   const doc = await loadPdf(input.bytes, input.password);
 
+  const totalPaginas = doc.pageCount();
   const scannedPages = doc.scannedPages();
   const visualReviewPages = doc.pagesNeedingVisualReview();
+  // Dos hechos distintos, con dos frases distintas y dos gravedades distintas. El informe
+  // recibia `visualReviewPages` en el campo de «paginas sin capa de texto» y afirmaba de una
+  // pagina CON texto tapada por una imagen que no tenia texto: falso, literalmente.
+  const paginasImagenCompleta = visualReviewPages.filter((p) => !scannedPages.includes(p));
 
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
   const selectedAutomatic = input.selectedAutomatic ?? automaticBoxes.map(() => true);
@@ -124,7 +129,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     .map((m) => ({ page: m.page, count: m.rects.length }))
     .sort((a, b) => a.page - b.page);
 
-  const { bytes: cleanedBytes, removed } = await stripMetadata(redactedBytes);
+  const { bytes: cleanedBytes, objetos } = await stripMetadata(redactedBytes);
   const metadataTexts = await extractMetadataStrings(cleanedBytes);
 
   const finalDoc = await loadPdf(cleanedBytes);
@@ -138,9 +143,11 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     sha256: await computeSha256(cleanedBytes),
     date: new Date().toISOString().slice(0, 10),
     patternsSearched: ALL_PATTERNS,
+    totalPaginas,
     boxesPerPage,
-    metadataRemoved: removed,
-    scannedPages: visualReviewPages,
+    objetos,
+    paginasSinCapaDeTexto: scannedPages,
+    paginasImagenCompleta,
     unverifiableManualPages,
     freeVersion: input.freeVersion,
     verify,

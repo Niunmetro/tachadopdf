@@ -6,17 +6,27 @@ import { buildReport, computeSha256 } from './report';
 import { es } from '../content/es';
 
 const COPIA = es.informe;
-const REPORT_TITLE = COPIA.titulo;
-const SCOPE_TEXT = COPIA.alcance;
+// Literales CONGELADOS: comparar el informe con `COPIA.loQueSea` es compararlo consigo mismo.
+const REPORT_TITLE = 'Informe de comprobación técnica';
+const SCOPE_OPENING = 'Qué se ha comprobado.';
 
 const BASE_DATA: ReportData = {
   fileName: 'contrato.pdf',
   sha256: 'a'.repeat(64),
   date: '2026-07-16',
   patternsSearched: ['dni', 'iban', 'email'],
+  totalPaginas: 3,
   boxesPerPage: [{ page: 0, count: 2 }],
-  metadataRemoved: ['Title', 'Author', 'XMP'],
-  scannedPages: [1],
+  objetos: {
+    info: 'eliminado',
+    xmp: 'eliminado',
+    anotaciones: 'noHabia',
+    formularios: 'noHabia',
+    adjuntos: 'noHabia',
+    marcadores: 'noHabia',
+  },
+  paginasSinCapaDeTexto: [1],
+  paginasImagenCompleta: [],
   unverifiableManualPages: [],
   freeVersion: true,
   verify: { clean: true, residues: [] },
@@ -41,7 +51,7 @@ describe('buildReport', () => {
     const texto = await extractNormalizedText(bytes);
 
     expect(texto).toContain(REPORT_TITLE);
-    expect(texto).toContain(SCOPE_TEXT);
+    expect(texto).toContain(SCOPE_OPENING);
   });
 
   it('incluye la lista de patrones con "0 ocurrencias en el texto extraíble" cuando verify está limpio', async () => {
@@ -51,7 +61,7 @@ describe('buildReport', () => {
     expect(texto).toContain('DNI: 0 ocurrencias en el texto extraíble');
     expect(texto).toContain('IBAN: 0 ocurrencias en el texto extraíble');
     expect(texto).toContain('Correo electrónico: 0 ocurrencias en el texto extraíble');
-    expect(texto).not.toContain('RESIDUOS DETECTADOS');
+    expect(texto).not.toContain('TACHADO NO SUPERADO');
   });
 
   it('cuando hay residuos, el patrón afectado muestra el recuento real y la página, con cabecera de residuos', async () => {
@@ -61,7 +71,8 @@ describe('buildReport', () => {
     }, COPIA);
     const texto = await extractNormalizedText(bytes);
 
-    expect(texto).toContain('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado');
+    expect(texto).toContain('TACHADO NO SUPERADO');
+    expect(texto).toContain('No entregues este archivo: repite el tachado');
     expect(texto).not.toContain('DNI: 0 ocurrencias en el texto extraíble');
     expect(texto).toContain('DNI: 1 ocurrencia(s) en el texto extraíble');
     expect(texto).toContain('páginas: 1');
@@ -72,7 +83,8 @@ describe('buildReport', () => {
     const bytes = await buildReport(sinVerify, COPIA);
     const texto = await extractNormalizedText(bytes);
 
-    expect(texto).toContain('RESULTADO: RESIDUOS DETECTADOS - no apto como prueba de tachado');
+    expect(texto).toContain('TACHADO NO SUPERADO');
+    expect(texto).toContain('Nada de lo que sigue está confirmado');
   });
 
   it('incluye la línea de versión gratuita solo cuando freeVersion es true', async () => {
@@ -142,20 +154,20 @@ describe('computeSha256', () => {
 // informe podia estampar VERIFICADO sobre un tachado que nunca fue verificable. El peor fallo
 // posible es un falso verde.
 describe('tachados no verificables', () => {
-  it('sin paginas no verificables, el informe lo dice explicitamente y el sello no se matiza', async () => {
-    const bytes = await buildReport(BASE_DATA, COPIA);
-    const texto = await extractNormalizedText(bytes);
-    expect(texto).toContain(COPIA.subNoVerificables);
-    expect(texto).toContain(COPIA.lineaOk);
+  it('sin paginas no verificables, la cobertura lo dice con un cero explicito', async () => {
+    const texto = await extractNormalizedText(await buildReport(BASE_DATA, COPIA));
+    expect(texto).toContain('Tachados sin confirmación posterior');
+    expect(texto).not.toContain('Tachados que no se han podido verificar');
   });
 
-  it('con paginas no verificables, las lista y matiza la linea del sello VERIFICADO', async () => {
-    const bytes = await buildReport({ ...BASE_DATA, unverifiableManualPages: [0, 2] }, COPIA);
-    const texto = await extractNormalizedText(bytes);
-    expect(texto).toContain(COPIA.noVerificablePagina(1).slice(0, 40));
-    expect(texto).toContain(COPIA.noVerificablePagina(3).slice(0, 40));
-    // La frase «no hay nada extraible» a secas seria un verde sin matizar.
-    expect(texto).not.toContain(COPIA.lineaOk);
-    expect(texto).toContain(COPIA.lineaOkConNoVerificables(2));
+  it('con paginas no verificables, las lista una a una y el sello no puede ser verde', async () => {
+    const texto = await extractNormalizedText(
+      await buildReport({ ...BASE_DATA, unverifiableManualPages: [0, 2] }, COPIA),
+    );
+    expect(texto).toContain('Tachados que no se han podido verificar');
+    expect(texto).toContain('Página 1: la zona tachada no contenía texto extraíble');
+    expect(texto).toContain('Página 3: la zona tachada no contenía texto extraíble');
+    // Un aviso dentro de un sello verde es un aviso que ya perdio: aqui el sello ES la reserva.
+    expect(texto).not.toContain('VERIFICADO');
   });
 });

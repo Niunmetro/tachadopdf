@@ -139,40 +139,86 @@ const APP_EN: CopiaApp = {
 
 const INFORME_EN: CopiaInforme = {
   titulo: 'Redaction verification report',
-  subtituloBanda: 'Technical verification of personal-data redaction in PDF',
+  subtituloBanda: 'Technical record of the redaction and of the check that followed',
   referencia: (ref, fecha) => `Reference ${ref}   ·   Issued ${fecha}`,
-  selloOk: 'VERIFIED',
-  selloMal: 'FAILED',
-  lineaOk:
-    'None of the searched patterns can be extracted from the text of the resulting PDF.',
-  lineaMal: 'RESULT: RESIDUAL DATA FOUND - not valid as a record of redaction',
+  sellos: {
+    E1: 'REDACTION CHECK FAILED',
+    E2: 'NO AUTOMATIC CHECK POSSIBLE',
+    E3: 'PARTIAL CHECK',
+    E4: 'NOTHING REDACTED',
+    E5: 'REDACTION VERIFIED',
+  },
+  lineaBloqueadoResiduos:
+    'Data matching the searched patterns was found again in the resulting file. Do not deliver this file: redact it again.',
+  lineaBloqueadoSinComprobacion:
+    'The post-redaction check could not be run on this file. Nothing below has been confirmed.',
+  lineaSinComprobacion: (totalPaginas) =>
+    `None of the ${totalPaginas} pages has a text layer: there is nothing to re-read, so the automatic check could not be applied to this document. Pixels inside the areas you marked were cleared. Review it visually, page by page.`,
+  lineaParcial: (comprobadas, total, restantes) =>
+    `${comprobadas} of ${total} pages checked; on the other ${restantes} there is no text to re-read, or the redaction could not be confirmed. In what was checked, no data matching the searched patterns remains. See "Coverage".`,
+  lineaParcialSoloObjetos: (total) =>
+    `All ${total} pages of the file and its metadata were re-read, and no data matching the searched patterns remains in them. But this document contains objects that the check does not examine: they are listed under "File objects".`,
+  clausulaMarcadores: 'Document bookmarks are not examined.',
+  lineaSinTachados: (total) =>
+    `No data was removed from this document: no area was marked. Its ${total} pages and its metadata were re-read and no data matching the searched patterns appears. This report records no removal.`,
+  lineaVerificado: (total, zonas) =>
+    `All ${total} pages of the delivered file and its metadata were re-read: no data matching the searched patterns remains, and neither does the text that was inside the ${zonas} areas you redacted. Scope and limits below.`,
   encabezadoDatos: 'Document details',
   encabezadoComprobaciones: 'Checks performed',
-  encabezadoAlcance: 'Scope and limitations',
+  encabezadoCobertura: 'Coverage of this check',
+  encabezadoObjetos: 'File objects',
+  encabezadoAlcance: 'Scope and limits',
+  encabezadoVerificacion: 'How to check this report',
   filaArchivo: 'File checked',
   filaFecha: 'Date issued',
   filaReferencia: 'Report reference',
   filaHuella: 'SHA-256 fingerprint of the delivered file',
+  filaPaginasTotal: 'Pages in the document',
+  filaPaginasReleidas: 'Pages re-read after redaction',
+  filaPaginasSinTexto: 'Pages with no text layer (cannot be checked)',
+  filaPaginasImagenCompleta: 'Pages with a full-page image',
+  filaZonasTachadas: 'Areas redacted',
+  filaTachadosSinConfirmar: 'Redactions with no later confirmation',
+  conPaginas: (cifra, paginas) => `${cifra}   ·   pages ${paginas}`,
+  zonasEnPaginas: (zonas, paginas) => `${zonas} across ${paginas} page(s)`,
+  objetoInfo: 'Info metadata (Title, Author, Subject, Keywords, Producer, Creator)',
+  objetoXmp: 'XMP metadata (document and pages)',
+  objetoAnotaciones: 'Annotations and comments',
+  objetoFormularios: 'Form fields',
+  objetoAdjuntos: 'Attached files',
+  objetoMarcadores: 'Document bookmarks (outline)',
+  estadoEliminado: 'removed from the file',
+  estadoNoHabia: 'none present',
+  estadoNoExaminado: 'NOT EXAMINED',
   subPatrones: 'Patterns searched in the text',
   subZonas: 'Areas redacted, by page',
-  subMetadatos: 'Metadata removed',
-  subEscaneadas: 'Pages with no text layer',
+  subSinCapaDeTexto: 'Pages with no text layer',
+  subImagenCompleta: 'Pages with a full-page image',
   subNoVerificables: 'Redactions that could not be verified',
   noVerificablePagina: (pagina) =>
     `Page ${pagina}: the redacted area contained no extractable text, so removal could not be confirmed by re-reading the file. Check this page visually.`,
-  lineaOkConNoVerificables: (cuantas) =>
-    `NOTE: redactions on ${cuantas} page(s) could not be verified (details below).`,
+  paginaSinCapaDeTexto: (pagina) =>
+    `Page ${pagina}: no text layer, nothing to re-read. Not checked automatically.`,
+  paginaImagenCompleta: (pagina) =>
+    `Page ${pagina}: an image covers the page. Its text was checked; the content of the image was not.`,
   patronLimpio: (etiqueta) => `${etiqueta}: 0 occurrences in extractable text`,
   patronSucio: (etiqueta, ocurrencias, paginas) =>
     `${etiqueta}: ${ocurrencias} occurrence(s) in extractable text (pages: ${paginas})`,
   zonasPagina: (pagina, cuenta) => `Page ${pagina}: ${cuenta} area(s)`,
-  ninguna: 'None',
-  ninguno: 'None',
-  paginaEscaneada: (pagina) => `Page ${pagina}: no text layer, cannot be checked automatically`,
-  alcance:
-    'This check covers the extractable text of the resulting PDF file and the pixels of the areas you marked. It does not analyse the visual content of unmarked images, and it does not establish that the document is free of personal data. It does not replace human review.',
+  alcanceParrafos: [
+    'What was checked. After redacting, TachadoPDF reopened the file you are given and re-read the text of its pages and its metadata fields, searching for seven formats: Spanish national ID (DNI), Spanish foreigner ID (NIE), Spanish IBAN, Spanish social security number, Spanish phone number, Spanish cadastral reference and email address. Apart from email, all of them are Spanish formats with a check digit and do not recognise identifiers from other countries. It also checked that the text that was inside the areas you marked by hand does not reappear.',
+    'What was NOT searched for. Automatic pattern detection does not recognise names, postal addresses, signatures, photographs, vehicle plates or non-Spanish account numbers: you mark those yourself. The visual content of images you did not mark was not read either. Pages with no text layer cannot be checked automatically: pixels inside the marked areas are cleared, but no text remains to re-read, so the removal is not confirmed. Those pages are listed one by one under "Coverage", and the file objects that are not examined under "File objects".',
+    'What the redaction leaves behind. The text is removed from the file, not covered up. What remains is the gap it occupied: its width still shows how much text was there, and that width narrows down what could have fitted. If that matters for a particular document, convert it to an image before sending it.',
+    'What this report does not say. It does not say the document is free of personal data, and it makes no judgement about whether the right things were redacted: the person sending the file decides that. It is the technical record of what the tool removed and what it re-checked afterwards, with the file fingerprint so that anyone can cross-check it. It does not replace human review.',
+  ],
+  verificacionParrafos: [
+    'Checking by a third party. The file that comes with this report must have exactly the SHA-256 fingerprint shown above. On Windows: certutil -hashfile file.pdf SHA256. On macOS or Linux: shasum -a 256 file.pdf. If it does not match, the file is not the one that was checked.',
+    'Human review. Downloading this report requires ticking the box confirming a visual review of the final document, page by page. That is a statement by whoever used the tool, not a check performed by the tool.',
+  ],
+  lineaHerramienta: (version, fecha) =>
+    `Tool: TachadoPDF v${version} · mupdf engine · issued ${fecha}`,
   lineaGratis: 'Generated with TachadoPDF (free version)',
-  marcaAgua: 'DEMO - NOT A VALID RECORD',
+  marcaAgua: 'DEMO - free version',
   pie: 'Document generated automatically by TachadoPDF · tachadopdf.com',
   numeroPagina: (indice, total) => `Page ${indice} of ${total}`,
   etiquetas: ETIQUETAS_PATRON,
@@ -180,6 +226,8 @@ const INFORME_EN: CopiaInforme = {
 
 const COMPROBADOR_EN: CopiaComprobador = {
   etiquetas: ETIQUETAS_PATRON,
+  alcance:
+    'This diagnosis only READS the file: it redacts nothing and changes nothing in your document. It searches for seven Spanish formats (national ID, foreigner ID, IBAN, social security number, phone number, cadastral reference) and for email addresses in the text that can be extracted. It does not recognise names, postal addresses, signatures or photographs, and it does not read the visual content of images or of pages with no text layer. It does not replace human review.',
   analizando: 'Analysing the PDF in your browser…',
   noEsPdf: "That file doesn't look like a PDF. Please choose a valid .pdf file.",
   passwordRequerida:

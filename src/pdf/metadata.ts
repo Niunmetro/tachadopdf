@@ -1,6 +1,17 @@
 import * as mupdf from 'mupdf';
+import type { EstadoObjeto, InventarioObjetos } from '../types';
 
 const INFO_LABELS = ['Title', 'Author', 'Subject', 'Keywords', 'Producer', 'Creator'] as const;
+
+/**
+ * `eliminado` si lo habia y ya no esta · `noHabia` si nunca estuvo · `noExaminado` si lo habia
+ * y SIGUE ahi. El tercer caso no es un adorno: si un objeto sobrevive al limpiado, el informe
+ * tiene que degradarse solo en vez de callarlo.
+ */
+function estadoTras(habia: boolean, sigue: boolean): EstadoObjeto {
+  if (!habia) return 'noHabia';
+  return sigue ? 'noExaminado' : 'eliminado';
+}
 
 function pagesOf(doc: mupdf.PDFDocument): mupdf.PDFObject[] {
   const pages: mupdf.PDFObject[] = [];
@@ -23,7 +34,7 @@ function documentHasXmp(doc: mupdf.PDFDocument): boolean {
  */
 export async function stripMetadata(
   bytes: Uint8Array,
-): Promise<{ bytes: Uint8Array; removed: string[] }> {
+): Promise<{ bytes: Uint8Array; removed: string[]; objetos: InventarioObjetos }> {
   const doc = new mupdf.PDFDocument(bytes.slice());
   let cleaned: Uint8Array;
   let infoKeys: string[];
@@ -31,6 +42,7 @@ export async function stripMetadata(
   let hadAnnotations = false;
   let hadFormFields = false;
   let hadAttachments = false;
+  let hadOutlines = false;
 
   try {
     const trailer = doc.getTrailer();
@@ -83,12 +95,18 @@ export async function stripMetadata(
       if (!hasOtherKeys) root.delete('Names');
     }
 
+    // Los marcadores del documento (el indice) NO se tocan todavia. Se mide solo su presencia,
+    // porque un objeto que el motor no examina tiene que constar en el informe y degradar el
+    // sello: un agujero conocido dicho en voz alta no es un falso verde.
+    hadOutlines = !root.get('Outlines').isNull();
+
     cleaned = doc.saveToBuffer({ garbage: 4, compress: true }).asUint8Array().slice();
   } finally {
     doc.destroy();
   }
 
   const removed: string[] = [];
+  let objetos: InventarioObjetos;
   const finalDoc = new mupdf.PDFDocument(cleaned.slice());
   try {
     const finalTrailer = finalDoc.getTrailer();
@@ -117,11 +135,32 @@ export async function stripMetadata(
       const stillHasAcroForm = !finalTrailer.get('Root').get('AcroForm').isNull();
       if (!stillHasAcroForm) removed.push('formFields');
     }
+
+    // Inventario para el informe. `removed` solo sabe de SEIS etiquetas de Info, asi que un PDF
+    // con una clave propia (`/Cliente`) se borraba y el informe declaraba «Metadatos eliminados:
+    // Ninguno»: infra-declaraba lo que habia hecho. El inventario mira si quedo alguna clave.
+    let quedanClavesInfo = false;
+    if (!finalInfo.isNull()) {
+      finalInfo.forEach(() => {
+        quedanClavesInfo = true;
+      });
+    }
+    objetos = {
+      info: estadoTras(infoKeys.length > 0, quedanClavesInfo),
+      xmp: estadoTras(hadXmp, documentHasXmp(finalDoc)),
+      anotaciones: estadoTras(
+        hadAnnotations,
+        pagesOf(finalDoc).some((page) => !page.get('Annots').isNull()),
+      ),
+      formularios: estadoTras(hadFormFields, !finalTrailer.get('Root').get('AcroForm').isNull()),
+      adjuntos: estadoTras(hadAttachments, Object.keys(finalDoc.getEmbeddedFiles()).length > 0),
+      marcadores: hadOutlines ? 'noExaminado' : 'noHabia',
+    };
   } finally {
     finalDoc.destroy();
   }
 
-  return { bytes: cleaned, removed };
+  return { bytes: cleaned, removed, objetos };
 }
 
 /**

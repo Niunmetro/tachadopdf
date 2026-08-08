@@ -4,7 +4,7 @@ import { es } from '../content/es';
 import { renderResumen } from './render';
 
 const COPIA = es.comprobadorUi;
-const SCOPE_TEXT = es.informe.alcance;
+const SCOPE_TEXT = es.comprobadorUi.alcance;
 import type { ResumenComprobacion } from './types';
 
 function crearRoot(): HTMLElement {
