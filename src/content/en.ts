@@ -155,7 +155,7 @@ const INFORME_EN: CopiaInforme = {
   lineaSinComprobacion: (totalPaginas) =>
     `None of the ${totalPaginas} pages has a text layer: there is nothing to re-read, so the automatic check could not be applied to this document. Pixels inside the areas you marked were cleared. Review it visually, page by page.`,
   lineaParcial: (releidas, total, conReserva) =>
-    `${releidas} of ${total} pages were re-read and no data matching the searched patterns remains in them. On ${conReserva} page(s) the automatic check does not reach all of the content: pages with no text layer, pages containing images and unconfirmed redactions are listed one by one under "Coverage". Review them visually.`,
+    `${releidas} of ${total} pages were re-read and no data matching the searched patterns remains in them. On ${conReserva} page(s) the automatic check does not reach all of the content: pages with no text layer, pages containing images, pages drawing text that cannot be re-read and unconfirmed redactions are listed one by one under "Coverage". Review them visually.`,
   lineaParcialSoloImagenes: (total, paginasConImagen) =>
     `All ${total} pages of the delivered file and its metadata were re-read, and no data matching the searched patterns remains in the text. What is left out is the content of ${paginasConImagen} page(s) containing images: this tool does not read what is inside an image, so data in a photograph or a scan is not detected. Review them visually; they are listed under "Coverage".`,
   lineaParcialSoloObjetos: (total) =>

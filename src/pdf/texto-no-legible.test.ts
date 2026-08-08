@@ -114,6 +114,13 @@ describe('lo que no se puede releer, no se declara comprobado', () => {
     expect(texto).toContain('la detección automática no los alcanza');
   });
 
+  // La linea del sello enumera las reservas. Si esta reserva no esta en la enumeracion, el lector
+  // lee una lista que no incluye el motivo por el que su documento esta en ambar.
+  it('la línea del sello enumera esta reserva junto a las demás', async () => {
+    const texto = await textoDelInforme(pdfConToUnicodeRoto(DNI));
+    expect(texto).toContain('las que dibujan texto que no se puede releer');
+  });
+
   it('un documento normal no se marca: la cifra es 0 y no hay lista', async () => {
     const texto = await textoDelInforme(await pdfConTexto('Acta normal: gestoria@ejemplo.es'));
 
