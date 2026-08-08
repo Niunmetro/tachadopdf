@@ -1,0 +1,5 @@
+# El CNAME es un fichero cuyo CONTENIDO EN BYTES se publica tal cual: Vite lo copia de
+# public/ a dist/ y gh-pages lo sube a la rama publicada. Con core.autocrlf=true y sin esta
+# linea, cualquier checkout en Windows lo materializa con CRLF y eso es lo que acaba en
+# GitHub Pages. El objeto de git siempre tuvo LF; el arbol de trabajo, no.
+public/CNAME text eol=lf
