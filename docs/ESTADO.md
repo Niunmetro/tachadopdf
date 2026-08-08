@@ -88,6 +88,16 @@
   (Rule 5.2, DSAR/ICO, comprobar un tachado), NO son traducciones de las españolas.
 
 ## Bloqueos / PARADAS del owner (requieren APROBADO-ANGEL)
+0. **El ámbar pasa a ser lo normal, y la web no prepara al comprador para eso.** Desde que
+   cualquier imagen degrada el sello, un 86 % de los documentos reales saldrán
+   «COMPROBACIÓN PARCIAL» en vez de verde — una nómina con el logo del membrete, por ejemplo.
+   La web **no se contradice** con el informe (el FAQ ya dice «la detección automática lee texto,
+   no imágenes»), pero tampoco avisa de que el resultado corriente es ámbar, y un comprador que
+   espere un verde va a escribir a soporte. El FAQ vive en `src/legal/textos.ts`, que es ruta
+   sensible con `APROBADO-ANGEL`: **no se ha tocado**. Decisión del owner: añadir al FAQ una
+   respuesta del tipo «¿por qué mi informe dice COMPROBACIÓN PARCIAL?» que explique que el ámbar
+   es el estado honesto de casi cualquier documento con un logo, y que el verde está reservado a
+   los de solo texto.
 1. **Precio y moneda en inglés.** `config.ts` tiene un único `PRECIO_PRO = '59 €'`. La web inglesa
    muestra 59 € y pago único. ¿Se queda así o pasa a $/£?
 2. **`public/actas/` y `public/nominas/` venden lo que no existe**: «59 €/año» y «149 €/año Tier
