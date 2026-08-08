@@ -40,10 +40,15 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'Check it yourself: open a PDF where you covered something with a rectangle, select across it, and paste into a text editor. If the words come out, they were never deleted.',
       },
       { t: 'h2', texto: 'This is not theoretical' },
+      // Sources checked 2026-08-08 (see src/legal/textos.en.ts for the full citation block):
+      // Manafort = US v. Manafort 1:17-cr-00201 (D.D.C.), ECF 471 (defective) and ECF 472
+      // (corrected), both 8 Jan 2019. PSNI = ICO monetary penalty £750,000, 3 Oct 2024, 9,483
+      // officers and staff exposed by a hidden worksheet in an FOI spreadsheet. ICO guidance
+      // published 31 July 2025.
       {
         t: 'p',
         texto:
-          "In January 2019, lawyers for Paul Manafort filed a court document with passages blacked out. Reporters copied the text out within minutes and the redacted material was public the same day. In July 2025 the UK's Information Commissioner's Office published dedicated guidance on hidden personal information in documents released to the public, issued after breaches at the Ministry of Defence and the Police Service of Northern Ireland.",
+          "On 8 January 2019, lawyers for Paul Manafort filed a court document with passages blacked out. The text underneath was still live: reporters copied it straight out, it was being quoted in news reports the same day, and a corrected filing had to be entered on the public docket before the day was over. Regulators fine for the same class of mistake. In October 2024 the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet inside a spreadsheet released under freedom of information exposed the surnames, initials, ranks and roles of all 9,483 of its officers and staff. In July 2025 the ICO published dedicated guidance on personal information hidden inside documents released to the public.",
       },
       { t: 'h2', texto: 'What to do instead' },
       {
@@ -137,6 +142,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'In federal civil practice the duty to redact sits on the filer and on counsel, not on the clerk. Rule 5.2 of the Federal Rules of Civil Procedure sets the floor, and the floor is narrower than most people remember.',
       },
       { t: 'h2', texto: 'What Rule 5.2 requires' },
+      // Source checked 2026-08-08 against the rule text: Fed. R. Civ. P. 5.2(a) permits only the
+      // last four digits of the social-security and taxpayer-identification number, the year of
+      // birth, the minor's initials, and the last four digits of the financial-account number;
+      // 5.2(f) is the option to also file an unredacted copy under seal.
+      // https://www.law.cornell.edu/rules/frcp/rule_5.2
+      // Two things to keep straight if this page is ever challenged: 5.2 is the CIVIL rule (the
+      // criminal counterpart, Fed. R. Crim. P. 49.1, lists the same four identifiers), and 5.2(b)
+      // carves out six exemptions. The 2007 Committee Note also states that the clerk is not
+      // required to review filings for compliance — which is why the page says the duty sits on
+      // the filer, not the clerk.
       {
         t: 'ul',
         items: [
@@ -152,10 +167,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'The rule also allows a party to file an unredacted copy under seal alongside the redacted public version. That pairing is where most accidents happen: two documents with almost identical contents, one of which must never be published, moving through the same workflow on the same afternoon.',
       },
       { t: 'h2', texto: 'How filings leak' },
+      // Source checked 2026-08-08: US v. Manafort, 1:17-cr-00201 (D.D.C.). The defective redacted
+      // response was entered on the public docket as ECF 471 on 8 Jan 2019 and a CORRECTED
+      // redacted version as ECF 472 the same day.
+      // https://www.courtlistener.com/docket/6183591/united-states-v-manafort/
+      // ⚠ "within minutes" was retired on 2026-08-08: nothing timestamps the interval. The
+      // same-day corrected refiling is a docket fact and is the stronger claim anyway.
       {
         t: 'p',
         texto:
-          "On 8 January 2019, a filing on behalf of Paul Manafort was submitted with passages blacked out. The black bars were drawn over live text; reporters copied the passages out within minutes and the material was public before the day was over. Nothing about that filing looked wrong on screen.",
+          'On 8 January 2019, a filing on behalf of Paul Manafort reached the public docket with passages blacked out. The black bars were drawn over live text; reporters copied the passages straight out, and a corrected version of the same filing had to be entered on the docket before the day was over. Nothing about that filing looked wrong on screen.',
       },
       {
         t: 'p',
@@ -200,10 +221,30 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'A DSAR bundle is assembled quickly, from mailboxes and shared drives, by whoever is available. Third-party personal data has to come out, and the material that has to come out is scattered through email threads, attachments and spreadsheets rather than sitting in one tidy field.',
       },
       { t: 'h2', texto: 'What enforcement looks like' },
+      // SOURCES, all checked 2026-08-08 against the ICO's own pages:
+      //  - Guidance "Disclosing documents to the public securely: hidden personal information and
+      //    how to avoid an accidental breach", published 31 July 2025. NOTE: the guidance itself
+      //    does NOT name the MoD or the PSNI — the ICO's news release announcing it does, quoting
+      //    Deputy Commissioner Emily Keaney. Cite the release for that link, not the guidance.
+      //    https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/07/new-guidance-on-disclosing-documents-to-the-public/
+      //  - PSNI: £750,000 monetary penalty, 3 Oct 2024; a hidden worksheet in an FOI spreadsheet
+      //    exposed the surnames, initials, ranks and roles of all 9,483 officers and staff.
+      //    https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/
+      //  - MoD: ICO statement of 15 July 2025 — a spreadsheet shared in 2022, thought to concern a
+      //    small number of applicants, held hidden data on more than 18,000 people. The ICO decided
+      //    NO further regulatory action. ⚠ NEVER attach the £350,000 MoD fine to this incident: that
+      //    penalty is a DIFFERENT case (a 2021 email sent using "To" instead of "BCC", 265 email
+      //    addresses). Conflating them is the easiest way to get this page torn apart.
+      //    https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2025/07/ico-statement-in-response-to-2022-mod-data-breach/
+      //  - Police Scotland: £66,000 fine AND a reprimand, 11 March 2026. The incident began with an
+      //    excessive phone extraction from a person who had reported a crime; the full unredacted
+      //    contents then went into a misconduct disclosure bundle shared with a third party who
+      //    should not have received it, with no adequate review or redaction procedures in place.
+      //    https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2026/03/police-scotland-fined-66k-and-reprimanded-following-serious-data-mishandling/
       {
         t: 'p',
         texto:
-          'In July 2025 the Information Commissioner\'s Office published guidance specifically on disclosing documents to the public securely, addressing personal information hidden inside files. It followed two well-known incidents: a Ministry of Defence spreadsheet whose hidden data exposed more than 18,000 people, and a Police Service of Northern Ireland disclosure. In March 2026 the ICO fined Police Scotland £66,000 and issued a reprimand after an insufficiently reviewed misconduct bundle was disclosed to a third party.',
+          'On 31 July 2025 the Information Commissioner\'s Office published guidance specifically on disclosing documents to the public securely, addressing personal information hidden inside files. Announcing it, the ICO pointed to serious breaches at the Police Service of Northern Ireland and the Ministry of Defence in which documents had been disclosed without proper checks for hidden personal information. The PSNI case cost £750,000: a hidden worksheet in a spreadsheet released under freedom of information exposed the surnames, initials, ranks and roles of all 9,483 officers and staff. In the MoD case, a spreadsheet believed to concern a small number of applicants in fact carried hidden data on more than 18,000 people. And in March 2026 the ICO fined Police Scotland £66,000 and issued a reprimand after the full unredacted contents of a crime victim\'s mobile phone were put into a misconduct disclosure bundle and shared with a third party who should not have received it — the ICO found that appropriate review, redaction and security procedures were not in place.',
       },
       { t: 'h2', texto: 'The four hiding places in a bundle' },
       {
