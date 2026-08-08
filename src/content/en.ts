@@ -194,7 +194,8 @@ const INFORME_EN: CopiaInforme = {
   objetoAdjuntos: 'Attached files',
   objetoMarcadores: 'Document bookmarks (outline)',
   objetoAlternativos: 'Alternative text and accessibility tags',
-  objetoOcultos: 'Page thumbnails, nested XMP and private application data',
+  objetoOcultos:
+    'Internal objects carrying text that no reader displays (thumbnails, nested XMP, private data, page labels, layer names, actions and JavaScript)',
   estadoEliminado: 'removed from the file',
   estadoNoHabia: 'none present',
   estadoNoExaminado: 'NOT EXAMINED',

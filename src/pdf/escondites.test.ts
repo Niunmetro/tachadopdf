@@ -111,7 +111,7 @@ describe('extremo a extremo: ninguno de los cuatro puede salir en verde', () => 
     const texto = informe.extractAllText().join(' ').replace(/\s+/g, ' ');
     informe.close();
     expect(texto).toContain('Textos alternativos y etiquetas de accesibilidad');
-    expect(texto).toContain('Miniaturas de página, XMP anidado y datos privados de aplicación');
+    expect(texto).toContain('Objetos internos con texto que ningún lector enseña');
     expect(texto).not.toContain('NO EXAMINADO');
   });
 });

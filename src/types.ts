@@ -53,7 +53,9 @@ export interface InventarioObjetos {
   marcadores: EstadoObjeto;
   /** Textos alternativos y etiquetas de accesibilidad (`/Alt`, `/ActualText`, `/E`). */
   alternativos: EstadoObjeto;
-  /** Miniaturas de pagina, XMP anidado en cualquier objeto y datos privados de aplicacion. */
+  /** Objetos internos con texto que ningun lector enseña: miniaturas, XMP anidado en cualquier
+   *  objeto, datos privados de aplicacion, etiquetas de pagina, nombres de capa, ficheros
+   *  asociados, acciones y JavaScript. */
   ocultos: EstadoObjeto;
 }
 

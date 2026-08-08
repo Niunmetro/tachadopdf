@@ -64,11 +64,55 @@ function outlineTitles(doc: mupdf.PDFDocument): string[] {
  *    colgado de un XObject sobrevivia entero.
  *  - `Thumb`: la miniatura de la pagina es un retrato de la pagina SIN tachar.
  *  - `PieceInfo`: datos privados de la aplicacion que genero el PDF.
+ *  - `AF`: ficheros asociados. **Esta mantenia vivo el adjunto entero.** `deleteEmbeddedFile`
+ *    quita la entrada del arbol `/Names`, y `getEmbeddedFiles()` devolvia una lista vacia, asi
+ *    que el inventario declaraba «Ficheros adjuntos: eliminado del archivo» — pero el `/AF` del
+ *    catalogo seguia apuntando al Filespec, el recolector no podia tirarlo, y el CONTENIDO del
+ *    adjunto seguia dentro del fichero entregado. Medido: `'contenido adjunto'` presente en los
+ *    bytes descomprimidos. Lo destapo la relectura de todas las cadenas, no una sospecha.
+ *  - `AA`: acciones adicionales (JavaScript al abrir la pagina o el documento).
  */
-const CLAVES_OCULTAS = ['Metadata', 'Thumb', 'PieceInfo'] as const;
+const CLAVES_OCULTAS = ['Metadata', 'Thumb', 'PieceInfo', 'AF', 'AA'] as const;
 
-/** Texto de accesibilidad del arbol de estructura: es donde Word deja el «texto alternativo». */
-const CLAVES_TEXTO_ESTRUCTURA = ['Alt', 'ActualText', 'E'] as const;
+/**
+ * Texto de accesibilidad del arbol de estructura: es donde Word deja el «texto alternativo».
+ * `/T` es el TITULO del elemento de estructura y estaba al lado de los otros tres, sin mirar:
+ * un «Nomina de 12345678Z» ahi sobrevivia entero y se firmaba en verde.
+ */
+const CLAVES_TEXTO_ESTRUCTURA = ['Alt', 'ActualText', 'E', 'T'] as const;
+
+/**
+ * Claves del CATALOGO que llevan texto y que ningun lector necesita para enseñar la pagina.
+ * Cada una es un escondite reproducido:
+ *
+ *  - `PageLabels`: el prefijo de numeracion de pagina («Nomina 12345678Z»).
+ *  - `Threads`: hilos de articulo, con su `/Title`.
+ *  - `Collection`: el esquema de un portafolio, con los nombres de sus columnas.
+ *  - `OpenAction`: accion al abrir, incluido JavaScript con el dato dentro. (`/AA`, las acciones
+ *    adicionales, se quitan en el barrido por objeto: tambien las llevan las paginas.)
+ *  - `Dests`: destinos con nombre. Se van sin coste: las anotaciones —y con ellas los enlaces
+ *    que apuntarian a esos destinos— ya se eliminan enteras unas lineas mas arriba.
+ */
+const CLAVES_RAIZ_CON_TEXTO = ['PageLabels', 'Threads', 'Collection', 'OpenAction', 'Dests'] as const;
+
+/** Sub-arboles de `/Names` que llevan cadenas escritas por el usuario o por su aplicacion. */
+const CLAVES_NAMES_CON_TEXTO = ['Dests', 'JavaScript', 'JS'] as const;
+
+/**
+ * Claves ESTANDAR del diccionario de pagina (PDF 32000-1, tabla 30). Cualquier otra es privada
+ * del programa que genero el fichero: ningun lector conforme la usa para enseñar la pagina, y
+ * puede llevar dentro lo que su autor quiera. Lista blanca aqui SI vale, porque el conjunto lo
+ * fija la norma y no la imaginacion de quien esconde el dato.
+ */
+const CLAVES_PAGINA_ESTANDAR: ReadonlySet<string> = new Set([
+  'Type', 'Parent', 'LastModified', 'Resources', 'MediaBox', 'CropBox', 'BleedBox', 'TrimBox',
+  'ArtBox', 'BoxColorInfo', 'Contents', 'Rotate', 'Group', 'Thumb', 'B', 'Dur', 'Trans', 'Annots',
+  'AA', 'Metadata', 'PieceInfo', 'StructParents', 'ID', 'PZ', 'SeparationInfo', 'Tabs',
+  'TemplateInstantiated', 'PresSteps', 'UserUnit', 'VP', 'AF', 'OutputIntents', 'DPart',
+]);
+
+/** Etiqueta neutra con la que se sustituye el nombre de una capa opcional. */
+const NOMBRE_DE_CAPA = 'Capa';
 
 /**
  * Barrido por NUMERO DE OBJETO, no por el arbol de paginas: el punto ciego era justamente que
@@ -77,6 +121,7 @@ const CLAVES_TEXTO_ESTRUCTURA = ['Alt', 'ActualText', 'E'] as const;
 function barrerClavesOcultas(doc: mupdf.PDFDocument): boolean {
   let habia = false;
   const total = doc.countObjects();
+  let capas = 0;
   for (let num = 1; num < total; num++) {
     const obj = doc.newIndirect(num).resolve();
     if (!obj.isDictionary()) continue;
@@ -85,8 +130,78 @@ function barrerClavesOcultas(doc: mupdf.PDFDocument): boolean {
       obj.delete(clave);
       habia = true;
     }
+    const tipo = obj.get('Type').asName();
+    // La pagina: fuera todo lo que no este en la norma. Ahi cabia una clave propia con el dato.
+    if (tipo === 'Page') {
+      const privadas: string[] = [];
+      obj.forEach((_valor, clave) => {
+        if (typeof clave === 'string' && !CLAVES_PAGINA_ESTANDAR.has(clave)) privadas.push(clave);
+      });
+      for (const clave of privadas) {
+        obj.delete(clave);
+        habia = true;
+      }
+    }
+    // El nombre de una capa opcional lo enseña el panel de capas, asi que no se puede borrar sin
+    // dejar el panel mudo: se sustituye por una etiqueta neutra. El nombre lo escribe una persona
+    // («Capa 12345678Z») y por eso es un escondite.
+    if (tipo === 'OCG' && obj.get('Name').isString()) {
+      capas++;
+      obj.put('Name', doc.newString(`${NOMBRE_DE_CAPA} ${capas}`));
+      habia = true;
+    }
   }
   return habia;
+}
+
+/**
+ * Claves del catalogo y de `/Names` con texto. Se hace aparte del barrido por numero de objeto
+ * porque estas claves solo significan lo que significan colgando de la raiz: `/T` o `/Dests` en
+ * otro sitio son otra cosa.
+ */
+function barrerClavesDeLaRaiz(root: mupdf.PDFObject): boolean {
+  let habia = false;
+  for (const clave of CLAVES_RAIZ_CON_TEXTO) {
+    if (root.get(clave).isNull()) continue;
+    root.delete(clave);
+    habia = true;
+  }
+  const names = root.get('Names');
+  if (!names.isNull()) {
+    for (const clave of CLAVES_NAMES_CON_TEXTO) {
+      if (names.get(clave).isNull()) continue;
+      names.delete(clave);
+      habia = true;
+    }
+  }
+  return habia;
+}
+
+/**
+ * TODA cadena de texto de un objeto, bajando por los diccionarios y arrays DIRECTOS. Las
+ * referencias indirectas no se siguen: cada objeto indirecto lo visita el bucle de fuera, asi que
+ * seguirlas seria recorrer el fichero n veces y arriesgarse a un ciclo.
+ *
+ * Esto es la mitad que faltaba. El barrido borraba tres claves de una lista blanca, asi que
+ * cualquier cadena en cualquier OTRA clave sobrevivia Y no se releia: nueve escondites distintos
+ * (etiquetas de pagina, nombres de capa, destinos con nombre, JavaScript, hilos de articulo,
+ * claves propias de la pagina, titulos del arbol de estructura, portafolios) salian «TACHADO
+ * VERIFICADO» con el dato dentro. Contra un escondite no hay lista blanca que valga: lo que
+ * cierra la familia entera es RELEER todas las cadenas, de modo que lo que no se sepa borrar al
+ * menos bloquee el informe en vez de firmarlo.
+ */
+function cadenasDelObjeto(obj: mupdf.PDFObject, salida: string[], profundidad = 0): void {
+  if (profundidad > 8) return;
+  if (obj.isString()) {
+    salida.push(obj.asString());
+    return;
+  }
+  if (obj.isArray() || obj.isDictionary()) {
+    obj.forEach((valor) => {
+      if (valor.isIndirect()) return;
+      cadenasDelObjeto(valor, salida, profundidad + 1);
+    });
+  }
 }
 
 /**
@@ -159,6 +274,16 @@ function compactar(bytes: Uint8Array): Uint8Array {
 
 /** Igual que el barrido, pero sin tocar nada: se usa para comprobar que el borrado se aplico. */
 function tieneClavesOcultas(doc: mupdf.PDFDocument): boolean {
+  const root = doc.getTrailer().get('Root');
+  for (const clave of CLAVES_RAIZ_CON_TEXTO) {
+    if (!root.get(clave).isNull()) return true;
+  }
+  const names = root.get('Names');
+  if (!names.isNull()) {
+    for (const clave of CLAVES_NAMES_CON_TEXTO) {
+      if (!names.get(clave).isNull()) return true;
+    }
+  }
   const total = doc.countObjects();
   for (let num = 1; num < total; num++) {
     const obj = doc.newIndirect(num).resolve();
@@ -166,6 +291,38 @@ function tieneClavesOcultas(doc: mupdf.PDFDocument): boolean {
     for (const clave of CLAVES_OCULTAS) {
       if (!obj.get(clave).isNull()) return true;
     }
+    const tipo = obj.get('Type').asName();
+    if (tipo === 'Page') {
+      let privada = false;
+      obj.forEach((_valor, clave) => {
+        if (typeof clave === 'string' && !CLAVES_PAGINA_ESTANDAR.has(clave)) privada = true;
+      });
+      if (privada) return true;
+    }
+    // El nombre de la capa no se borra, se sustituye: lo que se comprueba es que el que quedo
+    // sea el neutro. Un `/Name` que no empiece por la etiqueta es el original, sin tocar.
+    if (tipo === 'OCG') {
+      const nombre = obj.get('Name');
+      if (nombre.isString() && !nombre.asString().startsWith(`${NOMBRE_DE_CAPA} `)) return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * ¿Queda algun adjunto DE VERDAD? `getEmbeddedFiles()` solo mira el arbol `/Names`, y por eso el
+ * inventario declaraba «eliminado del archivo» mientras el fichero adjunto seguia entero dentro,
+ * sujeto por el `/AF` del catalogo. Se comprueba tambien que no sobreviva ningun Filespec con su
+ * flujo `/EF`, que es donde vive el contenido.
+ */
+function quedanAdjuntos(doc: mupdf.PDFDocument): boolean {
+  if (Object.keys(doc.getEmbeddedFiles()).length > 0) return true;
+  const total = doc.countObjects();
+  for (let num = 1; num < total; num++) {
+    const obj = doc.newIndirect(num).resolve();
+    if (!obj.isDictionary()) continue;
+    if (obj.get('Type').asName() !== 'Filespec') continue;
+    if (!obj.get('EF').isNull()) return true;
   }
   return false;
 }
@@ -265,7 +422,8 @@ export async function stripMetadata(
     // funcionalidad. Consta como categoria propia en el informe.
     hadStructText = recorrerArbolDeEstructura(doc, 'borrar').length > 0;
 
-    hadHiddenKeys = barrerClavesOcultas(doc);
+    const habiaEnLaRaiz = barrerClavesDeLaRaiz(root);
+    hadHiddenKeys = barrerClavesOcultas(doc) || habiaEnLaRaiz;
 
     // Ver `compactar`: la recoleccion completa va en una SEGUNDA pasada, sobre un documento en el
     // que nadie ha resuelto objetos. Guardar aqui con `garbage: 4` borraba el escaneo del cliente.
@@ -297,7 +455,7 @@ export async function stripMetadata(
     }
 
     if (hadAttachments) {
-      const stillHasAttachments = Object.keys(finalDoc.getEmbeddedFiles()).length > 0;
+      const stillHasAttachments = quedanAdjuntos(finalDoc);
       if (!stillHasAttachments) removed.push('attachments');
     }
 
@@ -327,7 +485,7 @@ export async function stripMetadata(
         pagesOf(finalDoc).some((page) => !page.get('Annots').isNull()),
       ),
       formularios: estadoTras(hadFormFields, !finalTrailer.get('Root').get('AcroForm').isNull()),
-      adjuntos: estadoTras(hadAttachments, Object.keys(finalDoc.getEmbeddedFiles()).length > 0),
+      adjuntos: estadoTras(hadAttachments, quedanAdjuntos(finalDoc)),
       // Se mira el ARBOL, no los titulos: un indice que sobreviva sin `/Title` legible sigue
       // siendo un objeto no examinado, y tiene que degradar el sello igual.
       marcadores: estadoTras(
@@ -393,22 +551,19 @@ export async function extractMetadataStrings(bytes: Uint8Array): Promise<string[
 
     // XMP alla donde este, no solo en `/Root` y en las paginas: el paquete colgado de un
     // XObject era invisible para las dos lecturas de arriba.
+    //
+    // Y, sobre todo, TODA cadena de todo objeto. Lo de arriba son lecturas dirigidas a sitios
+    // concretos, que es exactamente como se fabrica un escondite: basta con elegir el sitio
+    // numero once. Esta pasada no elige sitio. Si un dato sobrevive en cualquier clave de
+    // cualquier objeto, `verifyRedaction` lo reencuentra y el informe sale BLOQUEADO en vez de
+    // firmado en verde — que es la unica conducta correcta cuando el dato sigue en el fichero.
     const total = doc.countObjects();
     for (let num = 1; num < total; num++) {
       const obj = doc.newIndirect(num).resolve();
       if (!obj.isDictionary()) continue;
       const meta = obj.get('Metadata');
       if (!meta.isNull() && meta.isStream()) strings.push(meta.readStream().asString());
-      const piece = obj.get('PieceInfo');
-      if (!piece.isNull()) {
-        piece.forEach((valor) => {
-          if (valor.isDictionary()) {
-            valor.forEach((v) => {
-              if (v.isString()) strings.push(v.asString());
-            });
-          }
-        });
-      }
+      cadenasDelObjeto(obj, strings);
     }
 
     return strings;
