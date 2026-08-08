@@ -17,6 +17,10 @@ import {
 const PAGE: [number, number] = [595, 842];
 const MARGIN = 50;
 const CONTENT_W = PAGE[0] - MARGIN * 2;
+// La caja de TINTA que mide un lector es un pelo mas ancha que la suma de anchuras de avance con
+// la que ajusta pdf-lib: ajustar al ancho exacto se sale del margen por ~2 pt. Medido, no supuesto
+// (`maquetacion.test.ts` lo vigila glifo a glifo).
+const HOLGURA = 8;
 
 // Paleta sobria de despacho: tinta oscura, gris de etiqueta, línea fina, acento cielo, verde/rojo
 // de veredicto. El objetivo es que parezca un documento formal, no un volcado de texto.
@@ -66,6 +70,23 @@ export async function computeSha256(bytes: Uint8Array): Promise<string> {
     .join('');
 }
 
+/** Parte una palabra que NO cabe entera. Una huella SHA-256 son 64 caracteres sin un solo
+ *  espacio: sin esto se dibujaba en una linea unica que se salia del papel. */
+function partirPalabra(word: string, font: PDFFont, size: number, maxWidth: number): string[] {
+  const trozos: string[] = [];
+  let actual = '';
+  for (const ch of word) {
+    if (actual.length > 0 && font.widthOfTextAtSize(actual + ch, size) > maxWidth) {
+      trozos.push(actual);
+      actual = ch;
+    } else {
+      actual += ch;
+    }
+  }
+  if (actual.length > 0) trozos.push(actual);
+  return trozos;
+}
+
 function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): string[] {
   const words = safe(text).split(' ');
   const lines: string[] = [];
@@ -77,6 +98,11 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): 
       current = word;
     } else {
       current = tentative;
+    }
+    if (font.widthOfTextAtSize(current, size) > maxWidth) {
+      const trozos = partirPalabra(current, font, size, maxWidth);
+      lines.push(...trozos.slice(0, -1));
+      current = trozos[trozos.length - 1] ?? '';
     }
   }
   if (current.length > 0) lines.push(current);
@@ -252,13 +278,21 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
     y -= alto;
   };
 
+  // La etiqueta AJUSTA, igual que el valor. Con la columna fija de 170 pt, «Paginas con imagenes
+  // (su contenido visual no se ha comprobado)» se montaba encima de su propia cifra, y la huella
+  // SHA-256 se salia del papel. Se ve abriendo el PDF; ningun test de texto lo nota.
+  const LABEL_W = 225;
   const row = (label: string, value: string, valueSize = 10): void => {
-    const vx = MARGIN + 170;
-    const lines = wrapText(value, font, valueSize, CONTENT_W - 170);
-    ensure(Math.max(16, lines.length * (valueSize + 2.5) + 4));
-    write(label, MARGIN, y - 9.5, 9.5, font, MUTED);
-    lines.forEach((ln, i) => write(ln, vx, y - 9.5 - i * (valueSize + 2.5), valueSize, font, INK));
-    y -= Math.max(16, lines.length * (valueSize + 2.5) + 3);
+    const vx = MARGIN + LABEL_W + 12;
+    const labelLines = wrapText(label, font, 9.5, LABEL_W);
+    const valueLines = wrapText(value, font, valueSize, CONTENT_W - LABEL_W - 12);
+    const alto = Math.max(16, labelLines.length * 12, valueLines.length * (valueSize + 2.5)) + 4;
+    ensure(alto);
+    labelLines.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.5, font, MUTED));
+    valueLines.forEach((ln, i) =>
+      write(ln, vx, y - 9.5 - i * (valueSize + 2.5), valueSize, font, INK),
+    );
+    y -= alto;
   };
 
   // --- cabecera de marca ---------------------------------------------------
@@ -287,7 +321,7 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   const estado = estadoDelSello(data);
   const estilo = ESTILO_SELLO[estado];
   const lineasSello = wrapText(lineaDelSello(estado, data, copia), font, 9.3, CONTENT_W - 68);
-  const badgeH = Math.max(58, 52 + (lineasSello.length - 1) * 11.5);
+  const badgeH = Math.max(58, 57 + (lineasSello.length - 1) * 11.5);
   page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: estilo.bg });
   page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 5, height: badgeH, color: estilo.fg });
   dibujarIcono(page, estilo.icono, MARGIN + 30, y - 24, estilo.fg, estilo.bg);
@@ -303,7 +337,7 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   row(copia.filaReferencia, ref);
   row(copia.filaHuella, data.sha256, 8.5);
   if (nombreMostrado !== data.fileName) {
-    for (const linea of wrapText(copia.avisoNombreOculto, font, 8.7, CONTENT_W)) {
+    for (const linea of wrapText(copia.avisoNombreOculto, font, 8.7, CONTENT_W - HOLGURA)) {
       ensure(14);
       write(linea, MARGIN, y - 8.5, 8.7, font, BAD);
       y -= 11;
@@ -389,7 +423,7 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // --- como lo comprueba un tercero ----------------------------------------
   heading(copia.encabezadoVerificacion);
   for (const parrafo of copia.verificacionParrafos) {
-    const lineas = wrapText(parrafo, font, 9.3, CONTENT_W);
+    const lineas = wrapText(parrafo, font, 9.3, CONTENT_W - HOLGURA);
     ensure(lineas.length * 12 + 10);
     lineas.forEach((ln, i) => write(ln, MARGIN, y - 9.5 - i * 12, 9.3, font, SOFT_INK));
     y -= lineas.length * 12 + 6;
