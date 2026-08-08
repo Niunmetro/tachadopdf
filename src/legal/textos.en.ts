@@ -60,8 +60,23 @@ Contact. For any question about this policy, write to the contact email in the l
 // afterwards — and it is the one thing the code actually does.
 export const LANDING_HEADLINE_EN = 'Redact a PDF. Then prove the text is gone.';
 
+// SOURCES FOR THE FACTUAL CLAIMS BELOW (checked 2026-08-08 against primary sources; if you change
+// a figure, re-check it and update this note):
+//  - Manafort: US v. Manafort, 1:17-cr-00201 (D.D.C.). The defective redacted response hit the
+//    PUBLIC docket as ECF 471 on 8 Jan 2019; a CORRECTED redacted version was entered as ECF 472
+//    the same day. https://www.courtlistener.com/docket/6183591/united-states-v-manafort/
+//    Black bars were drawn over live text, so the words copied straight out (contemporaneous
+//    reporting, 8 Jan 2019). ⚠ "within minutes" was RETIRED on 2026-08-08: no source timestamps
+//    the interval. Same-day reporting and the same-day corrected refiling are docket facts.
+//  - PSNI: ICO monetary penalty of £750,000, announced 3 Oct 2024. A hidden worksheet inside a
+//    spreadsheet released under freedom of information exposed the surnames, initials, ranks and
+//    roles of all 9,483 PSNI officers and staff.
+//    https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/
+//  - ICO guidance "Disclosing documents to the public securely: hidden personal information and
+//    how to avoid an accidental breach", published 31 July 2025.
+//    https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/security/disclosing-documents-to-the-public-securely/
 export const LANDING_PAIN_EN =
-  "A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read Paul Manafort's court filing within minutes of his lawyers submitting it in January 2019. It isn't a rare accident either: in July 2025 the UK's Information Commissioner's Office published dedicated guidance on hidden personal information in documents released to the public, after breaches at the Ministry of Defence and the Police Service of Northern Ireland. The failure is silent. Nothing looks wrong until someone checks.";
+  "A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. In July 2025 the ICO published dedicated guidance on personal information hidden inside documents released to the public. The failure is silent. Nothing looks wrong until someone checks.";
 
 export const LANDING_SUBHEAD_EN =
   'TachadoPDF deletes the selected text from the PDF itself and clears the pixels inside the areas you mark. Then it reopens the file it just produced, searches it again, and releases nothing if any of it comes back. You get a verification report with the SHA-256 fingerprint of the file you deliver.';

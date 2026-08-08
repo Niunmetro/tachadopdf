@@ -13,6 +13,77 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · auditoría · Comprobación de hechos de toda la web antes de publicar (rama `fix/afirmaciones-verificables`)
+
+**Hecho:** inventariadas y comprobadas contra FUENTE PRIMARIA las 13 afirmaciones de hecho
+verificables de la web en los dos idiomas (`src/legal/textos.ts`, `src/legal/textos.en.ts`,
+`src/content/guias.en.ts`, `public/**`). Resultado: **9 confirmadas, 2 parciales, 2 sin respaldo**.
+
+Las dos SIN RESPALDO eran españolas y estaban en la portada:
+- «la AEPD ha sancionado a **más de 200 comunidades de propietarios** entre 2020 y 2024»
+- «**6.000 €** por un listado de morosos»
+
+Ninguna de las dos procede de la AEPD. Ambas se rastrean hasta un mismo blog comercial de software
+para administradores de fincas que no cita ninguna fuente, y cuyo caso de 6.000 € es un **ejemplo
+ilustrativo** sin número de expediente. La nota de prensa de la memoria 2024 de la AEPD (281
+sanciones en TODOS los sectores, 35,6 M€) **no menciona a las comunidades de propietarios**. La
+cifra circula ya por buscadores y blogs citándose entre sí: es exactamente el patrón de una
+estadística lavada.
+
+Sustituidas por dos expedientes leídos ÍNTEGROS en aepd.es:
+- **PS/00378/2019** — multa de **15.000 €** por infracción del art. 5.1.f) RGPD: acta de junta
+  expuesta en los ascensores del edificio identificando con nombre, apellidos, piso y puerta a
+  asistentes y representados. Procedimiento acordado el 18-12-2019.
+- **PS/00143/2020** — **apercibimiento** por art. 5.1.f) RGPD: convocatoria de junta en el tablón
+  con el nombre de un propietario junto a su deuda de 286,81 €.
+
+También corregido el titular de `/actas/`, que atribuía a PS/00378/2019 unos hechos que no constan
+en la resolución («un acta con DNIs sin tachar de verdad»): el caso fue un acta expuesta entera, no
+un PDF mal tachado.
+
+En inglés, cinco de siete afirmaciones resistieron intactas (FRCP 5.2 en sus cuatro incisos y la
+copia bajo secreto de 5.2(f); la guía del ICO de 31-07-2025; los «más de 18.000» del MoD, que son
+literalmente la cifra del ICO; el plazo de un mes del DSAR; y la multa de 66.000 £ a Police
+Scotland de marzo de 2026 — que yo di por inventada de antemano y **es real**, con reprimenda
+incluida en el propio titular del ICO). Las dos que no:
+- «reporters copied the text out **within minutes**» (Manafort): sin respaldo, ninguna fuente
+  cronometra el intervalo. Sustituido por dos hechos del expediente: escrito defectuoso en el
+  docket público como ECF 471 el 8-1-2019 y versión CORREGIDA como ECF 472 ese mismo día.
+- «a Police Service of Northern Ireland disclosure»: cierto pero desperdiciado como nota al pie.
+  Ahora dice lo que pasó: **750.000 £** de multa del ICO (3-10-2024) porque una hoja oculta dentro
+  de un Excel publicado por transparencia expuso a los **9.483** agentes y personal del PSNI.
+
+**Decisiones y porqués:** vendemos diligencia en protección de datos, así que una cifra inventada
+sobre el regulador no es una errata de copy: es lo primero que comprobaría un competidor o un
+periodista, y arrastra consigo la credibilidad del informe, que es el producto. Además, el comité
+prohíbe prometer cumplimiento garantizado, y afirmar mal una sanción va en la misma dirección.
+Regla adoptada: **un caso concreto con su expediente convence más que un número redondo sin
+fuente**, y de hecho la copia quedó más fuerte al sustituirlo. Cada afirmación queda con su fuente
+en un comentario JUNTO AL TEXTO (en el `.ts` y en el HTML estático), con la fecha de consulta, para
+que la próxima comprobación no repita esta investigación; las dos cifras retiradas quedan anotadas
+con un ⚠ y el motivo, para que nadie las devuelva «porque suenan bien». Anotada también una trampa:
+los 350.000 £ del MoD son OTRO incidente (un email con «To» en vez de «BCC», 265 direcciones) y no
+deben pegarse jamás a la hoja oculta de las 18.000 personas. Descartado meter en la copia el caso
+del ICO contra la Met de 5-8-2026 (documentos sin tachar que dieron a un acosador la nueva
+dirección de su víctima): encaja perfecto, pero añadir contenido nuevo no era el encargo — queda
+apuntado como munición disponible.
+
+**Bloqueos / pendiente:** `docs/PLAN_14D.md:21` cita «multas AEPD 15.000€ (actas, 2021) y 1.500€
+(tablón, 2023)» sin expediente. Es un documento interno y un acta histórica del comité, así que NO
+se ha reescrito: la cifra de 15.000 € queda confirmada (PS/00378/2019) y la de 1.500 € queda **sin
+comprobar**. Sigue en pie la PARADA 2 de `docs/ESTADO.md` (las landings `/actas/` y `/nominas/`
+venden «59 €/año», un tramo «Despacho» de 149 €/año que no existe en el código y una garantía de
+devolución que los Términos no recogen): es decisión de precio del owner y no se ha tocado, pero
+conviene resolverla antes de publicar porque es la misma clase de problema. Auditoría Codex externa:
+pendiente. **NO desplegado**: publicar es decisión del dueño.
+
+**Enlaces:** rama `fix/afirmaciones-verificables`, fusionada a `master` con `--no-ff`. Fuentes:
+`https://www.aepd.es/documento/ps-00378-2019.pdf` · `https://www.aepd.es/documento/ps-00143-2020.pdf` ·
+`https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/` ·
+`https://www.law.cornell.edu/rules/frcp/rule_5.2`
+
+---
+
 ## 2026-08-08 · ingenieria · El CNAME que se PUBLICA llevaba CRLF (rama `fix/cname-eol-lf`)
 
 **Hecho:** el guardian del CNAME que traia la rama del ingles se puso ROJO en master nada mas

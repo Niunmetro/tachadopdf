@@ -73,9 +73,12 @@ describe('coherencia de cuota y precio en todas las páginas', () => {
     expect(html).not.toMatch(/\bper year\b/i);
   });
 
-  // Solo los importes en CONTEXTO DE COMPRA. El texto del dolor cita sanciones reales de la AEPD
-  // («6.000 € por un listado de morosos»), que son cifras del mundo, no precios nuestros: un
-  // barrido de «todo importe en euros» las marcaría y el test se volvería ruido que nadie mira.
+  // Solo los importes en CONTEXTO DE COMPRA. El texto del dolor cita sanciones de la AEPD
+  // («15.000 € por exponer un acta de junta», expediente PS/00378/2019), que son cifras del
+  // mundo, no precios nuestros: un barrido de «todo importe en euros» las marcaría y el test se
+  // volvería ruido que nadie mira.
+  // (El ejemplo que había aquí antes, «6.000 € por un listado de morosos», se retiró el
+  //  2026-08-08 de toda la web: no tenía ningún expediente detrás. Ver docs/BITACORA.md.)
   const COMPRA = /(pro\b|licenc|pago|precio|price|payment|purchase|comprar|get pro)/i;
 
   it.each(PAGINAS)('%s: todo importe citado como precio es el precio único', (relativo) => {
