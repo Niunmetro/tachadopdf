@@ -207,3 +207,23 @@ export async function pdfImportesEnDosLineas(): Promise<Uint8Array> {
   page.drawText('43210', { x: 50, y: 764, size: 11, font });
   return doc.save();
 }
+
+// PNG de 1x1 gris, valido y minimo. Se escala para ocupar la fraccion de pagina que pida el test.
+const PNG_1X1 =
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+
+/**
+ * Pagina CON capa de texto y una imagen que cubre `fraccion` del area. Por debajo de
+ * IMAGE_COVERAGE_THRESHOLD (0,6) el informe no decia absolutamente nada: una foto de un DNI
+ * pegada en un acta pasaba muda.
+ */
+export async function pdfConImagen(fraccion: number): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const page = doc.addPage(PAGE_SIZE);
+  page.drawText('Acta de la junta ordinaria.', { x: 50, y: 800, size: 12, font });
+  const imagen = await doc.embedPng(PNG_1X1);
+  const lado = Math.sqrt(fraccion * PAGE_SIZE[0] * PAGE_SIZE[1]);
+  page.drawImage(imagen, { x: 40, y: 100, width: lado, height: lado });
+  return doc.save();
+}

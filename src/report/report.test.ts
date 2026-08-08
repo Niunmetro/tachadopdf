@@ -29,6 +29,7 @@ const BASE_DATA: ReportData = {
   },
   paginasSinCapaDeTexto: [1],
   paginasImagenCompleta: [],
+  paginasConImagen: [],
   unverifiableManualPages: [],
   freeVersion: true,
   verify: { clean: true, residues: [] },

@@ -363,6 +363,7 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   row(copia.filaPaginasReleidas, String(paginasReleidas(data)), 9.5);
   row(copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), 9.5);
   row(copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), 9.5);
+  row(copia.filaPaginasConImagen, cifraConPaginas(copia, data.paginasConImagen), 9.5);
   row(copia.filaZonasTachadas, copia.zonasEnPaginas(zonasTachadas(data), paginasConZonas(data)), 9.5);
   row(copia.filaTachadosSinConfirmar, cifraConPaginas(copia, data.unverifiableManualPages), 9.5);
 

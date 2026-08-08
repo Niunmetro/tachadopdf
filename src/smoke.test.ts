@@ -38,6 +38,7 @@ describe('src/types.ts', () => {
       },
       paginasSinCapaDeTexto: [],
       paginasImagenCompleta: [],
+      paginasConImagen: [],
       unverifiableManualPages: [],
       freeVersion: true,
     };

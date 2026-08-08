@@ -87,6 +87,7 @@ export interface CopiaInforme {
   filaPaginasReleidas: string;
   filaPaginasSinTexto: string;
   filaPaginasImagenCompleta: string;
+  filaPaginasConImagen: string;
   filaZonasTachadas: string;
   filaTachadosSinConfirmar: string;
   conPaginas: (cifra: number, paginas: string) => string;

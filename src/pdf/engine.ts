@@ -142,6 +142,31 @@ export class PdfDoc {
     return result;
   }
 
+  /**
+   * Paginas que contienen al menos una imagen, SIN umbral.
+   *
+   * `pagesNeedingVisualReview` solo avisa a partir de IMAGE_COVERAGE_THRESHOLD, asi que una foto
+   * al 59 % del area no producia ningun aviso: una foto de un DNI pegada en un acta pasaba muda.
+   * Aqui no hay umbral a proposito — cualquier cifra seria igual de arbitraria —: el informe
+   * enumera las paginas con imagenes y dice que su contenido visual no se comprueba.
+   */
+  pagesWithImages(): number[] {
+    const total = this.pageCount();
+    const result: number[] = [];
+    for (let i = 0; i < total; i++) {
+      let tieneImagen = false;
+      this.page(i)
+        .toStructuredText('preserve-images')
+        .walk({
+          onImageBlock() {
+            tieneImagen = true;
+          },
+        });
+      if (tieneImagen) result.push(i);
+    }
+    return result;
+  }
+
   applyRedactions(marks: PageMark[]): void {
     for (const mark of marks) {
       const page = this.page(mark.page);

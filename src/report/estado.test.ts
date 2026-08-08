@@ -53,6 +53,7 @@ function datos(over: Partial<ReportData>): ReportData {
     objetos: objetos('noHabia'),
     paginasSinCapaDeTexto: [],
     paginasImagenCompleta: [],
+    paginasConImagen: [],
     unverifiableManualPages: [],
     freeVersion: false,
     verify: { clean: true, residues: [] },

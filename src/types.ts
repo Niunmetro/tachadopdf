@@ -84,6 +84,9 @@ export interface ReportData {
    *  el contenido de la imagen no. Es un hecho distinto de «sin capa de texto» y el informe
    *  lo decia mal: afirmaba de estas paginas que no tenian texto. */
   paginasImagenCompleta: number[];
+  /** Paginas que llevan alguna imagen, SIN umbral. Su contenido visual no se comprueba, y por
+   *  debajo del umbral de «imagen a pagina completa» el informe no las nombraba en absoluto. */
+  paginasConImagen: number[];
   /** Paginas donde una caja manual no cubrio texto extraible: el borrado se aplico, pero NO se
    *  pudo confirmar releyendo el fichero. Constan en el informe; no se dan por buenas. */
   unverifiableManualPages: number[];

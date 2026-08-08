@@ -44,6 +44,7 @@ function datos(over: Partial<ReportData> = {}): ReportData {
     objetos: objetos(),
     paginasSinCapaDeTexto: [],
     paginasImagenCompleta: [],
+    paginasConImagen: [],
     unverifiableManualPages: [],
     freeVersion: false,
     verify: { clean: true, residues: [] },

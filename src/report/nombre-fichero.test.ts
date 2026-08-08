@@ -36,6 +36,7 @@ function datos(fileName: string): ReportData {
     objetos: OBJETOS,
     paginasSinCapaDeTexto: [],
     paginasImagenCompleta: [],
+    paginasConImagen: [],
     unverifiableManualPages: [],
     freeVersion: false,
     verify: { clean: true, residues: [] },

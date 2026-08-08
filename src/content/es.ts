@@ -135,6 +135,7 @@ const INFORME_ES: CopiaInforme = {
   filaPaginasReleidas: 'Páginas releídas tras el tachado',
   filaPaginasSinTexto: 'Páginas sin capa de texto (no comprobables)',
   filaPaginasImagenCompleta: 'Páginas con imagen a página completa',
+  filaPaginasConImagen: 'Páginas con imágenes (su contenido visual no se ha comprobado)',
   filaZonasTachadas: 'Zonas tachadas',
   filaTachadosSinConfirmar: 'Tachados sin confirmación posterior',
   conPaginas: (cifra, paginas) => `${cifra}   ·   páginas ${paginas}`,
@@ -170,7 +171,7 @@ const INFORME_ES: CopiaInforme = {
   // propósito — «y cualquier otra cosa» no es un límite, es una excusa.
   alcanceParrafos: [
     'Qué se ha comprobado. Después de aplicar el tachado, TachadoPDF ha vuelto a abrir el archivo que se te entrega y ha releído el texto de sus páginas y sus campos de metadatos, buscando siete formatos: DNI, NIE, IBAN español, número de la Seguridad Social, teléfono español, referencia catastral y correo electrónico. Salvo el correo, todos son formatos españoles y llevan dígito de control: no reconocen documentos de otros países. También se ha comprobado que no reaparece el texto que había dentro de las zonas que marcaste a mano.',
-    'Qué NO se ha buscado. La detección automática por patrones no reconoce nombres ni apellidos, direcciones postales, firmas, fotografías, matrículas ni cuentas extranjeras: eso lo marcas tú. Tampoco se ha leído el contenido visual de las imágenes que no marcaste. Las páginas sin capa de texto no se pueden comprobar automáticamente: en ellas se borran los píxeles de las zonas marcadas, pero no queda texto que releer, así que el borrado no se confirma. Las páginas afectadas constan una a una en «Cobertura», y los objetos del archivo que no se examinan, en «Objetos del archivo».',
+    'Qué NO se ha buscado. La detección automática por patrones no reconoce nombres ni apellidos, direcciones postales, firmas, fotografías, matrículas ni cuentas extranjeras: eso lo marcas tú. Tampoco se ha leído el contenido visual de las imágenes que no marcaste: las páginas que llevan imágenes constan en «Cobertura». Las páginas sin capa de texto no se pueden comprobar automáticamente: en ellas se borran los píxeles de las zonas marcadas, pero no queda texto que releer, así que el borrado no se confirma. Las páginas afectadas constan una a una en «Cobertura», y los objetos del archivo que no se examinan, en «Objetos del archivo».',
     'Qué rastro deja el tachado. El texto se elimina del archivo, no se tapa. Lo que permanece es el hueco que ocupaba: su anchura sigue indicando cuánto texto había ahí, y con ella se puede acotar qué cabía en él. Si eso importa en un documento concreto, conviértelo a imagen antes de entregarlo.',
     'Qué no dice este informe. No dice que el documento esté libre de datos personales, ni valora si lo que había que tachar era esto o era otra cosa: eso lo decide quien firma el envío. Es el registro técnico de lo que la herramienta eliminó y de lo que volvió a comprobar después, con la huella del archivo para que cualquiera pueda contrastarlo. No sustituye a la revisión humana.',
   ],

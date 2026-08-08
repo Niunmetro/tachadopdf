@@ -90,6 +90,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
   // recibia `visualReviewPages` en el campo de «paginas sin capa de texto» y afirmaba de una
   // pagina CON texto tapada por una imagen que no tenia texto: falso, literalmente.
   const paginasImagenCompleta = visualReviewPages.filter((p) => !scannedPages.includes(p));
+  const paginasConImagen = doc.pagesWithImages();
 
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
   const selectedAutomatic = input.selectedAutomatic ?? automaticBoxes.map(() => true);
@@ -148,6 +149,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     objetos,
     paginasSinCapaDeTexto: scannedPages,
     paginasImagenCompleta,
+    paginasConImagen,
     unverifiableManualPages,
     freeVersion: input.freeVersion,
     verify,
