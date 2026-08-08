@@ -181,3 +181,29 @@ export async function pdfConEscondites(dato: string): Promise<Uint8Array> {
 
   return doc.save();
 }
+
+/**
+ * Un DNI partido por un salto de linea, como lo parte una celda estrecha de tabla. El detector no
+ * lo ve, y `searchText` TAMPOCO lo encuentra: no se puede ofrecer una caja automatica para el.
+ * Devuelve tambien el rectangulo que cubre los dos fragmentos, para poder tacharlo a mano.
+ */
+export async function pdfDniEnDosLineas(): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const page = doc.addPage(PAGE_SIZE);
+  page.drawText('DNI del titular:', { x: 50, y: 780, size: 11, font });
+  page.drawText('1234', { x: 50, y: 764, size: 11, font });
+  page.drawText('5678Z', { x: 50, y: 750, size: 11, font });
+  return doc.save();
+}
+
+/** Tabla de importes en dos lineas: juntarlas fabrica nueve digitos seguidos. Es el caso que
+ *  obliga a NO meter el telefono en el barrido de saltos de linea. */
+export async function pdfImportesEnDosLineas(): Promise<Uint8Array> {
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const page = doc.addPage(PAGE_SIZE);
+  page.drawText('7500', { x: 50, y: 780, size: 11, font });
+  page.drawText('43210', { x: 50, y: 764, size: 11, font });
+  return doc.save();
+}
