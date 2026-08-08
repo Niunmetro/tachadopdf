@@ -4,6 +4,7 @@ import type { CopiaInforme } from '../content/tipos';
 import { detect } from '../detect/patterns';
 import { CATEGORIAS_OBJETO, type EstadoObjeto, type EstadoSello, type ReportData } from '../types';
 import {
+  coberturaComprobada,
   estadoDelSello,
   hayObjetoNoExaminado,
   paginasConReserva,
@@ -51,7 +52,8 @@ const BAND_SUB = rgb(0.72, 0.78, 0.87);
  * - `banda`  el relleno de la caja del veredicto,
  * - `tinta`  el texto DENTRO de esa caja,
  * - `acento` el mismo estado sobre papel blanco (barra lateral, pie de página),
- * - `icono`  una forma distinta por estado.
+ * - `icono`  una forma distinta por estado — y en el ámbar, además, una MEDIDA: el disco de
+ *            «cobertura» se llena en la proporción real de páginas comprobadas del todo.
  *
  * Por qué son cuatro y no dos: convertidos a escala de grises, los cinco rellenos antiguos caben
  * en SEIS niveles de 255 — el informe se imprime, se fotocopia y se archiva, y en cuanto sale de
@@ -231,22 +233,86 @@ function cifraConPaginas(copia: CopiaInforme, paginas: number[]): string {
 }
 
 /**
+ * EL TOPE DEL MEDIDOR. La línea de lleno total queda por debajo del borde del disco: al 100 % se
+ * pinta el 80 % del diámetro y el casquete de arriba se queda siempre vacío.
+ *
+ * No es adorno. En E3 SIEMPRE queda algo sin comprobar —esa es la definición del estado, y el
+ * 100 % de páginas sin reserva se da cuando lo pendiente es un objeto del archivo, no una
+ * página—, así que un disco lleno del todo junto a «COMPROBACIÓN PARCIAL» insinuaría el verde
+ * que el motor no ha dado, y encima sería el mismo disco macizo que lleva el estado verificado.
+ * Un círculo relleno hasta el borde con su orla, además, es la forma que empieza a leerse como
+ * un sello de conformidad, y eso está prohibido también cuando lo dice el DIBUJO.
+ *
+ * La escala sigue siendo lineal y monótona (0 → vacío, 1 → 80 % del diámetro): el medidor nunca
+ * dibuja MÁS cobertura de la que hay; como mucho, un poco menos.
+ */
+const TOPE_MEDIDOR = 0.8;
+
+/**
+ * EL MEDIDOR DE COBERTURA, la única pieza del sello que lleva un dato dentro.
+ *
+ * Antes tenía forma de medidor y no medía nada: salía medio lleno siempre. Los dos informes
+ * parciales —uno con 3 de 6 páginas comprobadas del todo, otro con 0 de 4 porque todas llevan
+ * imágenes— dibujaban exactamente la misma media luna, y el segundo es el que importa: cobertura
+ * real cero, dibujo de media cobertura. Es la familia de defecto que este producto lleva dos
+ * pasadas cerrando, la presentación insinuando lo que el motor no ha hecho.
+ *
+ * Ahora el relleno es `coberturaComprobada(data)`, que sale de las mismas cifras que imprime el
+ * sello y destaca la tabla «Cobertura».
+ *
+ * Los dos extremos, que son donde un medidor miente:
+ *   - CERO no se dibuja como un icono ausente. La PISTA —el disco blanco— se pinta siempre, así
+ *     que el vacío se ve como un recipiente vacío y no como un hueco: es una medida tomada, no
+ *     algo que no aplique. Y cero es cero: no hay suelo de relleno que finja una pizca de
+ *     cobertura donde no la hay.
+ *   - CIEN no se dibuja lleno: ver `TOPE_MEDIDOR`.
+ *
+ * En ESCALA DE GRISES el medidor sigue leyéndose, que es la prueba que este informe no puede
+ * perder: el contraste no está entre dos ámbares parecidos sino entre la tinta del relleno
+ * (~110 de 255) y el blanco de la pista (255), con el aro cerrando la silueta. El informe se
+ * imprime y se fotocopia.
+ *
+ * El segmento circular se dibuja con `drawSvgPath` (un arco partido en dos mitades de menos de
+ * 180°, así que el flag de arco grande no entra en juego). Sigue sin haber nada remoto: es una
+ * primitiva de pdf-lib, no un icono descargado.
+ */
+function dibujarMedidor(page: PDFPage, cx: number, cy: number, R: number, e: EstiloSello, cobertura: number): void {
+  const proporcion = Math.min(1, Math.max(0, cobertura));
+  const f = proporcion * TOPE_MEDIDOR;
+  page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: WHITE });
+  if (f > 0) {
+    const dy = -R + f * 2 * R; // altura de la línea de llenado respecto al centro
+    const hc = Math.sqrt(Math.max(0, R * R - dy * dy));
+    // `drawSvgPath` trabaja en coordenadas SVG (Y hacia abajo) con origen en (x, y): de ahí el
+    // signo cambiado de `dy`. Se recorre de la orilla izquierda al fondo y del fondo a la derecha.
+    page.drawSvgPath(`M ${-hc} ${-dy} A ${R} ${R} 0 0 0 0 ${R} A ${R} ${R} 0 0 0 ${hc} ${-dy} Z`, {
+      x: cx,
+      y: cy,
+      color: e.tinta,
+    });
+  }
+  page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, borderColor: e.tinta, borderWidth: 2.2 });
+}
+
+/**
  * Los cinco iconos, dibujados con primitivas de pdf-lib (ni fuente de iconos ni SVG: la CSP del
  * producto no admite nada remoto y un informe no puede depender de un recurso que no viaja dentro).
  *
  * El ámbar ya NO es un signo de admiración. El disco con «!» es el glifo de alerta de cualquier
  * cuadro de error del sistema, y desde que CUALQUIER imagen degrada el sello, el ámbar es el
  * resultado NORMAL: 111 de 129 PDF reales llevan alguna. Un cartel de error como respuesta
- * habitual o se ignora o espanta, y las dos cosas son peores que decir la verdad. El icono nuevo
- * es un MEDIDOR DE COBERTURA: un círculo medio lleno. No tranquiliza ni alarma, cuantifica — y
- * encaja con la familia entera leída como cobertura: lleno (✓), medio (parcial), vacío (⊗),
- * ninguna (–), fallida (✕).
- *
- * El medio disco se construye sin recortes: disco macizo, encima un rectángulo del color de la
- * BANDA que borra la mitad de arriba (sus esquinas caen fuera del círculo, sobre la banda, así
- * que son invisibles) y por último el contorno del círculo entero.
+ * habitual o se ignora o espanta, y las dos cosas son peores que decir la verdad. El icono es un
+ * MEDIDOR DE COBERTURA: no tranquiliza ni alarma, cuantifica — y encaja con la familia entera
+ * leída como cobertura: lleno (✓), medio (parcial), vacío (⊗), ninguna (–), fallida (✕).
  */
-function dibujarIcono(page: PDFPage, icono: EstiloSello['icono'], cx: number, cy: number, e: EstiloSello): void {
+function dibujarIcono(
+  page: PDFPage,
+  icono: EstiloSello['icono'],
+  cx: number,
+  cy: number,
+  e: EstiloSello,
+  cobertura: number,
+): void {
   const R = 13;
   if (icono === 'aspaHueca') {
     page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: e.tinta });
@@ -256,10 +322,7 @@ function dibujarIcono(page: PDFPage, icono: EstiloSello['icono'], cx: number, cy
     return;
   }
   if (icono === 'cobertura') {
-    page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: e.tinta });
-    page.drawRectangle({ x: cx - R - 1, y: cy, width: (R + 1) * 2, height: R + 1, color: e.banda });
-    page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, borderColor: e.tinta, borderWidth: 2.2 });
-    page.drawLine({ start: { x: cx - R, y: cy }, end: { x: cx + R, y: cy }, thickness: 2.2, color: e.tinta });
+    dibujarMedidor(page, cx, cy, R, e, cobertura);
     return;
   }
   page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: icono === 'aspa' ? WHITE : e.tinta });
@@ -480,7 +543,7 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   const badgeH = 52 + lineasSello.length * 12 + 7;
   page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: estilo.banda });
   page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 6, height: badgeH, color: estilo.barra });
-  dibujarIcono(page, estilo.icono, MARGIN + 34, y - 30, estilo);
+  dibujarIcono(page, estilo.icono, MARGIN + 34, y - 30, estilo, coberturaComprobada(data));
   write(copia.sellos[estado], SELLO_X, y - 35, 19, bold, estilo.tinta);
   const tintaLineas = estado === 'E1' ? WHITE : SOFT_INK;
   lineasSello.forEach((ln, i) => write(ln, SELLO_X, y - 53 - i * 12, 9.3, font, tintaLineas));
