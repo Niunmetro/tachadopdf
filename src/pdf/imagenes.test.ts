@@ -63,6 +63,36 @@ describe('el motor sabe qué páginas llevan imágenes', () => {
   });
 });
 
+/**
+ * LA FOTO PEGADA EN EL ACTA — el falso verde mas comercial de todos, reproducido de punta a punta.
+ *
+ * Antes de este cambio: un acta con texto normal (un correo que la herramienta SI tacha, para que
+ * el sello pueda llegar a verde) y ademas una foto del DNI al 25 % del area salia
+ * «TACHADO VERIFICADO», con «DNI: 0 ocurrencias en el texto extraible», y el DNI a tamaño de
+ * titular al abrir el archivo entregado. La fila de cobertura ya nombraba la pagina; nombrarla no
+ * cambia lo que el SELLO afirma, y lo que afirmaba era falso.
+ */
+describe('una foto en la página no puede salir verde', () => {
+  it.each([0.25, 0.4, 0.59])('con una imagen al %s del área el sello NO es verde', async (f) => {
+    const texto = await textoDelInforme(await pdfConImagen(f));
+
+    expect(texto).not.toContain('VERIFICADO');
+    expect(texto).toContain('COMPROBACIÓN PARCIAL');
+  });
+
+  it('y el sello DICE que la reserva son las imágenes, en vez de mandar a la tabla', async () => {
+    const texto = await textoDelInforme(await pdfConImagen(0.25));
+
+    expect(texto).toContain('esta herramienta no lee lo que hay dentro de una imagen');
+    expect(texto).toContain('un dato fotografiado o escaneado no se detecta');
+  });
+
+  it('un documento de solo texto sigue pudiendo llegar al verde', async () => {
+    const texto = await textoDelInforme(await pdfConTexto('Acta sin datos: gestoria@ejemplo.es'));
+    expect(texto).toContain('TACHADO VERIFICADO');
+  });
+});
+
 describe('el informe nombra las páginas con imágenes', () => {
   it('una imagen al 59 % consta en la cobertura, con su página', async () => {
     const texto = await textoDelInforme(await pdfConImagen(0.59));

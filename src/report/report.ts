@@ -8,6 +8,7 @@ import {
   paginasConReserva,
   paginasConZonas,
   paginasReleidas,
+  reservaSoloPorImagenes,
   zonasTachadas,
 } from './estado';
 
@@ -123,13 +124,19 @@ export function lineaDelSello(estado: EstadoSello, data: ReportData, copia: Copi
   if (estado === 'E2') return copia.lineaSinComprobacion(total);
   if (estado === 'E3') {
     const reservas = paginasConReserva(data).length;
-    // «Comprobadas N de M» cuenta como comprobada la pagina SIN ninguna reserva: una pagina
-    // tapada por una imagen se releyo, pero no esta comprobada del todo y decir lo contrario
-    // seria volver a lo de siempre.
+    // Dos cifras con significado exacto: las paginas RELEIDAS (total menos las que no tienen capa
+    // de texto) y las que llevan alguna reserva. La redaccion anterior, «Comprobadas N de M»,
+    // restaba las reservas del numerador: una pagina releida con un logo se contaba como no
+    // comprobada, que es tan falso como lo contrario.
+    // Y cuando la UNICA reserva son imagenes —el caso corriente, un membrete— el sello lo dice
+    // con todas las letras en vez de mandar al lector a la tabla: un ambar que siempre dice lo
+    // mismo se deja de leer, y entonces el ambar deja de proteger a nadie.
     const base =
-      reservas > 0
-        ? copia.lineaParcial(Math.max(0, total - reservas), total, reservas)
-        : copia.lineaParcialSoloObjetos(total);
+      reservas === 0
+        ? copia.lineaParcialSoloObjetos(total)
+        : reservaSoloPorImagenes(data)
+          ? copia.lineaParcialSoloImagenes(total, data.paginasConImagen.length)
+          : copia.lineaParcial(paginasReleidas(data), total, reservas);
     return data.objetos.marcadores === 'noExaminado' ? `${base} ${copia.clausulaMarcadores}` : base;
   }
   if (estado === 'E4') return copia.lineaSinTachados(total);

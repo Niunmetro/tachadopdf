@@ -78,7 +78,11 @@ describe('G2: una página sin capa de texto no puede salir verde', () => {
 
     expect(t).not.toContain(VERDE_A_SECAS);
     expect(t).toContain('COMPROBACIÓN PARCIAL');
-    expect(t).toContain('Comprobadas 2 de 3 páginas');
+    // Dos cifras, cada una con su significado: RELEIDAS (2 de 3) y CON RESERVA (1). La redaccion
+    // anterior, «Comprobadas 2 de 3», restaba las reservas del numerador — y con las imagenes
+    // dentro de las reservas eso convertia una pagina releida con un logo en «no comprobada».
+    expect(t).toContain('Se han releído 2 de 3 páginas');
+    expect(t).toContain('En 1 página(s) la comprobación automática no llega a todo el contenido');
     expect(t).toContain('Página 2: sin capa de texto, no hay nada que releer');
   });
 });

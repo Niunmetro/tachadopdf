@@ -57,7 +57,15 @@ export interface CopiaInforme {
   lineaBloqueadoSinComprobacion: string;
   /** E2: ninguna página tenía capa de texto. No hubo comprobación, no es que fuera parcial. */
   lineaSinComprobacion: (totalPaginas: number) => string;
-  lineaParcial: (comprobadas: number, total: number, restantes: number) => string;
+  /**
+   * E3 general. Dos cifras con significado exacto: cuántas páginas se RELEYERON (total menos las
+   * que no tienen capa de texto) y en cuántas queda algo fuera del alcance. La redacción anterior
+   * —«Comprobadas N de M»— dejaba de ser cierta en cuanto una página releída tenía además una
+   * reserva: se había releído y se contaba como no comprobada.
+   */
+  lineaParcial: (releidas: number, total: number, conReserva: number) => string;
+  /** E3 cuando la ÚNICA reserva son imágenes: el caso corriente (un logo en el membrete). */
+  lineaParcialSoloImagenes: (total: number, paginasConImagen: number) => string;
   /** E3 cuando todas las páginas se releyeron y lo que falta es un objeto del archivo. */
   lineaParcialSoloObjetos: (total: number) => string;
   clausulaMarcadores: string;

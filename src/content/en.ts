@@ -154,8 +154,10 @@ const INFORME_EN: CopiaInforme = {
     'The post-redaction check could not be run on this file. Nothing below has been confirmed.',
   lineaSinComprobacion: (totalPaginas) =>
     `None of the ${totalPaginas} pages has a text layer: there is nothing to re-read, so the automatic check could not be applied to this document. Pixels inside the areas you marked were cleared. Review it visually, page by page.`,
-  lineaParcial: (comprobadas, total, restantes) =>
-    `${comprobadas} of ${total} pages checked; on the other ${restantes} there is no text to re-read, or the redaction could not be confirmed. In what was checked, no data matching the searched patterns remains. See "Coverage".`,
+  lineaParcial: (releidas, total, conReserva) =>
+    `${releidas} of ${total} pages were re-read and no data matching the searched patterns remains in them. On ${conReserva} page(s) the automatic check does not reach all of the content: pages with no text layer, pages containing images and unconfirmed redactions are listed one by one under "Coverage". Review them visually.`,
+  lineaParcialSoloImagenes: (total, paginasConImagen) =>
+    `All ${total} pages of the delivered file and its metadata were re-read, and no data matching the searched patterns remains in the text. What is left out is the content of ${paginasConImagen} page(s) containing images: this tool does not read what is inside an image, so data in a photograph or a scan is not detected. Review them visually; they are listed under "Coverage".`,
   lineaParcialSoloObjetos: (total) =>
     `All ${total} pages of the file and its metadata were re-read, and no data matching the searched patterns remains in them. But this document contains objects that the check does not examine: they are listed under "File objects".`,
   clausulaMarcadores: 'Document bookmarks are not examined.',

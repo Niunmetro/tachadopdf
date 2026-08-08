@@ -45,17 +45,47 @@ export function paginasSinTexto(data: ReportData): number {
 }
 
 /**
- * Paginas sobre las que el informe tiene alguna reserva: sin capa de texto que releer, cubiertas
- * por una imagen a pagina completa, o con un tachado manual que no se pudo confirmar.
+ * Paginas sobre las que el informe tiene alguna reserva: sin capa de texto que releer, con
+ * CUALQUIER imagen (su contenido no se lee), o con un tachado manual que no se pudo confirmar.
+ *
+ * Las paginas con imagen entran aqui desde que se reprodujo el falso verde mas comercial de
+ * todos: un acta con texto normal y una FOTO del DNI pegada al 25 % del area salia
+ * «TACHADO VERIFICADO», con el DNI a tamaño de titular al abrir el archivo entregado. El umbral
+ * del 60 % no lo tapa: es que por debajo del umbral no degradaba NADA.
+ *
+ * Enumerar las paginas con imagen en la tabla de cobertura, como se hacia, no basta: una fila
+ * mas en una tabla no cambia lo que el sello AFIRMA, y lo que afirmaba era falso.
+ *
+ * Coste medido sobre 129 PDF reales del disco: 111 (el 86 %) llevan alguna imagen — casi siempre
+ * el logo del membrete —, asi que a partir de ahora el estado normal del producto es E3 y el
+ * verde queda para documentos de solo texto. Se acepta a sabiendas: el contrato del producto dice
+ * que el peor fallo posible es un falso verde, y «TACHADO VERIFICADO» sobre un acta con la foto
+ * de un DNI dentro es una afirmacion citable en una reclamacion. Para que el ambar no se vuelva
+ * ruido, el sello DICE cual es la reserva cuando la unica que hay son imagenes.
  */
 export function paginasConReserva(data: ReportData): number[] {
   return [
     ...new Set([
       ...data.paginasSinCapaDeTexto,
       ...data.paginasImagenCompleta,
+      ...data.paginasConImagen,
       ...data.unverifiableManualPages,
     ]),
   ].sort((a, b) => a - b);
+}
+
+/**
+ * La unica reserva son imagenes: todo se releyo, todos los tachados se confirmaron y ninguna
+ * pagina esta tapada del todo. Es el caso corriente (un logo en el membrete) y merece una frase
+ * propia: si el ambar dijera siempre lo mismo, el lector dejaria de leerlo.
+ */
+export function reservaSoloPorImagenes(data: ReportData): boolean {
+  return (
+    data.paginasConImagen.length > 0 &&
+    data.paginasSinCapaDeTexto.length === 0 &&
+    data.paginasImagenCompleta.length === 0 &&
+    data.unverifiableManualPages.length === 0
+  );
 }
 
 /** Paginas que SI se releyeron tras el tachado. El denominador vive en `totalPaginas`. */

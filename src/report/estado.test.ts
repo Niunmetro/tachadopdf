@@ -4,7 +4,13 @@ import { LOCALES } from '../content/registro';
 import { detect } from '../detect/patterns';
 import { ALL_PATTERNS } from '../pdf/pipeline';
 import type { EstadoObjeto, EstadoSello, InventarioObjetos, ReportData } from '../types';
-import { estadoDelSello, paginasConReserva, paginasReleidas, paginasSinTexto } from './estado';
+import {
+  estadoDelSello,
+  paginasConReserva,
+  paginasReleidas,
+  paginasSinTexto,
+  reservaSoloPorImagenes,
+} from './estado';
 
 /**
  * Los ROTULOS van CONGELADOS aqui, no leidos de `es.informe.sellos`. Un test que se compara con
@@ -80,6 +86,12 @@ describe('G1: estadoDelSello sobre el espacio completo de entradas', () => {
     { nombre: 'sin imagen completa', valor: [] as number[] },
     { nombre: 'con imagen completa', valor: [2] },
   ];
+  // La dimension que faltaba, y por la que salia verde el caso mas comercial de todos: una foto
+  // del DNI pegada en un acta, por debajo del umbral del 60 %.
+  const CON_IMAGEN = [
+    { nombre: 'sin imagenes', valor: [] as number[] },
+    { nombre: 'con imagenes', valor: [1] },
+  ];
   const NO_CONF = [
     { nombre: 'todos confirmados', valor: [] as number[] },
     { nombre: 'alguno sin confirmar', valor: [0] },
@@ -94,25 +106,28 @@ describe('G1: estadoDelSello sobre el espacio completo de entradas', () => {
   for (const clean of CLEAN) {
     for (const sinTexto of SIN_TEXTO) {
       for (const imagen of IMAGEN) {
-        for (const noConf of NO_CONF) {
-          for (const zonas of ZONAS) {
-            for (const marcadores of MARCADORES) {
-              const base = datos({
-                paginasSinCapaDeTexto: sinTexto.valor,
-                paginasImagenCompleta: imagen.valor,
-                unverifiableManualPages: noConf.valor,
-                boxesPerPage: zonas.valor,
-                objetos: objetos(marcadores),
-              });
-              const { verify, ...sinVerify } = base;
-              const data: ReportData =
-                clean.over.verify === undefined
-                  ? (sinVerify as ReportData)
-                  : { ...base, ...clean.over };
-              casos.push({
-                etiqueta: `${clean.nombre} · ${sinTexto.nombre} · ${imagen.nombre} · ${noConf.nombre} · ${zonas.nombre} · marcadores=${marcadores}`,
-                data,
-              });
+        for (const conImagen of CON_IMAGEN) {
+          for (const noConf of NO_CONF) {
+            for (const zonas of ZONAS) {
+              for (const marcadores of MARCADORES) {
+                const base = datos({
+                  paginasSinCapaDeTexto: sinTexto.valor,
+                  paginasImagenCompleta: imagen.valor,
+                  paginasConImagen: conImagen.valor,
+                  unverifiableManualPages: noConf.valor,
+                  boxesPerPage: zonas.valor,
+                  objetos: objetos(marcadores),
+                });
+                const { verify, ...sinVerify } = base;
+                const data: ReportData =
+                  clean.over.verify === undefined
+                    ? (sinVerify as ReportData)
+                    : { ...base, ...clean.over };
+                casos.push({
+                  etiqueta: `${clean.nombre} · ${sinTexto.nombre} · ${imagen.nombre} · ${conImagen.nombre} · ${noConf.nombre} · ${zonas.nombre} · marcadores=${marcadores}`,
+                  data,
+                });
+              }
             }
           }
         }
@@ -120,8 +135,8 @@ describe('G1: estadoDelSello sobre el espacio completo de entradas', () => {
     }
   }
 
-  it('la rejilla cubre las 144 combinaciones', () => {
-    expect(casos).toHaveLength(144);
+  it('la rejilla cubre las 288 combinaciones', () => {
+    expect(casos).toHaveLength(288);
   });
 
   it('cada combinación devuelve exactamente uno de los cinco estados', () => {
@@ -145,6 +160,8 @@ describe('G1: estadoDelSello sobre el espacio completo de entradas', () => {
       expect(d.verify?.clean, caso.etiqueta).toBe(true);
       expect(d.paginasSinCapaDeTexto, caso.etiqueta).toEqual([]);
       expect(d.paginasImagenCompleta, caso.etiqueta).toEqual([]);
+      // Sin esta linea, el verde volvia a taparse sobre una foto del DNI pegada en un acta.
+      expect(d.paginasConImagen, caso.etiqueta).toEqual([]);
       expect(d.unverifiableManualPages, caso.etiqueta).toEqual([]);
       expect(d.boxesPerPage.reduce((t, b) => t + b.count, 0), caso.etiqueta).toBeGreaterThan(0);
       expect(d.objetos.marcadores, caso.etiqueta).not.toBe('noExaminado');
@@ -197,6 +214,27 @@ describe('G1: estadoDelSello sobre el espacio completo de entradas', () => {
     const perfecto = datos({});
     expect(estadoDelSello(perfecto)).toBe('E5');
     expect(estadoDelSello(datos({ objetos: objetos('noExaminado') }))).toBe('E3');
+  });
+
+  // El falso verde mas comercial: un acta con texto normal y una FOTO del DNI pegada. El umbral
+  // del 60 % no la tocaba, la fila de cobertura la nombraba, y el sello seguia diciendo VERDE.
+  it('una página con una imagen, sea del tamaño que sea, degrada el sello', () => {
+    expect(estadoDelSello(datos({}))).toBe('E5');
+    expect(estadoDelSello(datos({ paginasConImagen: [0] }))).toBe('E3');
+  });
+
+  it('«solo imágenes» se distingue de las demás reservas', () => {
+    expect(reservaSoloPorImagenes(datos({ paginasConImagen: [0] }))).toBe(true);
+    expect(reservaSoloPorImagenes(datos({}))).toBe(false);
+    expect(
+      reservaSoloPorImagenes(datos({ paginasConImagen: [0], paginasSinCapaDeTexto: [1] })),
+    ).toBe(false);
+    expect(
+      reservaSoloPorImagenes(datos({ paginasConImagen: [0], unverifiableManualPages: [0] })),
+    ).toBe(false);
+    expect(
+      reservaSoloPorImagenes(datos({ paginasConImagen: [0], paginasImagenCompleta: [0] })),
+    ).toBe(false);
   });
 });
 

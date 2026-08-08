@@ -109,8 +109,10 @@ const INFORME_ES: CopiaInforme = {
     'La comprobación posterior al tachado no ha podido ejecutarse sobre este archivo. Nada de lo que sigue está confirmado.',
   lineaSinComprobacion: (totalPaginas) =>
     `Ninguna de las ${totalPaginas} páginas tiene capa de texto: no queda nada que releer, así que la comprobación automática no se ha podido aplicar a este documento. Los píxeles de las zonas que marcaste sí se han borrado. Revísalo visualmente, página a página.`,
-  lineaParcial: (comprobadas, total, restantes) =>
-    `Comprobadas ${comprobadas} de ${total} páginas; en las otras ${restantes} no hay texto que releer o el tachado no se ha podido confirmar. En lo comprobado no queda ningún dato de los patrones buscados. Detalle en «Cobertura».`,
+  lineaParcial: (releidas, total, conReserva) =>
+    `Se han releído ${releidas} de ${total} páginas y no queda en ellas ningún dato de los patrones buscados. En ${conReserva} página(s) la comprobación automática no llega a todo el contenido: las páginas sin capa de texto, las que llevan imágenes y los tachados sin confirmar constan una a una en «Cobertura». Revísalas visualmente.`,
+  lineaParcialSoloImagenes: (total, paginasConImagen) =>
+    `Se han releído las ${total} páginas del archivo entregado y sus metadatos, y en el texto no queda ningún dato de los patrones buscados. Lo que queda fuera es el contenido de ${paginasConImagen} página(s) con imágenes: esta herramienta no lee lo que hay dentro de una imagen, así que un dato fotografiado o escaneado no se detecta. Revísalas visualmente; constan en «Cobertura».`,
   lineaParcialSoloObjetos: (total) =>
     `Se han releído las ${total} páginas del archivo y sus metadatos, y no queda en ellas ningún dato de los patrones buscados. Pero este documento contiene objetos que la comprobación no examina: constan en «Objetos del archivo».`,
   clausulaMarcadores: 'Los marcadores del documento no se examinan.',
