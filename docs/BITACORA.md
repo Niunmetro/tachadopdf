@@ -13,6 +13,146 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-08 · integración · El ataque encontró 17 falsos verdes: nueve arreglos y un bug de destrucción de datos (rama `fix/imagenes-escondites-y-glifos`, fusionada)
+
+**Hecho:** un atacante interno ejecutó `fix/sello-por-estados` contra 14 baterías y consiguió **17
+falsos verdes reproducibles**, uno de ellos de punta a punta en el producto construido y servido en
+local. Esta ronda los cierra: nueve commits, cada uno con su demostración fail-to-pass (revirtiendo
+el fichero con `git stash push -- <ruta>` y pegando la salida roja). Suite **732 → 794**.
+Rama fusionada a `master` con `--no-ff`; **no desplegada** (publicar es del dueño).
+
+Lo arreglado, por orden de daño:
+
+1. **`24eabe8` — el escaneo del cliente volvía EN BLANCO. Destrucción de datos, y la introdujo la
+   rama anterior.** Una nómina escaneada (JPEG a página completa) con una caja manual encima salía
+   del tachado como una página blanca con una barra negra. La causa NO era `REDACT_IMAGE_PIXELS`
+   —comprobado aparte: borra los píxeles de la caja y respeta el resto de la imagen— sino la
+   combinación de dos cosas nuestras dentro de `stripMetadata`: el barrido por número de objeto
+   (que resuelve TODOS los objetos, commit `e14d037`) y guardar en esa misma pasada con
+   `garbage >= 2`. Matriz completa, en tinta (píxeles oscuros de la página):
+   `garbage:1`+objetos resueltos → 16.238 bytes / 2.402 de tinta (bien) · `garbage:2/3/4`+objetos
+   resueltos → 3.711 bytes / 1.776 (solo la barra) · `garbage:4` sin resolver → 2.402 (bien).
+   Arreglo: guardado en DOS pasadas (`garbage: 1`, y luego reabrir y compactar con `garbage: 4`
+   sin tocar ningún objeto). Se conservan las dos propiedades: el barrido y la recolección de
+   huérfanos.
+2. **`2ff03fa` — una imagen en la página deja de salir verde.** Un acta con texto normal y una foto
+   del DNI al 25 % del área salía «TACHADO VERIFICADO» con el DNI a tamaño de titular dentro.
+   `paginasConImagen` entra en `paginasConReserva`.
+3. **`fd91ca3` — capa opcional apagada.** El dato dibujado dentro de una capa `/OFF` no lo devuelve
+   `extractText`: ni se detectaba, ni se tachaba, ni se reencontraba. Ahora el motor **enciende las
+   capas al abrir**, así que se detecta, se tacha y se relee — y el archivo entregado conserva su
+   `/OFF`, de modo que se sigue viendo como su autor lo dejó.
+4. **`231c955` — lista negra donde hacía falta, y releer TODAS las cadenas.** Nueve escondites de
+   estructura (`/PageLabels`, nombre de capa, `/Names /Dests`, `/Names /JavaScript`,
+   `/OpenAction`, `/Threads`, clave propia de la página, `/T` del árbol de estructura,
+   `/Collection`) salían en verde con el dato dentro.
+5. **`9bc706d` — el `/ToUnicode` que miente.** Texto que se DIBUJA y no se puede releer: degrada el
+   sello y consta en el informe con su número de caracteres.
+6. **`79c583d` — el detector, con separador en cualquier posición** y con las rayas tipográficas.
+   Once formas de escribir el mismo DNI se le escapaban.
+7. **`4e7468c` — el comentario de `FREE_MAX_PAGES`**, que afirmaba un muro que no existe.
+8. **`ddc7de0` — el hueco de glifos se declaraba corto** (ver abajo).
+9. **`13a2508` — auditoría interna**: la coletilla de E3 nombraba solo los marcadores.
+
+**Decisiones y porqués:**
+
+- *La imagen degrada el sello aunque eso deje el verde casi inalcanzable.* Medido sobre 129 PDF
+  reales del disco: **111 (el 86 %) llevan alguna imagen**, casi siempre el logo del membrete. Así
+  que el estado normal del producto pasa a ser el ámbar. Se acepta a sabiendas, porque la
+  alternativa es afirmar «no queda ningún dato de los patrones buscados» sobre un acta con la foto
+  de un DNI dentro, y eso es una frase citable en una reclamación. **El coste real de esa decisión
+  no es el ámbar: es que un ámbar que siempre dice lo mismo se deja de leer.** Por eso, cuando la
+  ÚNICA reserva son imágenes, el sello lo dice con todas las letras («esta herramienta no lee lo
+  que hay dentro de una imagen, así que un dato fotografiado o escaneado no se detecta») en vez de
+  mandar al lector a la tabla. Descartado bajar el umbral (cualquier cifra es igual de arbitraria)
+  y descartado dejarlo en una fila de cobertura (una fila más en una tabla no cambia lo que el
+  sello AFIRMA).
+- *Contra un escondite no hay lista blanca que valga: siempre queda el sitio número diez.* Por eso
+  el arreglo de los nueve escondites tiene dos mitades y la importante es la segunda: **borrar** lo
+  que se sabe borrar sin romper el documento (para que el usuario tenga salida) y **releer TODAS
+  las cadenas de todos los objetos** (para que lo que no se sepa borrar bloquee en vez de firmar).
+  La única lista blanca que se acepta es la de claves estándar del diccionario de página, porque la
+  fija ISO 32000-1 y no la imaginación de quien esconde el dato.
+- *La relectura destapó un defecto que nadie sospechaba: **el adjunto no se iba**.*
+  `deleteEmbeddedFile` quita la entrada del árbol `/Names` y `getEmbeddedFiles()` devuelve lista
+  vacía —lo único que miraba el inventario—, pero el `/AF` del catálogo seguía apuntando al
+  Filespec, el recolector no podía tirarlo, y **el contenido del fichero adjunto se entregaba
+  dentro del PDF** mientras el informe decía «Ficheros adjuntos: eliminado del archivo». Es el
+  argumento entero a favor de las guardas amplias: no lo encontró una sospecha, lo encontró una
+  comprobación que no elegía dónde mirar.
+- *La capa apagada se enciende para leer, no se declara.* Comprobado que `setLayerVisible` es
+  estado de LECTURA de mupdf: el `/OFF` sigue en los bytes guardados. Se puede leer el contenido
+  oculto sin cambiar el aspecto del entregable. Coste asumido y dicho: la vista previa del editor
+  ahora enseña ese contenido — que es justo lo que hay que poder tachar.
+- *El umbral de «texto que no se puede releer» son cuatro glifos seguidos, y no es una cifra al
+  gusto:* el dato más corto que esta herramienta busca son seis caracteres (`a@b.co`), así que en
+  una racha más corta no cabe ninguno de los formatos declarados, y una viñeta de una fuente rara
+  no tiene por qué degradar el sello de nadie. Medido sobre 665 páginas reales: contando glifos
+  sueltos se marcarían 27 páginas; contando rachas de cuatro, 9.
+- *Ampliar el detector se aceptó por MEDIDA, no por intuición, y la primera medida era falsa.* El
+  primer banco dijo «132 hallazgos nuevos en 277 ficheros» y habría bastado para descartar el
+  cambio. Estaba roto: el detector antiguo reconstruido en el banco no veía ni un DNI canónico
+  (`\\d` dentro de una plantilla se había quedado en `d`). Con el banco arreglado —y con una
+  comprobación de sí mismo que aborta si el detector antiguo no ve dos DNI de control— el
+  resultado real es **2 hallazgos nuevos en 277 ficheros, los dos IBAN con los puntos en sitios
+  raros; es decir, aciertos**. Lo que impide que «separador en cualquier posición» sea un coladero
+  no es la forma, es el DÍGITO DE CONTROL, y por eso la referencia catastral se queda fuera.
+- *Un límite declarado a la baja es una promesa encubierta.* El informe decía del hueco de glifos
+  que «con ella se puede acotar qué cabía en él», y la guarda del propio repo ya medía que veinte
+  nombres de pila dan veinte anchuras DISTINTAS: dentro de una lista corta de candidatos, la
+  anchura identifica. Se dice así.
+- *El comentario de `FREE_MAX_PAGES` se corrige, el código no.* Decía que el tope de páginas «SÍ es
+  un muro robusto». No lo es: cuelga de `license.pro`, que enciende la verificación que corre en el
+  navegador del usuario. En un producto sin servidor no tiene arreglo técnico y no se pretende —el
+  compromiso de que ningún documento sale del navegador vale más que el candado—, pero un
+  comentario falso que sostiene una decisión de negocio sí hace daño.
+- *Lo que el atacante encontró y NO era cierto:* que `REDACT_IMAGE_PIXELS` destruyera la imagen.
+  Reproducido con un PDF bien formado: borra solo los píxeles de la caja. Su fixture escrito a mano
+  producía «format error: object is not a stream». El síntoma era real y grave; la causa, nuestra.
+  Se documenta porque el hallazgo correcto con la causa equivocada habría llevado a tocar el motor
+  de tachado en vez de la función que lo rompía.
+
+**Verificación (exit codes reales, nunca `| tail`):** `npx --no-install tsc --noEmit` exit 0 ·
+`npx --no-install vitest run` exit 0 (**794/794 en 63 ficheros**) · `npm run build` exit 0, en cada
+commit. Vocabulario prohibido sobre `dist/` (31 ficheros): sin coincidencias de
+`anonimiz|certific|rgpd garantizad|inteligencia artificial` ni de
+`anonymis|anonymiz|certified|certifies|gdpr compliant|artificial intelligence` (exit 1), y sin `IA`
+ni `AI` como palabra suelta excluyendo binarios (exit 1). Las dos únicas coincidencias de `AI` en
+todo `dist/` son secuencias de bytes dentro de `mupdf-wasm.wasm` y de `og-image.png`. La búsqueda
+se validó con un control positivo (`tachado` sí aparece) para que un cero no pueda venir de una
+búsqueda que no busca.
+
+**Medidas sobre documentos reales, hechas antes de aceptar cada cambio** (solo recuentos; no se
+imprimió ni contenido ni nombres de fichero):
+- Imágenes: 111 de 129 documentos llevan alguna. Es el coste del ámbar.
+- Relectura de todas las cadenas: **0 de 145 documentos bloquearían** por un residuo inventado.
+- Detector ampliado: **2 hallazgos nuevos en 277 documentos**, los dos plausibles aciertos.
+- Integridad tras el barrido nuevo: **105 documentos, 0 que no se abran, 0 que cambien de número de
+  páginas, 1 que pierde tinta** — y ese pierde exactamente lo que el producto promete quitar (tenía
+  anotaciones y campos de formulario, y el informe lo declara fila a fila).
+- Texto ilegible: 9 de 665 páginas con racha de cuatro, 4 documentos de 129.
+
+**Bloqueos / pendiente:**
+- **NO desplegado**, a propósito. Publicar es decisión del dueño.
+- **El informe bloqueado (E1) sigue sin llegar a nadie:** `canDownloadReport` exige `verify.clean`.
+  Sigue siendo una decisión de producto pendiente, no un olvido.
+- **El coste de rendimiento no se ha medido.** `processDocument` hace ahora una pasada más por
+  página (el dispositivo que cuenta glifos) sobre las que ya hacía. En documentos largos puede
+  notarse; nadie lo ha cronometrado.
+- **Residual conocido y no arreglado:** el patrón de teléfono ya admitía separador en cualquier
+  posición ANTES de esta ronda (`6 1 2 3 4 5 6 7 8` se detecta), y no lleva dígito de control con
+  el que descartar un falso positivo. No es efecto de este cambio y se deja constancia con un test.
+- **Residual conocido:** un dato partido por un salto de línea sigue bloqueando en vez de tacharse
+  solo (`searchText` no lo encuentra). Tiene salida: una caja manual.
+- Auditoría Codex externa: pendiente. El `auditor-interno` se ejecutó a mano, con su procedimiento,
+  porque en este entorno no hay herramienta para lanzar subagentes; encontró tres cosas, y las tres
+  están arregladas en `13a2508`.
+
+**Enlaces:** rama `fix/imagenes-escondites-y-glifos` (9 commits, de `24eabe8` a `13a2508`), fusionada
+a `master` con `--no-ff`. Incluye los 8 commits previos de `fix/sello-por-estados`.
+
+---
+
 ## 2026-08-08 · ingeniería · El sello del informe deja de mentir: cinco estados y alcance explícito (rama `fix/sello-por-estados`)
 
 **Hecho:** ocho arreglos, un commit cada uno, todos con un test que FALLA antes del cambio y pasa
