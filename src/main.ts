@@ -1,8 +1,10 @@
 import './estilo.css';
 import {
   canBatch,
+  canDownloadBatch,
   canProcess,
   performBatchDownload,
+  reportFileName,
   withinFreePageLimit,
   type AppState,
 } from './app';
@@ -15,10 +17,11 @@ import { patternsForPreset, type DocumentPreset } from './detect/presets';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
 import { findAllOccurrenceMarks } from './pdf/occurrences';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
-import type { BoxRect, PageMark, VerifyResult } from './types';
+import type { BoxRect, PageMark, ReportData, VerifyResult } from './types';
 import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
 import { buildPresetSelector } from './ui/preset-selector';
 import { mergeOccurrenceMarks } from './ui/tachar-todas';
+import { panelDeEntrega } from './ui/entrega';
 import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
 const RENDER_DPI = 96;
@@ -34,6 +37,7 @@ interface ProcessedFile {
   boxesPerPage: { page: number; count: number }[];
   cleanedBytes: Uint8Array;
   reportBytes: Uint8Array;
+  reportData: ReportData;
   verify: VerifyResult;
 }
 
@@ -313,6 +317,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   const filesContainer = el('div', { id: 'files' });
   const scannedWarning = el('p', { class: 'aviso-rojo' });
   const resultStatus = el('p', { class: 'aviso-rojo' });
+  const entregaContainer = el('div', { id: 'entrega' });
 
   const checkbox = el('input', { type: 'checkbox', id: 'checkbox-confirmado' });
   const checkboxLabel = el('label', { for: 'checkbox-confirmado' });
@@ -352,7 +357,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   confirmacion.append(checkbox, checkboxLabel);
   panelTrabajo.append(
     filaPreset, filaArchivo, pistaEjemplo, quotaStatus,
-    filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus,
+    filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus, entregaContainer,
   );
 
   // Panel 2: licencia y compra (separado del trabajo: no estorba a quien solo prueba).
@@ -377,7 +382,15 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   }
 
   function refreshDownloadButton(): void {
-    downloadButton.toggleAttribute('disabled', !(fileWorks.length > 0 && state.checkboxConfirmed));
+    // La casilla y el boton NO existen hasta que hay documento cargado. Ofrecer la declaracion
+    // legal mas cargada del producto —afirmar que has revisado el documento— cuando todavia no hay
+    // nada que revisar enseña a marcarla por inercia; y un boton deshabilitado era el elemento de
+    // mas peso visual de la pantalla inicial mientras la accion real (cargar un PDF) era el
+    // control menos diseñado de la pagina.
+    const hayDocumento = fileWorks.length > 0;
+    confirmacion.hidden = !hayDocumento;
+    downloadButton.hidden = !hayDocumento;
+    downloadButton.toggleAttribute('disabled', !(hayDocumento && state.checkboxConfirmed));
     scannedWarning.textContent =
       state.scannedPages.length > 0
         ? copia.avisoEscaneadas(state.scannedPages.map((p) => p + 1).join(', '))
@@ -409,6 +422,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   ): Promise<void> {
     fileWorks = [];
     filesContainer.innerHTML = '';
+    entregaContainer.innerHTML = '';
     resultStatus.textContent = '';
     state.scannedPages = [];
     checkbox.checked = false;
@@ -534,6 +548,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
           boxesPerPage: result.boxesPerPage,
           cleanedBytes: result.cleanedBytes,
           reportBytes: result.reportBytes,
+          reportData: result.reportData,
           verify: result.verify,
         });
         scannedUnion = unionSorted(scannedUnion, result.scannedPages);
@@ -545,7 +560,16 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
         : copia.residuosEnLote;
       refreshDownloadButton();
 
+      const entregado = canDownloadBatch(processedFiles, state.checkboxConfirmed);
       performBatchDownload(processedFiles, state.checkboxConfirmed, downloadBytes, copia.sufijoInforme);
+      entregaContainer.innerHTML = '';
+      if (entregado) {
+        for (const f of processedFiles) {
+          entregaContainer.appendChild(
+            panelDeEntrega(f, contenido.informe, reportFileName(f.fileName, copia.sufijoInforme)),
+          );
+        }
+      }
     })();
   });
 

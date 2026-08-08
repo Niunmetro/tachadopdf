@@ -40,6 +40,15 @@ export interface ProcessResult {
   visualReviewPages: number[];
   boxesPerPage: { page: number; count: number }[];
   unverifiableManualPages: number[];
+  /**
+   * Los MISMOS datos con los que se dibujo el informe. Se exponen para que la interfaz pueda
+   * enseñar el veredicto que acaba de emitirse sin recalcularlo: el sello de cinco estados no
+   * aparecia en ningun sitio de la pantalla, solo dentro de un PDF que hay que abrir en otro
+   * programa, asi que un comprador que espera verde se enteraba del ambar fuera del producto.
+   * Devolver el dato en vez de una segunda redaccion es lo que impide que las dos superficies
+   * deriven.
+   */
+  reportData: ReportData;
 }
 
 /**
@@ -165,6 +174,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
     fileName: input.fileName,
     cleanedBytes,
     reportBytes,
+    reportData,
     verify,
     scannedPages,
     visualReviewPages,
