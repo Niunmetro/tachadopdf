@@ -95,6 +95,34 @@ export function paginasReleidas(data: ReportData): number {
   return Math.max(0, data.totalPaginas - paginasSinTexto(data));
 }
 
+/**
+ * COBERTURA COMPROBADA: la proporcion de paginas sobre las que la comprobacion llego a TODO el
+ * contenido. Es lo que MIDE el medidor del sello ambar, que hasta ahora salia medio lleno
+ * siempre: un dibujo con forma de medidor que no medía nada, y que dibujaba media cobertura
+ * sobre un documento cuya cobertura real era cero.
+ *
+ * Numerador y denominador son los MISMOS numeros que ya imprime el sello y que ya enumera la
+ * tabla «Cobertura»: el total de paginas menos las que llevan alguna reserva — exactamente las
+ * que el sello cuenta («En N pagina(s) la comprobacion automatica no llega a todo el contenido»,
+ * «lo que queda fuera es el contenido de N pagina(s) con imagenes») y las que la tabla destaca en
+ * ambar. El dibujo y el texto no pueden decir cosas distintas.
+ *
+ * NO es «paginas releidas / total», que es la otra cifra del sello, por dos razones:
+ *   1. Una pagina releida con una foto del DNI pegada dentro SI se releyo, pero la comprobacion
+ *      no alcanza lo que hay en la imagen. Contarla como cubierta es el mismo falso verde que
+ *      `paginasConReserva` existe para evitar.
+ *   2. En el caso corriente —el 86 % de los documentos reales: un logo en el membrete— todas las
+ *      paginas se releen, asi que esa medida marcaria el maximo justo en el estado que por
+ *      definicion no esta completo, y los dos informes parciales seguirian siendo el mismo dibujo.
+ * `sinReserva <= releidas` siempre, porque una pagina sin capa de texto ya lleva reserva por
+ * serlo: de las dos medidas, esta es la conservadora.
+ */
+export function coberturaComprobada(data: ReportData): number {
+  if (data.totalPaginas <= 0) return 0;
+  const sinReserva = data.totalPaginas - paginasConReserva(data).length;
+  return Math.min(1, Math.max(0, sinReserva / data.totalPaginas));
+}
+
 export function zonasTachadas(data: ReportData): number {
   return data.boxesPerPage.reduce((total, entrada) => total + entrada.count, 0);
 }

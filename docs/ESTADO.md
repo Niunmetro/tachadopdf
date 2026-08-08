@@ -12,11 +12,15 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **835/835 en 68 ficheros** en `master`. Verificación: `npm ci` ·
+- Suite: **842/842 en 69 ficheros** en `master`. Verificación: `npm ci` ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
   Primera pasada de DISEÑO: hasta esa fecha no se había tocado un solo píxel del producto. Ver
   §«Diseño del informe» y §«Diseño de la aplicación y de la web».
+- ✅ **`diseno/medidor-de-cobertura-que-mide` FUSIONADA en master** (2026-08-08). El medidor del
+  sello ámbar tenía forma de medidor y salía medio lleno siempre: los dos informes parciales de
+  ejemplo (3 de 6 páginas comprobadas del todo, y 0 de 4) dibujaban la misma media luna. Ahora el
+  relleno es la proporción real. Ver §«Diseño del informe».
 - ✅ **`fix/sello-por-estados` y `fix/imagenes-escondites-y-glifos` FUSIONADAS en master** (8 + 9
   commits). La primera rehízo el sello; la segunda cerró los 17 falsos verdes que un ataque interno
   consiguió contra ella, **incluido un bug de destrucción de datos que la primera introdujo** (el
@@ -67,8 +71,24 @@
 - **E1 es la única banda maciza** (roja con texto en blanco). En escala de grises queda en ~75
   frente a ~240 de las otras cuatro: la única alarma del producto se distingue SIN color. E2 sigue
   en la familia roja porque `CLAUDE.md` línea 10 lo exige; lo que cambia es que una está invertida.
-- **El ámbar lleva un medidor de cobertura, no un signo de admiración.** Los cinco iconos se
-  dibujan con primitivas de `pdf-lib`: nada remoto, nada descargado.
+- **El ámbar lleva un medidor de cobertura, no un signo de admiración. Y el medidor MIDE.** Los
+  cinco iconos se dibujan con primitivas de `pdf-lib`: nada remoto, nada descargado. El disco del
+  ámbar se llena en la proporción `coberturaComprobada` = **páginas sin ninguna reserva / páginas
+  del documento**, que son los mismos números que ya imprime el sello y que ya destaca la tabla
+  «Cobertura»: el dibujo y el texto no pueden decir cosas distintas. **NO es «releídas / total»**:
+  una página releída con una foto del DNI dentro sí se releyó, pero la comprobación no alcanza la
+  imagen, y en el caso corriente (un logo en el membrete) esa medida marcaría el máximo justo en
+  el estado que por definición no está completo. De las dos, la elegida es la conservadora
+  (`sinReserva <= releidas` siempre).
+- **Los dos extremos del medidor están resueltos a propósito, no por descuido.** Cobertura CERO:
+  disco vacío sobre una PISTA blanca, o sea un recipiente vacío y no un icono ausente; y cero es
+  cero, sin suelo de relleno que finja una pizca de cobertura. Cobertura CIEN: la línea de lleno
+  total está al **80 % del diámetro** y el casquete de arriba nunca se pinta — en E3 siempre queda
+  algo pendiente (el 100 % se da cuando lo único pendiente es un objeto del archivo), un disco
+  lleno junto a «COMPROBACIÓN PARCIAL» insinuaría el verde que no se ha dado, y un círculo relleno
+  hasta el borde con orla empieza a leerse como un sello de conformidad, que está prohibido también
+  cuando lo dice el DIBUJO. La escala es lineal y monótona: **el medidor nunca dibuja más cobertura
+  de la que hay.** Lo mide `report/medidor` (G18), en color y en gris.
 - **Cuatro canales por estado, no uno:** relleno de banda, tinta dentro, acento sobre blanco y
   forma del icono. Los rótulos y las formas son lo que sobrevive a la fotocopia y al daltonismo.
 - **Los puntos de patrón tienen TRES estados**: macizo verde = comprobado y no había · anillo hueco
@@ -123,6 +143,10 @@
   verde aunque una etiqueta se dibuje encima de su valor.
 - `report/vinetas` (rama) — mide TINTA sobre el informe rasterizado: **cero píxeles del verde de
   viñeta** cuando no hubo nada que releer. Un test de texto no ve esto y por eso duró tanto.
+- `report/medidor` (rama) — mide el NIVEL DE LLENADO del disco sobre el informe rasterizado:
+  localiza el disco por su aro, busca la línea de llenado y la ata a la proporción real, en color
+  **y en escala de grises**. Cubre los dos extremos (cero se dibuja como recipiente vacío; cien no
+  llena el disco) y se pone rojo si alguien vuelve a fijar el relleno a la mitad.
 - `report/cobertura-destacada` (rama) — mide la FUENTE de cada cifra sobre el PDF renderizado: la
   de una fila con reserva va en negrita y la de inventario no. A cero no se destaca.
 - `report/paginacion` (rama) — ninguna hoja termina en un encabezado ni empieza por una fila
@@ -162,8 +186,16 @@
    respuesta del tipo «¿por qué mi informe dice COMPROBACIÓN PARCIAL?» que explique que el ámbar
    es el estado honesto de casi cualquier documento con un logo, y que el verde está reservado a
    los de solo texto.
-0.b **Tres cosas del diseño que cambian lo que el producto AFIRMA y por eso NO se han tocado.**
+0.b **Cuatro cosas del diseño que cambian lo que el producto AFIRMA y por eso NO se han tocado.**
    Ruta sensible: las decide el dueño.
+   - *La cifra junto al medidor de cobertura.* El disco del sello ámbar ya se llena en la
+     proporción real, y un rótulo pequeño al lado —«3 de 6 páginas comprobadas del todo»— lo
+     volvería exacto en vez de aproximado, sobre todo en el caso corriente, donde el medidor sale
+     VACÍO mientras la tabla dice «Páginas releídas 4» (las dos cosas son ciertas: se releyó el
+     texto de las cuatro y en ninguna se llegó a todo el contenido, porque todas llevan imágenes).
+     Pero es **texto nuevo que afirma algo**, y afirma la interpretación de una cifra: eso es ruta
+     sensible. Hoy la cifra vive en la línea del sello y en la tabla «Cobertura», que es donde no
+     hace falta inventar nada. Decisión: ¿se pone la cifra al lado del icono y con qué palabras?
    - *Rótulo propio para las páginas pendientes dentro del sello.* Hoy el sello ámbar delega
      («constan en «Cobertura»») y la tabla ya destaca la fila. Subir los números de página al sello
      con una frase del tipo «Revisar a ojo: páginas 1, 2, 3, 4» sería la lectura más directa
@@ -180,6 +212,22 @@
    - *Rótulos para los dos ficheros del acuse de entrega.* El panel los nombra pero no explica cuál
      es cuál («el PDF que entregas» / «el informe que archivas» sería texto nuevo en dos idiomas).
      De momento solo se listan los nombres, que es lo que no requiere inventar nada.
+0.c **El sello del caso «solo objetos» dice la misma frase DOS VECES. Encontrado mirando, no
+   arreglado: es texto del informe.** Cuando el ámbar se debe únicamente a un objeto no examinado
+   (ninguna página con reserva), el sello imprime «Pero este documento contiene objetos que la
+   comprobación no examina: constan en «Objetos del archivo». **Además, este documento contiene
+   objetos que la comprobación no examina: constan en «Objetos del archivo».**» — la misma oración
+   repetida, siempre, en ese caso.
+   - *Causa, verificada en `lineaDelSello` (`src/report/report.ts`):* la rama `reservas === 0` usa
+     `copia.lineaParcialSoloObjetos`, que **ya** nombra los objetos, y después se le añade
+     `copia.clausulaObjetosSinExaminar` porque `hayObjetoNoExaminado(data)` es cierto. Y en esa
+     rama es cierto SIEMPRE: con cero reservas de página, la única forma de estar en E3 es tener un
+     objeto sin examinar (`estadoDelSello`). O sea que la duplicación no es un caso raro: es el
+     caso entero.
+   - *Arreglo, de una línea:* no añadir la coletilla cuando la base ya es `lineaParcialSoloObjetos`.
+     No cambia lo que el informe AFIRMA (la frase sigue estando, una vez), pero toca el texto del
+     sello, que es ruta sensible, y hay tests de literales congelados que habría que mover con él.
+     **Decisión suya:** ¿se quita la repetición tal cual, o se aprovecha para redactar esa línea?
 
 1. **Precio y moneda en inglés.** `config.ts` tiene un único `PRECIO_PRO = '59 €'`. La web inglesa
    muestra 59 € y pago único. ¿Se queda así o pasa a $/£?
