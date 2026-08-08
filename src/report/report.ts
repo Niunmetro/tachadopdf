@@ -26,31 +26,68 @@ const HOLGURA = 8;
 
 // Paleta sobria de despacho: tinta oscura, gris de etiqueta, línea fina, acento cielo, verde/rojo
 // de veredicto. El objetivo es que parezca un documento formal, no un volcado de texto.
+//
+// Las tintas de estado se OSCURECIERON manteniendo el matiz. Medido sobre el PDF rasterizado, el
+// rótulo del sello daba 3,68:1 en ámbar, 4,06 en gris y 4,16 en verde sobre sus propios rellenos:
+// por debajo del 4,5 que necesita un texto de ese cuerpo. El único que pasaba era el rojo, o sea
+// que el esfuerzo de contraste se lo llevaba el estado que casi nadie ve y el que se lee el 86 %
+// de las veces era el más difícil de leer del documento. Los cuatro pares nuevos dan 5,8-7,0:1.
 const INK = rgb(0.098, 0.129, 0.196);
-const MUTED = rgb(0.42, 0.47, 0.55);
+const MUTED = rgb(0.29, 0.333, 0.408);
 const SOFT_INK = rgb(0.28, 0.33, 0.4);
 const LINE = rgb(0.86, 0.89, 0.93);
 const BRAND = rgb(0.055, 0.086, 0.161);
 const ACCENT = rgb(0.02, 0.6, 0.86);
 const OK = rgb(0.086, 0.53, 0.32);
-const OK_BG = rgb(0.925, 0.976, 0.945);
 const BAD = rgb(0.77, 0.14, 0.14);
-const BAD_BG = rgb(0.988, 0.929, 0.929);
 const AMBER = rgb(0.71, 0.44, 0.03);
-const AMBER_BG = rgb(0.996, 0.965, 0.886);
-const GREY_BG = rgb(0.945, 0.953, 0.965);
 const SOFT_BG = rgb(0.969, 0.98, 0.988);
 const WHITE = rgb(1, 1, 1);
 const BAND_SUB = rgb(0.72, 0.78, 0.87);
 
-// Un color y un icono por estado. E3 va en ambar y no en rojo, pero las viñetas por pagina de
-// las escaneadas siguen imprimiendose en rojo: lo que se atenua es el agregado, no el aviso.
-const ESTILO_SELLO: Record<EstadoSello, { fg: Color; bg: Color; icono: 'aspa' | 'aspaHueca' | 'admiracion' | 'guion' | 'check' }> = {
-  E1: { fg: BAD, bg: BAD_BG, icono: 'aspa' },
-  E2: { fg: BAD, bg: BAD_BG, icono: 'aspaHueca' },
-  E3: { fg: AMBER, bg: AMBER_BG, icono: 'admiracion' },
-  E4: { fg: MUTED, bg: GREY_BG, icono: 'guion' },
-  E5: { fg: OK, bg: OK_BG, icono: 'check' },
+/**
+ * Un estado del sello se dibuja con CUATRO decisiones, no con un color:
+ *
+ * - `banda`  el relleno de la caja del veredicto,
+ * - `tinta`  el texto DENTRO de esa caja,
+ * - `acento` el mismo estado sobre papel blanco (barra lateral, pie de página),
+ * - `icono`  una forma distinta por estado.
+ *
+ * Por qué son cuatro y no dos: convertidos a escala de grises, los cinco rellenos antiguos caben
+ * en SEIS niveles de 255 — el informe se imprime, se fotocopia y se archiva, y en cuanto sale de
+ * la pantalla los cinco sellos eran la misma caja gris. E1 pasa a banda roja maciza con texto en
+ * blanco: en gris queda en ~75 frente a ~240 de los demás, o sea que la única alarma del producto
+ * se distingue del resto SIN color. El resto se distinguen por la forma del icono y el rótulo.
+ *
+ * E1 y E2 comparten familia roja a propósito: la regla de producto dice que las páginas sin capa
+ * de texto SIEMPRE se advierten en rojo. Lo que se corrige es que antes eran el MISMO rojo con el
+ * mismo relleno y solo cambiaba el relleno del aspa; ahora una está invertida y la otra no.
+ */
+interface EstiloSello {
+  banda: Color;
+  tinta: Color;
+  acento: Color;
+  barra: Color;
+  icono: 'aspa' | 'aspaHueca' | 'cobertura' | 'guion' | 'check';
+}
+
+const ROJO_BANDA = rgb(0.722, 0.11, 0.11);
+const ROJO_TINTA = rgb(0.608, 0.11, 0.11);
+const ROJO_BARRA = rgb(0.451, 0.055, 0.055);
+const ROJO_BG = rgb(0.984, 0.914, 0.914);
+const AMBAR_TINTA = rgb(0.486, 0.29, 0.012);
+const AMBAR_BG = rgb(0.984, 0.941, 0.824);
+const GRIS_TINTA = rgb(0.29, 0.333, 0.408);
+const GRIS_BG = rgb(0.902, 0.918, 0.937);
+const VERDE_TINTA = rgb(0.059, 0.42, 0.255);
+const VERDE_BG = rgb(0.89, 0.961, 0.918);
+
+const ESTILO_SELLO: Record<EstadoSello, EstiloSello> = {
+  E1: { banda: ROJO_BANDA, tinta: WHITE, acento: ROJO_TINTA, barra: ROJO_BARRA, icono: 'aspa' },
+  E2: { banda: ROJO_BG, tinta: ROJO_TINTA, acento: ROJO_TINTA, barra: ROJO_TINTA, icono: 'aspaHueca' },
+  E3: { banda: AMBAR_BG, tinta: AMBAR_TINTA, acento: AMBAR_TINTA, barra: AMBAR_TINTA, icono: 'cobertura' },
+  E4: { banda: GRIS_BG, tinta: GRIS_TINTA, acento: GRIS_TINTA, barra: GRIS_TINTA, icono: 'guion' },
+  E5: { banda: VERDE_BG, tinta: VERDE_TINTA, acento: VERDE_TINTA, barra: VERDE_TINTA, icono: 'check' },
 };
 
 // pdf-lib usa fuentes estándar con codificación WinAnsi. Un nombre de fichero con emoji o CJK
@@ -193,33 +230,47 @@ function cifraConPaginas(copia: CopiaInforme, paginas: number[]): string {
   return copia.conPaginas(paginas.length, paginas.map((p) => p + 1).join(', '));
 }
 
-function dibujarIcono(
-  page: PDFPage,
-  icono: (typeof ESTILO_SELLO)[EstadoSello]['icono'],
-  cx: number,
-  cy: number,
-  fg: Color,
-  bg: Color,
-): void {
+/**
+ * Los cinco iconos, dibujados con primitivas de pdf-lib (ni fuente de iconos ni SVG: la CSP del
+ * producto no admite nada remoto y un informe no puede depender de un recurso que no viaja dentro).
+ *
+ * El ámbar ya NO es un signo de admiración. El disco con «!» es el glifo de alerta de cualquier
+ * cuadro de error del sistema, y desde que CUALQUIER imagen degrada el sello, el ámbar es el
+ * resultado NORMAL: 111 de 129 PDF reales llevan alguna. Un cartel de error como respuesta
+ * habitual o se ignora o espanta, y las dos cosas son peores que decir la verdad. El icono nuevo
+ * es un MEDIDOR DE COBERTURA: un círculo medio lleno. No tranquiliza ni alarma, cuantifica — y
+ * encaja con la familia entera leída como cobertura: lleno (✓), medio (parcial), vacío (⊗),
+ * ninguna (–), fallida (✕).
+ *
+ * El medio disco se construye sin recortes: disco macizo, encima un rectángulo del color de la
+ * BANDA que borra la mitad de arriba (sus esquinas caen fuera del círculo, sobre la banda, así
+ * que son invisibles) y por último el contorno del círculo entero.
+ */
+function dibujarIcono(page: PDFPage, icono: EstiloSello['icono'], cx: number, cy: number, e: EstiloSello): void {
+  const R = 13;
   if (icono === 'aspaHueca') {
-    page.drawEllipse({ x: cx, y: cy, xScale: 11, yScale: 11, color: fg });
-    page.drawEllipse({ x: cx, y: cy, xScale: 8.6, yScale: 8.6, color: bg });
-    page.drawLine({ start: { x: cx - 4, y: cy - 4 }, end: { x: cx + 4, y: cy + 4 }, thickness: 1.8, color: fg });
-    page.drawLine({ start: { x: cx - 4, y: cy + 4 }, end: { x: cx + 4, y: cy - 4 }, thickness: 1.8, color: fg });
+    page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: e.tinta });
+    page.drawEllipse({ x: cx, y: cy, xScale: R - 2.6, yScale: R - 2.6, color: e.banda });
+    page.drawLine({ start: { x: cx - 4.6, y: cy - 4.6 }, end: { x: cx + 4.6, y: cy + 4.6 }, thickness: 2, color: e.tinta });
+    page.drawLine({ start: { x: cx - 4.6, y: cy + 4.6 }, end: { x: cx + 4.6, y: cy - 4.6 }, thickness: 2, color: e.tinta });
     return;
   }
-  page.drawEllipse({ x: cx, y: cy, xScale: 11, yScale: 11, color: fg });
+  if (icono === 'cobertura') {
+    page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: e.tinta });
+    page.drawRectangle({ x: cx - R - 1, y: cy, width: (R + 1) * 2, height: R + 1, color: e.banda });
+    page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, borderColor: e.tinta, borderWidth: 2.2 });
+    page.drawLine({ start: { x: cx - R, y: cy }, end: { x: cx + R, y: cy }, thickness: 2.2, color: e.tinta });
+    return;
+  }
+  page.drawEllipse({ x: cx, y: cy, xScale: R, yScale: R, color: icono === 'aspa' ? WHITE : e.tinta });
   if (icono === 'check') {
-    page.drawLine({ start: { x: cx - 5, y: cy }, end: { x: cx - 1.5, y: cy - 4 }, thickness: 1.8, color: WHITE });
-    page.drawLine({ start: { x: cx - 1.5, y: cy - 4 }, end: { x: cx + 5.5, y: cy + 4.5 }, thickness: 1.8, color: WHITE });
+    page.drawLine({ start: { x: cx - 6, y: cy }, end: { x: cx - 1.8, y: cy - 4.8 }, thickness: 2.2, color: e.banda });
+    page.drawLine({ start: { x: cx - 1.8, y: cy - 4.8 }, end: { x: cx + 6.5, y: cy + 5.4 }, thickness: 2.2, color: e.banda });
   } else if (icono === 'aspa') {
-    page.drawLine({ start: { x: cx - 4, y: cy - 4 }, end: { x: cx + 4, y: cy + 4 }, thickness: 1.8, color: WHITE });
-    page.drawLine({ start: { x: cx - 4, y: cy + 4 }, end: { x: cx + 4, y: cy - 4 }, thickness: 1.8, color: WHITE });
-  } else if (icono === 'admiracion') {
-    page.drawLine({ start: { x: cx, y: cy + 5.5 }, end: { x: cx, y: cy - 1 }, thickness: 2, color: WHITE });
-    page.drawEllipse({ x: cx, y: cy - 4.5, xScale: 1.3, yScale: 1.3, color: WHITE });
+    page.drawLine({ start: { x: cx - 4.8, y: cy - 4.8 }, end: { x: cx + 4.8, y: cy + 4.8 }, thickness: 2.4, color: e.banda });
+    page.drawLine({ start: { x: cx - 4.8, y: cy + 4.8 }, end: { x: cx + 4.8, y: cy - 4.8 }, thickness: 2.4, color: e.banda });
   } else {
-    page.drawLine({ start: { x: cx - 5, y: cy }, end: { x: cx + 5, y: cy }, thickness: 2, color: WHITE });
+    page.drawLine({ start: { x: cx - 6, y: cy }, end: { x: cx + 6, y: cy }, thickness: 2.4, color: e.banda });
   }
 }
 
@@ -239,8 +290,10 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
     page = doc.addPage(PAGE);
     y = PAGE[1] - MARGIN;
   };
+  // El pie creció (filete de estado + rótulo + línea de marca), así que el suelo del cuerpo sube.
+  const SUELO = 84;
   const ensure = (needed: number): void => {
-    if (y - needed < 72) newPage();
+    if (y - needed < SUELO) newPage();
   };
 
   const heading = (title: string): void => {
@@ -304,38 +357,55 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   };
 
   // --- cabecera de marca ---------------------------------------------------
-  const bandH = 84;
+  // La banda medía 84 pt y su logotipo era el texto más grande del papel: la marca (38 px de altura
+  // de mayúscula a 180 dpi) por encima del título genérico (27) y este por encima del veredicto
+  // (25). Los dos elementos mayores de la página eran justamente los dos IDÉNTICOS en los cinco
+  // estados, así que el ojo entraba por donde no hay respuesta. La banda baja a 50 pt y la marca
+  // al cuerpo de un pie: quien abre el informe hace UNA pregunta y no es de quién es la herramienta.
+  const bandH = 50;
   page.drawRectangle({ x: 0, y: PAGE[1] - bandH, width: PAGE[0], height: bandH, color: BRAND });
   page.drawRectangle({ x: 0, y: PAGE[1] - bandH - 3, width: PAGE[0], height: 3, color: ACCENT });
-  write('TachadoPDF', MARGIN, PAGE[1] - 46, 21, bold, WHITE);
-  write(copia.subtituloBanda, MARGIN, PAGE[1] - 65, 9.5, font, BAND_SUB);
+  write('TachadoPDF', MARGIN, PAGE[1] - 22, 12, bold, WHITE);
+  write(copia.subtituloBanda, MARGIN, PAGE[1] - 38, 8, font, BAND_SUB);
   const domain = 'tachadopdf.com';
-  write(domain, PAGE[0] - MARGIN - font.widthOfTextAtSize(domain, 9.5), PAGE[1] - 46, 9.5, font, BAND_SUB);
-  y = PAGE[1] - bandH - 24;
+  write(domain, PAGE[0] - MARGIN - font.widthOfTextAtSize(domain, 8), PAGE[1] - 22, 8, font, BAND_SUB);
+  y = PAGE[1] - bandH - 22;
 
-  // --- título y referencia -------------------------------------------------
-  write(copia.titulo, MARGIN, y - 15, 15, bold, INK);
-  y -= 24;
+  // --- antetítulo y referencia ---------------------------------------------
+  // El título deja de ser un titular y pasa a antetítulo: nombra el género del documento, no su
+  // resultado. La referencia se va a su derecha, en cuerpo de nota. Los dos siguen imprimiéndose
+  // palabra por palabra; lo que cambia es quién manda en la página.
   const ref = `TP-${data.date.replace(/-/g, '')}-${data.sha256.slice(0, 8).toUpperCase()}`;
-  write(copia.referencia(ref, data.date), MARGIN, y - 9.5, 9.5, font, MUTED);
-  y -= 22;
-  page.drawRectangle({ x: MARGIN, y, width: CONTENT_W, height: 0.8, color: LINE });
+  // En su caja original, NO en mayúsculas: el título se afirma como literal congelado en
+  // `report.test.ts` y una versalita de adorno lo haría desaparecer del texto extraído. La
+  // jerarquía se consigue con el cuerpo y el color, que es lo que se puede cambiar sin mentir.
+  write(copia.titulo, MARGIN, y - 9, 9.5, bold, MUTED);
+  const refTexto = safe(copia.referencia(ref, data.date));
+  write(refTexto, PAGE[0] - MARGIN - font.widthOfTextAtSize(refTexto, 8.5), y - 9, 8.5, font, MUTED);
   y -= 16;
+  page.drawRectangle({ x: MARGIN, y, width: CONTENT_W, height: 0.8, color: LINE });
+  y -= 14;
 
   // --- sello de resultado --------------------------------------------------
   // El sello NO es `clean ? verde : rojo`. Es funcion de (cobertura ∧ resultado): un resultado
   // limpio sobre una cobertura del 0 % (documento escaneado) no es verde, y un documento del que
   // no se elimino nada tampoco. La escalera vive en `./estado.ts` y es la unica fuente.
+  //
+  // El rótulo pasa a 19 pt: es el texto mayor de la página, por encima de la marca (12) y del
+  // antetítulo (9,5). Es el único elemento cuyo contenido cambia según el resultado, así que es
+  // el único que merece entrar primero por el ojo.
   const estado = estadoDelSello(data);
   const estilo = ESTILO_SELLO[estado];
-  const lineasSello = wrapText(lineaDelSello(estado, data, copia), font, 9.3, CONTENT_W - 68);
-  const badgeH = Math.max(58, 57 + (lineasSello.length - 1) * 11.5);
-  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: estilo.bg });
-  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 5, height: badgeH, color: estilo.fg });
-  dibujarIcono(page, estilo.icono, MARGIN + 30, y - 24, estilo.fg, estilo.bg);
-  write(copia.sellos[estado], MARGIN + 54, y - 28, 13, bold, estilo.fg);
-  lineasSello.forEach((ln, i) => write(ln, MARGIN + 54, y - 46 - i * 11.5, 9.3, font, SOFT_INK));
-  y -= badgeH + 13;
+  const SELLO_X = MARGIN + 62;
+  const lineasSello = wrapText(lineaDelSello(estado, data, copia), font, 9.3, PAGE[0] - MARGIN - SELLO_X);
+  const badgeH = 56 + lineasSello.length * 12 + 8;
+  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: CONTENT_W, height: badgeH, color: estilo.banda });
+  page.drawRectangle({ x: MARGIN, y: y - badgeH, width: 6, height: badgeH, color: estilo.barra });
+  dibujarIcono(page, estilo.icono, MARGIN + 34, y - 30, estilo);
+  write(copia.sellos[estado], SELLO_X, y - 37, 19, bold, estilo.tinta);
+  const tintaLineas = estado === 'E1' ? WHITE : SOFT_INK;
+  lineasSello.forEach((ln, i) => write(ln, SELLO_X, y - 56 - i * 12, 9.3, font, tintaLineas));
+  y -= badgeH + 15;
 
   // --- datos del documento -------------------------------------------------
   heading(copia.encabezadoDatos);
@@ -462,18 +532,25 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   }
 
   // --- pie en todas las páginas -------------------------------------------
+  // EL VEREDICTO VIAJA CON EL PAPEL. Medido antes de este cambio: la página 2 del informe que dice
+  // TACHADO NO SUPERADO y la página 2 del que dice TACHADO VERIFICADO eran el MISMO fichero de
+  // píxeles, byte a byte. El veredicto existía solo en la mitad superior de la página 1, así que
+  // quien imprime y grapa, quien archiva, quien abre por la última hoja o quien reenvía una sola
+  // página tenía delante un documento sin resultado — incluido el caso en que esa página suelta
+  // pertenece a un informe que dice «no entregues este archivo».
+  //
+  // El pie ya existía y estaba vacío de información. Ahora lleva el filete teñido con el color del
+  // estado y su rótulo COMPLETO. Completo y no abreviado a propósito: la regla G8 exige que ningún
+  // rótulo sea subcadena de otro, y un «PARCIAL» a secas la rompería y con ella los tests que
+  // impiden que una página escaneada salga verde.
   const allPages: PDFPage[] = doc.getPages();
   allPages.forEach((p, i) => {
-    p.drawRectangle({ x: MARGIN, y: 58, width: CONTENT_W, height: 0.8, color: LINE });
-    p.drawText(safe(copia.pie), {
-      x: MARGIN,
-      y: 44,
-      size: 8,
-      font,
-      color: MUTED,
-    });
+    p.drawRectangle({ x: MARGIN, y: 66, width: CONTENT_W, height: 2, color: estilo.barra });
+    p.drawEllipse({ x: MARGIN + 3.4, y: 53.4, xScale: 3.4, yScale: 3.4, color: estilo.acento });
+    p.drawText(safe(copia.sellos[estado]), { x: MARGIN + 13, y: 50, size: 8, font: bold, color: estilo.acento });
     const pn = copia.numeroPagina(i + 1, allPages.length);
-    p.drawText(safe(pn), { x: PAGE[0] - MARGIN - font.widthOfTextAtSize(pn, 8), y: 44, size: 8, font, color: MUTED });
+    p.drawText(safe(pn), { x: PAGE[0] - MARGIN - font.widthOfTextAtSize(pn, 8), y: 50, size: 8, font, color: MUTED });
+    p.drawText(safe(copia.pie), { x: MARGIN, y: 36, size: 7.6, font, color: MUTED });
   });
 
   // --- marca de agua DEMO (solo versión gratuita) --------------------------
