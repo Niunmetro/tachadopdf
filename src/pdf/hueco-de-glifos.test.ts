@@ -113,7 +113,10 @@ describe('el informe declara el rastro, con qué hacer al respecto', () => {
 
     expect(texto).toContain('El texto se elimina del archivo, no se tapa');
     expect(texto).toContain('Lo que permanece es el hueco que ocupaba');
-    expect(texto).toContain('su anchura sigue indicando cuánto texto había ahí');
+    expect(texto).toContain('su anchura se puede medir con exactitud');
+    // El informe NO puede quedarse corto: el banco de arriba mide que veinte nombres dan veinte
+    // anchuras distintas, asi que decir solo «se puede acotar» seria subestimar la fuga.
+    expect(texto).toContain('puede bastar para distinguir cuál era');
     expect(texto).toContain('conviértelo a imagen antes de entregarlo');
   });
 });

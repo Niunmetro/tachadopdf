@@ -283,7 +283,8 @@ describe('G10: el alcance enumera, ítem por ítem, lo que NO se ha buscado', ()
     'sin capa de texto',
     // el límite conocido que no tiene arreglo sin rehacer el motor: se DECLARA
     'el hueco que ocupaba',
-    'su anchura sigue indicando cuánto texto había ahí',
+    'su anchura se puede medir con exactitud',
+    'puede bastar para distinguir cuál era',
     'conviértelo a imagen antes de entregarlo',
     // qué no dice, y cómo lo contrasta un tercero
     'No sustituye a la revisión humana',
