@@ -67,14 +67,30 @@ const FAQ_EN: EntradaFaq[] = [
     respuesta:
       'Automatic detection covers set formats and will not catch everything. That is why you can redact any area by hand, and why you must review the finished document page by page before sending it. This tool does not replace human review.',
   },
+  // "is not meant to be filed" asserted BY CONTRAST that the paid report is — the most expensive
+  // promise in the product, hidden in the answer that also ships as a Google rich result. Same
+  // construction that was removed from the Spanish watermark on 2026-08-08. What differs between
+  // the two reports is the printed mark; the checks are the same.
   {
     pregunta: "What's the difference between free and Pro?",
-    respuesta: `Free redacts ${FREE_MONTHLY_LIMIT} documents a month, up to ${FREE_MAX_PAGES} pages each. The redaction itself is complete and identical to Pro. What changes is the report: the free report carries a DEMO watermark and is not meant to be filed; the Pro report does not. Pro is a one-time payment of ${PRECIO_PRO} — not a subscription — and adds unlimited documents and batch processing of several files at once.`,
+    respuesta: `Free redacts ${FREE_MONTHLY_LIMIT} documents a month, up to ${FREE_MAX_PAGES} pages each. The redaction itself is complete and identical to Pro. What changes is the report: the free report carries a DEMO watermark and the Pro report does not; the checks themselves are identical. Pro is a one-time payment of ${PRECIO_PRO} — not a subscription — and adds unlimited documents and batch processing of several files at once.`,
   },
   {
     pregunta: 'Does it work on scanned documents?',
     respuesta:
       'On a scanned page the pixels inside the area you mark are cleared. Automatic detection reads text, not images, so on a scan you mark the areas yourself. Note that on a page with no text layer there is nothing for the tool to re-read afterwards, so it cannot confirm the removal the way it does on text — the report says so explicitly for those pages, and you must check them visually.',
+  },
+  // THE AMBER EXPECTATION GAP. Any image on a page degrades the seal, and 111 of 129 real PDFs
+  // carry one (the letterhead logo), so "PARTIAL CHECK" is the ordinary result of this product.
+  // Announcing it up front sells exactly what the buyer came for — a tool that does not tell you
+  // everything is fine when it cannot know that.
+  //
+  // The two labels quoted are frozen literals of `en.ts` INFORME_EN.sellos (E3 and E5). If they
+  // change there, this answer lies: `src/legal/faq-ambar.test.ts` ties the two together.
+  {
+    pregunta: 'Why does my report say "PARTIAL CHECK" instead of "REDACTION VERIFIED"?',
+    respuesta:
+      'Because the document contains an image — usually the letterhead logo — and this tool does not read what is inside an image. In that case the report says "PARTIAL CHECK" and spells out what it did do: it re-read the text of every page of the delivered file and its metadata, no data matching the searched patterns remains, and it lists one by one the pages whose image content is left out. "REDACTION VERIFIED" is reserved for text-only documents, where nothing falls outside the scope. Most minutes and payslips carry a logo, so "PARTIAL CHECK" is the normal result and does not mean something went wrong: it is the report stating how far it reached. If one of those images contains data, mark it by hand and its pixels will be cleared, but the page will still be listed as not fully checked: there is no text left to re-read to confirm it, which is why the report asks you to review it visually.',
   },
   {
     pregunta: 'Can I use the report as legal proof?',

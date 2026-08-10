@@ -101,15 +101,44 @@ export const FAQ: { pregunta: string; respuesta: string }[] = [
     respuesta:
       'La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana.',
   },
+  // «y no sirve como evidencia archivable» afirmaba POR CONTRASTE que el informe de pago sí lo
+  // es — la promesa más cara del producto, en la respuesta que además se publica como resultado
+  // enriquecido en Google. Es la misma construcción que se quitó de la marca de agua el 8-ago
+  // (`es.ts:193`) y que aquí sobrevivió, justo donde más se lee. Lo que cambia entre las dos
+  // versiones del informe es la marca impresa; las comprobaciones son las mismas.
   {
     pregunta: '¿Qué diferencia hay entre el modo gratuito y Pro?',
     respuesta:
-      'El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro. Lo que cambia es el informe de comprobación: en el modo gratuito lleva una marca "DEMO" y no sirve como evidencia archivable; el informe de Pro no lleva marca. Pro es un pago único de 59 € (no una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.',
+      'El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.',
   },
   {
     pregunta: '¿Funciona con documentos escaneados?',
     respuesta:
       'Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.',
+  },
+  // EL HUECO DE EXPECTATIVA DEL ÁMBAR. Desde que cualquier imagen degrada el sello, el resultado
+  // corriente del producto es «COMPROBACIÓN PARCIAL»: 111 de 129 PDF reales llevan alguna imagen,
+  // casi siempre el logo del membrete. Quien compre esperando un verde escribirá a soporte, y con
+  // un pago único de 59 € cada correo es pérdida seca sobre un ingreso ya cobrado. El aviso cuesta
+  // una vez; el soporte, cada vez.
+  //
+  // REGLA DE REDACCIÓN DEL ÁMBAR (docs/ESTADO.md): se empieza afirmando lo que SÍ se comprobó y se
+  // termina acotando lo que no. Si la primera oración es una limitación, la redacción se rechaza.
+  //
+  // Los dos rótulos citados son literales de `src/content/es.ts` (102 y 105). Si allí cambian,
+  // esta respuesta miente: `src/legal/faq-ambar.test.ts` ata las dos cosas.
+  {
+    pregunta: '¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?',
+    respuesta:
+      'Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo.',
+  },
+  // Esta pregunta existía SOLO en inglés (`en.ts`, «Can I use the report as legal proof?»). O sea
+  // que el idioma que más promete —«prueba de diligencia», en LANDING_SUBTITULO— era el que menos
+  // acotaba. Se porta al español.
+  {
+    pregunta: '¿El informe sirve como prueba legal?',
+    respuesta:
+      'No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar.',
   },
   {
     pregunta: '¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?',
