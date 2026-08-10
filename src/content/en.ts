@@ -324,9 +324,9 @@ export const en: Contenido = {
     ],
     pie: 'TachadoPDF runs entirely in your browser. Open source (AGPL-3.0). The Pro licence is sold by Gumroad.',
     // Las dos landings de sector son españolas (administradores de fincas, gestorías) y NO se
-    // traducen: además de no tener equivalente inglés, venden un producto que no existe (un
-    // tramo de 149 €/año con tres puestos y logo en el informe, sin SKU ni código detrás). No se
-    // llevan a un segundo mercado; ver PARADA en docs/BITACORA.md.
+    // traducen: no tienen equivalente inglés y no se llevan a un segundo mercado. El 2026-08-10
+    // se CORRIGIERON (pago único de 59 €, sin el tramo inventado, sin garantía de devolución),
+    // que no es lo mismo que relanzarlas: ver docs/BITACORA.md.
     enlaceActas: '',
     enlaceNominas: '',
     enlaceComprobador: 'Check for free what data your PDF contains',

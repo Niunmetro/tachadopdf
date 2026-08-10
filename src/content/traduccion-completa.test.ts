@@ -38,8 +38,11 @@ const IGUALDAD_PERMITIDA = new Set([
  * Claves deliberadamente VACÍAS en inglés. Las dos landings de sector son españolas
  * (administradores de fincas, gestorías) y no existen en `/en/`, así que su rótulo no se pinta
  * nunca. Inventarles un texto inglés sería peor: sería una etiqueta para una página que no
- * existe. Además venden un tramo de 149 €/año que no tiene SKU ni código detrás — PARADA del
- * owner, ver docs/BITACORA.md.
+ * existe.
+ *
+ * (Hasta el 2026-08-10 esta nota añadía «además venden un tramo de 149 €/año sin SKU detrás».
+ *  Ese tramo se retiró de las dos landings ese día; el motivo para no traducirlas es solo el
+ *  primero. La variante sigue viva en Gumroad hasta que el dueño la borre: docs/ESTADO.md.)
  */
 const VACIAS_PERMITIDAS = new Set(['legal.enlaceActas', 'legal.enlaceNominas']);
 
