@@ -16,6 +16,7 @@ import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
 import { esc, escTexto, jsonLd, sangrar, texto } from './html';
 import {
   LOCALES,
+  LOCALE_POR_DEFECTO,
   PAGINAS,
   SITIO,
   type Locale,
@@ -43,7 +44,18 @@ const VERIFICACIONES_GOOGLE = [
   'wAB_9e6EFyixB6e1jITVlH5DFp1q5scYBpxHaxlFx9g',
 ];
 
-const OG_IMAGE = `${SITIO}/og-image.png`;
+/**
+ * LA TARJETA SOCIAL, POR IDIOMA. La anterior mostraba un sello VERDE mientras el resultado normal
+ * del producto es el ámbar: prometía por WhatsApp y LinkedIn el veredicto que casi nadie recibe.
+ * La nueva es tipográfica y sobria (papel `--papel`, tinta `--tinta`, IBM Plex), con el símbolo,
+ * la marca y el CLAIM LITERAL de la home — sin ningún sello de color que afirme un veredicto.
+ * El idioma por defecto conserva el nombre `og-image.png` (las páginas estáticas lo citan tal
+ * cual y su URL ya está repartida); cada otro idioma lleva su sufijo con su claim traducido.
+ */
+export function ogImage(locale: Locale): string {
+  const sufijo = locale === LOCALE_POR_DEFECTO ? '' : `-${locale}`;
+  return `${SITIO}/og-image${sufijo}.png`;
+}
 
 /**
  * LOS ICONOS DEL SITIO. Con ruta RELATIVA al documento (`prefijo`), igual que la fuente y el PDF
@@ -93,6 +105,8 @@ interface OpcionesCabecera {
   ogDescripcion: string;
   ogLocale: string;
   ogLocalesAlternos: string[];
+  /** URL absoluta de la tarjeta social de ESTE idioma (`og-image.png`, `og-image-en.png`, …). */
+  ogImage: string;
   alternates: Alternate[];
   /** Ruta de vuelta a la raíz del sitio DESDE ESTE DOCUMENTO ('./', '../', '../../../'). */
   prefijo: string;
@@ -129,7 +143,7 @@ function cabecera(o: OpcionesCabecera): string {
     '<meta property="og:site_name" content="TachadoPDF" />',
     `<meta property="og:title" content="${esc(o.ogTitulo)}" />`,
     `<meta property="og:description" content="${esc(o.ogDescripcion)}" />`,
-    `<meta property="og:image" content="${esc(OG_IMAGE)}" />`,
+    `<meta property="og:image" content="${esc(o.ogImage)}" />`,
     `<meta property="og:url" content="${esc(o.canonical)}" />`,
     `<meta property="og:locale" content="${esc(o.ogLocale)}" />`,
   );
@@ -500,7 +514,7 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
     '<meta name="twitter:card" content="summary_large_image" />',
     `<meta name="twitter:title" content="${esc(c.home.ogTitulo)}" />`,
     `<meta name="twitter:description" content="${esc(c.home.twitterDescripcion)}" />`,
-    `<meta name="twitter:image" content="${esc(OG_IMAGE)}" />`,
+    `<meta name="twitter:image" content="${esc(ogImage(locale))}" />`,
     '',
     jsonLdHome(locale, canonical),
   );
@@ -516,6 +530,7 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
       ogDescripcion: c.home.ogDescripcion,
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
       alternates: alternatesDe(pagina),
       prefijo: navHref(rutaDe(pagina, locale) ?? '', ''),
       extra,
@@ -705,6 +720,7 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
       ogDescripcion: c.comprobador.ogDescripcion,
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
       alternates: alternatesDe(pagina),
       prefijo: navHref(ruta, ''),
       extra,
@@ -807,6 +823,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       ogDescripcion: guia.descripcion,
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
       alternates: alternatesDe(pagina),
       prefijo: navHref(ruta, ''),
       extra,
