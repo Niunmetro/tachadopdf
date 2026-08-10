@@ -1,7 +1,12 @@
 /* Estilo de TachadoPDF. Sobrio y profesional a propósito: el comprador (gestoría,
    administrador de fincas, RRHH) paga por CONFIANZA — un aspecto de herramienta seria vale
    más que cualquier florituras. Sin fuentes remotas ni CDNs: la CSP los bloquea y la promesa
-   del producto es que nada sale del navegador. */
+   del producto es que nada sale del navegador.
+
+   ESTA HOJA NO DECLARA TOKENS. La tipografía, la escala y los anchos viven en
+   `src/estilo/sistema.css`, que es la única fuente del sitio y que cada página incrusta en su
+   <head> ANTES que esto (ver `src/estilo/sistema.ts`). Aquí solo hay componentes, y ningún
+   componente escribe un tamaño de letra a mano: si un tamaño no está en la escala, no existe. */
 
 :root {
   --tinta: #0f172a;
@@ -27,17 +32,12 @@
   --rojo: #b91c1c;
   --rojo-fondo: #fef2f2;
   --radio: 10px;
-  --fuente: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
-
-* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: var(--fuente);
   color: var(--tinta);
   background: #fff;
-  line-height: 1.6;
 }
 
 /* Un SOLO color de enlace en toda la superficie clara. El subrayado se conserva: es la unica
@@ -53,26 +53,27 @@ a { color: var(--enlace); }
   margin-bottom: 32px;
 }
 .hero__marca {
-  font-size: 15px; font-weight: 700; letter-spacing: .12em;
+  font-size: var(--t-200); font-weight: var(--peso-fuerte); letter-spacing: .14em;
   text-transform: uppercase; color: var(--acento); margin: 0 0 14px;
 }
 .hero__titular {
-  font-size: clamp(26px, 4vw, 38px); line-height: 1.22;
-  font-weight: 700; margin: 0 0 16px; letter-spacing: -.02em;
+  font-size: var(--t-700); line-height: var(--lh-titular);
+  font-weight: var(--peso-veredicto); margin: 0 0 16px; letter-spacing: -.02em;
 }
 .hero__dolor {
-  font-size: 15.5px; line-height: 1.6; color: #7f1d1d; background: #fef2f2;
+  font-size: var(--t-300); line-height: var(--lh-texto); color: #7f1d1d; background: #fef2f2;
   border-left: 4px solid #dc2626; border-radius: 8px; padding: 14px 16px;
-  margin: 0 0 18px; max-width: 68ch;
+  margin: 0 0 18px; max-width: var(--medida);
 }
-.hero__sub { font-size: 17px; color: var(--tinta-suave); margin: 0 0 22px; max-width: 62ch; }
+.hero__sub { font-size: var(--t-400); color: var(--tinta-suave); margin: 0 0 22px; max-width: var(--medida); }
 .hero__bullets { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 8px; }
-.hero__bullets li { position: relative; padding-left: 26px; color: var(--tinta); }
+.hero__bullets li { position: relative; padding-left: 26px; color: var(--tinta); max-width: var(--medida); }
 .hero__bullets li::before {
   content: "✓"; position: absolute; left: 0; top: 0;
-  color: var(--verde); font-weight: 700;
+  color: var(--verde); font-weight: var(--peso-veredicto);
 }
-.hero__nicho { font-size: 14px; color: var(--gris); margin: 18px 0 0; }
+.hero__nicho { font-size: var(--t-200); color: var(--gris); margin: 18px 0 0; max-width: var(--medida); }
+.hero__local { max-width: var(--medida); }
 
 /* ---------- Panel de trabajo ---------- */
 .panel {
@@ -82,12 +83,13 @@ a { color: var(--enlace); }
   padding: 24px;
   margin-bottom: 24px;
 }
-.panel__titulo { font-size: 13px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--tinta-suave); margin: 0 0 14px; }
+.panel__titulo { font-size: var(--t-100); font-weight: var(--peso-fuerte); text-transform: uppercase;
+  letter-spacing: .10em; color: var(--tinta-suave); margin: 0 0 14px; }
 
 .aviso-principal {
-  font-size: 13.5px; color: var(--tinta-suave); background: #fffbeb;
+  font-size: var(--t-200); color: var(--tinta-suave); background: #fffbeb;
   border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; margin: 0 0 20px;
+  max-width: var(--medida);
 }
 
 /* La ÚNICA forma de cargar un archivo en el producto de pago era el control nativo del sistema,
@@ -98,24 +100,27 @@ a { color: var(--enlace); }
    El `<input type=file>` acepta soltar ficheros de forma nativa: dándole cuerpo de zona de carga,
    el gesto que promete la guía funciona de verdad, sin una línea de texto nueva. */
 input[type="file"] {
-  font: inherit; font-size: 14.5px; width: 100%; max-width: 100%;
+  font: inherit; font-size: var(--t-300); width: 100%; max-width: 100%;
   padding: 20px 16px; background: #fff; color: var(--tinta-suave);
   border: 2px dashed var(--acento); border-radius: var(--radio); cursor: pointer;
 }
 input[type="file"]:hover { background: #f0f9ff; }
 input[type="file"]::file-selector-button {
-  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
+  font: inherit; font-size: var(--t-300); font-weight: var(--peso-fuerte); cursor: pointer;
   margin-right: 12px; padding: 9px 16px; border-radius: 8px;
   border: 1px solid var(--acento); background: var(--acento); color: #fff;
 }
+/* La clave de licencia es un IDENTIFICADOR que se compara carácter a carácter contra el correo
+   de compra: va en la familia de datos, que es donde el 0 y la O no se parecen. */
 input[type="text"] {
-  font: inherit; font-size: 15px; padding: 9px 12px; border: 1px solid var(--linea);
+  font: inherit; font-family: var(--fuente-dato); font-size: var(--t-300);
+  padding: 9px 12px; border: 1px solid var(--linea);
   border-radius: 8px; background: #fff; min-width: 260px; color: var(--tinta);
 }
 input[type="text"]:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 
 button {
-  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+  font: inherit; font-size: var(--t-300); font-weight: var(--peso-fuerte); cursor: pointer;
   padding: 10px 18px; border-radius: 8px; border: 1px solid var(--tinta);
   background: var(--tinta); color: #fff;
 }
@@ -125,41 +130,42 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 /* ---------- Documento de ejemplo (gancho de activación) ---------- */
 .ejemplo {
   background: #fff; color: var(--tinta); border: 1px solid var(--acento);
-  font-weight: 600; font-size: 14.5px; padding: 9px 15px;
+  font-weight: var(--peso-fuerte); font-size: var(--t-300); padding: 9px 15px;
 }
 .ejemplo:hover:not([disabled]) { background: #f0f9ff; }
 .pista-ejemplo {
-  font-size: 13.5px; color: var(--tinta-suave); margin: -4px 0 16px; max-width: 62ch;
+  font-size: var(--t-200); color: var(--tinta-suave); margin: -4px 0 16px; max-width: var(--medida);
 }
 
 /* ---------- Preguntas frecuentes ---------- */
 .faq__item { border-bottom: 1px solid var(--linea); padding: 4px 0; }
 .faq__item:last-child { border-bottom: 0; }
 .faq__item summary {
-  cursor: pointer; font-weight: 600; font-size: 15px; color: var(--tinta);
+  cursor: pointer; font-weight: var(--peso-fuerte); font-size: var(--t-300); color: var(--tinta);
   padding: 11px 4px; list-style: none;
 }
 .faq__item summary::-webkit-details-marker { display: none; }
-.faq__item summary::before { content: '+ '; color: var(--acento); font-weight: 700; }
+.faq__item summary::before { content: '+ '; color: var(--acento); font-weight: var(--peso-veredicto); }
 .faq__item[open] summary::before { content: '– '; }
-.faq__item p { margin: 0 4px 14px; color: var(--tinta-suave); font-size: 14.5px; line-height: 1.6; }
+.faq__item p { margin: 0 4px 14px; color: var(--tinta-suave); font-size: var(--t-300);
+  line-height: var(--lh-texto); max-width: var(--medida); }
 
 /* ---------- Estados ---------- */
-.estado-cuota { font-size: 14px; color: var(--tinta-suave); }
+.estado-cuota { font-size: var(--t-200); color: var(--tinta-suave); }
 .aviso-rojo { color: var(--rojo); background: var(--rojo-fondo); border: 1px solid #fecaca;
-  border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+  border-radius: 8px; padding: 10px 12px; font-size: var(--t-200); }
 .aviso-rojo:empty, .estado-licencia:empty { display: none; padding: 0; border: 0; }
-.estado-licencia { font-size: 14px; }
+.estado-licencia { font-size: var(--t-200); }
 
 .fila { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
 .confirmacion { display: flex; gap: 9px; align-items: flex-start; margin: 18px 0 14px;
-  font-size: 14.5px; color: var(--tinta); }
+  font-size: var(--t-300); color: var(--tinta); max-width: var(--medida); }
 .confirmacion input { margin-top: 4px; }
 
 /* ---------- Compra ---------- */
 .comprar {
   display: inline-block; background: var(--acento); color: #fff; text-decoration: none;
-  font-weight: 600; padding: 11px 18px; border-radius: 8px; font-size: 15px;
+  font-weight: var(--peso-fuerte); padding: 11px 18px; border-radius: 8px; font-size: var(--t-300);
 }
 .comprar:hover { background: var(--acento-oscuro); }
 .comprar[hidden] { display: none; }
@@ -168,15 +174,18 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 .legales { border-top: 1px solid var(--linea); margin-top: 40px; padding-top: 20px; }
 .legales details { border-bottom: 1px solid var(--linea); }
 .legales summary {
-  cursor: pointer; padding: 12px 2px; font-size: 14px; font-weight: 600;
+  cursor: pointer; padding: 12px 2px; font-size: var(--t-300); font-weight: var(--peso-fuerte);
   color: var(--tinta-suave); list-style: revert;
 }
 .legales summary:hover { color: var(--acento); }
+/* El tope de medida se aplica TAMBIÉN aquí. Estos <pre> corrían a 136–142 caracteres por línea
+   —casi el doble del máximo tolerable— porque el tope existía en cuatro bloques y en los demás
+   no, y son los textos legales: justo donde nadie quiere volver a leer una línea. */
 .legales pre {
-  white-space: pre-wrap; font-family: var(--fuente); font-size: 13.5px;
-  color: var(--tinta-suave); margin: 0 0 16px; padding: 0 2px;
+  white-space: pre-wrap; font-family: var(--fuente); font-size: var(--t-200);
+  color: var(--tinta-suave); margin: 0 0 16px; padding: 0 2px; max-width: var(--medida);
 }
-.pie { font-size: 12.5px; color: var(--tinta-suave); margin-top: 22px; }
+.pie { font-size: var(--t-100); color: var(--tinta-suave); margin-top: 22px; max-width: var(--medida); }
 .pie a { color: var(--enlace); }
 
 @media (max-width: 640px) {
@@ -202,8 +211,14 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   white-space: normal;
   overflow-wrap: anywhere;
   text-align: left;
-  line-height: 1.35;
+  line-height: var(--lh-corto);
 }
+
+/* Y dentro de ese botón, el VALOR va en la familia de datos: es lo único que distingue un botón
+   de otro y es lo que el usuario compara carácter a carácter contra su documento. La frase que
+   lo envuelve sigue en la letra del texto — no se cambia ni un carácter, solo se marca cuál de
+   ellos es el dato. */
+.dato { font-family: var(--fuente-dato); }
 
 /* ---------- Selector de idioma ---------- */
 /* Enlaces <a> reales, no un <select> con JavaScript: funciona con los scripts desactivados y
@@ -212,9 +227,9 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 .idiomas {
   display: flex; gap: 14px; align-items: center;
   padding: 12px 0 0; margin: 0;
-  font-size: 14px;
+  font-size: var(--t-200);
 }
-.idiomas__actual { font-weight: 700; color: var(--tinta); }
+.idiomas__actual { font-weight: var(--peso-fuerte); color: var(--tinta); }
 .idiomas__enlace { color: var(--enlace); text-decoration: none; }
 .idiomas__enlace:hover { text-decoration: underline; }
 
@@ -252,7 +267,7 @@ button.hit-box--selected::after {
   position: absolute; top: -9px; right: -8px;
   width: 16px; height: 16px; line-height: 16px;
   border-radius: 50%; background: var(--tinta); color: #fff;
-  font-size: 10px; font-weight: 700; text-align: center;
+  font-size: var(--t-100); font-weight: var(--peso-veredicto); text-align: center;
 }
 
 /* ---------- Acuse de entrega ----------
@@ -268,12 +283,16 @@ button.hit-box--selected::after {
   background: #fff; border: 1px solid var(--linea); border-left: 6px solid var(--gris);
   border-radius: var(--radio); padding: 16px 18px; margin: 18px 0 0;
 }
-.entrega__estado { font-size: 15.5px; font-weight: 700; letter-spacing: .03em; margin: 0 0 6px; }
-.entrega__linea { font-size: 14px; line-height: 1.55; color: var(--tinta-suave);
-  margin: 0 0 12px; max-width: 70ch; }
+/* El veredicto es el ÚNICO sitio de la pantalla, junto al titular de portada, donde se gasta el
+   peso 700: que el peso máximo signifique «esto es el veredicto» es información. */
+.entrega__estado { font-size: var(--t-500); line-height: var(--lh-corto);
+  font-weight: var(--peso-veredicto); letter-spacing: -.01em; margin: 0 0 6px; }
+.entrega__linea { font-size: var(--t-200); line-height: var(--lh-texto); color: var(--tinta-suave);
+  margin: 0 0 12px; max-width: var(--medida); }
+/* Los nombres de fichero son datos: el visitante tiene que distinguir cuál es cuál. */
 .entrega__ficheros { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px;
-  font-size: 14px; color: var(--tinta); }
-.entrega__ficheros li::before { content: "↓ "; color: var(--gris); font-weight: 700; }
+  font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); }
+.entrega__ficheros li::before { content: "↓ "; color: var(--gris); font-weight: var(--peso-veredicto); }
 .entrega[data-estado="E1"] { border-left-color: #9b1c1c; }
 .entrega[data-estado="E1"] .entrega__estado { color: #9b1c1c; }
 .entrega[data-estado="E2"] { border-left-color: #9b1c1c; }
@@ -295,7 +314,7 @@ button.hit-box--selected::after {
    validan identificadores españoles con su digito de control, asi que insinuar una cobertura mas
    amplia seria un falso verde en forma de marketing. */
 .hero__deteccion {
-  font-size: 14.5px; line-height: 1.6; color: var(--tinta-suave);
+  font-size: var(--t-200); line-height: var(--lh-texto); color: var(--tinta-suave);
   background: var(--fondo); border: 1px solid var(--linea); border-radius: 8px;
-  padding: 12px 14px; margin: 16px 0 0; max-width: 68ch;
+  padding: 12px 14px; margin: 16px 0 0; max-width: var(--medida);
 }

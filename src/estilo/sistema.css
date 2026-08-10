@@ -1,0 +1,133 @@
+/* SISTEMA VISUAL DE TACHADOPDF — ÚNICA FUENTE DE TOKENS DEL SITIO.
+   ============================================================================================
+   Este fichero es el ORIGEN de la tipografía y de la escala. No hay un segundo sitio donde se
+   declaren: `src/estilo.css` (la hoja de la aplicación) y los <style> incrustados que emite
+   `src/content/generar.ts` consumen ESTOS bytes, no una copia. Lo ata `estilo.test.ts`.
+
+   POR QUÉ SE INCRUSTA EN CADA PÁGINA EN VEZ DE ENLAZARSE:
+   dieciséis de las dieciocho páginas del sitio (las guías, el comprobador y las dos landings)
+   NO enlazan ninguna hoja externa — llevan su CSS dentro de un <style>. Dentro de un <style> en
+   línea las URL relativas se resuelven CONTRA EL DOCUMENTO, no contra un fichero CSS: un
+   `url(fuentes/…)` escrito aquí y servido en /guia/tachar-dni-pdf/ pediría
+   /guia/tachar-dni-pdf/fuentes/… y daría 404 en silencio, con la portada saliendo en Plex y las
+   guías en la letra del sistema. Y una URL raíz-absoluta (/fuentes/…) muere bajo la base de
+   emergencia /tachadopdf/, que es justo el modo pensado para cuando el dominio se cae.
+   Por eso la ruta lleva un MARCADOR (ver `MARCA_RUTA` en sistema.ts) y cada página lo sustituye
+   por su prefijo de profundidad — el mismo mecanismo (`navHref(ruta, '')`) y por el mismo motivo
+   que el PDF de ejemplo en generar.ts.
+
+   LICENCIA DE LA TIPOGRAFÍA: IBM Plex Sans e IBM Plex Mono, SIL Open Font License 1.1, con
+   «Plex» como Nombre de Fuente Reservado. El texto íntegro de la licencia viaja con los ficheros
+   en public/fuentes/<familia>/OFL.txt. Se sirven los .woff2 PUBLICADOS TAL CUAL por fontsource:
+   NO se subsetean. La FAQ 2.6 de la OFL considera modificación el subsetting, y una Versión
+   Modificada no puede llevar el Nombre de Fuente Reservado. Empaquetar la fuente dentro de un
+   repositorio AGPL está expresamente permitido (cláusula 2 y FAQ 1.3) y NO la relicencia: se
+   distribuye enteramente bajo la OFL (cláusula 5).
+   ============================================================================================ */
+
+/* font-display: optional — NO swap.
+   `optional` da al navegador una ventana de bloqueo de ~100 ms; si la fuente no llegó a tiempo,
+   pinta con la pila de respaldo Y NO CAMBIA en esa carga. Cero salto de letra, cero reflujo, cero
+   desplazamiento de línea a mitad de lectura. Un `swap` en la primera pantalla mueve el titular
+   debajo de los ojos de quien ya está leyendo, que es peor que no estrenar tipografía.
+   Que la ventana de 100 ms baste casi siempre lo consigue el <link rel="preload"> del sans, que
+   emite cada página (ver `enlacePreloadFuente`). El mono NUNCA se precarga: el navegador no baja
+   una fuente que ningún glifo de la página usa. */
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: optional;
+  src: url("__RUTA__fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url("__RUTA__fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+
+:root {
+  /* --- TIPOGRAFÍA -------------------------------------------------------------------------
+     Las cifras de Plex Sans miden 600/1000 upem las diez: son TABULARES POR DEFECTO, sin una
+     línea de CSS. Este producto pinta DNI, NIE, IBAN, números de la Seguridad Social,
+     referencias catastrales y teléfonos en listas y botones que el usuario compara de un
+     vistazo para decidir qué tacha; un identificador que no cuadra en columna se lee como
+     descuido en el único producto que vende exactitud. Y el dígito del mono mide EXACTAMENTE
+     lo mismo (600/1000 también), así que un identificador en mono metido en una frase en sans
+     no descuadra nada.
+     La pila de respaldo se conserva entera: con `optional`, quien no alcance la ventana de
+     carga se queda en ella para siempre en esa visita. El respaldo del mono sigue siendo
+     monoespaciado, así que no se pierde lo que la elección compra. */
+  --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+
+  /* --- ESCALA: SIETE PASOS, CADA UNO CON UN OFICIO ------------------------------------------
+     Si un tamaño no está aquí, no existe. Antes la portada usaba ONCE tamaños y nueve de ellos
+     cabían en 4,5 px, con saltos de ×1,03: eso no es una jerarquía, es textura — el ojo no
+     distingue 13,5 de 14, así que la página no ordenaba nada.
+     Van en `rem` y no en px: un comprador de cincuenta años que ha subido el tamaño de letra de
+     su navegador hoy no consigue absolutamente nada.
+       --t-100  12  letra pequeña legal, pie, estado de cuota, versalitas. Nunca un párrafo.
+       --t-200  14  rótulo de un campo, ayuda pegada a un control, nicho, celdas.
+       --t-300  16  CUERPO. Botones, campos, viñetas, respuestas del FAQ. El tamaño por defecto.
+       --t-400  18  prosa larga (guías y legales) y el subtítulo del hero.
+       --t-500  21  TODO <h2> del sitio y el veredicto de la entrega.
+       --t-600  28  <h1> de página interior.
+       --t-700  28→40  <h1> de portada, y nada más. Se define desde el móvil hacia arriba. */
+  --t-100: 0.75rem;
+  --t-200: 0.875rem;
+  --t-300: 1rem;
+  --t-400: 1.125rem;
+  --t-500: 1.3125rem;
+  --t-600: 1.75rem;
+  --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+
+  /* Interlineado: TRES valores y ya. Los 1,55 y 1,65 sueltos de las otras hojas desaparecen —
+     entre 1,6 y 1,65 no hay nadie que vea la diferencia y sí dos variantes que mantener. */
+  --lh-titular: 1.15; /* >= 28 px */
+  --lh-corto: 1.35; /* 21 px y controles de varias líneas */
+  --lh-texto: 1.6; /* todo el texto */
+
+  /* Pesos: TRES, con regla. 400 todo el texto · 600 titulares, rótulos y botones ·
+     700 RESERVADO al <h1> de portada y a los rótulos de veredicto. Que el peso máximo signifique
+     «esto es el veredicto» es información; que signifique «esto me pareció importante» es ruido
+     (hoy hay siete elementos a 700 en la portada). */
+  --peso-normal: 400;
+  --peso-fuerte: 600;
+  --peso-veredicto: 700;
+
+  /* Anchos. `--ancho` es el contenedor de página; `--medida` capa TODO bloque de texto.
+     Va en rem y NO en ch: el `ch` de Plex es el ancho del cero (0,6 em) mientras la anchura
+     media de una minúscula es ~0,5 em, así que el `68ch` de hoy entrega ~82 caracteres. A 16 px
+     estos 34 rem son ~68 caracteres y a 18 px ~60: los dos dentro de la banda 45–75. Hoy los
+     bloques del Aviso Legal corren a 136–142 caracteres por línea porque el tope existía en
+     cuatro bloques y en los demás no. */
+  --ancho: 60rem;
+  --medida: 34rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* La tipografía se hereda desde `body` en las dieciocho páginas: es lo que acaba con las TRES
+   pilas tipográficas y los DOS tamaños base distintos que convivían (16/1,6, 16/1,55, 17/1,65). */
+body {
+  font-family: var(--fuente);
+  font-size: var(--t-300);
+  line-height: var(--lh-texto);
+}
+
+/* MONO = IDENTIFICADOR QUE UN HUMANO COMPARA CARÁCTER A CARÁCTER: DNI, NIE, IBAN, nº de la
+   Seguridad Social, referencia catastral, teléfono, correo, clave de licencia, huella SHA-256 y
+   nombres de fichero entregados. No es un adorno técnico: es la señal de «esto es un dato,
+   léelo entero». Fuera del mono va todo lo demás, incluidas las cifras dentro de frases
+   corridas — el sans ya es tabular. */
+.dato {
+  font-family: var(--fuente-dato);
+}

@@ -12,6 +12,7 @@
 // Que el fichero de disco esté al día lo vigila src/content/pages-generadas.test.ts.
 
 import { CONTENIDOS } from './index';
+import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
 import { esc, jsonLd, sangrar, texto } from './html';
 import {
   LOCALES,
@@ -77,6 +78,8 @@ interface OpcionesCabecera {
   ogLocale: string;
   ogLocalesAlternos: string[];
   alternates: Alternate[];
+  /** Ruta de vuelta a la raíz del sitio DESDE ESTE DOCUMENTO ('./', '../', '../../../'). */
+  prefijo: string;
   extra: string[];
 }
 
@@ -85,6 +88,13 @@ function cabecera(o: OpcionesCabecera): string {
     '<meta charset="UTF-8" />',
     '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
     `<meta http-equiv="Content-Security-Policy" content="${esc(CSP)}">`,
+    '',
+    // El sistema visual va en TODAS las páginas y va ANTES que el <style> propio de cada una:
+    // los tokens se declaran una sola vez (src/estilo/sistema.css) y lo de la página manda
+    // encima. Las dieciséis páginas que no enlazan hoja externa recibían la letra del sistema
+    // mientras la portada estrenaba tipografía; esto es lo que cierra ese desfase.
+    enlacePreloadFuente(o.prefijo),
+    `<style>\n${sistemaCss(o.prefijo)}</style>`,
     '',
     texto('title', {}, o.titulo),
     `<meta name="description" content="${esc(o.descripcion)}" />`,
@@ -407,6 +417,7 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
       alternates: alternatesDe(pagina),
+      prefijo: navHref(rutaDe(pagina, locale) ?? '', ''),
       extra,
     }),
     cuerpoHome(pagina, locale),
@@ -424,15 +435,10 @@ const CSS_COMPROBADOR = `  :root {
     --cp-acento: #38bdf8;
     --cp-borde: #334155;
   }
-  * {
-    box-sizing: border-box;
-  }
   body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     background: var(--cp-fondo);
     color: var(--cp-texto);
-    line-height: 1.55;
   }
   main {
     max-width: 720px;
@@ -440,19 +446,22 @@ const CSS_COMPROBADOR = `  :root {
     padding: 2.5rem 1.25rem 4rem;
   }
   h1 {
-    font-size: 1.75rem;
+    font-size: var(--t-600);
+    line-height: var(--lh-titular);
+    font-weight: var(--peso-fuerte);
     margin-bottom: 0.75rem;
   }
   p {
     margin: 0 0 1rem;
+    max-width: var(--medida);
   }
   .cp-intro {
-    font-size: 1.05rem;
+    font-size: var(--t-400);
   }
   .idiomas {
     display: flex;
     gap: 0.75rem;
-    font-size: 0.9rem;
+    font-size: var(--t-200);
     margin-bottom: 1.5rem;
   }
   .idiomas a {
@@ -494,7 +503,7 @@ const CSS_COMPROBADOR = `  :root {
     color: inherit;
   }
   .cp-aviso {
-    font-size: 0.9rem;
+    font-size: var(--t-200);
     color: #94a3b8;
     border-left: 3px solid var(--cp-borde);
     padding-left: 0.9rem;
@@ -587,6 +596,7 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
       alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
       extra,
     }),
     main,
@@ -600,15 +610,16 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
 const CSS_GUIA = `  :root { color-scheme: light dark; }
   body {
     max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
-    font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: var(--t-400);
     color: #1e293b; background: #fff;
   }
-  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
-  h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+  p, li { max-width: var(--medida); }
+  h1 { font-size: var(--t-600); line-height: var(--lh-titular); font-weight: var(--peso-fuerte); margin: 0 0 .8rem; }
+  h2 { font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte); margin: 2.2rem 0 .6rem; }
   a { color: #0369a1; }
   ul, ol { padding-left: 1.3rem; }
   li { margin: .35rem 0; }
-  .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
+  .idiomas { display: flex; gap: .9rem; font-size: var(--t-200); margin: 0 0 1.5rem; }
   .idiomas__actual { font-weight: 700; }
   .nota {
     background: #fef2f2; border-left: 4px solid #ef4444;
@@ -674,6 +685,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
       alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
       extra,
     }),
     main,

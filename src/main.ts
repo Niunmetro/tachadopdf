@@ -74,6 +74,26 @@ function unionSorted(a: number[], b: number[]): number[] {
   return Array.from(new Set([...a, ...b])).sort((x, y) => x - y);
 }
 
+/**
+ * Escribe un rótulo marcando cuál de sus caracteres es el DATO (un DNI, un IBAN, un teléfono).
+ * NO cambia el texto: los mismos caracteres en el mismo orden — `textContent` sigue siendo la
+ * cadena entera. Lo único que cambia es que el identificador se pinta en la familia de datos,
+ * que es donde el 0 y la O no se parecen. En los nueve botones de «tachar todas las apariciones»
+ * los 33 primeros caracteres son idénticos y lo único que los distingue es ese valor: merece
+ * ser lo que se lee primero.
+ */
+function etiquetarConDato(nodo: HTMLElement, rotulo: string, dato: string): void {
+  const i = dato.length === 0 ? -1 : rotulo.indexOf(dato);
+  if (i < 0) {
+    nodo.textContent = rotulo;
+    return;
+  }
+  nodo.textContent = '';
+  const marca = el('span', { class: 'dato' });
+  marca.textContent = dato;
+  nodo.append(rotulo.slice(0, i), marca, rotulo.slice(i + dato.length));
+}
+
 function loadPng(bytes: Uint8Array): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const blob = new Blob([bytes as BlobPart], { type: 'image/png' });
@@ -172,7 +192,7 @@ async function renderFileVisor(
       const n = occ.reduce((acc, m) => acc + m.rects.length, 0);
       if (n === 0) continue;
       const boton = el('button', { type: 'button' });
-      boton.textContent = copia.tacharTodas(valor, n);
+      etiquetarConDato(boton, copia.tacharTodas(valor, n), valor);
       boton.addEventListener('click', () => {
         fileWork.manual = mergeOccurrenceMarks(fileWork.manual, occ);
         for (const entry of pageEntries) {
