@@ -21,32 +21,101 @@ function contraste(a: string, b: string): number {
 const cssPath = join(__dirname, 'estilo.css');
 const cssContent = readFileSync(cssPath, 'utf-8');
 
+/** Las REGLAS, sin los comentarios. Los comentarios de esta casa hablan de colores y de
+ *  espaciados —es su trabajo— y un barrido que los lea denuncia la propia documentacion. */
+function reglas(css: string): string {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '');
+}
+
+/** Valor hexadecimal de un token declarado en la hoja del sistema. */
+function tokenDelSistema(nombre: string): string {
+  return new RegExp(`--${nombre}:\\s*(#[0-9a-f]{3,8})`, 'i').exec(sistemaFuente())?.[1] ?? '';
+}
+
+/**
+ * TODOS los tokens que la hoja de la aplicacion o la del sistema usan como COLOR DE TEXTO.
+ * Se DERIVAN del CSS; no hay lista escrita a mano. La guarda vieja nombraba tres —`gris`,
+ * `enlace` y `tinta-suave`— y da la casualidad de que eran los TRES QUE APROBABAN: el acento
+ * (4,10:1 en tres sitios) y el verde (3,30:1 haciendo de ✓, o sea el elemento que dice «esto
+ * esta bien») no entraban en el barrido. Un guardian que solo mira lo que ya pasa no guarda.
+ */
+function tokensDeTexto(): string[] {
+  const hojas = reglas(`${cssContent}\n${sistemaFuente()}`);
+  const encontrados = new Set<string>();
+  for (const m of hojas.matchAll(/(?<![-\w])color:\s*var\(--([\w-]+)\)/g)) {
+    if (m[1] !== undefined) encontrados.add(m[1]);
+  }
+  return [...encontrados].sort();
+}
+
 describe('estilo.css', () => {
   /**
-   * UN GRIS DE TEMA OSCURO SOBRE FONDO BLANCO. `--gris` era #94a3b8 —2,56:1 sobre blanco— y le
-   * habia tocado, por casualidad, a las dos frases que peor pueden faltar: la que le dice al
-   * visitante «esto es para ti» y la que sostiene la promesa central del producto (que el archivo
-   * no sale del navegador) junto con la licencia. `--enlace` no existia: donde no habia regla, el
-   * navegador ponia su #0000EE por defecto.
-   *
-   * Las superficies de esta hoja son TODAS claras, asi que el umbral se comprueba contra blanco.
+   * EL UMBRAL SE COMPRUEBA CONTRA LAS DOS SUPERFICIES QUE EXISTEN, no contra una.
+   * La pagina es `--papel` y el panel de trabajo es `--superficie` blanca: un token que aprueba
+   * sobre blanco y raspa sobre papel se lee peor justo en la mitad de la pagina que NO es el
+   * panel. Se calcula el contraste de verdad; no se comprueba que la cadena este escrita.
    */
-  const BLANCO = '#ffffff';
-  const token = (nombre: string): string =>
-    new RegExp(`--${nombre}:\\s*(#[0-9a-f]{6})`, 'i').exec(cssContent)?.[1] ?? '';
+  const SUPERFICIES = [
+    ['papel', tokenDelSistema('papel')],
+    ['superficie', tokenDelSistema('superficie')],
+  ] as const;
 
-  it.each([
-    ['gris', 4.5],
-    ['enlace', 4.5],
-    ['tinta-suave', 4.5],
-  ])('el token --%s se lee sobre blanco (>= %s:1)', (nombre, minimo) => {
-    const valor = token(nombre);
-    expect(valor, `--${nombre} declarado en hexadecimal`).toMatch(/^#[0-9a-f]{6}$/i);
-    expect(contraste(valor, BLANCO)).toBeGreaterThanOrEqual(minimo);
+  /**
+   * `--tinta-inversa` es la unica excepcion, y esta AQUI con su motivo en vez de fuera del
+   * barrido: es tinta que va ENCIMA de un relleno macizo (el boton que cobra, la banda de E1),
+   * asi que no se lee sobre papel y no tiene por que. Se comprueba contra los rellenos sobre los
+   * que de verdad se pinta, y con el mismo umbral.
+   */
+  const INVERSAS: Record<string, string[]> = { 'tinta-inversa': ['tinta', 'acento', 'acento-fuerte', 'rojo'] };
+
+  it('el barrido encuentra los tokens de texto, y son mas de tres', () => {
+    // La guarda vieja nombraba tres a mano. Si este numero baja de golpe, alguien ha dejado de
+    // usar variables y ha vuelto a escribir colores a mano.
+    expect(tokensDeTexto().length).toBeGreaterThanOrEqual(8);
   });
 
-  it('hay un color de enlace propio y se aplica a TODOS los enlaces sin clase', () => {
-    expect(cssContent).toMatch(/\ba\s*\{\s*color:\s*var\(--enlace\)/);
+  it.each(tokensDeTexto())('el token --%s se lee a 4,5:1 sobre las dos superficies', (nombre) => {
+    const valor = tokenDelSistema(nombre);
+    expect(valor, `--${nombre} declarado en hexadecimal en el sistema`).toMatch(/^#[0-9a-f]{6}$/i);
+
+    const fondos = INVERSAS[nombre];
+    if (fondos !== undefined) {
+      for (const fondo of fondos) {
+        expect(
+          contraste(valor, tokenDelSistema(fondo)),
+          `--${nombre} sobre --${fondo}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+      return;
+    }
+
+    for (const [nombreSup, superficie] of SUPERFICIES) {
+      expect(contraste(valor, superficie), `--${nombre} sobre ${nombreSup}`).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  /** El contorno de un control es 1.4.11: 3:1 minimo, tambien sobre las dos superficies. */
+  it('el borde de control se ve sobre las dos superficies (>= 3:1)', () => {
+    const linea = tokenDelSistema('linea-fuerte');
+    for (const [nombreSup, superficie] of SUPERFICIES) {
+      expect(contraste(linea, superficie), `--linea-fuerte sobre ${nombreSup}`).toBeGreaterThanOrEqual(3);
+    }
+  });
+
+  /** Blanco sobre el acento macizo: el contraste es SIMETRICO, y el acento viejo (#0284c7) fallaba
+   *  en las dos direcciones a la vez —4,10 como texto y 4,10 para el blanco encima—, que es lo que
+   *  obligo a inventar un `--enlace` aparte. */
+  it('el blanco se lee encima del acento macizo', () => {
+    expect(contraste(tokenDelSistema('tinta-inversa'), tokenDelSistema('acento'))).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('hay UN SOLO azul: el acento hace tambien de color de enlace', () => {
+    expect(sistemaFuente()).toMatch(/\ba\s*\{\s*color:\s*var\(--acento\)/);
+    // Ya no existe un token de enlace aparte (ni un `--acento-oscuro`): habia TRES azules porque
+    // el azul elegido no valia como texto. Se comprueba la DECLARACION, no la palabra: el
+    // comentario que cuenta por que desaparecio tiene derecho a nombrarlo.
+    expect(`${cssContent}\n${sistemaFuente()}`).not.toMatch(/^\s*--enlace:/m);
+    expect(`${cssContent}\n${sistemaFuente()}`).not.toMatch(/var\(--enlace\)/);
   });
 
   it('debe contener flex-wrap y gap en .tachar-todas', () => {
@@ -277,9 +346,9 @@ describe('la escala tipografica es cerrada', () => {
 
   it('ni la hoja de la aplicacion ni los <style> del generador escriben un tamaño a mano', () => {
     const hojas: [string, string][] = [
-      ['src/estilo.css', cssContent],
-      ['src/estilo/sistema.css', sistemaFuente()],
-      ['<style> del comprobador', generarPagina(PAGINAS[1] ?? PAGINAS[0]!, 'es')],
+      ['src/estilo.css', reglas(cssContent)],
+      ['src/estilo/sistema.css', reglas(sistemaFuente())],
+      ['<style> del comprobador', reglas(generarPagina(PAGINAS[1] ?? PAGINAS[0]!, 'es'))],
     ];
     for (const [nombre, css] of hojas) {
       const literales = [...css.matchAll(/font-size:\s*([^;]+);/g)]
@@ -290,10 +359,55 @@ describe('la escala tipografica es cerrada', () => {
     }
   });
 
+  it('el ritmo vertical es una escalera de 4 px y nadie se sale de ella', () => {
+    // Medido antes de esta rama sobre la portada construida: VEINTIDOS valores de espaciado
+    // distintos y ONCE fuera de cualquier rejilla de 4 px (-4, 9, 11, 12,5, 19,9, 22, 26, 44...).
+    // Eso es lo que hace que una pagina con buen contenido se lea como una maqueta.
+    const sistema = sistemaFuente();
+    const escalera = [...sistema.matchAll(/^\s*(--e-\d+):\s*([\d.]+)rem;/gm)].map(([, n, v]) => ({
+      nombre: n ?? '',
+      px: Number(v) * 16,
+    }));
+    expect(escalera.length).toBe(9);
+    for (const paso of escalera) {
+      expect(paso.px % 4, `${paso.nombre} = ${paso.px}px no cae en la rejilla de 4`).toBe(0);
+    }
+  });
+
+  /**
+   * GUARDA DE SISTEMA. Ningun margin, padding, gap, border-radius ni color de la hoja de la
+   * aplicacion puede llevar un valor escrito a mano: o es `var(--...)`, o es 0, o es un
+   * porcentaje/auto/inherit. Sin esto, dentro de un mes vuelve a haber once tamaños y veintidos
+   * espaciados — que es exactamente de donde viene esta rama.
+   */
+  it('la hoja de la aplicacion no escribe espaciados, radios ni colores a mano', () => {
+    const PROPIEDADES =
+      /(?<![-\w])(margin|margin-top|margin-bottom|margin-left|margin-right|padding|padding-top|padding-bottom|padding-left|padding-right|gap|row-gap|column-gap|border-radius|color|background|background-color|border-color)\s*:\s*([^;}]+)[;}]/g;
+    const LIBRES = /^(0|none|auto|inherit|initial|transparent|revert|currentcolor)$/i;
+
+    const sospechosos: string[] = [];
+    for (const m of reglas(cssContent).matchAll(PROPIEDADES)) {
+      const propiedad = m[1] ?? '';
+      const valor = (m[2] ?? '').trim();
+      const trozos = valor.split(/\s+/).filter((t) => t.length > 0);
+      for (const trozo of trozos) {
+        if (trozo.startsWith('var(--') || trozo.startsWith('calc(')) continue;
+        if (LIBRES.test(trozo)) continue;
+        if (/^\d+%$/.test(trozo)) continue;
+        // rgba() sobre un token: el relleno translucido del candidato de tachado tiene que dejar
+        // ver el dato que hay debajo, y una variable no puede llevar alfa sin duplicar el color.
+        if (/^rgba\(/.test(valor) && propiedad === 'background') continue;
+        // Las palabras clave de un borde (`1px solid`, `2px dashed`) no son color ni espacio.
+        sospechosos.push(`${propiedad}: ${valor}`);
+      }
+    }
+    expect(sospechosos).toEqual([]);
+  });
+
   it('ninguna hoja declara ya su propia pila tipografica', () => {
     // Habia TRES pilas y DOS tamaños base distintos (16/1,6, 16/1,55, 17/1,65). Ahora la
     // tipografia se hereda de `body` y solo el sistema la nombra.
-    const fuera = [...cssContent.matchAll(/font-family:\s*([^;]+);/g)]
+    const fuera = [...reglas(cssContent).matchAll(/font-family:\s*([^;]+);/g)]
       .map((m) => m[1]?.trim() ?? '')
       .filter((v) => !v.startsWith('var(--fuente'));
     expect(fuera).toEqual([]);

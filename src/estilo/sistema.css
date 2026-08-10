@@ -107,6 +107,97 @@
      cuatro bloques y en los demás no. */
   --ancho: 60rem;
   --medida: 34rem;
+
+  /* --- RITMO VERTICAL: UNA ESCALERA, Y PROHIBIDO SALIRSE DE ELLA ----------------------------
+     Medido antes de esta rama: la portada usaba VEINTIDÓS valores de espaciado distintos y ONCE
+     no caían en ninguna rejilla de 4 px (−4, 9, 11, 12,5, 19,9, 22, 26, 44…). Eso es lo que
+     hace que una página con buen contenido se lea como una maqueta: nada se alinea con nada.
+     Unidad 4 px. Ningún margen, padding o gap puede llevar un valor que no esté aquí —incluidos
+     los −4 de corrección óptica: si algo pide un −4 para cuadrar, lo que está mal es el espacio
+     de al lado.
+     Y CUATRO DE ELLOS LLEVAN SIGNIFICADO, que es lo que de verdad cambia lo que el visitante
+     entiende, porque el espacio es lo que le dice qué va con qué:
+       8  pegado   «esto pertenece a eso»: rótulo→control, encabezado→su primer párrafo
+       16 interno  párrafo tras párrafo dentro del mismo bloque; filas de una lista
+       32 bloque   entre bloques de una misma sección
+       64 sección  entre secciones (48 en móvil: 64 px de aire son el 7,6 % de una pantalla) */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-6: 1.5rem;
+  --e-8: 2rem;
+  --e-12: 3rem;
+  --e-16: 4rem;
+  --e-24: 6rem;
+
+  /* Radios: DOS, y cada uno significa algo. Había cuatro (6, 8, 10, 12) sin criterio. A 10–12 px
+     un panel se lee como tarjeta de aplicación de consumo; a 6 px, como campo de un formulario
+     oficial, que es lo que este producto es. `--radio-marca` es SOLO para las marcas de tachado:
+     una marca de redacción tiene esquinas de rectángulo porque es un rectángulo. */
+  --radio: 6px;
+  --radio-marca: 2px;
+
+  /* --- PALETA «REGISTRO» --------------------------------------------------------------------
+     Papel cálido, tinta cálida, UN acento frío y profundo. Es como se ve la impresión legal y
+     financiera: papel crema, tinta negra, sello azul. La paleta de antes era la de Tailwind por
+     defecto (slate + sky) y podía ser el panel de cualquier cosa: b* −14,1 la tinta, −14,5 el
+     gris, −1,2 el fondo. Ahora: +2,3 · +5,1 · +1,1.
+
+     LOS TOKENS SE NOMBRAN POR FUNCIÓN, no por color: el día que el acento deje de ser azul, el
+     nombre sigue siendo verdad.
+
+     LO QUE ARREGLA, medido y no supuesto:
+     · el acento de antes (#0284c7) daba 4,10:1 sobre blanco Y 4,10:1 para el blanco encima —el
+       contraste es simétrico, así que fallaba en LAS DOS direcciones—, y era el color de la
+       marca, del botón que cobra y del botón de elegir archivo. Por eso hubo que inventar un
+       `--enlace` aparte: había TRES azules porque el azul elegido no valía como texto. El de
+       ahora da 8,33 sobre papel, 9,07 sobre blanco y 9,07 para el blanco encima: un solo azul.
+     · el verde de antes (#16a34a) daba 3,30:1 y hacía de ✓ en las viñetas, o sea era el elemento
+       que dice «esto está bien». El de ahora, 6,02.
+     · `--gris` sube de 4,76 (raspando) a 5,24 sobre papel. Los contrastes ya peleados SOLO SUBEN.
+
+     El mínimo de TODA la paleta, sobre las dos superficies posibles, es 5,24:1. */
+  color-scheme: light;
+  --papel: #f6f5f3;
+  --superficie: #ffffff;
+  --tinta: #1b1a17;
+  --tinta-suave: #43403a;
+  --gris: #6a665e;
+  /* Filete decorativo. No es un borde de control: su trabajo es SEPARAR, y lo hace por diferencia
+     de color (ΔE00 6,7 contra el papel), no por contraste de luminancia. */
+  --linea: #dedad1;
+  /* Borde de CONTROL: 3,37:1 sobre papel y 3,67 sobre blanco, o sea cumple 1.4.11 en las dos. */
+  --linea-fuerte: #8a857a;
+  --acento: #164a7e;
+  --acento-fuerte: #0e3159;
+  --acento-tenue: #dde7f3;
+  /* Tinta que va ENCIMA de un relleno macizo. No se lee sobre papel y no tiene por qué: se
+     comprueba contra los rellenos sobre los que de verdad se pinta (9,07 sobre el acento, 13,11
+     sobre el acento fuerte, 8,15 sobre el rojo). */
+  --tinta-inversa: #ffffff;
+
+  /* --- SEMÁFOROS: no se inventa ninguno ------------------------------------------------------
+     Estas tintas YA existían sueltas en la hoja y son las de la familia del informe. No se tocan:
+     se les pone nombre. Lo único que cambia de valor es el neutro de E4 (era #4a5568, una pizarra
+     FRÍA que sobre papel cálido se lee como un error de render) y los rellenos pálidos, que
+     estaban a ΔE00 2,5–6,2 del papel: un relleno a esa distancia no es un canal, es una excusa.
+
+     EL ÁMBAR ES EL PUNTO DELICADO, y es el 86 % de las entregas: es el resultado NORMAL del
+     producto, no una avería. `#FEF3C7` separaba más (ΔE00 14,3) pero lleva C* 22,8 de croma, y
+     subirle el volumen al estado corriente empuja contra la regla de redacción del ámbar, que
+     existe justo para que el resultado normal no se lea como disculpa. `#FBEFD2` da ΔE00 10,6
+     sobre papel y 11,9 sobre blanco —mejor separación que el 6,2 de hoy— con C* 15,5, dos
+     tercios de croma. Se separa más y grita menos.
+     El relleno NUNCA es el único canal: siguen los cuatro de la casa (relleno, tinta, acento y
+     forma/rótulo), y la banda maciza de E1 sigue siendo la única alarma que se distingue sin
+     color. */
+  --rojo: #9b1c1c;
+  --rojo-fondo: #f9e6e4;
+  --ambar: #7c4a03;
+  --ambar-fondo: #fbefd2;
+  --verde: #0f6b41;
+  --verde-fondo: #dfeee4;
 }
 
 *,
@@ -116,11 +207,32 @@
 }
 
 /* La tipografía se hereda desde `body` en las dieciocho páginas: es lo que acaba con las TRES
-   pilas tipográficas y los DOS tamaños base distintos que convivían (16/1,6, 16/1,55, 17/1,65). */
+   pilas tipográficas y los DOS tamaños base distintos que convivían (16/1,6, 16/1,55, 17/1,65).
+   Y la superficie de página es el PAPEL, no el blanco: el blanco se reserva para el panel de
+   trabajo, que es literalmente la hoja que vas a tachar apoyada en la mesa. Antes estaba al
+   revés (cuerpo blanco, panel gris frío). */
 body {
+  margin: 0;
   font-family: var(--fuente);
   font-size: var(--t-300);
   line-height: var(--lh-texto);
+  color: var(--tinta);
+  background: var(--papel);
+}
+
+/* UN SOLO color de enlace en toda la superficie. Con el acento a 9,07:1 ya no hacen falta dos
+   azules. El subrayado se conserva donde lo hay: es la única señal no cromática de un enlace. */
+a {
+  color: var(--acento);
+}
+
+/* Los controles no heredan la tipografía por su cuenta: sin esto, el <select> de tipo de
+   documento salía en la letra del sistema a 13,33 px dentro de una página en Plex a 16. */
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 /* MONO = IDENTIFICADOR QUE UN HUMANO COMPARA CARÁCTER A CARÁCTER: DNI, NIE, IBAN, nº de la
