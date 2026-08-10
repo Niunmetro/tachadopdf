@@ -12,6 +12,7 @@
 // Que el fichero de disco esté al día lo vigila src/content/pages-generadas.test.ts.
 
 import { CONTENIDOS } from './index';
+import { PRECIO_PRO } from '../config';
 import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
 import { esc, escTexto, jsonLd, sangrar, texto } from './html';
 import {
@@ -308,8 +309,142 @@ function guiasDe(locale: Locale): { guia: ContenidoGuia; href: string }[] {
   return salida;
 }
 
+/**
+ * MICROCOPY DECORATIVO DE LA PORTADA, por idioma.
+ *
+ * Todo el TEXTO de venta y legal sale de la fuente de contenido (`CONTENIDOS`); esto es lo poco
+ * que el rediseño «legal-tech premium» añade y que NO es prosa de contenido: los rótulos del
+ * espécimen del hero (una ilustración con datos ficticios), la microcopia de «100 % en el
+ * navegador» y los dos rótulos del bloque de precio. Vive aquí —no en la fuente de contenido—
+ * porque es andamiaje de la maqueta, no copia que el producto prometa; `content/generar.ts` está
+ * exento de `sin-cadenas-sueltas` justo por esto. Cada idioma tiene su juego; una clave sin
+ * traducir se ve a simple vista porque el objeto es un `Record<Locale, …>` cerrado por tipos. */
+interface DecorHome {
+  heroMicro: string;
+  ctaVerPro: string;
+  toolMicro: string;
+  exhibitEjemplo: string;
+  exhibitInforme: string;
+  exhibitActa: string;
+  exhibitTapado: string;
+  exhibitLegible: string;
+  exhibitEliminado: string;
+  exhibitNada: string;
+  exhibitPagina: string;
+  proUnaVez: string;
+  proNota: string;
+  proEtiquetaGratis: string;
+  cierreBoton: string;
+  /** Chips de identificadores. LOCALE-AWARE a propósito: fuera de España solo el email valida su
+   *  dígito de control, así que la portada inglesa NO puede insinuar detección de DNI/NIE/IBAN —
+   *  su propia `notaDeteccion` ya lo acota. Enseñar más chips que detectores sería un falso verde. */
+  chips: string[];
+}
+
+const DECOR: Record<Locale, DecorHome> = {
+  es: {
+    heroMicro: '100 % en el navegador · el documento no se sube a ningún servidor',
+    ctaVerPro: `Ver Pro — ${PRECIO_PRO}`,
+    toolMicro: '100 % en el navegador',
+    exhibitEjemplo: 'Ejemplo · datos ficticios',
+    exhibitInforme: 'Informe de comprobación',
+    exhibitActa: 'Acta de junta de propietarios',
+    exhibitTapado: 'Tapado con un rectángulo',
+    exhibitLegible: 'sigue siendo legible y copiable',
+    exhibitEliminado: 'Eliminado del archivo',
+    exhibitNada: 'no queda nada que seleccionar',
+    exhibitPagina: 'pág. 1',
+    proUnaVez: 'una vez',
+    proNota: 'pago único · no suscripción',
+    proEtiquetaGratis: 'Gratuito',
+    cierreBoton: 'Ir a la herramienta',
+    chips: ['DNI', 'NIE', 'IBAN', 'Nº Seguridad Social', 'Ref. catastral', 'Teléfono', 'Email'],
+  },
+  en: {
+    heroMicro: '100% in your browser · the document is never uploaded to any server',
+    ctaVerPro: `See Pro — ${PRECIO_PRO}`,
+    toolMicro: '100% in your browser',
+    exhibitEjemplo: 'Example · fictional data',
+    exhibitInforme: 'Verification report',
+    exhibitActa: "Homeowners' meeting minutes",
+    exhibitTapado: 'Covered with a rectangle',
+    exhibitLegible: 'still readable and copyable',
+    exhibitEliminado: 'Removed from the file',
+    exhibitNada: 'nothing left to select',
+    exhibitPagina: 'p. 1',
+    proUnaVez: 'one-time',
+    proNota: 'one-time payment · not a subscription',
+    proEtiquetaGratis: 'Free',
+    cierreBoton: 'Go to the tool',
+    chips: ['Email'],
+  },
+};
+
+/** El símbolo del documento, a un tamaño arbitrario, en el acento. Ilustra el hero y las fichas. */
+function iconoDoc(px: string, color = 'var(--acento)'): string {
+  return (
+    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ` +
+    `stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ` +
+    `style="width: ${px}; height: ${px}; flex: none; color: ${color};">` +
+    '<path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/>' +
+    '<line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/>' +
+    '<line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/>' +
+    '</svg>'
+  );
+}
+
+/**
+ * EL ESPÉCIMEN DEL HERO. Una sola ficha, sin tarjetas superpuestas ni rotaciones ni márgenes
+ * negativos: eso era justo lo que producía los «cuadros tapando letras» del render original. El
+ * dato tapado y el dato borrado se enseñan EN FILAS, con el rectángulo negro AL LADO del dato (no
+ * encima), así que nada puede desbordar una banda ni pisar otro texto a ningún ancho. Datos
+ * ficticios y rotulado como tal.
+ */
+function exhibitHero(locale: Locale): string {
+  const d = DECOR[locale];
+  const c = CONTENIDOS[locale];
+  const sello = c.informe.sellos.E3;
+  return `<figure class="hero__aparte" style="margin: 0; min-width: 0;">
+              <figcaption style="font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); margin: 0 0 var(--e-2);">${escTexto(d.exhibitEjemplo)}</figcaption>
+              <div style="background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-hoja); overflow: hidden;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--e-3); padding: var(--e-3) var(--e-4); border-bottom: 1px solid var(--linea); background: var(--papel); color: var(--tinta-suave);">
+                  <span style="display: inline-flex; align-items: center; gap: var(--e-2); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.06em; text-transform: uppercase;">${iconoDoc('1rem')}${escTexto(d.exhibitActa)}</span>
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--ambar); background: var(--ambar-fondo); padding: 0.1em var(--e-2); border-radius: var(--radio-marca); letter-spacing: 0.04em;">${escTexto(sello)}</span>
+                </div>
+                <div style="padding: var(--e-6); display: grid; gap: var(--e-6);">
+                  <div>
+                    <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris);">${escTexto(d.exhibitTapado)}</p>
+                    <div style="display: flex; align-items: center; gap: var(--e-3); flex-wrap: wrap;">
+                      <span class="dato" style="color: var(--rojo); font-size: var(--t-300);">12345678Z</span>
+                      <span aria-hidden="true" style="display: inline-block; height: 1.2em; width: 6em; background: var(--tinta); border-radius: var(--radio-marca);"></span>
+                    </div>
+                    <p style="margin: var(--e-2) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--rojo);">${escTexto(d.exhibitLegible)}</p>
+                  </div>
+                  <div style="border-top: 1px dashed var(--linea-fuerte); padding-top: var(--e-6);">
+                    <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--verde);">${escTexto(d.exhibitEliminado)}</p>
+                    <div style="display: inline-flex; align-items: center; gap: var(--e-3);">
+                      <span aria-hidden="true" style="display: inline-block; height: 1.2em; width: 6em; border: 1px dashed var(--linea-fuerte); border-radius: var(--radio-marca); background: repeating-linear-gradient(135deg, transparent 0 5px, var(--linea) 5px 6px);"></span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="var(--verde)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 1.1rem; height: 1.1rem; flex: none;"><path d="M4 10.5l4 4 8-9"/></svg>
+                    </div>
+                    <p style="margin: var(--e-2) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--verde);">${escTexto(d.exhibitNada)}</p>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--e-2) var(--e-4); border-top: 1px solid var(--linea); font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris);">
+                  <span>${escTexto(d.exhibitPagina)}</span>
+                  <span style="letter-spacing: 0.1em;">SHA-256 ····</span>
+                </div>
+              </div>
+            </figure>`;
+}
+
+/** Rótulo numérico mono de una sección (01…04), en el color que le corresponda a su masa. */
+function numeroSeccion(n: string, color: string): string {
+  return `<span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: ${color}; letter-spacing: 0.1em;">${n}</span>`;
+}
+
 function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
   const c = CONTENIDOS[locale];
+  const d = DECOR[locale];
   const ruta = rutaDe(pagina, locale) ?? '';
   const enlace = (id: string): string => {
     const destino = paginaPorId(id);
@@ -319,90 +454,162 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
 
   const bloques: string[] = [];
 
-  bloques.push(
-    [
-      '<header class="hero">',
-      sangrar(
-        [
-          texto('h1', { class: 'hero__titular' }, c.landing.titular),
-          texto('p', { class: 'hero__sub' }, c.landing.subtitulo),
-        ],
-        1,
-      ),
-      '</header>',
-    ].join('\n'),
-  );
+  // 1 · HERO (papel). El titular va en `<h1 class="hero__titular">` DESNUDO —lo exige
+  // `contenido-indexable`— y su tamaño lo pone el sistema (--t-700, ahora 28→48). El resto de la
+  // columna y el espécimen se maquetan en línea. El orden del pliegue (marca < titular < sub <
+  // carga < nota-local < gancho < aviso < argumento) lo sigue vigilando `estilo.test.ts`.
+  bloques.push(`<section style="padding: clamp(2.5rem, 6vw, var(--e-24)) var(--e-4) var(--e-seccion);">
+        <div style="max-width: var(--ancho-herramienta); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--e-12) var(--e-16); align-items: center;">
+          <div style="max-width: 38rem;">
+            <p style="display: inline-flex; align-items: center; gap: var(--e-2); margin: 0 0 var(--e-6); padding: var(--e-1) var(--e-3); background: var(--acento-tenue); border-radius: 999px; font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-fuerte);"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: var(--acento);"></span>${escTexto(c.home.ofertaGratis)}</p>
+            ${texto('h1', { class: 'hero__titular' }, c.landing.titular)}
+            <p class="hero__sub" style="font-size: var(--t-400); line-height: var(--lh-texto); color: var(--tinta-suave); max-width: var(--medida); margin: var(--e-6) 0 0;">${escTexto(c.landing.subtitulo)}</p>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--e-3); margin-top: var(--e-8);">
+              <a href="#herramienta" style="display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--e-3) var(--e-6); font-weight: var(--peso-fuerte); color: var(--tinta-inversa); background: var(--acento); border: 1px solid var(--acento); border-radius: var(--radio); text-decoration: none;">${escTexto(c.secciones.trabajo)}</a>
+              <a href="#pro" style="display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--e-3) var(--e-6); font-weight: var(--peso-fuerte); color: var(--acento); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); text-decoration: none;">${escTexto(d.ctaVerPro)}</a>
+            </div>
+            <p class="hero__aparte" style="margin: var(--e-6) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.02em;">${escTexto(d.heroMicro)}</p>
+          </div>
+          ${exhibitHero(locale)}
+        </div>
+      </section>`);
 
-  // GANA LA HERRAMIENTA, y no está reñido con el argumento.
-  //
-  // Medido antes de esta rama, a 390×844: el primer control del producto estaba a 1,37 pantallas,
-  // la zona de carga a 2,05 y «Comprar Pro» a 3,06; por encima del pliegue el ÚNICO elemento
-  // accionable era el enlace «English». El visitante tenía que leer doscientas palabras de prosa
-  // sobre sanciones antes de descubrir qué le deja hacer la página.
-  //
-  // El argumento de este producto ES la herramienta: el modo gratuito procesa un documento
-  // entero, y la única prueba real de «nada sale de tu navegador» es que el visitante lo
-  // compruebe. Así que la zona de carga sube, y con ella solo lo que hace falta para atreverse a
-  // soltar un acta con DNI dentro: dos frases que YA ESTABAN ESCRITAS y estaban mal colocadas.
-  //
-  // `procesadoLocal` iba a media página de distancia: ahí abajo es un dato más; pegada al control
-  // es la respuesta a la pregunta que el control acaba de provocar. Y `avisoPrincipal` iba ANTES
-  // del control: una advertencia sobre lo que la herramienta no garantiza, leída antes de saber
-  // qué es la herramienta, es un muro de descargo. Debajo es la letra pequeña del control que
-  // gobierna — y sigue estando antes de cualquier acción con consecuencias, porque la casilla de
-  // revisión y el botón de descarga no existen hasta que hay documento.
-  //
-  // Ni una palabra nueva: las dos cadenas son las de siempre y cambian de sitio, no de contenido.
-  bloques.push(
-    [
-      '<section class="panel" id="herramienta">',
-      sangrar(
-        [
-          texto('h2', { class: 'panel__titulo' }, c.secciones.trabajo),
-          '<div id="carga"></div>',
-          texto('p', { class: 'nota-local' }, c.landing.procesadoLocal),
-          '<div id="gancho"></div>',
-          texto('p', { class: 'aviso-principal' }, c.landing.avisoPrincipal),
-          '<div id="trabajo"></div>',
-        ],
-        1,
-      ),
-      '</section>',
-    ].join('\n'),
-  );
+  // 2 · LA MESA DE TRABAJO (tinta). La herramienta real es el centro de gravedad: se sienta en una
+  // ficha blanca sobre la masa de tinta. Los cuatro huecos que rellena `main.ts` —#carga,
+  // #gancho, #trabajo (y #licencia más abajo)— viven DENTRO de la ficha, en el mismo orden que la
+  // primera pantalla acordada; `nota-local` y `aviso-principal` conservan su clase y su texto
+  // íntegro (los pide `contenido-indexable`). La casilla y el botón de descarga los monta `main.ts`
+  // al final de #trabajo, que es el pie del panel: es donde el diseño los quería, sin tocar la app.
+  bloques.push(`<section id="herramienta" style="background: var(--tinta); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+          <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--e-4); margin: 0 0 var(--e-8);">
+            <div style="display: flex; align-items: baseline; gap: var(--e-4);">
+              ${numeroSeccion('01', 'var(--acento-tenue)')}
+              ${texto('h2', { style: 'margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); color: var(--tinta-inversa); letter-spacing: -0.01em;' }, c.secciones.trabajo)}
+            </div>
+          </div>
+          <div style="background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-mesa); overflow: hidden;">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--e-2) var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); background: var(--papel);">
+              <span aria-hidden="true" style="display: inline-flex; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span></span>
+              <span style="display: inline-flex; align-items: center; gap: var(--e-2); font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.06em; text-transform: uppercase;"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: var(--verde);"></span>${escTexto(d.toolMicro)}</span>
+            </div>
+            <div style="padding: var(--e-6);">
+              <div id="carga"></div>
+              ${texto('p', { class: 'nota-local' }, c.landing.procesadoLocal)}
+              <div id="gancho"></div>
+              ${texto('p', { class: 'aviso-principal' }, c.landing.avisoPrincipal)}
+              <div id="trabajo"></div>
+            </div>
+          </div>
+        </div>
+      </section>`);
 
-  // El argumento, entero, debajo de la herramienta. No se recorta ni se reescribe: se coloca.
-  bloques.push(
-    [
-      '<section class="argumento">',
-      sangrar(
-        [
-          `<ul class="hero__bullets">\n${sangrar(c.landing.bullets.map((b) => texto('li', {}, b)), 1)}\n</ul>`,
-          texto('p', { class: 'hero__dolor' }, c.landing.dolor),
-          texto('p', { class: 'hero__deteccion' }, c.landing.notaDeteccion),
-          texto('p', { class: 'hero__nicho' }, c.landing.nicho),
-        ],
-        1,
-      ),
-      '</section>',
-    ].join('\n'),
-  );
+  // 3 · CUATRO ARGUMENTOS (blanco). Van en `<section class="argumento">` DESNUDA —la marca del
+  // pliegue— y las cuatro viñetas de la fuente (`hero__bullets`) se pintan como fichas.
+  const fichasArg = c.landing.bullets
+    .map(
+      (b, i) => `<li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+              <div style="display: flex; align-items: center; justify-content: space-between;">${iconoDoc('2rem')}<span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">0${i + 1}</span></div>
+              <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">${escTexto(b)}</span>
+            </li>`,
+    )
+    .join('\n            ');
+  bloques.push(`<section class="argumento">
+        <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+          <ul class="hero__bullets" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--e-4);">
+            ${fichasArg}
+          </ul>
+        </div>
+      </section>`);
 
-  bloques.push(
-    [
-      '<section class="panel" id="licencia">',
-      sangrar(
-        [
-          texto('h2', { class: 'panel__titulo' }, c.secciones.pro),
-          texto('p', { class: 'pro__gratis' }, c.pro.gratis),
-          texto('p', { class: 'pro__argumento' }, c.pro.argumento),
-        ],
-        1,
-      ),
-      '</section>',
-    ].join('\n'),
-  );
+  // 4 · QUÉ SE DETECTA (azul tenue). El texto íntegro de `notaDeteccion` (clase `hero__deteccion`)
+  // y, al lado, los identificadores como chips (repiten términos que ya están en ese texto).
+  const chips = d.chips
+    .map(
+      (t) =>
+        `<span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">${escTexto(t)}</span>`,
+    )
+    .join('\n              ');
+  bloques.push(`<section style="background: var(--acento-tenue); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
+          ${texto('p', { class: 'hero__deteccion', style: 'margin: 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta); max-width: var(--medida);' }, c.landing.notaDeteccion)}
+          <div>
+            <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-fuerte);">${escTexto(c.secciones.trabajo)}</p>
+            <div style="display: flex; flex-wrap: wrap; gap: var(--e-2);">
+              ${chips}
+            </div>
+          </div>
+        </div>
+      </section>`);
 
+  // 5 · EL PRECEDENTE (tinta). El texto del dolor va ÍNTEGRO en un solo `<p class="hero__dolor">`
+  // (lo exige `contenido-indexable`, y `afirmaciones-respaldadas` pide que el importe cite su
+  // expediente: los dos van juntos en la propia frase). El aside repite la cifra CON su expediente
+  // adyacente, así que también queda respaldado.
+  bloques.push(`<section style="background: var(--tinta); color: var(--tinta-inversa); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
+          ${texto('p', { class: 'hero__dolor', style: 'margin: 0; font-size: var(--t-400); line-height: var(--lh-texto); color: rgba(255,255,255,0.88); max-width: var(--medida);' }, c.landing.dolor)}
+          <aside style="border: 1px solid rgba(255,255,255,0.28); border-radius: var(--radio); padding: var(--e-6); align-self: start;">
+            <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">15.000&nbsp;€</p>
+            <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">AEPD · Expediente PS/00378/2019</p>
+          </aside>
+        </div>
+      </section>`);
+
+  // 6 · EL INFORME (papel). Una figura del informe con su banda ámbar (el 86 % de las entregas) y,
+  // al lado, el nicho (`hero__nicho`) íntegro. La banda usa el sello E3 real, sin inventar.
+  const filasInforme = [c.informe.subZonas, c.informe.subPatrones, c.informe.subSinCapaDeTexto]
+    .map(
+      (t) =>
+        `<li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>${escTexto(t)}</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>`,
+    )
+    .join('\n              ');
+  bloques.push(`<section style="background: var(--papel); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: center;">
+          <div style="min-width: 0;">
+            <p style="margin: 0 0 var(--e-4); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris);">${escTexto(c.informe.titulo)}</p>
+            <div style="border: 1px solid var(--linea-fuerte); border-radius: var(--radio); background: var(--superficie); overflow: hidden; box-shadow: var(--sombra-hoja);">
+              <p style="margin: 0; padding: var(--e-4) var(--e-6); background: var(--ambar-fondo); color: var(--ambar); font-weight: var(--peso-veredicto); font-size: var(--t-500); line-height: var(--lh-corto); letter-spacing: 0.02em; display: flex; align-items: center; gap: var(--e-3);"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: var(--ambar);"></span>${escTexto(c.informe.sellos.E3)}</p>
+              <ul style="list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea);">
+              ${filasInforme}
+                <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta);"><span>${escTexto(c.informe.filaHuella)}</span><span style="color: var(--gris); letter-spacing: 0.08em;">a1f4···9c</span></li>
+              </ul>
+            </div>
+          </div>
+          ${texto('p', { class: 'hero__nicho', style: 'margin: 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta-suave); max-width: var(--medida);' }, c.landing.nicho)}
+        </div>
+      </section>`);
+
+  // 7 · VERSIÓN PRO (blanco). Dos fichas: Pro (tinta, 59 € grande + su argumento + el hueco
+  // #licencia, donde `main.ts` monta la verificación de clave y el enlace de compra) y Gratuito
+  // (su texto). `#licencia` DEBE ser descendiente de #app para que `main.ts` lo encuentre.
+  bloques.push(`<section id="pro" style="background: var(--superficie); border-top: 1px solid var(--linea); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho); margin: 0 auto;">
+          <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+            ${numeroSeccion('02', 'var(--gris)')}
+            ${texto('h2', { style: 'margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;' }, c.secciones.pro)}
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: var(--e-6); align-items: stretch;">
+            <div style="background: var(--tinta); color: var(--tinta-inversa); border-radius: var(--radio); padding: var(--e-8); box-shadow: var(--sombra-mesa); display: flex; flex-direction: column;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--e-3);">
+                <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--acento-tenue); letter-spacing: 0.1em; text-transform: uppercase;">Pro</span>
+                <span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: var(--e-1) var(--e-3);">${escTexto(d.proNota)}</span>
+              </div>
+              <p style="margin: var(--e-6) 0 0; display: flex; align-items: baseline; gap: var(--e-3);"><span style="font-size: clamp(3rem, 8vw, 4.5rem); font-weight: var(--peso-veredicto); line-height: 1; letter-spacing: -0.03em; color: var(--tinta-inversa);">${escTexto(PRECIO_PRO)}</span><span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: rgba(255,255,255,0.72);">${escTexto(d.proUnaVez)}</span></p>
+              <p style="margin: var(--e-6) 0 var(--e-6); font-size: var(--t-300); line-height: var(--lh-texto); color: rgba(255,255,255,0.88);">${escTexto(c.pro.argumento)}</p>
+              <div id="licencia" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.22); padding-top: var(--e-6);"></div>
+            </div>
+            <div style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-8); display: flex; flex-direction: column;">
+              <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--tinta); letter-spacing: 0.1em; text-transform: uppercase;">${escTexto(d.proEtiquetaGratis)}</span>
+              <p style="margin: var(--e-6) 0 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta-suave);">${escTexto(c.pro.gratis)}</p>
+              <a href="#herramienta" style="display: inline-flex; align-items: center; min-height: 2.75rem; margin-top: auto; padding-top: var(--e-8); font-weight: var(--peso-fuerte); color: var(--acento); text-decoration: none;">${escTexto(c.secciones.trabajo)} →</a>
+            </div>
+          </div>
+        </div>
+      </section>`);
+
+  // 8 · FAQ (papel). El acordeón conserva `<details class="faq__item">` con `<summary>` y `<p>`
+  // DESNUDOS, byte a byte —lo exige `faq-paridad`, que lee del disco— y se reestila por CSS.
   const faq = c.faq.map((item) =>
     [
       '<details class="faq__item">',
@@ -410,23 +617,52 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
       '</details>',
     ].join('\n'),
   );
-  bloques.push(
-    [
-      `<section class="panel faq" aria-label="${esc(c.secciones.faq)}">`,
-      sangrar([texto('h2', { class: 'panel__titulo' }, c.secciones.faq), ...faq], 1),
-      '</section>',
-    ].join('\n'),
-  );
+  bloques.push(`<section style="background: var(--papel); border-top: 1px solid var(--linea); padding: var(--e-seccion) var(--e-4);" aria-label="${esc(c.secciones.faq)}">
+        <div style="max-width: var(--ancho); margin: 0 auto;">
+          <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+            ${numeroSeccion('03', 'var(--gris)')}
+            ${texto('h2', { style: 'margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;' }, c.secciones.faq)}
+          </div>
+          <div class="faq">
+${sangrar(faq, 6)}
+          </div>
+        </div>
+      </section>`);
 
-  const guias = guiasDe(locale).map((g) => `<li>${texto('a', { href: g.href }, g.guia.tituloEnlace)}</li>`);
-  bloques.push(
-    [
-      `<nav class="guias" aria-label="${esc(c.secciones.guias)}">`,
-      sangrar([texto('h2', {}, c.secciones.guias), `<ul>\n${sangrar(guias, 1)}\n</ul>`], 1),
-      '</nav>',
-    ].join('\n'),
-  );
+  // 9 · GUÍAS (azul tenue). Rejilla de fichas. `<nav class="guias">` y `.guias a` conservan sus
+  // reglas de diana táctil (44 px) en la hoja; la ficha se maqueta en línea sobre el <a>.
+  const fichasGuia = guiasDe(locale)
+    .map(
+      (g) =>
+        `<li><a href="${esc(g.href)}" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+              <span aria-hidden="true" style="margin-bottom: var(--e-6);">${iconoDoc('2rem')}</span>
+              <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">${escTexto(g.guia.tituloEnlace)}</span>
+            </a></li>`,
+    )
+    .join('\n            ');
+  bloques.push(`<nav class="guias" aria-label="${esc(c.secciones.guias)}" style="background: var(--acento-tenue); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+          <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+            ${numeroSeccion('04', 'var(--acento-fuerte)')}
+            ${texto('h2', { style: 'margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;' }, c.secciones.guias)}
+          </div>
+          <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: var(--e-4);">
+            ${fichasGuia}
+          </ul>
+        </div>
+      </nav>`);
 
+  // 10 · CIERRE (tinta). El titular es `c.guiaCta` (existente) y el botón lleva a la herramienta.
+  bloques.push(`<section style="background: var(--tinta); color: var(--tinta-inversa); padding: var(--e-seccion) var(--e-4);">
+        <div style="max-width: var(--ancho); margin: 0 auto; text-align: center;">
+          <p style="margin: 0 auto; max-width: 26rem; font-size: var(--t-600); font-weight: var(--peso-veredicto); line-height: var(--lh-titular); letter-spacing: -0.015em;">${escTexto(c.guiaCta)}</p>
+          <a href="#herramienta" style="display: inline-flex; align-items: center; justify-content: center; margin-top: var(--e-8); min-height: 3rem; padding: var(--e-3) var(--e-8); font-size: var(--t-400); font-weight: var(--peso-fuerte); color: var(--tinta); background: var(--tinta-inversa); border-radius: var(--radio); text-decoration: none;">${escTexto(d.cierreBoton)}</a>
+        </div>
+      </section>`);
+
+  // 11 · PIE (papel). El pie legal conserva `<footer class="legales">` con los `<details id>` que
+  // publican el Aviso Legal, los Términos y la Privacidad ÍNTEGROS (los exige `contenido-indexable`
+  // y `legal.test.ts`), el `pie` y los enlaces de sector, sobre una mancheta de marca.
   const legales = c.legal.secciones.map((s) =>
     [
       `<details id="${esc(s.id)}">`,
@@ -448,6 +684,7 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
       `<footer class="legales" aria-label="${esc(c.secciones.legal)}">`,
       sangrar(
         [
+          `<p class="cabecera__marca" style="margin: 0 0 var(--e-4);">${SIMBOLO_MANCHETA}${escTexto(c.marca)}</p>`,
           ...legales,
           texto('p', { class: 'pie' }, c.legal.pie),
           `<p class="enlaces-sector">\n${sangrar(enlacesSector, 1)}\n</p>`,

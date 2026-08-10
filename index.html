@@ -32,7 +32,7 @@
     --t-400: 1.125rem;
     --t-500: 1.3125rem;
     --t-600: 1.75rem;
-    --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+    --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
     --lh-titular: 1.15;
     --lh-corto: 1.35;
     --lh-texto: 1.6;
@@ -40,6 +40,7 @@
     --peso-fuerte: 600;
     --peso-veredicto: 700;
     --ancho: 60rem;
+    --ancho-herramienta: 76rem;
     --medida: 34em;
     --e-1: 0.25rem;
     --e-2: 0.5rem;
@@ -50,6 +51,7 @@
     --e-12: 3rem;
     --e-16: 4rem;
     --e-24: 6rem;
+    --e-seccion: clamp(3rem, 7vw, 4rem);
     --radio: 6px;
     --radio-marca: 2px;
     color-scheme: light;
@@ -70,6 +72,8 @@
     --ambar-fondo: #fbefd2;
     --verde: #0f6b41;
     --verde-fondo: #dfeee4;
+    --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+    --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
     }
     *,
     *::before,
@@ -86,6 +90,13 @@
     }
     a {
     color: var(--acento);
+    }
+    a:hover {
+    color: var(--acento-fuerte);
+    }
+    :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 2px;
     }
     button,
     input,
@@ -302,86 +313,267 @@
       </div>
     </header>
     <div id="app" data-lang="es" data-ejemplo="ejemplo-acta-comunidad.pdf">
-      <header class="hero">
-        <h1 class="hero__titular">El dato que tachaste con un rectángulo negro sigue dentro del PDF</h1>
-        <p class="hero__sub">TachadoPDF elimina el texto del propio archivo en lugar de taparlo: el dato deja de ser extraíble. Y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.</p>
-      </header>
-      <section class="panel" id="herramienta">
-        <h2 class="panel__titulo">Tacha tu documento</h2>
-        <div id="carga"></div>
-        <p class="nota-local">Las herramientas de tachado online habituales envían tus documentos a un servidor. TachadoPDF procesa todo en tu propio navegador: el archivo nunca sale de tu equipo.</p>
-        <div id="gancho"></div>
-        <p class="aviso-principal">TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana.</p>
-        <div id="trabajo"></div>
-      </section>
+      <section style="padding: clamp(2.5rem, 6vw, var(--e-24)) var(--e-4) var(--e-seccion);">
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--e-12) var(--e-16); align-items: center;">
+                <div style="max-width: 38rem;">
+                  <p style="display: inline-flex; align-items: center; gap: var(--e-2); margin: 0 0 var(--e-6); padding: var(--e-1) var(--e-3); background: var(--acento-tenue); border-radius: 999px; font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-fuerte);"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: var(--acento);"></span>Gratuito (5 documentos/mes, hasta 3 páginas)</p>
+                  <h1 class="hero__titular">El dato que tachaste con un rectángulo negro sigue dentro del PDF</h1>
+                  <p class="hero__sub" style="font-size: var(--t-400); line-height: var(--lh-texto); color: var(--tinta-suave); max-width: var(--medida); margin: var(--e-6) 0 0;">TachadoPDF elimina el texto del propio archivo en lugar de taparlo: el dato deja de ser extraíble. Y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.</p>
+                  <div style="display: flex; flex-wrap: wrap; gap: var(--e-3); margin-top: var(--e-8);">
+                    <a href="#herramienta" style="display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--e-3) var(--e-6); font-weight: var(--peso-fuerte); color: var(--tinta-inversa); background: var(--acento); border: 1px solid var(--acento); border-radius: var(--radio); text-decoration: none;">Tacha tu documento</a>
+                    <a href="#pro" style="display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--e-3) var(--e-6); font-weight: var(--peso-fuerte); color: var(--acento); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); text-decoration: none;">Ver Pro — 59 €</a>
+                  </div>
+                  <p class="hero__aparte" style="margin: var(--e-6) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.02em;">100 % en el navegador · el documento no se sube a ningún servidor</p>
+                </div>
+                <figure class="hero__aparte" style="margin: 0; min-width: 0;">
+                    <figcaption style="font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); margin: 0 0 var(--e-2);">Ejemplo · datos ficticios</figcaption>
+                    <div style="background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-hoja); overflow: hidden;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--e-3); padding: var(--e-3) var(--e-4); border-bottom: 1px solid var(--linea); background: var(--papel); color: var(--tinta-suave);">
+                        <span style="display: inline-flex; align-items: center; gap: var(--e-2); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.06em; text-transform: uppercase;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 1rem; height: 1rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>Acta de junta de propietarios</span>
+                        <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--ambar); background: var(--ambar-fondo); padding: 0.1em var(--e-2); border-radius: var(--radio-marca); letter-spacing: 0.04em;">COMPROBACIÓN PARCIAL</span>
+                      </div>
+                      <div style="padding: var(--e-6); display: grid; gap: var(--e-6);">
+                        <div>
+                          <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris);">Tapado con un rectángulo</p>
+                          <div style="display: flex; align-items: center; gap: var(--e-3); flex-wrap: wrap;">
+                            <span class="dato" style="color: var(--rojo); font-size: var(--t-300);">12345678Z</span>
+                            <span aria-hidden="true" style="display: inline-block; height: 1.2em; width: 6em; background: var(--tinta); border-radius: var(--radio-marca);"></span>
+                          </div>
+                          <p style="margin: var(--e-2) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--rojo);">sigue siendo legible y copiable</p>
+                        </div>
+                        <div style="border-top: 1px dashed var(--linea-fuerte); padding-top: var(--e-6);">
+                          <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--verde);">Eliminado del archivo</p>
+                          <div style="display: inline-flex; align-items: center; gap: var(--e-3);">
+                            <span aria-hidden="true" style="display: inline-block; height: 1.2em; width: 6em; border: 1px dashed var(--linea-fuerte); border-radius: var(--radio-marca); background: repeating-linear-gradient(135deg, transparent 0 5px, var(--linea) 5px 6px);"></span>
+                            <svg viewBox="0 0 20 20" fill="none" stroke="var(--verde)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 1.1rem; height: 1.1rem; flex: none;"><path d="M4 10.5l4 4 8-9"/></svg>
+                          </div>
+                          <p style="margin: var(--e-2) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--verde);">no queda nada que seleccionar</p>
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--e-2) var(--e-4); border-top: 1px solid var(--linea); font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris);">
+                        <span>pág. 1</span>
+                        <span style="letter-spacing: 0.1em;">SHA-256 ····</span>
+                      </div>
+                    </div>
+                  </figure>
+              </div>
+            </section>
+      <section id="herramienta" style="background: var(--tinta); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <div style="display: flex; align-items: baseline; gap: var(--e-4);">
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--acento-tenue); letter-spacing: 0.1em;">01</span>
+                    <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); color: var(--tinta-inversa); letter-spacing: -0.01em;">Tacha tu documento</h2>
+                  </div>
+                </div>
+                <div style="background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-mesa); overflow: hidden;">
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--e-2) var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); background: var(--papel);">
+                    <span aria-hidden="true" style="display: inline-flex; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span></span>
+                    <span style="display: inline-flex; align-items: center; gap: var(--e-2); font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.06em; text-transform: uppercase;"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: var(--verde);"></span>100 % en el navegador</span>
+                  </div>
+                  <div style="padding: var(--e-6);">
+                    <div id="carga"></div>
+                    <p class="nota-local">Las herramientas de tachado online habituales envían tus documentos a un servidor. TachadoPDF procesa todo en tu propio navegador: el archivo nunca sale de tu equipo.</p>
+                    <div id="gancho"></div>
+                    <p class="aviso-principal">TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana.</p>
+                    <div id="trabajo"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
       <section class="argumento">
-        <ul class="hero__bullets">
-          <li>El texto se elimina del archivo, no se tapa con un rectángulo negro.</li>
-          <li>Todo ocurre en tu navegador: el documento no se sube a ningún servidor.</li>
-          <li>Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.</li>
-          <li>Informe de comprobación técnica descargable para tu expediente.</li>
-        </ul>
-        <p class="hero__dolor">Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a proteger los datos frente a la comunicación no autorizada (arts. 5.1.f y 32), y la AEPD ya ha multado con 15.000 € a una comunidad de propietarios por exponer el acta de una junta con los nombres, pisos y puertas de los vecinos — expediente PS/00378/2019. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.</p>
-        <p class="hero__deteccion">Qué se detecta automáticamente: correos electrónicos, y los identificadores españoles DNI, NIE, IBAN español, número de la Seguridad Social, referencia catastral y teléfonos en formato español. Todo lo demás —nombres, direcciones, firmas, fotografías, importes— lo marcas tú arrastrando un recuadro; lo que se borra y lo que se comprueba después es exactamente igual en los dos casos.</p>
-        <p class="hero__nicho">Pensado para administradores de fincas que reparten actas con datos de propietarios, gestorías que envían documentación de clientes y departamentos de RRHH que gestionan expedientes.</p>
-      </section>
-      <section class="panel" id="licencia">
-        <h2 class="panel__titulo">Versión Pro</h2>
-        <p class="pro__gratis">El modo gratuito tacha 5 documentos al mes, de hasta 3 páginas cada uno, con el mismo borrado real que Pro.</p>
-        <p class="pro__argumento">Pro es un pago único de 59 € y no es una suscripción: no se renueva ni genera cobros periódicos. Incluye documentos ilimitados, sin tope de páginas, procesado por lotes de varios ficheros a la vez e informe de comprobación sin marca de agua.</p>
-      </section>
-      <section class="panel faq" aria-label="Preguntas frecuentes">
-        <h2 class="panel__titulo">Preguntas frecuentes</h2>
-        <details class="faq__item">
-          <summary>¿Se sube mi documento a algún servidor?</summary>
-          <p>No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿De verdad se borra el dato o solo se tapa?</summary>
-          <p>Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Y si se le escapa un dato?</summary>
-          <p>La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Qué diferencia hay entre el modo gratuito y Pro?</summary>
-          <p>El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Funciona con documentos escaneados?</summary>
-          <p>Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?</summary>
-          <p>Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿El informe sirve como prueba legal?</summary>
-          <p>No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar.</p>
-        </details>
-        <details class="faq__item">
-          <summary>¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?</summary>
-          <p>La compra la gestiona Gumroad como vendedor (merchant of record). En el correo de confirmación de tu compra tienes un enlace para generar la factura y añadir tus datos fiscales (NIF y empresa). Si necesitas algo especial, escribe a admin@tachadopdf.com.</p>
-        </details>
-      </section>
-      <nav class="guias" aria-label="Guías">
-        <h2>Guías</h2>
-        <ul>
-          <li><a href="guia/tachar-dni-pdf/">Cómo tachar un DNI de un PDF sin que se pueda recuperar</a></li>
-          <li><a href="guia/rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
-          <li><a href="guia/proteccion-datos-administradores-fincas/">Datos personales en actas y documentos de comunidades</a></li>
-          <li><a href="guia/tachar-pdf-sin-subir-internet/">Cómo tachar datos de un PDF sin subirlo a internet</a></li>
-          <li><a href="guia/sanciones-aepd-comunidades-propietarios/">Sanciones de la AEPD a comunidades de propietarios</a></li>
-          <li><a href="guia/enviar-nominas-pdf-datos-personales/">Enviar nóminas en PDF sin exponer datos personales</a></li>
-          <li><a href="guia/ocultar-datos-personales-curriculum-pdf/">Ocultar datos personales de un currículum en PDF</a></li>
-          <li><a href="guia/ocultar-datos-terceros-documentos-juicio-pdf/">Ocultar datos de terceros en la prueba documental</a></li>
-          <li><a href="guia/censurar-pdf-antes-de-publicarlo-internet/">Censurar un PDF antes de publicarlo en internet</a></li>
-          <li><a href="guia/ocultar-datos-alumnos-pdf/">Ocultar los datos de alumnos en un PDF</a></li>
-          <li><a href="guia/tapar-datos-copia-dni-tramite/">Qué tapar en una copia del DNI antes de enviarla</a></li>
-        </ul>
-      </nav>
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+                <ul class="hero__bullets" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--e-4);">
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">01</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">El texto se elimina del archivo, no se tapa con un rectángulo negro.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">02</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">Todo ocurre en tu navegador: el documento no se sube a ningún servidor.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">03</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">04</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">Informe de comprobación técnica descargable para tu expediente.</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+      <section style="background: var(--acento-tenue); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
+                <p class="hero__deteccion" style="margin: 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta); max-width: var(--medida);">Qué se detecta automáticamente: correos electrónicos, y los identificadores españoles DNI, NIE, IBAN español, número de la Seguridad Social, referencia catastral y teléfonos en formato español. Todo lo demás —nombres, direcciones, firmas, fotografías, importes— lo marcas tú arrastrando un recuadro; lo que se borra y lo que se comprueba después es exactamente igual en los dos casos.</p>
+                <div>
+                  <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-fuerte);">Tacha tu documento</p>
+                  <div style="display: flex; flex-wrap: wrap; gap: var(--e-2);">
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">DNI</span>
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">NIE</span>
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">IBAN</span>
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">Nº Seguridad Social</span>
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">Ref. catastral</span>
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">Teléfono</span>
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">Email</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+      <section style="background: var(--tinta); color: var(--tinta-inversa); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
+                <p class="hero__dolor" style="margin: 0; font-size: var(--t-400); line-height: var(--lh-texto); color: rgba(255,255,255,0.88); max-width: var(--medida);">Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a proteger los datos frente a la comunicación no autorizada (arts. 5.1.f y 32), y la AEPD ya ha multado con 15.000 € a una comunidad de propietarios por exponer el acta de una junta con los nombres, pisos y puertas de los vecinos — expediente PS/00378/2019. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.</p>
+                <aside style="border: 1px solid rgba(255,255,255,0.28); border-radius: var(--radio); padding: var(--e-6); align-self: start;">
+                  <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">15.000&nbsp;€</p>
+                  <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">AEPD · Expediente PS/00378/2019</p>
+                </aside>
+              </div>
+            </section>
+      <section style="background: var(--papel); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: center;">
+                <div style="min-width: 0;">
+                  <p style="margin: 0 0 var(--e-4); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris);">Informe de comprobación técnica</p>
+                  <div style="border: 1px solid var(--linea-fuerte); border-radius: var(--radio); background: var(--superficie); overflow: hidden; box-shadow: var(--sombra-hoja);">
+                    <p style="margin: 0; padding: var(--e-4) var(--e-6); background: var(--ambar-fondo); color: var(--ambar); font-weight: var(--peso-veredicto); font-size: var(--t-500); line-height: var(--lh-corto); letter-spacing: 0.02em; display: flex; align-items: center; gap: var(--e-3);"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: var(--ambar);"></span>COMPROBACIÓN PARCIAL</p>
+                    <ul style="list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea);">
+                    <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>Zonas tachadas por página</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>
+                    <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>Patrones de datos buscados en el texto</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>
+                    <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>Páginas sin capa de texto</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>
+                      <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta);"><span>Huella SHA-256 del documento entregado</span><span style="color: var(--gris); letter-spacing: 0.08em;">a1f4···9c</span></li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="hero__nicho" style="margin: 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta-suave); max-width: var(--medida);">Pensado para administradores de fincas que reparten actas con datos de propietarios, gestorías que envían documentación de clientes y departamentos de RRHH que gestionan expedientes.</p>
+              </div>
+            </section>
+      <section id="pro" style="background: var(--superficie); border-top: 1px solid var(--linea); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto;">
+                <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--gris); letter-spacing: 0.1em;">02</span>
+                  <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;">Versión Pro</h2>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: var(--e-6); align-items: stretch;">
+                  <div style="background: var(--tinta); color: var(--tinta-inversa); border-radius: var(--radio); padding: var(--e-8); box-shadow: var(--sombra-mesa); display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--e-3);">
+                      <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--acento-tenue); letter-spacing: 0.1em; text-transform: uppercase;">Pro</span>
+                      <span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: var(--e-1) var(--e-3);">pago único · no suscripción</span>
+                    </div>
+                    <p style="margin: var(--e-6) 0 0; display: flex; align-items: baseline; gap: var(--e-3);"><span style="font-size: clamp(3rem, 8vw, 4.5rem); font-weight: var(--peso-veredicto); line-height: 1; letter-spacing: -0.03em; color: var(--tinta-inversa);">59 €</span><span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: rgba(255,255,255,0.72);">una vez</span></p>
+                    <p style="margin: var(--e-6) 0 var(--e-6); font-size: var(--t-300); line-height: var(--lh-texto); color: rgba(255,255,255,0.88);">Pro es un pago único de 59 € y no es una suscripción: no se renueva ni genera cobros periódicos. Incluye documentos ilimitados, sin tope de páginas, procesado por lotes de varios ficheros a la vez e informe de comprobación sin marca de agua.</p>
+                    <div id="licencia" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.22); padding-top: var(--e-6);"></div>
+                  </div>
+                  <div style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-8); display: flex; flex-direction: column;">
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--tinta); letter-spacing: 0.1em; text-transform: uppercase;">Gratuito</span>
+                    <p style="margin: var(--e-6) 0 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta-suave);">El modo gratuito tacha 5 documentos al mes, de hasta 3 páginas cada uno, con el mismo borrado real que Pro.</p>
+                    <a href="#herramienta" style="display: inline-flex; align-items: center; min-height: 2.75rem; margin-top: auto; padding-top: var(--e-8); font-weight: var(--peso-fuerte); color: var(--acento); text-decoration: none;">Tacha tu documento →</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+      <section style="background: var(--papel); border-top: 1px solid var(--linea); padding: var(--e-seccion) var(--e-4);" aria-label="Preguntas frecuentes">
+              <div style="max-width: var(--ancho); margin: 0 auto;">
+                <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--gris); letter-spacing: 0.1em;">03</span>
+                  <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;">Preguntas frecuentes</h2>
+                </div>
+                <div class="faq">
+                  <details class="faq__item">
+                    <summary>¿Se sube mi documento a algún servidor?</summary>
+                    <p>No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿De verdad se borra el dato o solo se tapa?</summary>
+                    <p>Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿Y si se le escapa un dato?</summary>
+                    <p>La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿Qué diferencia hay entre el modo gratuito y Pro?</summary>
+                    <p>El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿Funciona con documentos escaneados?</summary>
+                    <p>Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?</summary>
+                    <p>Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿El informe sirve como prueba legal?</summary>
+                    <p>No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?</summary>
+                    <p>La compra la gestiona Gumroad como vendedor (merchant of record). En el correo de confirmación de tu compra tienes un enlace para generar la factura y añadir tus datos fiscales (NIF y empresa). Si necesitas algo especial, escribe a admin@tachadopdf.com.</p>
+                  </details>
+                </div>
+              </div>
+            </section>
+      <nav class="guias" aria-label="Guías" style="background: var(--acento-tenue); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+                <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--acento-fuerte); letter-spacing: 0.1em;">04</span>
+                  <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;">Guías</h2>
+                </div>
+                <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: var(--e-4);">
+                  <li><a href="guia/tachar-dni-pdf/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Cómo tachar un DNI de un PDF sin que se pueda recuperar</span>
+                  </a></li>
+                  <li><a href="guia/rectangulo-negro-pdf-no-borra/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Por qué el rectángulo negro no borra el dato</span>
+                  </a></li>
+                  <li><a href="guia/proteccion-datos-administradores-fincas/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Datos personales en actas y documentos de comunidades</span>
+                  </a></li>
+                  <li><a href="guia/tachar-pdf-sin-subir-internet/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Cómo tachar datos de un PDF sin subirlo a internet</span>
+                  </a></li>
+                  <li><a href="guia/sanciones-aepd-comunidades-propietarios/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Sanciones de la AEPD a comunidades de propietarios</span>
+                  </a></li>
+                  <li><a href="guia/enviar-nominas-pdf-datos-personales/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Enviar nóminas en PDF sin exponer datos personales</span>
+                  </a></li>
+                  <li><a href="guia/ocultar-datos-personales-curriculum-pdf/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Ocultar datos personales de un currículum en PDF</span>
+                  </a></li>
+                  <li><a href="guia/ocultar-datos-terceros-documentos-juicio-pdf/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Ocultar datos de terceros en la prueba documental</span>
+                  </a></li>
+                  <li><a href="guia/censurar-pdf-antes-de-publicarlo-internet/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Censurar un PDF antes de publicarlo en internet</span>
+                  </a></li>
+                  <li><a href="guia/ocultar-datos-alumnos-pdf/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Ocultar los datos de alumnos en un PDF</span>
+                  </a></li>
+                  <li><a href="guia/tapar-datos-copia-dni-tramite/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Qué tapar en una copia del DNI antes de enviarla</span>
+                  </a></li>
+                </ul>
+              </div>
+            </nav>
+      <section style="background: var(--tinta); color: var(--tinta-inversa); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; text-align: center;">
+                <p style="margin: 0 auto; max-width: 26rem; font-size: var(--t-600); font-weight: var(--peso-veredicto); line-height: var(--lh-titular); letter-spacing: -0.015em;">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</p>
+                <a href="#herramienta" style="display: inline-flex; align-items: center; justify-content: center; margin-top: var(--e-8); min-height: 3rem; padding: var(--e-3) var(--e-8); font-size: var(--t-400); font-weight: var(--peso-fuerte); color: var(--tinta); background: var(--tinta-inversa); border-radius: var(--radio); text-decoration: none;">Ir a la herramienta</a>
+              </div>
+            </section>
       <footer class="legales" aria-label="Información legal">
+        <p class="cabecera__marca" style="margin: 0 0 var(--e-4);"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
         <details id="aviso-legal">
           <summary>Aviso Legal</summary>
           <pre>Aviso Legal
