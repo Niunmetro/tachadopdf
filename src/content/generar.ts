@@ -45,6 +45,22 @@ const VERIFICACIONES_GOOGLE = [
 
 const OG_IMAGE = `${SITIO}/og-image.png`;
 
+/**
+ * LOS ICONOS DEL SITIO. Con ruta RELATIVA al documento (`prefijo`), igual que la fuente y el PDF
+ * de ejemplo: una ruta raíz-absoluta (`/favicon.svg`) moriría bajo la base de emergencia
+ * `/tachadopdf/`, que es justo el modo pensado para cuando el dominio se cae. Los tres son
+ * self-hosted (viven en `public/`), así que la CSP `img-src 'self'` no cambia ni un byte.
+ * El `.ico` (16/32/48) sirve a los navegadores viejos —hoy `/favicon.ico` da 404 en cada primera
+ * visita—, el `.svg` a los modernos (escala sin pixelarse) y el `apple-touch` al iOS.
+ */
+export function enlacesFavicon(prefijo: string): string[] {
+  return [
+    `<link rel="icon" href="${prefijo}favicon.ico" sizes="32x32" />`,
+    `<link rel="icon" href="${prefijo}favicon.svg" type="image/svg+xml" />`,
+    `<link rel="apple-touch-icon" href="${prefijo}apple-touch-icon.png" />`,
+  ];
+}
+
 export interface FicheroGenerado {
   /** Ruta relativa a la raíz del repositorio, siempre con '/'. */
   ruta: string;
@@ -88,6 +104,8 @@ function cabecera(o: OpcionesCabecera): string {
     '<meta charset="UTF-8" />',
     '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
     `<meta http-equiv="Content-Security-Policy" content="${esc(CSP)}">`,
+    '',
+    ...enlacesFavicon(o.prefijo),
     '',
     // El sistema visual va en TODAS las páginas y va ANTES que el <style> propio de cada una:
     // los tokens se declaran una sola vez (src/estilo/sistema.css) y lo de la página manda
