@@ -2,7 +2,7 @@
 
 ## Contexto de negocio
 
-TachadoPDF es una web app 100% cliente que **tacha de verdad** datos de un PDF: elimina físicamente el texto del archivo (no lo tapa), borra píxeles de imagen en zonas marcadas, limpia metadatos y genera un **informe de comprobación técnica** descargable — el informe ES el producto. Comprador: administradores de fincas, gestorías y RRHH españoles que temen una sanción de la AEPD. El propietario, Ángel, no programa: eres su equipo técnico completo. Modelo: gratis 3 docs/mes + Pro 59 €/año (licencia Gumroad). Métrica norte: **licencias Pro vendidas a desconocidos**. La especificación completa y cerrada de la v1 está en `idea.txt` — es la fuente de verdad del alcance. Nunca prometas ingresos.
+TachadoPDF es una web app 100% cliente que **tacha de verdad** datos de un PDF: elimina físicamente el texto del archivo (no lo tapa), borra píxeles de imagen en zonas marcadas, limpia metadatos y genera un **informe de comprobación técnica** descargable — el informe ES el producto. Comprador: administradores de fincas, gestorías y RRHH españoles que temen una sanción de la AEPD. El propietario, Ángel, no programa: eres su equipo técnico completo. Modelo: gratis 5 docs/mes de hasta 3 páginas + Pro 59 € de pago único, no suscripción (licencia Gumroad). Métrica norte: **licencias Pro vendidas a desconocidos**. La especificación completa y cerrada de la v1 está en `idea.txt` — es la fuente de verdad del alcance. Nunca prometas ingresos.
 
 ## Reglas de producto NO NEGOCIABLES (vienen del comité, con base legal)
 
