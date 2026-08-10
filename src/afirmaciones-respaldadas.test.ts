@@ -98,6 +98,15 @@ describe('las dos cifras retiradas el 2026-08-08 no pueden volver en silencio', 
     expect(html).not.toMatch(/ha sancionado a más de/i);
   });
 
+  // El comprador inglés es un despacho, y `/en/` no se había desplegado nunca: el deploy que
+  // saca el ámbar a producción habría sido el acto que PUBLICA esta frase. `docs/ESTADO.md` la
+  // tenía anotada como «viene de la redacción, no de una comprobación».
+  it.each(PAGINAS)('%s: no afirma la guía del ICO de julio de 2025', (relativo) => {
+    const html = readFileSync(resolve(RAIZ, relativo), 'utf-8');
+    expect(html).not.toMatch(/ICO published dedicated guidance/i);
+    expect(html).not.toMatch(/July 2025[^.]{0,120}ICO/i);
+  });
+
   // La proximidad no habría cazado esta: reinyectada en `/actas/` cae a dos párrafos de
   // PS/00378/2019 y se da por respaldada. Si esta cifra vuelve, vuelve con SU expediente pegado.
   it.each(PAGINAS)('%s: la multa de 6.000 € no vuelve sin su propio expediente', (relativo) => {

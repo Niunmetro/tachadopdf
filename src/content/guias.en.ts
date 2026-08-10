@@ -43,12 +43,14 @@ export const GUIAS_EN: ContenidoGuia[] = [
       // Sources checked 2026-08-08 (see src/legal/textos.en.ts for the full citation block):
       // Manafort = US v. Manafort 1:17-cr-00201 (D.D.C.), ECF 471 (defective) and ECF 472
       // (corrected), both 8 Jan 2019. PSNI = ICO monetary penalty £750,000, 3 Oct 2024, 9,483
-      // officers and staff exposed by a hidden worksheet in an FOI spreadsheet. ICO guidance
-      // published 31 July 2025.
+      // officers and staff exposed by a hidden worksheet in an FOI spreadsheet.
+      // ⚠ The third sentence — "In July 2025 the ICO published dedicated guidance…" — was RETIRED
+      // on 2026-08-10 from here and from LANDING_PAIN_EN. It was never checked against the source
+      // and this deploy would have been the one that published it. See textos.en.ts.
       {
         t: 'p',
         texto:
-          "On 8 January 2019, lawyers for Paul Manafort filed a court document with passages blacked out. The text underneath was still live: reporters copied it straight out, it was being quoted in news reports the same day, and a corrected filing had to be entered on the public docket before the day was over. Regulators fine for the same class of mistake. In October 2024 the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet inside a spreadsheet released under freedom of information exposed the surnames, initials, ranks and roles of all 9,483 of its officers and staff. In July 2025 the ICO published dedicated guidance on personal information hidden inside documents released to the public.",
+          "On 8 January 2019, lawyers for Paul Manafort filed a court document with passages blacked out. The text underneath was still live: reporters copied it straight out, it was being quoted in news reports the same day, and a corrected filing had to be entered on the public docket before the day was over. Regulators fine for the same class of mistake. In October 2024 the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet inside a spreadsheet released under freedom of information exposed the surnames, initials, ranks and roles of all 9,483 of its officers and staff.",
       },
       { t: 'h2', texto: 'What to do instead' },
       {
