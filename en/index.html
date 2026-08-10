@@ -220,16 +220,29 @@
     </script>
   </head>
   <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca">TachadoPDF</p>
+        <nav class="idiomas" aria-label="Language">
+          <a class="idiomas__enlace" hreflang="es" lang="es" href="../">Español</a>
+          <span class="idiomas__actual" lang="en">English</span>
+        </nav>
+      </div>
+    </header>
     <div id="app" data-lang="en" data-ejemplo="../ejemplo-acta-comunidad.pdf">
-      <nav class="idiomas" aria-label="Language">
-        <a class="idiomas__enlace" hreflang="es" lang="es" href="../">Español</a>
-        <span class="idiomas__actual" lang="en">English</span>
-      </nav>
       <header class="hero">
-        <p class="hero__marca">TachadoPDF</p>
         <h1 class="hero__titular">Redact a PDF. Then prove the text is gone.</h1>
-        <p class="hero__dolor">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
         <p class="hero__sub">TachadoPDF deletes the selected text from the PDF itself and clears the pixels inside the areas you mark. Then it reopens the file it just produced, searches it again, and releases nothing if any of it comes back. You get a verification report with the SHA-256 fingerprint of the file you deliver.</p>
+      </header>
+      <section class="panel" id="herramienta">
+        <h2 class="panel__titulo">Redact your document</h2>
+        <div id="carga"></div>
+        <p class="nota-local">Most online redaction tools upload your document to a server first. TachadoPDF doesn't have one. The file is opened, redacted and checked inside your browser, and never leaves your machine.</p>
+        <div id="gancho"></div>
+        <p class="aviso-principal">TachadoPDF removes the selected text and the pixels inside the areas you mark from the file. It does not establish that the document is free of personal data, and it does not replace human review.</p>
+        <div id="trabajo"></div>
+      </section>
+      <section class="argumento">
         <ul class="hero__bullets">
           <li>The text is removed from the file. Nothing is painted over it.</li>
           <li>Everything runs in your browser. The document is never uploaded — disconnect from the internet and it still works.</li>
@@ -237,13 +250,9 @@
           <li>If anything you redacted survives, the download is blocked. No file, no report.</li>
           <li>The report lists what was redacted and where, which metadata was stripped, which pages have no text layer, and the SHA-256 fingerprint of the file you deliver.</li>
         </ul>
+        <p class="hero__dolor">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
         <p class="hero__deteccion">What is detected automatically: email addresses in any document, plus Spanish identifiers — DNI, NIE, Spanish IBAN, social security number and cadastral reference. Detection of UK and US identifiers (National Insurance number, NHS number, Social Security number, sort codes, local phone formats) is not built yet. Everything else you redact by drawing over it, and the removal and the verification are exactly the same either way.</p>
-        <p class="hero__local">Most online redaction tools upload your document to a server first. TachadoPDF doesn't have one. The file is opened, redacted and checked inside your browser, and never leaves your machine.</p>
         <p class="hero__nicho">Built for people who redact as part of the job: solicitors and paralegals preparing filings and disclosure, public bodies answering freedom-of-information and subject access requests, HR and payroll teams sharing employee documents, and journalists publishing source material.</p>
-      </header>
-      <section class="panel" id="herramienta">
-        <h2 class="panel__titulo">Redact your document</h2>
-        <p class="aviso-principal">TachadoPDF removes the selected text and the pixels inside the areas you mark from the file. It does not establish that the document is free of personal data, and it does not replace human review.</p>
       </section>
       <section class="panel" id="licencia">
         <h2 class="panel__titulo">Pro version</h2>

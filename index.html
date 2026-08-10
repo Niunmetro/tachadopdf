@@ -214,29 +214,38 @@
     </script>
   </head>
   <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca">TachadoPDF</p>
+        <nav class="idiomas" aria-label="Idioma">
+          <span class="idiomas__actual" lang="es">Español</span>
+          <a class="idiomas__enlace" hreflang="en" lang="en" href="en/">English</a>
+        </nav>
+      </div>
+    </header>
     <div id="app" data-lang="es" data-ejemplo="ejemplo-acta-comunidad.pdf">
-      <nav class="idiomas" aria-label="Idioma">
-        <span class="idiomas__actual" lang="es">Español</span>
-        <a class="idiomas__enlace" hreflang="en" lang="en" href="en/">English</a>
-      </nav>
       <header class="hero">
-        <p class="hero__marca">TachadoPDF</p>
         <h1 class="hero__titular">El dato que tachaste con un rectángulo negro sigue dentro del PDF</h1>
-        <p class="hero__dolor">Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a proteger los datos frente a la comunicación no autorizada (arts. 5.1.f y 32), y la AEPD ya ha multado con 15.000 € a una comunidad de propietarios por exponer el acta de una junta con los nombres, pisos y puertas de los vecinos — expediente PS/00378/2019. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.</p>
         <p class="hero__sub">TachadoPDF elimina el texto del propio archivo en lugar de taparlo: el dato deja de ser extraíble. Y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.</p>
+      </header>
+      <section class="panel" id="herramienta">
+        <h2 class="panel__titulo">Tacha tu documento</h2>
+        <div id="carga"></div>
+        <p class="nota-local">Las herramientas de tachado online habituales envían tus documentos a un servidor. TachadoPDF procesa todo en tu propio navegador: el archivo nunca sale de tu equipo.</p>
+        <div id="gancho"></div>
+        <p class="aviso-principal">TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana.</p>
+        <div id="trabajo"></div>
+      </section>
+      <section class="argumento">
         <ul class="hero__bullets">
           <li>El texto se elimina del archivo, no se tapa con un rectángulo negro.</li>
           <li>Todo ocurre en tu navegador: el documento no se sube a ningún servidor.</li>
           <li>Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.</li>
           <li>Informe de comprobación técnica descargable para tu expediente.</li>
         </ul>
+        <p class="hero__dolor">Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a proteger los datos frente a la comunicación no autorizada (arts. 5.1.f y 32), y la AEPD ya ha multado con 15.000 € a una comunidad de propietarios por exponer el acta de una junta con los nombres, pisos y puertas de los vecinos — expediente PS/00378/2019. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.</p>
         <p class="hero__deteccion">Qué se detecta automáticamente: correos electrónicos, y los identificadores españoles DNI, NIE, IBAN español, número de la Seguridad Social, referencia catastral y teléfonos en formato español. Todo lo demás —nombres, direcciones, firmas, fotografías, importes— lo marcas tú arrastrando un recuadro; lo que se borra y lo que se comprueba después es exactamente igual en los dos casos.</p>
-        <p class="hero__local">Las herramientas de tachado online habituales envían tus documentos a un servidor. TachadoPDF procesa todo en tu propio navegador: el archivo nunca sale de tu equipo.</p>
         <p class="hero__nicho">Pensado para administradores de fincas que reparten actas con datos de propietarios, gestorías que envían documentación de clientes y departamentos de RRHH que gestionan expedientes.</p>
-      </header>
-      <section class="panel" id="herramienta">
-        <h2 class="panel__titulo">Tacha tu documento</h2>
-        <p class="aviso-principal">TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana.</p>
       </section>
       <section class="panel" id="licencia">
         <h2 class="panel__titulo">Versión Pro</h2>

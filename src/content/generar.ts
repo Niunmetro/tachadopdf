@@ -191,6 +191,43 @@ function selectorIdioma(pagina: PaginaRegistro, locale: Locale): string {
   return `<nav class="idiomas" aria-label="${esc(CONTENIDOS[locale].secciones.idiomas)}">\n${sangrar(enlaces, 1)}\n</nav>`;
 }
 
+/**
+ * LA MANCHETA. Una cabecera común a las dieciocho páginas: la marca a la izquierda, los idiomas a
+ * la derecha, y un filete A SANGRE de borde a borde de la ventana. Ese filete es lo que hace que
+ * 1440 px dejen de leerse como una columna suelta flotando en el vacío, y es lo que hoy le falta
+ * a `/actas/` y `/nominas/`, que no tienen cabecera ninguna: en el móvil la palabra «TachadoPDF»
+ * no aparecía hasta 1,83 pantallas, en las dos páginas donde cae el tráfico de pago.
+ *
+ * ES UNA MANCHETA DE PERIÓDICO, NO UN LOGOTIPO. El producto no tiene símbolo y aquí no se le
+ * inventa uno: la marca se resuelve tipográficamente (Plex Sans 600, 14 px, versalitas,
+ * `letter-spacing` .14em, en tinta). No se parte en dos colores, no lleva «PDF» en acento y no se
+ * le tacha una parte — un tachado dentro del nombre SERÍA inventar el símbolo.
+ *
+ * Y la marca deja de gastar el acento. El acento tiene que significar «esto es lo que se pulsa»;
+ * si además significa «esto es la marca», no significa ninguna de las dos. (De paso, el azul que
+ * gastaba suspendía a 4,10:1.)
+ *
+ * El HUECO PARA EL SÍMBOLO está pensado pero AUSENTE del DOM: un cuadrado vacío que ocupa sitio
+ * se lee como una imagen rota, no como un hueco. Cuando llegue, entra a la izquierda de la
+ * palabra con `gap: 8px` y 20×20 px, y no mueve nada más que su propio ancho.
+ */
+function mancheta(pagina: PaginaRegistro, locale: Locale): string {
+  const c = CONTENIDOS[locale];
+  const selector = selectorIdioma(pagina, locale);
+  return [
+    '<header class="cabecera">',
+    sangrar(
+      [
+        '<div class="cabecera__interior">',
+        sangrar([texto('p', { class: 'cabecera__marca' }, c.marca), selector], 1),
+        '</div>',
+      ],
+      1,
+    ),
+    '</header>',
+  ].join('\n');
+}
+
 // --- bloques de prosa -------------------------------------------------------
 
 function bloque(b: Bloque): string {
@@ -236,22 +273,13 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
 
   const bloques: string[] = [];
 
-  const selector = selectorIdioma(pagina, locale);
-  if (selector.length > 0) bloques.push(selector);
-
   bloques.push(
     [
       '<header class="hero">',
       sangrar(
         [
-          texto('p', { class: 'hero__marca' }, c.marca),
           texto('h1', { class: 'hero__titular' }, c.landing.titular),
-          texto('p', { class: 'hero__dolor' }, c.landing.dolor),
           texto('p', { class: 'hero__sub' }, c.landing.subtitulo),
-          `<ul class="hero__bullets">\n${sangrar(c.landing.bullets.map((b) => texto('li', {}, b)), 1)}\n</ul>`,
-          texto('p', { class: 'hero__deteccion' }, c.landing.notaDeteccion),
-          texto('p', { class: 'hero__local' }, c.landing.procesadoLocal),
-          texto('p', { class: 'hero__nicho' }, c.landing.nicho),
         ],
         1,
       ),
@@ -259,15 +287,54 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
     ].join('\n'),
   );
 
-  // Hueco de la herramienta: el título y el aviso de alcance son texto indexable; los controles
-  // (input de fichero, visor, botón de descarga) los monta initApp aquí dentro.
+  // GANA LA HERRAMIENTA, y no está reñido con el argumento.
+  //
+  // Medido antes de esta rama, a 390×844: el primer control del producto estaba a 1,37 pantallas,
+  // la zona de carga a 2,05 y «Comprar Pro» a 3,06; por encima del pliegue el ÚNICO elemento
+  // accionable era el enlace «English». El visitante tenía que leer doscientas palabras de prosa
+  // sobre sanciones antes de descubrir qué le deja hacer la página.
+  //
+  // El argumento de este producto ES la herramienta: el modo gratuito procesa un documento
+  // entero, y la única prueba real de «nada sale de tu navegador» es que el visitante lo
+  // compruebe. Así que la zona de carga sube, y con ella solo lo que hace falta para atreverse a
+  // soltar un acta con DNI dentro: dos frases que YA ESTABAN ESCRITAS y estaban mal colocadas.
+  //
+  // `procesadoLocal` iba a media página de distancia: ahí abajo es un dato más; pegada al control
+  // es la respuesta a la pregunta que el control acaba de provocar. Y `avisoPrincipal` iba ANTES
+  // del control: una advertencia sobre lo que la herramienta no garantiza, leída antes de saber
+  // qué es la herramienta, es un muro de descargo. Debajo es la letra pequeña del control que
+  // gobierna — y sigue estando antes de cualquier acción con consecuencias, porque la casilla de
+  // revisión y el botón de descarga no existen hasta que hay documento.
+  //
+  // Ni una palabra nueva: las dos cadenas son las de siempre y cambian de sitio, no de contenido.
   bloques.push(
     [
       '<section class="panel" id="herramienta">',
       sangrar(
         [
           texto('h2', { class: 'panel__titulo' }, c.secciones.trabajo),
+          '<div id="carga"></div>',
+          texto('p', { class: 'nota-local' }, c.landing.procesadoLocal),
+          '<div id="gancho"></div>',
           texto('p', { class: 'aviso-principal' }, c.landing.avisoPrincipal),
+          '<div id="trabajo"></div>',
+        ],
+        1,
+      ),
+      '</section>',
+    ].join('\n'),
+  );
+
+  // El argumento, entero, debajo de la herramienta. No se recorta ni se reescribe: se coloca.
+  bloques.push(
+    [
+      '<section class="argumento">',
+      sangrar(
+        [
+          `<ul class="hero__bullets">\n${sangrar(c.landing.bullets.map((b) => texto('li', {}, b)), 1)}\n</ul>`,
+          texto('p', { class: 'hero__dolor' }, c.landing.dolor),
+          texto('p', { class: 'hero__deteccion' }, c.landing.notaDeteccion),
+          texto('p', { class: 'hero__nicho' }, c.landing.nicho),
         ],
         1,
       ),
@@ -350,6 +417,7 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
   const ejemplo = `${navHref(ruta, '')}ejemplo-acta-comunidad.pdf`.replace(/^\.\//, '');
 
   return [
+    sangrar([mancheta(pagina, locale)], 2),
     `    <div id="app" data-lang="${esc(c.htmlLang)}" data-ejemplo="${esc(ejemplo)}">`,
     sangrar(bloques, 3),
     '    </div>',

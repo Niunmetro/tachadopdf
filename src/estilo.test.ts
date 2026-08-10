@@ -314,6 +314,78 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
 });
 
 /**
+ * LA PRIMERA PANTALLA: GANA LA HERRAMIENTA.
+ *
+ * Medido con Chrome sobre `dist/` a 390x844, ANTES: la zona de carga empezaba en el pixel 1.734,
+ * o sea a 2,05 PANTALLAS de scroll, y por encima del pliegue el unico elemento accionable de la
+ * portada era el enlace «English». DESPUES: empieza en el pixel 533 (0,63 pantallas).
+ * El criterio de aceptacion de la direccion es «por encima de 600 px a 390x844».
+ *
+ * Esta guarda es el PROXY de esa medida que si se puede correr sin navegador: fija el ORDEN de la
+ * primera pantalla en el HTML, que es lo que de verdad se erosiona (alguien vuelve a subir un
+ * parrafo). La medida en pixeles se rehace con Chrome; el orden lo vigila la suite.
+ */
+describe('la primera pantalla de la portada: primero la herramienta', () => {
+  const home = PAGINAS.find((p) => p.id === 'home');
+
+  it.each(localesDe(home ?? PAGINAS[0]!))('en %s, el orden del pliegue es el acordado', (locale) => {
+    const html = generarPagina(home ?? PAGINAS[0]!, locale);
+    const pos = (aguja: string): number => html.indexOf(aguja);
+
+    // 1 cabecera con la marca · 2 titular · 3 subtitulo · 4 zona de carga · 5 «no sale de tu
+    // equipo» · 6 documento de ejemplo · 7 aviso de alcance · 8 y solo entonces, el argumento.
+    const orden = [
+      'class="cabecera__marca"',
+      'class="hero__titular"',
+      'class="hero__sub"',
+      'id="carga"',
+      'class="nota-local"',
+      'id="gancho"',
+      'class="aviso-principal"',
+      '<section class="argumento">',
+    ];
+    for (const aguja of orden) expect(pos(aguja), `falta ${aguja}`).toBeGreaterThan(-1);
+    const posiciones = orden.map(pos);
+    expect(posiciones).toEqual([...posiciones].sort((a, b) => a - b));
+
+    // Y NADA de prosa larga por delante de la herramienta: el bloque del dolor (200 palabras) y
+    // las vinetas viven por debajo. Antes el bloque rojo se comia el 35,7 % del primer pliegue.
+    expect(pos('class="hero__dolor"')).toBeGreaterThan(pos('id="carga"'));
+    expect(pos('class="hero__bullets"')).toBeGreaterThan(pos('id="carga"'));
+    expect(pos('class="hero__deteccion"')).toBeGreaterThan(pos('id="carga"'));
+  });
+
+  it('la mancheta va en las paginas generadas, fuera del hueco de la aplicacion', () => {
+    const html = generarPagina(home ?? PAGINAS[0]!, 'es');
+    expect(html.indexOf('class="cabecera"')).toBeLessThan(html.indexOf('<div id="app"'));
+  });
+
+  /**
+   * DIANAS TACTILES. Minimo de la casa 44x44 (WCAG 2.5.8 pide 24; 24 es el suelo absoluto y solo
+   * para enlaces dentro de un parrafo). Medido a 390 px antes de esta rama: fallaban por debajo
+   * de 24 tres controles en la portada ES y cuatro en la EN, y el peor era el <select> de tipo de
+   * documento, a 137x19 px, justo encima de la zona de carga.
+   */
+  it('todo lo pulsable declara 44 px de alto', () => {
+    const PULSABLES = [
+      'button',
+      'select',
+      'input\\[type="text"\\]',
+      '\\.comprar',
+      '\\.idiomas > \\*',
+      '\\.guias a',
+      '\\.enlaces-sector a',
+      'input\\[type="file"\\]::file-selector-button',
+    ];
+    for (const selector of PULSABLES) {
+      const bloque = new RegExp(`(?:^|\\n)${selector}\\s*\\{([^}]*)\\}`, 's').exec(reglas(cssContent))?.[1];
+      expect(bloque, `no hay regla para ${selector}`).toBeDefined();
+      expect(bloque ?? '', `${selector} sin diana de 44 px`).toMatch(/min-height:\s*2\.75rem/);
+    }
+  });
+});
+
+/**
  * LA ESCALA ES CERRADA: si un tamaño no esta en la tabla, no existe.
  * Antes de esta rama la portada usaba ONCE tamaños distintos y nueve cabian en 4,5 px, con
  * saltos de x1,03: el ojo no distingue 13,5 de 14, asi que la pagina no tenia jerarquia, tenia
