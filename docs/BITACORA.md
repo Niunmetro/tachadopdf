@@ -13,6 +13,61 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-10 · despliegue · El acta del 10-ago sale a producción: se acaba el falso verde vivo y `/en/` deja de ser un 404
+
+**Hecho:** desplegado `master` (`299605e`) a `gh-pages` con `npm run deploy-pages` (exit 0).
+`origin/gh-pages` pasa de `f7d3585` a `aa96693`; el build de GitHub Pages terminó en `built` sobre
+ese commit. Es el deploy que el acta del CEO ordenaba y que la ejecución dejó pendiente a propósito.
+
+**Verificación previa, con exit codes reales y sin canalizar a `| tail`:**
+`npx --no-install tsc --noEmit` = 0 · `npx --no-install vitest run` = 0 (**1002/1002 en 71
+ficheros**) · `npm run build` = 0. `cat -A dist/CNAME` → `www.tachadopdf.com$` (LF, sin CR).
+18 páginas en `dist/`, **ninguna vacía**: medido el texto real del `<body>` de cada una tras quitar
+`<script>`, `<style>` y etiquetas — el mínimo es `/en/checker/` con 631 caracteres y un `<h1>` de
+verdad, y el máximo `/en/` con 11.257. Vocabulario prohibido sobre `dist/`: **0**; los 26 falsos
+positivos de `IA`/`AI` eran identificadores minificados (`ia`, `ai`) que solo aparecían al buscar
+sin distinguir mayúsculas — a case-sensitive dan 0 en HTML y 0 en JS.
+
+**Estado del dominio ANTES (curl sobre `www.tachadopdf.com`, no sobre la URL de Pages):** `/en/` =
+**404**; `/actas/` y `/nominas/` servían `59 €/año`, `149 €/año` y `Despacho`, y `/actas/` además
+`garantía de devolución de 30 días`; el bundle vivo `assets/report-Bbl6ogcz.js` daba **0**
+coincidencias de «COMPROBACIÓN PARCIAL».
+
+**Estado DESPUÉS:** las **18 URLs + `/sitemap.xml` + `/robots.txt` en 200**, `/en/` incluido (de 404
+a 200). Cero coincidencias de las cuatro falsedades en `/`, `/en/`, `/actas/` y `/nominas/`.
+`/actas/` sirve «59 € — Licencia Pro, pago único, no es una suscripción. Un puesto, documentos
+ilimitados»; `/nominas/`, «Pro: 59 €, pago único — no es una suscripción». El bundle viejo
+`report-Bbl6ogcz.js` da **404** y el nuevo `assets/patterns-YUjrQaq6.js` sirve «COMPROBACIÓN
+PARCIAL» y «PARTIAL CHECK». La entrada del ámbar del FAQ está viva en los dos idiomas.
+
+**Decisiones y porqués:**
+
+- **Se desplegó, y el CNAME se desactivó por ingeniería, no por memoria.** La lección de los cuatro
+  días de 404 se comprobó en tres puntos independientes antes y después: `dist/CNAME` existe tras el
+  build con el byte exacto; `git show origin/gh-pages:CNAME` en la rama ya publicada da
+  `www.tachadopdf.com$`; y la API de Pages sigue devolviendo `cname: www.tachadopdf.com`.
+- **Se verificó el dominio real, no la rama.** Publicar y mirar el repo es la comprobación que no
+  habría cazado nada: el desfase de 17 días existía justamente porque `master` estaba bien.
+- **Un susto que resultó no serlo, y por qué queda escrito.** El barrido post-deploy encontró «July
+  2025 … ICO» vivo en `/en/guide/redact-subject-access-request/`, y el acta ordenaba borrar esa cita
+  «de los dos sitios donde vivía». No es la misma frase: la retirada era el titular sin comprobar
+  («In July 2025 the ICO published dedicated guidance…»); lo que sigue publicado es un párrafo
+  **distinto y contrastado**, con su bloque de fuentes (`guias.en.ts:226-245`, URLs del ICO
+  comprobadas el 8-ago), que además atribuye correctamente a la **nota de prensa** —no a la guía— el
+  hecho de nombrar a PSNI y MoD, y evita la trampa de colgarle al MoD la multa de 350.000 £ de otro
+  caso. `afirmaciones-respaldadas:106` vigila el literal retirado, no la fecha suelta. Se deja
+  anotado porque el siguiente que grepee «July 2025» va a asustarse igual.
+
+**Bloqueos / pendiente:** ninguno del deploy. Siguen abiertos los gates del dueño (variante
+`Despacho` en Gumroad —umbral del 12-ago—, la descripción «anual» de `Pro - 1 puesto`, el nombre de
+marca `Angel Fh`, y la PARADA 6 de `.claude/**` en `gh-pages`, que este deploy **no empeora**:
+`gh-pages` sabe subir dotfiles pero no borrarlos).
+
+**Enlaces:** rama `deploy/acta-10ago-en-produccion` · deploy `origin/gh-pages@aa96693` ·
+https://www.tachadopdf.com/
+
+---
+
 ## 2026-08-10 · comité + ejecución · Tres afirmaciones falsas sobre nuestro propio dinero, y un sello verde sobre lo que no se ha mirado (rama `higiene/precio-real-y-ambar-anunciado`)
 
 **Hecho:** ejecutada entera el acta del CEO del 2026-08-10. Seis commits, uno por decisión, para

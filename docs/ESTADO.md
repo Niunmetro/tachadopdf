@@ -31,12 +31,17 @@
   Ejecuta entera el acta del CEO: precio real (59 € de pago único, tramo Despacho retirado, sin
   garantía de devolución), FAQ que anticipa el ámbar en ES y EN, y las dos correcciones del sello.
   Cierra las PARADAS 0, 0.b (parcial), 0.c, 1, 2 y 5. Ver la bitácora del 2026-08-10.
-- ⚠ **Lo publicado estaba 17 días por detrás de lo retractado.** Medido el 2026-08-10 con `curl`
-  sobre el dominio real: el bundle vivo (`assets/report-Bbl6ogcz.js`) es todavía
-  `clean ? "VERIFICADO" : "NO APTO"` —cero coincidencias de «COMPROBACIÓN PARCIAL»— y las tres
-  cifras retiradas el 8-ago seguían servidas. **Regla nueva de la casa:** una afirmación retirada de
-  la fuente NO está retirada hasta que está retirada de producción; el registro de la retirada y el
-  despliegue de la retirada son la misma tarea, no dos. Lo vigila `afirmaciones-respaldadas`.
+- ✅ **DESPLEGADO el 2026-08-10** (`npm run deploy-pages`, exit 0; `origin/gh-pages` en `aa96693`;
+  build de Pages `built` sobre ese commit). Cerrado el desfase: lo publicado estuvo **17 días** por
+  detrás de lo retractado. Antes del deploy, medido con `curl` sobre el dominio real: el bundle vivo
+  (`assets/report-Bbl6ogcz.js`) era todavía `clean ? "VERIFICADO" : "NO APTO"` —cero coincidencias de
+  «COMPROBACIÓN PARCIAL»—, `/actas/` y `/nominas/` servían `59 €/año` + `149 €/año` + `Despacho`
+  (y `/actas/` además la garantía de 30 días), y `/en/` daba **404**. Después: las 18 URLs + sitemap
+  + robots en **200**, `/en/` incluido; cero coincidencias de las cuatro falsedades; el bundle viejo
+  `report-Bbl6ogcz.js` da **404** y el nuevo `assets/patterns-YUjrQaq6.js` sirve «COMPROBACIÓN
+  PARCIAL» y «PARTIAL CHECK». **Regla nueva de la casa:** una afirmación retirada de la fuente NO
+  está retirada hasta que está retirada de producción; el registro de la retirada y el despliegue de
+  la retirada son la misma tarea, no dos. Lo vigila `afirmaciones-respaldadas`.
 
 ## El sello del informe
 - El sello **ya no es `clean ? verde : rojo`**. Es función de (cobertura ∧ resultado), en una
@@ -412,6 +417,14 @@ G4. ⚪ **PARADA 6** (abajo): `git push origin --delete gh-pages` + `npm run dep
   verificadas por contenido y se quedan. Lo vigila `afirmaciones-respaldadas`.
 
 ## Notas operativas
+- ⚠ **Al verificar un deploy, NO grepear un nombre de bundle escrito a mano.** El acta del 10-ago
+  mandaba comprobar que `assets/report-*.js` hubiera cambiado; ese chunk **ya no existe** (el
+  troceado cambió y quien lleva los rótulos del sello es `assets/patterns-*.js`). Un nombre fijo en
+  una comprobación post-deploy no encuentra el fichero y **se lee como que el deploy falló**. La
+  comprobación correcta parte de lo que la página referencia de verdad:
+  `curl -s https://www.tachadopdf.com/ | grep -oE 'assets/[A-Za-z0-9_-]+\.(js|css)'`, y sobre el
+  bundle que salga: debe contener «COMPROBACIÓN PARCIAL». Comprobar además que el bundle ANTERIOR
+  da 404 — es la prueba de que se sirve el build nuevo y no una copia cacheada.
 - El CNAME vive ahora en `public/CNAME`, igual que `public/.nojekyll`: Vite lo copia en cada build.
   El script de deploy lo sigue escribiendo como segunda línea, y el modo `DOMINIO=0` sigue siendo
   el único camino que lo quita. **Verificado en la integración: `dist/CNAME` existe tras un
