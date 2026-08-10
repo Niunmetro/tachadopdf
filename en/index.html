@@ -32,7 +32,7 @@
     --t-400: 1.125rem;
     --t-500: 1.3125rem;
     --t-600: 1.75rem;
-    --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+    --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
     --lh-titular: 1.15;
     --lh-corto: 1.35;
     --lh-texto: 1.6;
@@ -40,6 +40,7 @@
     --peso-fuerte: 600;
     --peso-veredicto: 700;
     --ancho: 60rem;
+    --ancho-herramienta: 76rem;
     --medida: 34em;
     --e-1: 0.25rem;
     --e-2: 0.5rem;
@@ -50,6 +51,7 @@
     --e-12: 3rem;
     --e-16: 4rem;
     --e-24: 6rem;
+    --e-seccion: clamp(3rem, 7vw, 4rem);
     --radio: 6px;
     --radio-marca: 2px;
     color-scheme: light;
@@ -70,6 +72,8 @@
     --ambar-fondo: #fbefd2;
     --verde: #0f6b41;
     --verde-fondo: #dfeee4;
+    --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+    --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
     }
     *,
     *::before,
@@ -86,6 +90,13 @@
     }
     a {
     color: var(--acento);
+    }
+    a:hover {
+    color: var(--acento-fuerte);
+    }
+    :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 2px;
     }
     button,
     input,
@@ -297,8 +308,8 @@
     }
     </script>
     <script type="module" crossorigin src="/assets/patterns-DneCJFj1.js"></script>
-    <script type="module" crossorigin src="/assets/main-BTdbQY7p.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/main-BxPYV1NO.css">
+    <script type="module" crossorigin src="/assets/main-0GDelKBz.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-BgUvWREp.css">
   </head>
   <body>
     <header class="cabecera">
@@ -311,86 +322,249 @@
       </div>
     </header>
     <div id="app" data-lang="en" data-ejemplo="../ejemplo-acta-comunidad.pdf">
-      <header class="hero">
-        <h1 class="hero__titular">Redact a PDF. Then prove the text is gone.</h1>
-        <p class="hero__sub">TachadoPDF deletes the selected text from the PDF itself and clears the pixels inside the areas you mark. Then it reopens the file it just produced, searches it again, and releases nothing if any of it comes back. You get a verification report with the SHA-256 fingerprint of the file you deliver.</p>
-      </header>
-      <section class="panel" id="herramienta">
-        <h2 class="panel__titulo">Redact your document</h2>
-        <div id="carga"></div>
-        <p class="nota-local">Most online redaction tools upload your document to a server first. TachadoPDF doesn't have one. The file is opened, redacted and checked inside your browser, and never leaves your machine.</p>
-        <div id="gancho"></div>
-        <p class="aviso-principal">TachadoPDF removes the selected text and the pixels inside the areas you mark from the file. It does not establish that the document is free of personal data, and it does not replace human review.</p>
-        <div id="trabajo"></div>
-      </section>
+      <section style="padding: clamp(2.5rem, 6vw, var(--e-24)) var(--e-4) var(--e-seccion);">
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr)); gap: var(--e-12) var(--e-16); align-items: center;">
+                <div style="max-width: 38rem;">
+                  <p style="display: inline-flex; align-items: center; gap: var(--e-2); margin: 0 0 var(--e-6); padding: var(--e-1) var(--e-3); background: var(--acento-tenue); border-radius: 999px; font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-fuerte);"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: var(--acento);"></span>Free (5 documents/month, up to 3 pages)</p>
+                  <h1 class="hero__titular">Redact a PDF. Then prove the text is gone.</h1>
+                  <p class="hero__sub" style="font-size: var(--t-400); line-height: var(--lh-texto); color: var(--tinta-suave); max-width: var(--medida); margin: var(--e-6) 0 0;">TachadoPDF deletes the selected text from the PDF itself and clears the pixels inside the areas you mark. Then it reopens the file it just produced, searches it again, and releases nothing if any of it comes back. You get a verification report with the SHA-256 fingerprint of the file you deliver.</p>
+                  <div style="display: flex; flex-wrap: wrap; gap: var(--e-3); margin-top: var(--e-8);">
+                    <a href="#herramienta" style="display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--e-3) var(--e-6); font-weight: var(--peso-fuerte); color: var(--tinta-inversa); background: var(--acento); border: 1px solid var(--acento); border-radius: var(--radio); text-decoration: none;">Redact your document</a>
+                    <a href="#pro" style="display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: var(--e-3) var(--e-6); font-weight: var(--peso-fuerte); color: var(--acento); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); text-decoration: none;">See Pro — 59 €</a>
+                  </div>
+                  <p class="hero__aparte" style="margin: var(--e-6) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.02em;">100% in your browser · the document is never uploaded to any server</p>
+                </div>
+                <figure class="hero__aparte" style="margin: 0; min-width: 0;">
+                    <figcaption style="font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris); margin: 0 0 var(--e-2);">Example · fictional data</figcaption>
+                    <div style="background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-hoja); overflow: hidden;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--e-3); padding: var(--e-3) var(--e-4); border-bottom: 1px solid var(--linea); background: var(--papel); color: var(--tinta-suave);">
+                        <span style="display: inline-flex; align-items: center; gap: var(--e-2); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.06em; text-transform: uppercase;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 1rem; height: 1rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>Homeowners' meeting minutes</span>
+                        <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--ambar); background: var(--ambar-fondo); padding: 0.1em var(--e-2); border-radius: var(--radio-marca); letter-spacing: 0.04em;">PARTIAL CHECK</span>
+                      </div>
+                      <div style="padding: var(--e-6); display: grid; gap: var(--e-6);">
+                        <div>
+                          <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris);">Covered with a rectangle</p>
+                          <div style="display: flex; align-items: center; gap: var(--e-3); flex-wrap: wrap;">
+                            <span class="dato" style="color: var(--rojo); font-size: var(--t-300);">12345678Z</span>
+                            <span aria-hidden="true" style="display: inline-block; height: 1.2em; width: 6em; background: var(--tinta); border-radius: var(--radio-marca);"></span>
+                          </div>
+                          <p style="margin: var(--e-2) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--rojo);">still readable and copyable</p>
+                        </div>
+                        <div style="border-top: 1px dashed var(--linea-fuerte); padding-top: var(--e-6);">
+                          <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--verde);">Removed from the file</p>
+                          <div style="display: inline-flex; align-items: center; gap: var(--e-3);">
+                            <span aria-hidden="true" style="display: inline-block; height: 1.2em; width: 6em; border: 1px dashed var(--linea-fuerte); border-radius: var(--radio-marca); background: repeating-linear-gradient(135deg, transparent 0 5px, var(--linea) 5px 6px);"></span>
+                            <svg viewBox="0 0 20 20" fill="none" stroke="var(--verde)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 1.1rem; height: 1.1rem; flex: none;"><path d="M4 10.5l4 4 8-9"/></svg>
+                          </div>
+                          <p style="margin: var(--e-2) 0 0; font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--verde);">nothing left to select</p>
+                        </div>
+                      </div>
+                      <div style="display: flex; align-items: center; justify-content: space-between; padding: var(--e-2) var(--e-4); border-top: 1px solid var(--linea); font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris);">
+                        <span>p. 1</span>
+                        <span style="letter-spacing: 0.1em;">SHA-256 ····</span>
+                      </div>
+                    </div>
+                  </figure>
+              </div>
+            </section>
+      <section id="herramienta" style="background: var(--tinta); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+                <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <div style="display: flex; align-items: baseline; gap: var(--e-4);">
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--acento-tenue); letter-spacing: 0.1em;">01</span>
+                    <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); color: var(--tinta-inversa); letter-spacing: -0.01em;">Redact your document</h2>
+                  </div>
+                </div>
+                <div style="background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); box-shadow: var(--sombra-mesa); overflow: hidden;">
+                  <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--e-2) var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); background: var(--papel);">
+                    <span aria-hidden="true" style="display: inline-flex; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span><span style="width: 8px; height: 8px; border-radius: 50%; background: var(--linea-fuerte);"></span></span>
+                    <span style="display: inline-flex; align-items: center; gap: var(--e-2); font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.06em; text-transform: uppercase;"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: var(--verde);"></span>100% in your browser</span>
+                  </div>
+                  <div style="padding: var(--e-6);">
+                    <div id="carga"></div>
+                    <p class="nota-local">Most online redaction tools upload your document to a server first. TachadoPDF doesn't have one. The file is opened, redacted and checked inside your browser, and never leaves your machine.</p>
+                    <div id="gancho"></div>
+                    <p class="aviso-principal">TachadoPDF removes the selected text and the pixels inside the areas you mark from the file. It does not establish that the document is free of personal data, and it does not replace human review.</p>
+                    <div id="trabajo"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
       <section class="argumento">
-        <ul class="hero__bullets">
-          <li>The text is removed from the file. Nothing is painted over it.</li>
-          <li>Everything runs in your browser. The document is never uploaded — disconnect from the internet and it still works.</li>
-          <li>Draw a box over anything: a name, a signature, a face, a figure. The tool records what was underneath, deletes it, then checks the finished file to confirm it is no longer there — metadata included.</li>
-          <li>If anything you redacted survives, the download is blocked. No file, no report.</li>
-          <li>The report lists what was redacted and where, which metadata was stripped, which pages have no text layer, and the SHA-256 fingerprint of the file you deliver.</li>
-        </ul>
-        <p class="hero__dolor">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
-        <p class="hero__deteccion">What is detected automatically: email addresses in any document, plus Spanish identifiers — DNI, NIE, Spanish IBAN, social security number and cadastral reference. Detection of UK and US identifiers (National Insurance number, NHS number, Social Security number, sort codes, local phone formats) is not built yet. Everything else you redact by drawing over it, and the removal and the verification are exactly the same either way.</p>
-        <p class="hero__nicho">Built for people who redact as part of the job: solicitors and paralegals preparing filings and disclosure, public bodies answering freedom-of-information and subject access requests, HR and payroll teams sharing employee documents, and journalists publishing source material.</p>
-      </section>
-      <section class="panel" id="licencia">
-        <h2 class="panel__titulo">Pro version</h2>
-        <p class="pro__gratis">Free mode redacts 5 documents a month, up to 3 pages each, with exactly the same real deletion as Pro.</p>
-        <p class="pro__argumento">Pro is a one-time payment of 59 € and is not a subscription: it does not renew and does not generate recurring charges. It adds unlimited documents, no page limit, batch processing of several files at once, and a verification report with no watermark.</p>
-      </section>
-      <section class="panel faq" aria-label="Frequently asked questions">
-        <h2 class="panel__titulo">Frequently asked questions</h2>
-        <details class="faq__item">
-          <summary>Is my document uploaded anywhere?</summary>
-          <p>No. The whole process happens inside your browser and the file is never transmitted. You can check this yourself: disconnect from the internet and the tool still redacts and downloads your document.</p>
-        </details>
-        <details class="faq__item">
-          <summary>Is the text really deleted, or just covered?</summary>
-          <p>It is removed from the contents of the file, not hidden behind a rectangle. When it finishes, the tool reopens the PDF it produced and searches it again — if anything you redacted is still readable, it tells you and refuses to release the file.</p>
-        </details>
-        <details class="faq__item">
-          <summary>What does it find on its own, and what do I mark myself?</summary>
-          <p>Automatically: email addresses, and Spanish identifiers (DNI, NIE, Spanish IBAN, social security number, cadastral reference). It does not yet recognise UK or US identifiers such as National Insurance numbers, NHS numbers, Social Security numbers or local phone formats. Everything else — names, addresses, signatures, photographs, figures — you mark by dragging a box over it. What gets deleted, and what gets checked afterwards, is identical either way.</p>
-        </details>
-        <details class="faq__item">
-          <summary>What if it misses something?</summary>
-          <p>Automatic detection covers set formats and will not catch everything. That is why you can redact any area by hand, and why you must review the finished document page by page before sending it. This tool does not replace human review.</p>
-        </details>
-        <details class="faq__item">
-          <summary>What's the difference between free and Pro?</summary>
-          <p>Free redacts 5 documents a month, up to 3 pages each. The redaction itself is complete and identical to Pro. What changes is the report: the free report carries a DEMO watermark and the Pro report does not; the checks themselves are identical. Pro is a one-time payment of 59 € — not a subscription — and adds unlimited documents and batch processing of several files at once.</p>
-        </details>
-        <details class="faq__item">
-          <summary>Does it work on scanned documents?</summary>
-          <p>On a scanned page the pixels inside the area you mark are cleared. Automatic detection reads text, not images, so on a scan you mark the areas yourself. Note that on a page with no text layer there is nothing for the tool to re-read afterwards, so it cannot confirm the removal the way it does on text — the report says so explicitly for those pages, and you must check them visually.</p>
-        </details>
-        <details class="faq__item">
-          <summary>Why does my report say "PARTIAL CHECK" instead of "REDACTION VERIFIED"?</summary>
-          <p>Because the document contains an image — usually the letterhead logo — and this tool does not read what is inside an image. In that case the report says "PARTIAL CHECK" and spells out what it did do: it re-read the text of every page of the delivered file and its metadata, no data matching the searched patterns remains, and it lists one by one the pages whose image content is left out. "REDACTION VERIFIED" is reserved for text-only documents, where nothing falls outside the scope. Most minutes and payslips carry a logo, so "PARTIAL CHECK" is the normal result and does not mean something went wrong: it is the report stating how far it reached. If one of those images contains data, mark it by hand and its pixels will be cleared, but the page will still be listed as not fully checked: there is no text left to re-read to confirm it, which is why the report asks you to review it visually.</p>
-        </details>
-        <details class="faq__item">
-          <summary>Can I use the report as legal proof?</summary>
-          <p>No, and it is not sold as one. The report is a technical record of what the tool did: which areas were redacted, which metadata was removed, which patterns were searched in the finished file, which pages could not be checked, and the SHA-256 fingerprint of the file you deliver. It documents that you carried out and verified the removal. It makes no statement about your legal obligations, and no tool can decide what you were required to redact.</p>
-        </details>
-        <details class="faq__item">
-          <summary>Who runs TachadoPDF?</summary>
-          <p>It is operated from Spain by an individual trader — the details are in the legal notice at the bottom of this page. The source code is open under AGPL-3.0, so anyone can verify that nothing is uploaded. Payment and invoicing are handled by Gumroad as merchant of record.</p>
-        </details>
-      </section>
-      <nav class="guias" aria-label="Guides">
-        <h2>Guides</h2>
-        <ul>
-          <li><a href="guide/black-box-pdf-not-redacted/">Why the black box over your PDF does not delete the text</a></li>
-          <li><a href="guide/check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
-          <li><a href="guide/redact-court-filing/">Redacting court filings: what Rule 5.2 requires</a></li>
-          <li><a href="guide/redact-subject-access-request/">Redacting a subject access request response</a></li>
-          <li><a href="guide/redact-pdf-without-uploading/">How to redact a PDF without uploading it</a></li>
-          <li><a href="guide/redact-payslips-hr-documents/">Sending payslips and HR documents as PDFs</a></li>
-        </ul>
-      </nav>
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+                <ul class="hero__bullets" style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); gap: var(--e-4);">
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">01</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">The text is removed from the file. Nothing is painted over it.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">02</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">Everything runs in your browser. The document is never uploaded — disconnect from the internet and it still works.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">03</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">Draw a box over anything: a name, a signature, a face, a figure. The tool records what was underneath, deletes it, then checks the finished file to confirm it is no longer there — metadata included.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">04</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">If anything you redacted survives, the download is blocked. No file, no report.</span>
+                  </li>
+                  <li style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-6); display: flex; flex-direction: column; gap: var(--e-6);">
+                    <div style="display: flex; align-items: center; justify-content: space-between;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg><span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: var(--gris); letter-spacing: 0.1em;">05</span></div>
+                    <span style="font-size: var(--t-300); line-height: var(--lh-corto); color: var(--tinta); font-weight: var(--peso-fuerte);">The report lists what was redacted and where, which metadata was stripped, which pages have no text layer, and the SHA-256 fingerprint of the file you deliver.</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+      <section style="background: var(--acento-tenue); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
+                <p class="hero__deteccion" style="margin: 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta); max-width: var(--medida);">What is detected automatically: email addresses in any document, plus Spanish identifiers — DNI, NIE, Spanish IBAN, social security number and cadastral reference. Detection of UK and US identifiers (National Insurance number, NHS number, Social Security number, sort codes, local phone formats) is not built yet. Everything else you redact by drawing over it, and the removal and the verification are exactly the same either way.</p>
+                <div>
+                  <p style="margin: 0 0 var(--e-3); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--acento-fuerte);">Redact your document</p>
+                  <div style="display: flex; flex-wrap: wrap; gap: var(--e-2);">
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: 999px; padding: var(--e-1) var(--e-3);">Email</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+      <section style="background: var(--tinta); color: var(--tinta-inversa); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
+                <p class="hero__dolor" style="margin: 0; font-size: var(--t-400); line-height: var(--lh-texto); color: rgba(255,255,255,0.88); max-width: var(--medida);">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
+                <aside style="border: 1px solid rgba(255,255,255,0.28); border-radius: var(--radio); padding: var(--e-6); align-self: start;">
+                  <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">15.000&nbsp;€</p>
+                  <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">AEPD · Expediente PS/00378/2019</p>
+                </aside>
+              </div>
+            </section>
+      <section style="background: var(--papel); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: center;">
+                <div style="min-width: 0;">
+                  <p style="margin: 0 0 var(--e-4); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gris);">Redaction verification report</p>
+                  <div style="border: 1px solid var(--linea-fuerte); border-radius: var(--radio); background: var(--superficie); overflow: hidden; box-shadow: var(--sombra-hoja);">
+                    <p style="margin: 0; padding: var(--e-4) var(--e-6); background: var(--ambar-fondo); color: var(--ambar); font-weight: var(--peso-veredicto); font-size: var(--t-500); line-height: var(--lh-corto); letter-spacing: 0.02em; display: flex; align-items: center; gap: var(--e-3);"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: var(--ambar);"></span>PARTIAL CHECK</p>
+                    <ul style="list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea);">
+                    <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>Areas redacted, by page</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>
+                    <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>Patterns searched in the text</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>
+                    <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); border-bottom: 1px solid var(--linea); font-size: var(--t-200); color: var(--tinta-suave);"><span>Pages with no text layer</span><span aria-hidden="true" style="flex: 0 0 4rem; height: 1px; background: var(--linea-fuerte);"></span></li>
+                      <li style="display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); padding: var(--e-3) var(--e-6); font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta);"><span>SHA-256 fingerprint of the delivered file</span><span style="color: var(--gris); letter-spacing: 0.08em;">a1f4···9c</span></li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="hero__nicho" style="margin: 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta-suave); max-width: var(--medida);">Built for people who redact as part of the job: solicitors and paralegals preparing filings and disclosure, public bodies answering freedom-of-information and subject access requests, HR and payroll teams sharing employee documents, and journalists publishing source material.</p>
+              </div>
+            </section>
+      <section id="pro" style="background: var(--superficie); border-top: 1px solid var(--linea); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto;">
+                <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--gris); letter-spacing: 0.1em;">02</span>
+                  <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;">Pro version</h2>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: var(--e-6); align-items: stretch;">
+                  <div style="background: var(--tinta); color: var(--tinta-inversa); border-radius: var(--radio); padding: var(--e-8); box-shadow: var(--sombra-mesa); display: flex; flex-direction: column;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--e-3);">
+                      <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--acento-tenue); letter-spacing: 0.1em; text-transform: uppercase;">Pro</span>
+                      <span style="font-family: var(--fuente-dato); font-size: var(--t-100); color: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: var(--e-1) var(--e-3);">one-time payment · not a subscription</span>
+                    </div>
+                    <p style="margin: var(--e-6) 0 0; display: flex; align-items: baseline; gap: var(--e-3);"><span style="font-size: clamp(3rem, 8vw, 4.5rem); font-weight: var(--peso-veredicto); line-height: 1; letter-spacing: -0.03em; color: var(--tinta-inversa);">59 €</span><span style="font-family: var(--fuente-dato); font-size: var(--t-200); color: rgba(255,255,255,0.72);">one-time</span></p>
+                    <p style="margin: var(--e-6) 0 var(--e-6); font-size: var(--t-300); line-height: var(--lh-texto); color: rgba(255,255,255,0.88);">Pro is a one-time payment of 59 € and is not a subscription: it does not renew and does not generate recurring charges. It adds unlimited documents, no page limit, batch processing of several files at once, and a verification report with no watermark.</p>
+                    <div id="licencia" style="margin-top: auto; border-top: 1px solid rgba(255,255,255,0.22); padding-top: var(--e-6);"></div>
+                  </div>
+                  <div style="background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio); padding: var(--e-8); display: flex; flex-direction: column;">
+                    <span style="font-family: var(--fuente-dato); font-size: var(--t-100); font-weight: var(--peso-fuerte); color: var(--tinta); letter-spacing: 0.1em; text-transform: uppercase;">Free</span>
+                    <p style="margin: var(--e-6) 0 0; font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta-suave);">Free mode redacts 5 documents a month, up to 3 pages each, with exactly the same real deletion as Pro.</p>
+                    <a href="#herramienta" style="display: inline-flex; align-items: center; min-height: 2.75rem; margin-top: auto; padding-top: var(--e-8); font-weight: var(--peso-fuerte); color: var(--acento); text-decoration: none;">Redact your document →</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+      <section style="background: var(--papel); border-top: 1px solid var(--linea); padding: var(--e-seccion) var(--e-4);" aria-label="Frequently asked questions">
+              <div style="max-width: var(--ancho); margin: 0 auto;">
+                <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--gris); letter-spacing: 0.1em;">03</span>
+                  <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;">Frequently asked questions</h2>
+                </div>
+                <div class="faq">
+                  <details class="faq__item">
+                    <summary>Is my document uploaded anywhere?</summary>
+                    <p>No. The whole process happens inside your browser and the file is never transmitted. You can check this yourself: disconnect from the internet and the tool still redacts and downloads your document.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>Is the text really deleted, or just covered?</summary>
+                    <p>It is removed from the contents of the file, not hidden behind a rectangle. When it finishes, the tool reopens the PDF it produced and searches it again — if anything you redacted is still readable, it tells you and refuses to release the file.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>What does it find on its own, and what do I mark myself?</summary>
+                    <p>Automatically: email addresses, and Spanish identifiers (DNI, NIE, Spanish IBAN, social security number, cadastral reference). It does not yet recognise UK or US identifiers such as National Insurance numbers, NHS numbers, Social Security numbers or local phone formats. Everything else — names, addresses, signatures, photographs, figures — you mark by dragging a box over it. What gets deleted, and what gets checked afterwards, is identical either way.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>What if it misses something?</summary>
+                    <p>Automatic detection covers set formats and will not catch everything. That is why you can redact any area by hand, and why you must review the finished document page by page before sending it. This tool does not replace human review.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>What's the difference between free and Pro?</summary>
+                    <p>Free redacts 5 documents a month, up to 3 pages each. The redaction itself is complete and identical to Pro. What changes is the report: the free report carries a DEMO watermark and the Pro report does not; the checks themselves are identical. Pro is a one-time payment of 59 € — not a subscription — and adds unlimited documents and batch processing of several files at once.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>Does it work on scanned documents?</summary>
+                    <p>On a scanned page the pixels inside the area you mark are cleared. Automatic detection reads text, not images, so on a scan you mark the areas yourself. Note that on a page with no text layer there is nothing for the tool to re-read afterwards, so it cannot confirm the removal the way it does on text — the report says so explicitly for those pages, and you must check them visually.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>Why does my report say "PARTIAL CHECK" instead of "REDACTION VERIFIED"?</summary>
+                    <p>Because the document contains an image — usually the letterhead logo — and this tool does not read what is inside an image. In that case the report says "PARTIAL CHECK" and spells out what it did do: it re-read the text of every page of the delivered file and its metadata, no data matching the searched patterns remains, and it lists one by one the pages whose image content is left out. "REDACTION VERIFIED" is reserved for text-only documents, where nothing falls outside the scope. Most minutes and payslips carry a logo, so "PARTIAL CHECK" is the normal result and does not mean something went wrong: it is the report stating how far it reached. If one of those images contains data, mark it by hand and its pixels will be cleared, but the page will still be listed as not fully checked: there is no text left to re-read to confirm it, which is why the report asks you to review it visually.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>Can I use the report as legal proof?</summary>
+                    <p>No, and it is not sold as one. The report is a technical record of what the tool did: which areas were redacted, which metadata was removed, which patterns were searched in the finished file, which pages could not be checked, and the SHA-256 fingerprint of the file you deliver. It documents that you carried out and verified the removal. It makes no statement about your legal obligations, and no tool can decide what you were required to redact.</p>
+                  </details>
+                  <details class="faq__item">
+                    <summary>Who runs TachadoPDF?</summary>
+                    <p>It is operated from Spain by an individual trader — the details are in the legal notice at the bottom of this page. The source code is open under AGPL-3.0, so anyone can verify that nothing is uploaded. Payment and invoicing are handled by Gumroad as merchant of record.</p>
+                  </details>
+                </div>
+              </div>
+            </section>
+      <nav class="guias" aria-label="Guides" style="background: var(--acento-tenue); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho-herramienta); margin: 0 auto;">
+                <div style="display: flex; align-items: baseline; gap: var(--e-4); margin: 0 0 var(--e-8);">
+                  <span style="font-family: var(--fuente-dato); font-size: var(--t-300); color: var(--acento-fuerte); letter-spacing: 0.1em;">04</span>
+                  <h2 style="margin: 0; font-size: var(--t-600); font-weight: var(--peso-fuerte); line-height: var(--lh-corto); letter-spacing: -0.01em;">Guides</h2>
+                </div>
+                <ul style="list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr)); gap: var(--e-4);">
+                  <li><a href="guide/black-box-pdf-not-redacted/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Why the black box over your PDF does not delete the text</span>
+                  </a></li>
+                  <li><a href="guide/check-pdf-redaction/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">How to check whether a PDF has actually been redacted</span>
+                  </a></li>
+                  <li><a href="guide/redact-court-filing/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Redacting court filings: what Rule 5.2 requires</span>
+                  </a></li>
+                  <li><a href="guide/redact-subject-access-request/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Redacting a subject access request response</span>
+                  </a></li>
+                  <li><a href="guide/redact-pdf-without-uploading/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">How to redact a PDF without uploading it</span>
+                  </a></li>
+                  <li><a href="guide/redact-payslips-hr-documents/" style="display: flex; flex-direction: column; height: 100%; background: var(--superficie); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); padding: var(--e-6); text-decoration: none; color: var(--tinta);">
+                    <span aria-hidden="true" style="margin-bottom: var(--e-6);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width: 2rem; height: 2rem; flex: none; color: var(--acento);"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg></span>
+                    <span style="font-size: var(--t-300); font-weight: var(--peso-fuerte); line-height: var(--lh-corto);">Sending payslips and HR documents as PDFs</span>
+                  </a></li>
+                </ul>
+              </div>
+            </nav>
+      <section style="background: var(--tinta); color: var(--tinta-inversa); padding: var(--e-seccion) var(--e-4);">
+              <div style="max-width: var(--ancho); margin: 0 auto; text-align: center;">
+                <p style="margin: 0 auto; max-width: 26rem; font-size: var(--t-600); font-weight: var(--peso-veredicto); line-height: var(--lh-titular); letter-spacing: -0.015em;">Redact your PDF now — free, and without uploading it to any server</p>
+                <a href="#herramienta" style="display: inline-flex; align-items: center; justify-content: center; margin-top: var(--e-8); min-height: 3rem; padding: var(--e-3) var(--e-8); font-size: var(--t-400); font-weight: var(--peso-fuerte); color: var(--tinta); background: var(--tinta-inversa); border-radius: var(--radio); text-decoration: none;">Go to the tool</a>
+              </div>
+            </section>
       <footer class="legales" aria-label="Legal">
+        <p class="cabecera__marca" style="margin: 0 0 var(--e-4);"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
         <details id="legal-notice">
           <summary>Legal notice</summary>
           <pre>Legal notice
@@ -447,6 +621,6 @@ Contact. For any question about this policy, write to the contact email in the l
           <a href="checker/">Check for free what data your PDF contains</a>
         </p>
       </footer>
-    </div>
+    </div>
   </body>
 </html>

@@ -32,7 +32,7 @@
     --t-400: 1.125rem;
     --t-500: 1.3125rem;
     --t-600: 1.75rem;
-    --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+    --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
     --lh-titular: 1.15;
     --lh-corto: 1.35;
     --lh-texto: 1.6;
@@ -40,6 +40,7 @@
     --peso-fuerte: 600;
     --peso-veredicto: 700;
     --ancho: 60rem;
+    --ancho-herramienta: 76rem;
     --medida: 34em;
     --e-1: 0.25rem;
     --e-2: 0.5rem;
@@ -50,6 +51,7 @@
     --e-12: 3rem;
     --e-16: 4rem;
     --e-24: 6rem;
+    --e-seccion: clamp(3rem, 7vw, 4rem);
     --radio: 6px;
     --radio-marca: 2px;
     color-scheme: light;
@@ -70,6 +72,8 @@
     --ambar-fondo: #fbefd2;
     --verde: #0f6b41;
     --verde-fondo: #dfeee4;
+    --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+    --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
     }
     *,
     *::before,
@@ -86,6 +90,13 @@
     }
     a {
     color: var(--acento);
+    }
+    a:hover {
+    color: var(--acento-fuerte);
+    }
+    :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 2px;
     }
     button,
     input,
@@ -327,6 +338,6 @@
       <div id="cp-error"></div>
       <p class="cp-aviso">Aviso de alcance: la comprobación se limita al texto extraíble del PDF. Las páginas escaneadas (imágenes sin capa de texto) se señalan aparte y requieren revisión humana; esta herramienta no sustituye esa revisión.</p>
       <a class="cp-cta" href="../?utm_source=comprobador">Táchalos ahora (gratis, 5 documentos al mes)</a>
-    </main>
+    </main>
   </body>
 </html>
