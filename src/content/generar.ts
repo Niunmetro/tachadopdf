@@ -13,7 +13,7 @@
 
 import { CONTENIDOS } from './index';
 import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
-import { esc, jsonLd, sangrar, texto } from './html';
+import { esc, escTexto, jsonLd, sangrar, texto } from './html';
 import {
   LOCALES,
   PAGINAS,
@@ -192,34 +192,48 @@ function selectorIdioma(pagina: PaginaRegistro, locale: Locale): string {
 }
 
 /**
+ * EL SÍMBOLO DE LA MARCA, por fin en su ranura. Concepto B: un documento con renglones donde uno
+ * tiene un HUECO limpio — el dato borrado DE VERDAD, no tapado con un rectángulo negro, que es la
+ * promesa entera del producto dibujada. Una sola tinta vía `currentColor` (la hereda de
+ * `.cabecera__marca`, que va en `--tinta`): no se parte en colores y no lleva degradado. NO es un
+ * candado ni un escudo — es lo que usan las webs de phishing —: es una hoja de papel.
+ * Se incrusta EN LÍNEA en vez de referenciar `public/simbolo.svg` para que tome `currentColor` y
+ * no cueste una petición de red por página; el fichero suelto existe igual (es la fuente vectorial
+ * y de él nacen el favicon y el apple-touch), y `content/marca.test.ts` ata que no deriven.
+ */
+export const SIMBOLO_MANCHETA =
+  '<svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+  'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ' +
+  'focusable="false">' +
+  '<path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/>' +
+  '<line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/>' +
+  '<line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/>' +
+  '</svg>';
+
+/**
  * LA MANCHETA. Una cabecera común a las dieciocho páginas: la marca a la izquierda, los idiomas a
  * la derecha, y un filete A SANGRE de borde a borde de la ventana. Ese filete es lo que hace que
  * 1440 px dejen de leerse como una columna suelta flotando en el vacío, y es lo que hoy le falta
  * a `/actas/` y `/nominas/`, que no tienen cabecera ninguna: en el móvil la palabra «TachadoPDF»
  * no aparecía hasta 1,83 pantallas, en las dos páginas donde cae el tráfico de pago.
  *
- * ES UNA MANCHETA DE PERIÓDICO, NO UN LOGOTIPO. El producto no tiene símbolo y aquí no se le
- * inventa uno: la marca se resuelve tipográficamente (Plex Sans 600, 14 px, versalitas,
- * `letter-spacing` .14em, en tinta). No se parte en dos colores, no lleva «PDF» en acento y no se
- * le tacha una parte — un tachado dentro del nombre SERÍA inventar el símbolo.
- *
- * Y la marca deja de gastar el acento. El acento tiene que significar «esto es lo que se pulsa»;
- * si además significa «esto es la marca», no significa ninguna de las dos. (De paso, el azul que
- * gastaba suspendía a 4,10:1.)
- *
- * El HUECO PARA EL SÍMBOLO está pensado pero AUSENTE del DOM: un cuadrado vacío que ocupa sitio
- * se lee como una imagen rota, no como un hueco. Cuando llegue, entra a la izquierda de la
- * palabra con `gap: 8px` y 20×20 px, y no mueve nada más que su propio ancho.
+ * ES UNA MANCHETA DE PERIÓDICO CON SU SÍMBOLO. La marca se resuelve tipográficamente (Plex Sans
+ * 600, 14 px, versalitas, `letter-spacing` .14em, en tinta) y el símbolo entra a su izquierda con
+ * `gap: 8px` en una ranura de 20×20 px, sin mover nada más que su propio ancho. La palabra
+ * `TACHADOPDF` NO se parte en colores y no se le tacha una parte — un tachado dentro del nombre
+ * sería un segundo símbolo. El símbolo comparte la tinta de la palabra (`currentColor`), así que
+ * la marca sigue en una sola tinta y el acento se reserva para «esto es lo que se pulsa».
  */
 function mancheta(pagina: PaginaRegistro, locale: Locale): string {
   const c = CONTENIDOS[locale];
   const selector = selectorIdioma(pagina, locale);
+  const marca = `<p class="cabecera__marca">${SIMBOLO_MANCHETA}${escTexto(c.marca)}</p>`;
   return [
     '<header class="cabecera">',
     sangrar(
       [
         '<div class="cabecera__interior">',
-        sangrar([texto('p', { class: 'cabecera__marca' }, c.marca), selector], 1),
+        sangrar([marca, selector], 1),
         '</div>',
       ],
       1,

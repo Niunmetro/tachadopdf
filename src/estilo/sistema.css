@@ -289,12 +289,25 @@ input[type="file"]::file-selector-button:hover {
   gap: var(--e-4);
 }
 .cabecera__marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
   font-size: var(--t-200);
   font-weight: var(--peso-fuerte);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--tinta);
   margin: 0;
+}
+
+/* EL SÍMBOLO en su ranura de 20×20, a la izquierda del nombre. Hereda la tinta de la palabra por
+   `currentColor`: una sola tinta, sin degradado, y el acento sigue queriendo decir «esto se
+   pulsa». `flex: none` para que el conmutador de idioma no lo encoja. Va en `rem` para que crezca
+   con quien ha subido el tamaño de letra del navegador. */
+.cabecera__simbolo {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: none;
 }
 
 /* Selector de idioma: enlaces <a> reales, no un <select> con JavaScript — funciona con los
