@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="icon" href="../../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+    <link rel="preload" href="../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+    @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    }
+    @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    }
+    :root {
+    --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+    --t-100: 0.75rem;
+    --t-200: 0.875rem;
+    --t-300: 1rem;
+    --t-400: 1.125rem;
+    --t-500: 1.3125rem;
+    --t-600: 1.75rem;
+    --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+    --lh-titular: 1.15;
+    --lh-corto: 1.35;
+    --lh-texto: 1.6;
+    --peso-normal: 400;
+    --peso-fuerte: 600;
+    --peso-veredicto: 700;
+    --ancho: 60rem;
+    --medida: 34em;
+    --e-1: 0.25rem;
+    --e-2: 0.5rem;
+    --e-3: 0.75rem;
+    --e-4: 1rem;
+    --e-6: 1.5rem;
+    --e-8: 2rem;
+    --e-12: 3rem;
+    --e-16: 4rem;
+    --e-24: 6rem;
+    --radio: 6px;
+    --radio-marca: 2px;
+    color-scheme: light;
+    --papel: #f6f5f3;
+    --superficie: #ffffff;
+    --tinta: #1b1a17;
+    --tinta-suave: #43403a;
+    --gris: #6a665e;
+    --linea: #dedad1;
+    --linea-fuerte: #8a857a;
+    --acento: #164a7e;
+    --acento-fuerte: #0e3159;
+    --acento-tenue: #dde7f3;
+    --tinta-inversa: #ffffff;
+    --rojo: #9b1c1c;
+    --rojo-fondo: #f9e6e4;
+    --ambar: #7c4a03;
+    --ambar-fondo: #fbefd2;
+    --verde: #0f6b41;
+    --verde-fondo: #dfeee4;
+    }
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
+    body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: var(--t-300);
+    line-height: var(--lh-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    }
+    a {
+    color: var(--acento);
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font: inherit;
+    }
+    input[type="file"] {
+    max-width: 100%;
+    cursor: pointer;
+    color: var(--tinta-suave);
+    }
+    input[type="file"]::file-selector-button {
+    font: inherit;
+    font-size: var(--t-300);
+    font-weight: var(--peso-fuerte);
+    cursor: pointer;
+    margin-right: var(--e-3);
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-4);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    }
+    input[type="file"]::file-selector-button:hover {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
+    }
+    .cabecera {
+    border-bottom: 1px solid var(--linea);
+    background: var(--superficie);
+    }
+    .cabecera__interior {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 var(--e-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    }
+    .cabecera__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
+    font-size: var(--t-200);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0;
+    }
+    .cabecera__simbolo {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    }
+    .idiomas {
+    display: flex;
+    gap: var(--e-3);
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: var(--t-200);
+    }
+    .idiomas > * {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    }
+    .idiomas__actual {
+    font-weight: var(--peso-fuerte);
+    color: var(--tinta);
+    }
+    .idiomas__enlace {
+    color: var(--acento);
+    text-decoration: none;
+    }
+    .idiomas__enlace:hover {
+    text-decoration: underline;
+    }
+    .dato {
+    font-family: var(--fuente-dato);
+    }
+    </style>
+    <title>Cómo ocultar los datos de terceros al aportar documentos como prueba en un PDF · TachadoPDF</title>
+    <meta name="description" content="Aportar un documento a un procedimiento no autoriza a exponer de paso los datos de terceros ajenos al asunto. Qué conviene tachar, por qué el recuadro negro falla en un documento escaneado y cómo borrarlo sin que se pueda recuperar." />
+    <link rel="canonical" href="https://www.tachadopdf.com/guia/ocultar-datos-terceros-documentos-juicio-pdf/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="Cómo ocultar los datos de terceros al aportar documentos como prueba en un PDF" />
+    <meta property="og:description" content="Aportar un documento a un procedimiento no autoriza a exponer de paso los datos de terceros ajenos al asunto. Qué conviene tachar, por qué el recuadro negro falla en un documento escaneado y cómo borrarlo sin que se pueda recuperar." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/guia/ocultar-datos-terceros-documentos-juicio-pdf/" />
+    <meta property="og:locale" content="es_ES" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Cómo ocultar los datos de terceros al aportar documentos como prueba en un PDF",
+      "description": "Aportar un documento a un procedimiento no autoriza a exponer de paso los datos de terceros ajenos al asunto. Qué conviene tachar, por qué el recuadro negro falla en un documento escaneado y cómo borrarlo sin que se pueda recuperar.",
+      "inLanguage": "es",
+      "mainEntityOfPage": "https://www.tachadopdf.com/guia/ocultar-datos-terceros-documentos-juicio-pdf/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <style>
+      main, article, footer {
+        max-width: var(--ancho); margin: 0 auto; padding-left: var(--e-4); padding-right: var(--e-4);
+      }
+      main, article { padding-top: var(--e-12); padding-bottom: var(--e-16); }
+      /* El texto se capa a la MEDIDA, pero el bloque se alinea con la marca de la mancheta: una
+         columna centrada dentro de otra columna deja el articulo flotando a la deriva del titulo. */
+      h1, h2, p, li, .nota, .lede, .cp-cta, .cta { max-width: var(--medida); }
+      ul, ol { max-width: var(--medida); }
+      p, li { font-size: var(--t-400); }
+      h1 { font-size: var(--t-600); line-height: var(--lh-titular); font-weight: var(--peso-fuerte); margin: 0 0 var(--e-4); }
+      h2 { font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte); margin: var(--e-12) 0 var(--e-2); }
+      p { margin: 0 0 var(--e-4); }
+      ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
+      li { margin: 0 0 var(--e-2); }
+      .lede { color: var(--tinta-suave); }
+      /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
+         superado, y no se gasta en un aparte de una guia. */
+      .nota {
+        background: var(--ambar-fondo); border-left: 3px solid var(--ambar);
+        padding: var(--e-3) var(--e-4); border-radius: var(--radio-marca); color: var(--tinta);
+        font-size: var(--t-300); margin: 0 0 var(--e-4);
+      }
+      .cp-cta, .cta {
+        display: block; margin: var(--e-12) 0 0; padding: var(--e-4);
+        background: var(--acento); color: var(--tinta-inversa); border-radius: var(--radio);
+        text-decoration: none; font-weight: var(--peso-fuerte); font-size: var(--t-300);
+      }
+      .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
+      footer {
+        margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
+        font-size: var(--t-200); color: var(--tinta-suave);
+      }
+      @media (max-width: 640px) {
+        footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
+        <nav class="idiomas" aria-label="Idioma">
+          <span class="idiomas__actual" lang="es">Español</span>
+          <a class="idiomas__enlace" hreflang="en" lang="en" href="../../en/">English</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <h1>Cómo ocultar los datos de terceros al aportar documentos como prueba en un PDF</h1>
+      <p>Al defender un asunto se aportan documentos —correos, extractos, contratos, informes, capturas de conversaciones— para probar un hecho. Y en esos documentos, además de lo que se quiere demostrar, suelen aparecer datos personales de terceros que no tienen nada que ver con el pleito.</p>
+      <p>El ejercicio del derecho de defensa permite aportar datos personales a un procedimiento sin el consentimiento de su titular cuando son necesarios para el caso. Eso no cubre lo que no aporta nada: el número de cuenta de un tercero que asoma en un extracto, el teléfono de una persona que no es parte, o datos de salud de otra persona que aparecen de refilón en un informe. Esa parte conviene dejarla fuera antes de presentar el documento.</p>
+      <h2>Qué suele convenir dejar fuera</h2>
+      <ul>
+        <li>Datos de personas ajenas al procedimiento que aparecen de paso.</li>
+        <li>Categorías especialmente protegidas (salud, ideología, afiliación) que no sean el objeto de prueba.</li>
+        <li>Números de cuenta, de tarjeta o identificadores fiscales que no se discuten en el asunto.</li>
+        <li>Direcciones y teléfonos de terceros.</li>
+        <li>Datos de menores.</li>
+      </ul>
+      <h2>El recuadro negro falla justo en la prueba escaneada</h2>
+      <p>Buena parte de la prueba documental es un escaneo: un burofax, un contrato firmado, un justificante fotografiado. Poner un recuadro negro encima de un escaneo es apilar una imagen sobre otra: quien reciba el archivo puede quitarla, o ajustar el contraste, y el dato asoma. Y si el documento sí tiene capa de texto, el recuadro tampoco borra el texto que queda debajo. Ten en cuenta además que lo que se presenta por vía telemática queda incorporado al expediente: rectificar después no es sencillo.</p>
+      <p class="nota">Antes de presentar, abre el PDF que vas a aportar, intenta seleccionar y copiar sobre las zonas tapadas y, si es un escaneo, prueba a subir el brillo. Si el dato reaparece, no estaba borrado.</p>
+      <h2>Cómo tacharlo sin que se pueda recuperar</h2>
+      <p>Para el texto, hay que eliminarlo del contenido del archivo; para el escaneo, borrar los píxeles de la zona. TachadoPDF detecta de forma automática por patrones los identificadores españoles (DNI, NIE, IBAN, número de la Seguridad Social, referencia catastral) y los correos y teléfonos, y el resto lo marcas tú. Luego relee el archivo para confirmar que no queda rastro y entrega un informe con la huella del documento. Y como todo corre en tu navegador, el expediente de tu cliente no sale de tu equipo.</p>
+      <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos personales contiene el documento</a>
+      <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
+    </main>
+  </body>
+</html>

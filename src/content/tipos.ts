@@ -35,6 +35,13 @@ export interface ContenidoGuia {
   tituloEnlace: string;
   descripcion: string;
   cuerpo: Bloque[];
+  /**
+   * Rótulo de un enlace EXTRA al comprobador (el diagnóstico gratuito) al pie de la guía. Es
+   * OPCIONAL a propósito: solo lo llevan las landings de keyword sectorial, que hacen embudo hacia
+   * la herramienta gratuita antes que hacia la de pago; las guías previas no lo declaran y su HTML
+   * no cambia ni un byte. El href lo calcula el generador (ruta relativa al comprobador del idioma).
+   */
+  enlaceComprobador?: string;
 }
 
 /** Textos del informe de comprobación. El informe ES el producto: aquí no entra ni una promesa. */

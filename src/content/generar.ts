@@ -798,12 +798,29 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     `<style>\n${CSS_GUIA}\n</style>`,
   ];
 
-  const cuerpo = [
-    texto('h1', {}, guia.titulo),
-    ...guia.cuerpo.map(bloque),
-    '',
+  // Al pie: un enlace al comprobador gratuito (solo si la guía lo pide) y SIEMPRE el CTA a la
+  // herramienta. Reutilizan la clase `.cp-cta`, que `legal/cta-visible` ya vigila en las dos
+  // direcciones de contraste: ningún estilo nuevo, ninguna guarda de color que reapuntar. El
+  // enlace al comprobador va primero porque es la puerta de menor fricción (diagnostica sin tachar).
+  const ctas: string[] = [];
+  if (guia.enlaceComprobador !== undefined) {
+    const comprobador = paginaPorId('comprobador');
+    const rutaComprobador = comprobador === undefined ? null : rutaDe(comprobador, locale);
+    if (rutaComprobador !== null) {
+      ctas.push(
+        texto(
+          'a',
+          { class: 'cp-cta', href: `${navHref(ruta, rutaComprobador)}?utm_source=guia` },
+          guia.enlaceComprobador,
+        ),
+      );
+    }
+  }
+  ctas.push(
     texto('a', { class: 'cp-cta', href: `${navHref(ruta, rutaHome)}?utm_source=guia` }, c.guiaCta),
-  ];
+  );
+
+  const cuerpo = [texto('h1', {}, guia.titulo), ...guia.cuerpo.map(bloque), '', ...ctas];
 
   const main = [
     sangrar([mancheta(pagina, locale)], 2),

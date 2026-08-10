@@ -85,8 +85,10 @@ function fondoDe(css: string, selector: string): string | null {
 }
 
 describe('G17: las dieciocho paginas declaran UNA cara y ningun CTA se funde con su fondo', () => {
-  it('el barrido ve las dieciocho paginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(18);
+  // Eran dieciocho; el 2026-08-10 se sumaron las CINCO landings de cola larga sectorial (guias
+  // generadas, solo en espanol), y el sitio pasa a veintitres paginas.
+  it('el barrido ve las veintitres paginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(23);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s no declara ningun bloque de tema oscuro', (pagina) => {

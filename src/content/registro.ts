@@ -96,6 +96,49 @@ export const PAGINAS: PaginaRegistro[] = [
     slugs: { es: 'guia/enviar-nominas-pdf-datos-personales' },
   },
 
+  // Landings de cola larga sectorial (2026-08-10). A diferencia de las seis guías de arriba
+  // —ficheros estáticos escritos a mano—, estas son `origen: 'generado'`: su HTML lo emite
+  // `generar.ts`, así que heredan sin copiar el sistema visual, la CSP, el favicon, el canonical
+  // auto-referente, el sitemap y la mancheta. Persiguen consultas que el diagnóstico de keywords
+  // midió como demanda real (la gente busca «censurar/ocultar/borrar datos de un PDF» por sector),
+  // con los gigantes ausentes en la cola sectorial. Solo existen en español a propósito: el mercado
+  // inglés se analizó y es más difícil. Ver docs/SEO-EXPERIMENTO.md.
+  {
+    id: 'guia-curriculum',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/ocultar-datos-personales-curriculum-pdf' },
+  },
+  {
+    id: 'guia-prueba-juicio',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/ocultar-datos-terceros-documentos-juicio-pdf' },
+  },
+  {
+    id: 'guia-publicar-internet',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/censurar-pdf-antes-de-publicarlo-internet' },
+  },
+  {
+    id: 'guia-alumnos',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/ocultar-datos-alumnos-pdf' },
+  },
+  {
+    id: 'guia-copia-dni',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/tapar-datos-copia-dni-tramite' },
+  },
+
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen
   // audiencia inglesa, y tres de las inglesas (Rule 5.2, DSAR, comprobar el tachado) no tienen

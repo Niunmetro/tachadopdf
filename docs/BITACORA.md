@@ -4,6 +4,69 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-10 · seo · Cinco landings de cola larga sectorial (acto de DISTRIBUCION)
+
+**Hecho:** cinco paginas nuevas, una por consulta real, para perseguir la demanda que SI existe
+(«censurar/ocultar/borrar/tapar datos de un PDF» por sector) donde los gigantes son genericos.
+Rama `seo/landings-cola-larga-sectorial`, merge `--no-ff`. Suite **1170 -> 1343** (mismas guardas,
+mas paginas + el test nuevo). No es ingenieria: es el primer acto de distribucion con juez escrito.
+
+### Que se construyo
+- **5 landings generadas** (no estaticas): `origen: 'generado'` en `registro.ts`, contenido en
+  `es.ts`. Heredan sin copiar el sistema visual, la CSP, el favicon, el canonical auto-referente y
+  el sitemap — el mismo camino que las guias inglesas. Solo en espanol a proposito.
+  1. `/guia/ocultar-datos-personales-curriculum-pdf/` — RRHH/CV.
+  2. `/guia/ocultar-datos-terceros-documentos-juicio-pdf/` — abogacia/prueba.
+  3. `/guia/censurar-pdf-antes-de-publicarlo-internet/` — sector publico/publicar.
+  4. `/guia/ocultar-datos-alumnos-pdf/` — educacion/menores.
+  5. `/guia/tapar-datos-copia-dni-tramite/` — particular/copia del DNI.
+- **Keyword research real** (WebSearch, 2026-08-10): cada consulta validada mirando su SERP; los
+  gigantes (Smallpdf/iLovePDF/Wondershare) estan AUSENTES en la cola sectorial, la ocupan blogs de
+  LOPD y guias institucionales. Fuentes y descartes en `docs/SEO-EXPERIMENTO.md`.
+- **NO son casi-duplicados** (el peligro central: «scaled content abuse»). Medido con Jaccard de
+  3-gramas de palabra: maximo **0,074** contra las guias existentes, **0,061** entre las nuevas
+  (un clon con la keyword cambiada puntua > 0,8). Lo ata `src/content/landings-keyword.test.ts`,
+  umbral 0,30 (4x margen). Se descartaron gestoria y alquiler por solaparse con la guia de nominas,
+  y «sin subir a internet» por solaparse con su guia.
+- **Cada landing da acceso al comprobador gratuito Y a la herramienta** (dos CTA `.cp-cta`). Campo
+  opcional `enlaceComprobador` en `ContenidoGuia`; el generador lo pinta solo si esta, asi que las
+  guias previas no cambian ni un byte. Reusa la clase que `legal/cta-visible` ya vigila: cero CSS
+  nuevo, cero guarda que reapuntar.
+
+### Tension de vocabulario — RESUELTA, para ratificacion del comite
+«anonimizar» y «certificar» estan vetadas como substring por `src/guard.test.ts` (en todo `.ts` de
+`src/` y `.html` de `public/`). La tarea permitia usarlas en modo INFORMATIVO y anotarlo. **Decision:
+NO se usa ninguna, ni en modo informativo.** Relajar un guardian no negociable por una keyword es el
+antipatron «guardarrailes que no guardan», y no hace falta: la demanda ganable se teclea con verbos
+permitidos que la SERP confirma («censurar/ocultar/borrar/tapar/quitar»). El producto se sigue
+describiendo con «borrado real de datos» y «deteccion automatica por patrones». **Nada que ratificar
+en el vocabulario**: no se toco. Si el comite quiere «anonimizar» en modo informativo algun dia,
+seria un cambio explicito y acotado de `guard.test.ts`, nunca un descuido.
+
+### El juez de distribucion
+`docs/SEO-EXPERIMENTO.md`: que pagina persigue que consulta, fecha de deploy (2026-08-10) y **umbral
+con fecha y cifra**. Sin analitica en la web (por diseno), el juez es Google Search Console.
+Prerrequisito: comprobar que las 5 estan INDEXADAS antes de leer la demanda (si no, es indexacion,
+no demanda). A 4 semanas (**2026-09-07**): **>=30 impresiones** con **>=2 paginas activas** = VALIDA
+e itera; 1-29 = zona gris, se afinan titulos; **0 impresiones estando indexadas = MATA el canal SEO
+con fundamento** y se reconsidera segmento (Plan B justicia del PLAN_14D). 0 impresiones mata el
+CANAL, no el producto (el outbound es otro canal).
+
+### Verificacion (exit codes reales, nunca `| tail`)
+`tsc --noEmit` exit 0 · `vitest run` **1343/1343** (2 conteos de barrido actualizados: 10->15
+generadas en `estilo`, 18->23 del sitio en `cta-visible` — son tripwires de «no vacio», subieron
+porque hay 5 paginas mas) · `npm run build` exit 0. `dist/`: 5 paginas + sitemap 23 URLs + `CNAME`
+(LF, `www.tachadopdf.com`) comprobado ANTES de desplegar. Pagina CV renderizada y leida en el
+navegador (mancheta + H1 + cuerpo; ~2800 caracteres visibles sin JS).
+
+### Ojo (para quien siga)
+- La home ES (`index.html`) crece por su unico sitio de datos: el `<nav>` de guias suma 5 `<li>`.
+  **NO se toco el hero ni el diseno** (se estaba rehaciendo en paralelo); solo entran enlaces
+  data-driven del generador. La home EN no cambia.
+- Residual heredado: las 8 estaticas no tienen guarda de canonical; estas 5 NO son estaticas, son
+  generadas, asi que `content/hreflang` (canonical auto-referente) SI las cubre.
+
+---
 ## 2026-08-10 · diseno · Las tres piezas de marca: simbolo, favicon y og-image honesto
 
 **Hecho:** las tres piezas que el sistema visual dejo pendientes, integradas, fusionadas
