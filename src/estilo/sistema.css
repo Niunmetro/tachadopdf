@@ -100,13 +100,16 @@
   --peso-veredicto: 700;
 
   /* Anchos. `--ancho` es el contenedor de página; `--medida` capa TODO bloque de texto.
-     Va en rem y NO en ch: el `ch` de Plex es el ancho del cero (0,6 em) mientras la anchura
-     media de una minúscula es ~0,5 em, así que el `68ch` de hoy entrega ~82 caracteres. A 16 px
-     estos 34 rem son ~68 caracteres y a 18 px ~60: los dos dentro de la banda 45–75. Hoy los
-     bloques del Aviso Legal corren a 136–142 caracteres por línea porque el tope existía en
-     cuatro bloques y en los demás no. */
+     Va en `em` y NO en `ch`: el `ch` de Plex es el ancho del cero (0,6 em) mientras la anchura
+     media de una minúscula es ~0,5 em, así que el `68ch` de antes entregaba ~82 caracteres.
+     Y en `em` y no en `rem` por una razón MEDIDA: un tope fijo de 544 px da ~68 caracteres a
+     16 px, pero ~81 a 14 px y ~60 a 18 px — o sea, el mismo token deja fuera de banda justo a la
+     letra pequeña, que es donde más cuesta volver a encontrar la línea. En `em` el tope escala
+     con el tamaño del propio bloque y entrega ~68 caracteres a cualquier tamaño.
+     Antes los bloques del Aviso Legal corrían a 136–142 caracteres por línea porque el tope
+     existía en cuatro bloques y en los demás no. */
   --ancho: 60rem;
-  --medida: 34rem;
+  --medida: 34em;
 
   /* --- RITMO VERTICAL: UNA ESCALERA, Y PROHIBIDO SALIRSE DE ELLA ----------------------------
      Medido antes de esta rama: la portada usaba VEINTIDÓS valores de espaciado distintos y ONCE
@@ -233,6 +236,94 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+/* EL BOTÓN DE ELEGIR ARCHIVO, UNA SOLA VEZ PARA LAS DOS HERRAMIENTAS.
+   Las dos superficies que cargan un PDF —la de pago y la gratuita— dibujaban dos controles
+   distintos: la de pago tenía recuadro y botón teñido, y la gratuita, que es la que hace de
+   embudo, servía el control desnudo del sistema operativo. El mismo gesto tiene que verse igual
+   en las dos, así que la regla vive en el sistema y no en la hoja de la aplicación. */
+input[type="file"] {
+  max-width: 100%;
+  cursor: pointer;
+  color: var(--tinta-suave);
+}
+input[type="file"]::file-selector-button {
+  font: inherit;
+  font-size: var(--t-300);
+  font-weight: var(--peso-fuerte);
+  cursor: pointer;
+  margin-right: var(--e-3);
+  min-height: 2.75rem;
+  padding: var(--e-2) var(--e-4);
+  border-radius: var(--radio);
+  border: 1px solid var(--acento);
+  background: var(--acento);
+  color: var(--tinta-inversa);
+}
+input[type="file"]::file-selector-button:hover {
+  background: var(--acento-fuerte);
+  border-color: var(--acento-fuerte);
+}
+
+/* ---------- LA MANCHETA, común a las dieciocho páginas ----------
+   Marca a la izquierda, idiomas a la derecha, filete A SANGRE de borde a borde de la ventana. Ese
+   filete es lo que hace que 1440 px dejen de leerse como una columna suelta flotando en el vacío,
+   y es lo que le faltaba entero a /actas/ y /nominas/: en el móvil la palabra «TachadoPDF» no
+   aparecía hasta 1,83 pantallas, justo en las dos páginas donde cae el tráfico de pago.
+   La marca va en TINTA. El acento significa «esto es lo que se pulsa» y no puede significar
+   además «esto es la marca»; y el azul que gastaba suspendía a 4,10:1.
+   Vive aquí, y no en la hoja de la aplicación, porque dieciséis de las dieciocho páginas no
+   enlazan ninguna hoja externa. */
+.cabecera {
+  border-bottom: 1px solid var(--linea);
+  background: var(--superficie);
+}
+.cabecera__interior {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 var(--e-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+}
+.cabecera__marca {
+  font-size: var(--t-200);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin: 0;
+}
+
+/* Selector de idioma: enlaces <a> reales, no un <select> con JavaScript — funciona con los
+   scripts desactivados y también en páginas que no cargan ninguno. Cada idioma se rotula en SU
+   PROPIO idioma; nunca banderas (una bandera es un país, no un idioma). */
+.idiomas {
+  display: flex;
+  gap: var(--e-3);
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  font-size: var(--t-200);
+}
+/* Caja táctil de 44 px manteniendo el texto a 14: el conmutador medía 22 px de alto. */
+.idiomas > * {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.idiomas__actual {
+  font-weight: var(--peso-fuerte);
+  color: var(--tinta);
+}
+.idiomas__enlace {
+  color: var(--acento);
+  text-decoration: none;
+}
+.idiomas__enlace:hover {
+  text-decoration: underline;
 }
 
 /* MONO = IDENTIFICADOR QUE UN HUMANO COMPARA CARÁCTER A CARÁCTER: DNI, NIE, IBAN, nº de la

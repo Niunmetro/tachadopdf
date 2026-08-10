@@ -246,13 +246,19 @@ describe('la tipografia se sirve desde el propio repositorio', () => {
    * largos a proposito —son la memoria de por que cada decision es la que es— pero el bloque del
    * sistema va incrustado en las DIECIOCHO paginas: publicarlos seria cobrarle al visitante, en
    * cada visita y en cada pagina, una explicacion escrita para quien revisa el repositorio.
-   * Medido: 8,0 kB documentado frente a 1,1 kB de reglas.
+   * Medido: 17,7 kB documentado frente a 3,1 kB de reglas.
+   *
+   * El tope es explicito y esta puesto donde duele: este bloque lo paga CADA pagina y CADA visita.
+   * Si un dia hay que subirlo, que sea una decision escrita, no una deriva. Y no es peso NUEVO:
+   * lo que lleva dentro (mancheta, control de archivo, tipografia base) sustituye al CSS que cada
+   * pagina se escribia por su cuenta — la hoja vieja de una guia pesaba 1,2 kB y la de una landing
+   * 1,8 kB, y ninguna de las dos compartia un solo valor con las demas.
    */
-  it('lo que se publica son las reglas, no los comentarios, y cabe en 2 kB', () => {
+  it('lo que se publica son las reglas, no los comentarios, y cabe en 4 kB', () => {
     const publicado = sistemaCss('./');
     expect(publicado).not.toContain('/*');
     expect(publicado).not.toContain('*/');
-    expect(Buffer.byteLength(publicado, 'utf-8')).toBeLessThanOrEqual(2048);
+    expect(Buffer.byteLength(publicado, 'utf-8')).toBeLessThanOrEqual(4096);
     // Y aun asi lleva TODO lo que importa: las dos caras y los siete pasos de la escala.
     expect([...publicado.matchAll(/@font-face/g)].length).toBe(2);
     expect([...publicado.matchAll(/--t-\d00:/g)].length).toBe(7);
@@ -377,10 +383,16 @@ describe('la primera pantalla de la portada: primero la herramienta', () => {
       '\\.enlaces-sector a',
       'input\\[type="file"\\]::file-selector-button',
     ];
+    const hojas = reglas(`${cssContent}\n${sistemaFuente()}`);
     for (const selector of PULSABLES) {
-      const bloque = new RegExp(`(?:^|\\n)${selector}\\s*\\{([^}]*)\\}`, 's').exec(reglas(cssContent))?.[1];
-      expect(bloque, `no hay regla para ${selector}`).toBeDefined();
-      expect(bloque ?? '', `${selector} sin diana de 44 px`).toMatch(/min-height:\s*2\.75rem/);
+      // TODAS las reglas del selector, no la primera: un componente puede estar declarado en el
+      // sistema y ajustado en la hoja de la aplicacion, y la diana la puede poner cualquiera de
+      // las dos. Mirando solo la primera, mover una regla de sitio ponia la guarda en rojo por un
+      // motivo que no era el suyo.
+      const bloques = [...hojas.matchAll(new RegExp(`(?:^|\\n)${selector}\\s*\\{([^}]*)\\}`, 'gs'))];
+      expect(bloques.length, `no hay regla para ${selector}`).toBeGreaterThan(0);
+      const declara = bloques.some((b) => /min-height:\s*2\.75rem/.test(b[1] ?? ''));
+      expect(declara, `${selector} sin diana de 44 px`).toBe(true);
     }
   });
 });

@@ -13,6 +13,124 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-10 · diseño · El sitio deja de ser una maqueta funcional: tipografía propia, sistema de tokens y la herramienta por delante
+
+**Hecho:** rama `diseno/sistema-visual-registro` (4 commits, **sin fusionar**). Primera pasada de
+diseño sobre la WEB (la anterior, del 8-ago, fue sobre el informe). El encargo del dueño era «la
+web es como poco escasa y cutre»; tenía razón: `src/estilo.css` eran 301 líneas con la paleta por
+defecto de Tailwind (slate + sky) y la fuente del sistema. Escrita con cuidado, pero sin identidad
+ninguna: podía ser el panel de cualquier cosa.
+
+**1. Tipografía auto-alojada.** IBM Plex Sans Variable (45.712 B) + IBM Plex Mono 400 (14.708 B),
+latin, **SIL OFL 1.1**, con el texto íntegro de la licencia junto a cada fichero en
+`public/fuentes/<familia>/OFL.txt`. Son los `.woff2` **publicados tal cual** por fontsource: no se
+subsetean, porque la FAQ 2.6 de la OFL considera modificación el subsetting y una Versión
+Modificada no puede llevar el Nombre de Fuente Reservado «Plex». Empaquetarla en un repo AGPL está
+expresamente permitido (cláusula 2 y FAQ 1.3) y no la relicencia (cláusula 5). `font-src 'self'`
+llevaba desde el principio declarado y VACÍO.
+*Por qué Plex:* sus diez dígitos miden 600/1000 upem, o sea son **tabulares por defecto, sin una
+línea de CSS**, y este producto pinta DNI, NIE, IBAN, nº de la Seguridad Social, referencias
+catastrales y teléfonos en listas y botones que el usuario compara de un vistazo. El dígito del
+mono mide exactamente lo mismo, así que un identificador en mono dentro de una frase en sans no
+descuadra nada.
+*`font-display: optional`, no `swap`:* si la fuente no llega en la ventana de bloqueo, esa carga se
+queda en la pila de respaldo y NO cambia. Cero salto de letra encima de quien ya está leyendo. El
+`<link rel=preload crossorigin>` del sans es lo que hace que la ventana baste; el mono no se
+precarga nunca.
+
+**2. Una sola fuente de tokens: `src/estilo/sistema.css`.** La consumen la hoja de la aplicación y
+los `<style>` incrustados de las dieciocho páginas. Lo que se REVISA lleva sus comentarios
+(17,7 kB) y lo que se PUBLICA son las reglas (3,1 kB): el porqué vive en el repositorio, por el
+cable van las reglas.
+
+**3. Escala cerrada de 7 pasos y escalera de espaciado de 4 px.** Medido en la portada construida:
+**12 tamaños de letra a 6** y **21 valores de espaciado a 11**, y los tres que quedan fuera de la
+rejilla de 4 (1, 3 y 14 px) son del NAVEGADOR, no de la hoja. Radios 8 y 10 a 2 y 6.
+
+**4. Paleta «Registro».** Papel cálido (`#f6f5f3`), tinta cálida (`#1b1a17`), un acento frío y
+profundo (`#164a7e`). El acento viejo (`#0284c7`) daba **4,10:1 sobre blanco Y 4,10 para el blanco
+encima** —el contraste es simétrico, así que fallaba en las dos direcciones— y era el color de la
+marca, del botón que cobra y del de elegir archivo; por eso existía un `--enlace` aparte. Ahora hay
+**un solo azul** a 9,07:1. El verde de las viñetas subió de 3,30 a 6,02 y `--gris` de 4,76 a 5,24.
+El mínimo de toda la paleta, sobre las dos superficies, es **5,24:1**.
+
+**5. Primera pantalla.** A 390×844 la zona de carga pasa del píxel **1.734 al 525** (de 2,05
+pantallas a 0,62); en inglés, al 551. Ni una palabra nueva: `procesadoLocal` y `avisoPrincipal` ya
+estaban escritas y cambian de sitio.
+
+**6. Las dieciocho páginas heredan el sistema**, con mancheta común y **una sola cara clara**.
+
+**Decisiones y porqués:**
+- **La ruta de la fuente lleva un MARCADOR que cada página sustituye por su prefijo de
+  profundidad.** Dieciséis de las dieciocho páginas llevan su CSS dentro de un `<style>`, y ahí las
+  URL se resuelven contra EL DOCUMENTO: un `url(fuentes/…)` escrito una vez sirve la portada y da
+  404 mudo en `/guia/loquesea/`. Y una ruta raíz-absoluta muere bajo la base de emergencia
+  `/tachadopdf/`. Verificado en `dist`: `./`, `../`, `../../`, `../../../`.
+- **Una sola cara, clara, en las dieciocho.** Había TRES comportamientos: dos páginas siempre
+  blancas, dos siempre azul marino y catorce siguiendo al sistema — con el móvil en oscuro, el
+  recorrido guía a portada a comprobador daba marino, FOGONAZO BLANCO y marino. Lo que el producto
+  entrega es un papel blanco. Y es donde vivía el fallo: en modo oscuro forzado, el CTA de las seis
+  guías españolas era relleno `#0f172a` sobre fondo `#0f172a` (**1,00:1, sin borde**) y el de las
+  seis inglesas `#1e293b` sobre `#0f172a` (**1,22:1**, cuando 1.4.11 pide 3:1). *Coste dicho en voz
+  alta:* quien navega de noche ve una página clara; se mitiga con el papel cálido y la tinta cálida.
+- **El bloque rojo del hero cambia de FORMA, no de palabras.** El rojo aquí significa E1, tachado no
+  superado: gastarlo en doscientas palabras de marketing se lo quita al único estado que no puede
+  desteñirse. Pasa a prosa en tinta con marca de margen; el contraste sube de 9,16 a 15,97.
+- **La marca deja de gastar el acento** y se resuelve tipográficamente. *No se inventa logotipo:* es
+  del dueño. El hueco de 20×20 para el símbolo está pensado pero AUSENTE del DOM — un cuadrado
+  vacío se lee como imagen rota.
+- **El tope de medida va en `em`, no en `rem`.** Un tope fijo de 544 px da ~68 caracteres a 16 px
+  pero ~81 a 14 px, o sea deja fuera de banda justo a la letra pequeña. Medido después: **63–71
+  caracteres por línea en todas las familias de página**; antes, los legales corrían a 136–142.
+- **`.entrega[E4]` cambia de `#4a5568` a `--tinta-suave`**, el único semáforo cuyo hex se toca: el
+  significado de E4 es «neutro» y lo lleva la ausencia de color, no ese tono; un gris azulado sobre
+  papel cálido se lee como error de render.
+- **El ámbar pálido es `#fbefd2` y no `#fef3c7`.** El ámbar es el 86 % de las entregas: `#fef3c7`
+  separa más (ΔE00 14,3) pero lleva croma 22,8 y le sube el volumen al resultado NORMAL del
+  producto, contra la regla de redacción del ámbar. `#fbefd2` da ΔE00 10,6 sobre papel (antes 6,2)
+  con croma 15,5: se separa más y grita menos.
+- **Descartado tocar el texto.** Todo lo que parece copia nueva es una cadena que ya existía y que
+  cambia de sitio. Queda ANOTADO, sin hacer: promover `comprobador.dropzone` a clave compartida
+  para que los dos cargadores usen la misma cadena traducida.
+
+**Guardas nuevas y reapuntadas (todas probadas con su mutación):**
+- `estilo` **reescrito**: los tokens de texto se DERIVAN del CSS (ocho hoy, sin lista a mano) y cada
+  uno se calcula contra las DOS superficies. La guarda vieja nombraba `gris`, `enlace` y
+  `tinta-suave`: **los tres que aprobaban**. Puesta contra la paleta VIEJA da cinco fallos.
+  `--tinta-inversa` es la única excepción y está DENTRO del test con su motivo.
+- **Guarda de sistema:** ni un `font-size`, `margin`, `padding`, `gap`, `border-radius` ni color
+  escrito a mano en la hoja de la aplicación. Escalera: los nueve peldaños caen en la rejilla de 4.
+- **Guarda de primera pantalla:** el ORDEN del pliegue en el HTML, en los dos idiomas. Es el proxy
+  sin navegador de la medida en píxeles.
+- **Guarda de diana táctil:** todo lo pulsable declara 44 px de alto.
+- `legal/cta-visible` **reapuntado a las dieciocho páginas, derivando la lista del registro**. Su
+  lista era `['actas', 'nominas']` y **el mismo defecto seguía vivo en doce ficheros que nunca
+  abría**. Con un bloque oscuro devuelto a las guías generadas, da 12 fallos.
+
+**Trampa medida, para no volver a caer:** `sangrar()` deja de sangrar en cuanto ve la apertura de un
+bloque preformateado y no vuelve hasta su cierre. Nombrar esa etiqueta dentro de un COMENTARIO de la
+hoja del sistema desactivaba la sangría del `<head>` de las dieciocho páginas. Hay un test que lo
+dice con esas palabras.
+
+**Peso, con los kB delante.** Portada, primera carga: **641,3 kB a 691,9 kB** (gzip 241,1 a 287,0).
+De esos, **45,7 kB son la fuente** y ~1,5 kB el bloque de tokens. La fuente es el 9,9 % del JS que
+la portada ya servía y el 0,4 % del motor wasm, no bloquea el pintado y está compartida por las
+dieciocho páginas. Donde el trato se nota es en una guía: **5,1 kB a 53,5 kB en la PRIMERA visita
+al sitio** (7,8 kB en las siguientes, con la fuente en caché). Queda dicho.
+
+**Bloqueos / pendiente:** la rama **NO está fusionada** y **NO está desplegada**. Pendiente de
+revisión: (a) `AVISO_PRINCIPAL` es ruta sensible y esta pasada lo MUEVE de sitio (mismo texto,
+debajo del control en vez de encima) — que lo bendiga quien lleve legales antes de fusionar;
+(b) el informe PDF queda FUERA de esta pasada a propósito (incrustar Plex movería todos los glifos
+y hay cuatro guardas que miden posiciones de glifo y tinta sobre el PDF rasterizado);
+(c) sigue sin haber favicon y sin figura del informe en la web; (d) `public/og-image.png` sigue
+enseñando un informe VERDE cuando el estado normal es el ámbar.
+
+**Enlaces:** rama `diseno/sistema-visual-registro`; commits `b342caf`, `dd27577`, `425e02c` y el de
+esta entrada.
+
+---
+
 ## 2026-08-10 · despliegue · El acta del 10-ago sale a producción: se acaba el falso verde vivo y `/en/` deja de ser un 404
 
 **Hecho:** desplegado `master` (`299605e`) a `gh-pages` con `npm run deploy-pages` (exit 0).

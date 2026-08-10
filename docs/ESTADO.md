@@ -14,6 +14,7 @@
   NO compila.
 - Suite: **1002/1002 en 71 ficheros** en `master` (842 era el suelo del 8-ago; subió al desarmar la
   exclusión del guardián de precios y al añadir `afirmaciones-respaldadas` y `legal/faq-ambar`).
+  En la rama `diseno/sistema-visual-registro`, **1111/1111**.
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -150,6 +151,52 @@
   bonito y el verde grande son el mismo fallo con dos caras, y ninguna guarda mide «cuánta
   tranquilidad transmite un titular». El guion de vistas vive fuera de `src/` (`_vistas/`).
 
+## Diseño de la web — SISTEMA VISUAL (rama `diseno/sistema-visual-registro`, 2026-08-10, SIN FUSIONAR)
+
+> ⚠ **Cuatro commits en rama, no fusionados y no desplegados.** Ver la bitácora del 2026-08-10 para
+> las decisiones con su porqué. Antes de fusionar: bendición de legales sobre el MOVIMIENTO de
+> `AVISO_PRINCIPAL` (mismo texto, debajo del control en vez de encima).
+
+- **Una sola fuente de tokens: `src/estilo/sistema.css`.** Tipografía, escala, escalera de
+  espaciado, radios y paleta. La consumen `src/estilo.css` y los `<style>` incrustados de las
+  DIECIOCHO páginas, vía `src/estilo/sistema.ts`. Ninguna pantalla escribe ya un hex, un tamaño ni
+  un espaciado a mano. **Lo que se revisa lleva sus comentarios (17,7 kB); lo que se publica son
+  las reglas (3,1 kB).**
+- **⚠ LA RUTA DE LA FUENTE LLEVA UN MARCADOR, NO UNA RUTA.** Dieciséis páginas llevan su CSS dentro
+  de un `<style>`, y ahí las URL se resuelven **contra el documento**: un `url(fuentes/…)` escrito
+  una sola vez sirve la portada y da **404 mudo** en `/guia/loquesea/`, con la portada en Plex y las
+  guías en la letra del sistema. Y una ruta raíz-absoluta muere bajo la base de emergencia
+  `/tachadopdf/`. Cada página sustituye el marcador por su prefijo de profundidad
+  (`navHref(ruta, '')`), igual que el PDF de ejemplo. Lo ata `estilo`.
+- **Tipografía: IBM Plex Sans Variable + Plex Mono, SIL OFL 1.1, auto-alojadas** en
+  `public/fuentes/<familia>/` con su `OFL.txt`. Los `.woff2` son los **publicados tal cual**: NO se
+  subsetean (la FAQ 2.6 de la OFL considera modificación el subsetting, y una Versión Modificada no
+  puede llevar el Nombre de Fuente Reservado «Plex»). `font-display: optional`, nunca `swap`.
+  El **mono** va donde hay un IDENTIFICADOR que se compara carácter a carácter (clave de licencia,
+  nombres de fichero entregados, el valor dentro de «tachar todas las apariciones»), y en ningún
+  otro sitio: el sans de Plex ya es tabular por defecto.
+- **Paleta «Registro»**: papel `#f6f5f3`, tinta `#1b1a17`, un solo acento `#164a7e` (9,07:1, hace
+  también de color de enlace — `--enlace` y `--acento-oscuro` desaparecen). **El mínimo de toda la
+  paleta, sobre las dos superficies, es 5,24:1.** La página es el PAPEL y el panel es la SUPERFICIE
+  blanca: antes estaba al revés.
+- **UNA SOLA CARA, CLARA, en las 18 páginas.** Fuera todos los bloques `prefers-color-scheme: dark`.
+  Motivo medido: el CTA de las seis guías ES era relleno `#0f172a` sobre fondo `#0f172a` (1,00:1) y
+  el de las seis EN, 1,22:1. **No se hizo borrando la guarda: `legal/cta-visible` se reapuntó a las
+  dieciocho derivando la lista del registro** — antes su lista era `['actas','nominas']` y el fallo
+  vivía en doce ficheros que nunca abría.
+- **La primera pantalla la gana la herramienta.** A 390×844 la zona de carga pasa del píxel 1.734
+  al 525 (de 2,05 pantallas a 0,62). **Criterio que hay que mantener: por encima de 600 px.** Lo
+  vigila, sin navegador, la guarda de ORDEN del pliegue.
+- **Mancheta común a las 18**: marca en versalitas a la izquierda, idiomas a la derecha, filete a
+  sangre. **NO hay logotipo y no se inventa**: el hueco de 20×20 para el símbolo está pensado pero
+  AUSENTE del DOM (un cuadrado vacío se lee como imagen rota). Sigue sin haber favicon.
+- **Medida de línea en `em`, no en `rem`**: un tope fijo da ~68 caracteres a 16 px pero ~81 a 14.
+  Medido después: 63–71 caracteres en todas las familias de página.
+- **El informe PDF queda FUERA de esta pasada, a propósito.** Incrustar Plex movería TODOS los
+  glifos, y `report/maquetacion` mide posiciones de glifo mientras `report/vinetas`,
+  `report/medidor` y `report/cobertura-destacada` miden tinta sobre el PDF rasterizado. Es tarea
+  aparte con re-medición de cuatro guardas, no un efecto colateral.
+
 ## Diseño de la aplicación y de la web (misma pasada)
 - **Lo hueco sigue ahí, lo macizo se va.** Una detección sin elegir es un contorno discontinuo con
   el dato legible debajo; elegida, macizo con su marca. Antes `.hit-box` no tenía NI UNA regla y
@@ -212,12 +259,26 @@
   (la marca de agua) caen todos por debajo de la banda del sello, que se localiza por su color.
 - `ui/entrega` — el acuse de entrega enseña el MISMO veredicto que el informe, con literales
   congelados, y un documento escaneado entero no se anuncia como verde en pantalla.
-- `legal/cta-visible` — en las dos landings de sector, el relleno del CTA en tema oscuro no puede
-  ser el mismo que el del cuerpo, y si el relleno se aclara el texto no puede quedarse en blanco.
-- `estilo` — los tokens de texto (`--gris`, `--enlace`, `--tinta-suave`) se leen sobre blanco a
-  4,5:1 o mejor, **calculando el contraste**, no comprobando que la cadena esté escrita. Y el botón
-  de «tachar todas las apariciones» no recorta el valor: esa guarda **estaba al revés y exigía el
-  `text-overflow: ellipsis` que lo dejaba en un carácter en el móvil**.
+- `legal/cta-visible` — **reapuntado a las DIECIOCHO páginas en la rama de diseño, derivando la
+  lista del registro del sitio.** Antes era `const PAGINAS = ['actas','nominas']` y el mismo defecto
+  —un pulsable con el mismo relleno que su fondo— seguía vivo, medido, en doce ficheros que la
+  guarda nunca abría. Ahora comprueba, en las dieciocho: que ninguna declara bloque de tema oscuro,
+  que todas declaran `color-scheme: light`, y que el relleno de cada CTA está a ≥ 3:1 de su fondo
+  y su texto a ≥ 4,5:1 de su relleno, **resolviendo los tokens y calculando**.
+- `estilo` — **reescrito en la rama de diseño.** Los tokens usados como color de texto se DERIVAN
+  del CSS (ocho hoy, sin lista escrita a mano) y cada uno se calcula contra las DOS superficies
+  (`--papel` y `--superficie`). La versión anterior nombraba `gris`, `enlace` y `tinta-suave`: **los
+  tres que aprobaban** — `--acento` (4,10:1 en tres sitios) y `--verde` (3,30:1 haciendo de ✓) no
+  entraban en el barrido. Puesta contra la paleta VIEJA, la nueva da cinco fallos. `--tinta-inversa`
+  es la única excepción y está DENTRO del test con su motivo, nunca sacando un fichero del barrido.
+  Cubre además: los `.woff2` existen, pesan ≤ 64 kB entre los dos y viajan con su OFL · las dos
+  caras van en `optional` y con el marcador de ruta sin resolver · las diez páginas generadas
+  incrustan los mismos bytes del sistema con SU prefijo · la escala es cerrada (siete pasos, en
+  rem) y nadie escribe un tamaño a mano · la escalera de espaciado cae en la rejilla de 4 · ni un
+  margin/padding/gap/radio/color escrito a mano · el ORDEN del pliegue de la portada en los dos
+  idiomas · todo lo pulsable declara 44 px · y el botón de «tachar todas las apariciones» no
+  recorta el valor (esa guarda **estaba al revés y exigía el `text-overflow: ellipsis` que lo
+  dejaba en un carácter en el móvil**).
 - `pdf/marcadores` · `pdf/escondites` · `pdf/escondites-estructura` · `pdf/dos-lineas` ·
   `pdf/imagenes` · `pdf/capas-ocultas` · `pdf/texto-no-legible` · `pdf/hueco-de-glifos` ·
   `detect/separadores` — un fichero por escondite cerrado, cada uno con el defecto medido en su
@@ -369,10 +430,16 @@ G4. ⚪ **PARADA 6** (abajo): `git push origin --delete gh-pages` + `npm run dep
   cual, y en E5 esa línea termina en «Alcance y límites, abajo» — en la pantalla no hay ningún
   «abajo». Es el precio de NO escribir una segunda redacción, que es lo que garantiza que las dos
   superficies no deriven. Arreglarlo bien pide tocar el texto del informe: puerta del dueño.
-- **La app no se ha visto en captura.** Esta sesión no tenía captura de pantalla disponible, así
-  que la aplicación y la web se verificaron **midiendo en un navegador real** sobre el `dist/`
-  construido (computed styles, geometría y contrastes calculados), no mirando una imagen. El
-  informe sí se miró rasterizado, uno a uno, en color y en gris.
+- ✅ **La app YA se ha visto en captura** (2026-08-10, rama de diseño). El panel del Browser no
+  compositaba, así que las capturas se hacen con **Chrome headless por CDP** (portada ES y EN,
+  comprobador, guía ES, guía EN y landing, a 390×844 y 1440×900) y se MIRAN. La misma conexión CDP
+  mide geometría, familias resueltas, dianas táctiles y caracteres por línea sobre el `dist/`
+  construido. Guion en el borrador de la sesión, fuera de `src/`.
+- **La rama de diseño no mide el rendimiento de la fuente en red real.** `font-display: optional`
+  acota el riesgo por diseño (si no llega en la ventana, no se usa en esa carga), pero nadie ha
+  cronometrado la portada en 3G ni ha comprobado qué cabecera de caché pone GitHub Pages al
+  `.woff2`. Si esa caché fuera corta, el coste de 45,7 kB se pagaría más veces de lo que dice el
+  cálculo de arriba.
 - **El coste de rendimiento de la ronda no está medido.** `processDocument` hace ahora una pasada
   más por página (el dispositivo que cuenta glifos ilegibles) sobre las que ya hacía. En documentos
   largos puede notarse; nadie lo ha cronometrado.
@@ -410,7 +477,16 @@ G4. ⚪ **PARADA 6** (abajo): `git push origin --delete gh-pages` + `npm run dep
   lo comercial (precio real, tramo fuera, pie legal), no en lo estructural; hay que reescribir las
   dos páginas enteras, no parchearlas una tercera vez. Por eso el pie legal que se añadió el
   2026-08-10 usa URL **absolutas al dominio**, que sí sobreviven a la base de emergencia; lo ata
-  `precios-coherentes`.
+  `precios-coherentes`. La rama de diseño **no las reescribe**: solo les pone la mancheta, el
+  sistema visual y la cara clara — su estructura y su copia siguen congeladas.
+- **Sigue sin figura del informe en la web y sin favicon.** Medido: las páginas tienen 0 `<img>`,
+  0 `<svg>` y 0 `rel="icon"`. El producto ES el informe y no se ve por ninguna parte. Lo honesto
+  sería una figura y solo una: la primera página del informe de ejemplo **rasterizada por el
+  generador que ya existe**, en su estado ÁMBAR (el 86 % de las entregas), nunca dibujada a mano.
+- **`public/og-image.png` enseña un informe VERDE.** Está mejor diseñado que la web, pero el estado
+  normal del producto es el ámbar: la primera impresión que se reparte por WhatsApp y LinkedIn
+  promete el sello que casi nadie va a recibir. Es el falso verde mudado a marketing. La rama de
+  diseño **no lo toca**; sustituirlo por el mismo render honesto es tarea aparte.
 - ✅ **La cita del ICO se retiró el 2026-08-10** («in July 2025 the ICO published dedicated
   guidance…»), de los dos sitios donde vivía, antes de que el primer deploy de `/en/` la publicara.
   Las otras dos citas inglesas —Manafort (8-ene-2019) y PSNI (750.000 £, oct-2024)— **sí** están

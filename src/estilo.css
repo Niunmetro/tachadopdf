@@ -9,21 +9,6 @@
    componente escribe a mano un tamaño, un espacio, un radio ni un color: si un valor no está en
    el sistema, no existe. Lo vigila `estilo.test.ts`, que además calcula los contrastes. */
 
-/* ---------- Cabecera del sitio ----------
-   Mancheta de periódico: marca a la izquierda, idiomas a la derecha, filete A SANGRE de borde a
-   borde de la ventana. El filete es lo que hace que 1440 px dejen de leerse como una columna
-   suelta flotando en el vacío. La marca va en TINTA, no en acento: el acento significa «esto es
-   lo que se pulsa» y no puede significar además «esto es la marca». */
-.cabecera { border-bottom: 1px solid var(--linea); background: var(--superficie); }
-.cabecera__interior {
-  max-width: var(--ancho); margin: 0 auto; padding: 0 var(--e-4);
-  display: flex; align-items: center; justify-content: space-between; gap: var(--e-4);
-}
-.cabecera__marca {
-  font-size: var(--t-200); font-weight: var(--peso-fuerte); letter-spacing: .14em;
-  text-transform: uppercase; color: var(--tinta); margin: 0;
-}
-
 #app { max-width: var(--ancho); margin: 0 auto; padding: 0 var(--e-4) var(--e-16); }
 
 /* TODO <h2> del sitio, a 21/600. Hoy había cuatro y TRES iban a 13 px en versalitas («Tacha tu
@@ -108,19 +93,14 @@ h2 {
    a media palabra —«Ningú…nado»— en la primera pantalla del móvil, que es exactamente el aspecto
    de página rota que esta pasada viene a quitar. */
 input[type="file"] {
-  font-size: var(--t-200); width: 100%; max-width: 100%;
+  font-size: var(--t-200); width: 100%;
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-3); min-height: 8rem;
-  padding: var(--e-4); background: var(--superficie); color: var(--tinta-suave);
-  border: 2px dashed var(--linea-fuerte); border-radius: var(--radio); cursor: pointer;
+  padding: var(--e-4); background: var(--superficie);
+  border: 2px dashed var(--linea-fuerte); border-radius: var(--radio);
 }
 input[type="file"]:hover { background: var(--acento-tenue); border-color: var(--acento); }
 input[type="file"]:focus-visible { border-style: solid; border-color: var(--acento); outline: none; }
-input[type="file"]::file-selector-button {
-  font: inherit; font-size: var(--t-300); font-weight: var(--peso-fuerte); cursor: pointer;
-  margin-right: 0; min-height: 2.75rem; padding: var(--e-2) var(--e-4);
-  border-radius: var(--radio);
-  border: 1px solid var(--acento); background: var(--acento); color: var(--tinta-inversa);
-}
+input[type="file"]::file-selector-button { margin-right: 0; }
 /* La clave de licencia es un IDENTIFICADOR que se compara carácter a carácter contra el correo
    de compra: va en la familia de datos, que es donde el 0 y la O no se parecen. */
 input[type="text"] {
@@ -173,6 +153,9 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 .faq__item[open] summary::before { content: '– '; }
 .faq__item p { margin: 0 var(--e-1) var(--e-3); color: var(--tinta-suave); font-size: var(--t-300);
   line-height: var(--lh-texto); max-width: var(--medida); }
+
+/* El panel Pro: sus dos párrafos no tenían tope y corrían a 114 caracteres por línea. */
+.pro__gratis, .pro__argumento { max-width: var(--medida); }
 
 /* ---------- Estados ---------- */
 .estado-cuota { font-size: var(--t-200); color: var(--tinta-suave); }
@@ -267,21 +250,6 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
    lo envuelve sigue en la letra del texto — no se cambia ni un carácter, solo se marca cuál de
    ellos es el dato. */
 .dato { font-family: var(--fuente-dato); }
-
-/* ---------- Selector de idioma ---------- */
-/* Enlaces <a> reales, no un <select> con JavaScript: funciona con los scripts desactivados y
-   tambien en paginas que no cargan ninguno. Cada idioma se rotula en SU PROPIO idioma; nunca
-   banderas (una bandera es un pais, no un idioma). */
-.idiomas {
-  display: flex; gap: var(--e-3); align-items: center;
-  padding: 0; margin: 0;
-  font-size: var(--t-200);
-}
-/* Caja táctil de 44 px manteniendo el texto a 14: el conmutador medía 22 px de alto. */
-.idiomas > * { display: inline-flex; align-items: center; min-height: 2.75rem; }
-.idiomas__actual { font-weight: var(--peso-fuerte); color: var(--tinta); }
-.idiomas__enlace { color: var(--acento); text-decoration: none; }
-.idiomas__enlace:hover { text-decoration: underline; }
 
 /* ---------- Guías ---------- */
 .guias { margin-bottom: var(--e-8); }
