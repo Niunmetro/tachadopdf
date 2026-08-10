@@ -4,6 +4,114 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-10 · integracion · El sistema visual «Registro», fusionado y DESPLEGADO
+
+**Hecho:** revision de integracion de `diseno/sistema-visual-registro`, fusion `--no-ff` a master
+(`0deded4`), push y despliegue. Verificado contra el DOMINIO VIVO. No se ha tocado ni una linea
+de la rama: entro tal cual venia.
+
+### Lo que se verifico, y como
+
+- *Se miro.* Chrome headless por CDP, **seis paginas x dos anchos, ANTES y DESPUES**, comparando
+  las capturas una a una (el panel del navegador no compositea; ver `docs/ESTADO.md`). Y la
+  aplicacion **VIVA**, no la pagina vacia: cargar el acta de ejemplo, ver las nueve detecciones,
+  deseleccionar una y llegar al acuse de entrega. Casi todo lo que esta pasada toca —`.hit-box`,
+  `.tachar-todas`, la familia de datos, `.entrega`— es invisible en una portada sin documento.
+- *Cero peticiones externas*, medido en el navegador en las **doce** combinaciones pagina x ancho,
+  en local y **otra vez contra www.tachadopdf.com ya desplegado**. Las dos fuentes salen del propio
+  dominio. La pagina mas profunda (`/en/guide/...`, tres niveles) resuelve `/fuentes/...` con su
+  prefijo: **la trampa del `<style>` en linea no ha mordido.**
+- *CSP identica byte a byte a la de master*, en las 18 paginas, y viva en produccion.
+- *Vocabulario prohibido: 0 infracciones* sobre los 30 ficheros de texto de `dist/` (ES por
+  subcadena; EN con fronteras de palabra). Las dos coincidencias de «AI» son `9AI2` dentro de un
+  flujo deflate en base64 de pdf-lib y **ya estaban en master**.
+- *El texto no ha cambiado.* Comparado **palabra a palabra** el texto visible de las 18 paginas
+  contra master. Las unicas altas son «TachadoPDF» y los rotulos «Español»/«English» de la
+  mancheta: cadenas que ya existian, ninguna palabra nueva. Ningun fichero de copia en el diff.
+- *Contraste medido sobre lo PINTADO* (color real contra el fondo real, subiendo el arbol hasta
+  encontrar un fondo opaco), no sobre los tokens: **0 fallos** en las seis paginas y el minimo de
+  todo el sitio es **5,24:1**.
+- *Dianas tactiles a 390 px:* de 3+3+3+1+1+3 elementos por debajo de 44 px a **cero**. Lo unico
+  que queda pequeno son enlaces en linea dentro de un parrafo, que es la excepcion de WCAG 2.5.8.
+- *Medida de linea real* (solo bloques que de verdad envuelven, midiendo la linea compuesta mas
+  ancha, no la anchura de la caja): legales **140 -> 77**, guias 96 -> 67, landing 97 -> 68,
+  comprobador 97 -> 76.
+- *Las guardas nuevas, probadas por el integrador y no por confianza.* Devolver un bloque
+  `prefers-color-scheme: dark` a una guia inglesa pone roja `legal/cta-visible` con dos fallos —en
+  un fichero que la guarda vieja **no abria**—; devolver `--acento: #0284c7` pone roja `estilo` con
+  tres, incluido el token que la guarda vieja no miraba (3,76:1 sobre papel).
+- *Las fuentes son las publicadas, sin tocar:* sha256 de los dos `.woff2` **identico** al de los
+  ficheros de fontsource, o sea sin subsetear — que es lo que la FAQ 2.6 de la OFL exige para poder
+  seguir llamandolas «Plex». Su `OFL.txt` es el de upstream palabra por palabra.
+- `npx --no-install tsc --noEmit` **exit 0** · `npx --no-install vitest run` **exit 0**,
+  **1111/1111 en 71 ficheros** · `npm run build` **exit 0**. Nunca canalizado a `| tail`.
+- `dist/CNAME` comprobado **antes** de desplegar: 19 bytes, `www.tachadopdf.com\n`, con LF.
+
+### Peso, con los kB delante
+
+Portada 641,3 -> **691,9 kB** de primera carga; una guia 5,1 -> **53,5 kB en la primera visita al
+sitio** y **8,9 kB despues**. De los +50,6 kB de la portada, **44,6 son la fuente**, compartida por
+las dieciocho paginas y sin bloquear el pintado (`font-display: optional`).
+
+### El dominio vivo, despues de desplegar
+
+Las **18 URLs + sitemap + robots en 200**. Los cuatro ficheros de `/fuentes/` en 200 con sus bytes
+exactos. El bundle que la pagina referencia de verdad (`assets/main-BxPYV1NO.css`,
+`main-KAIEtudL.js`, `patterns-YUjrQaq6.js`) en 200, y **los dos anteriores en 404** — que es la
+prueba de que se sirve el build nuevo y no una copia cacheada. Precio: 59 € y pago unico en las
+cuatro superficies; cero coincidencias de 149, de «Despacho» y de «/año». Mancheta, `@font-face`,
+papel `#f6f5f3` y `color-scheme: light` presentes en las seis paginas comprobadas, y **cero**
+bloques `prefers-color-scheme: dark`.
+
+### Decisiones y porques
+
+- *La revision del `auditor-interno` se ejecuto A MANO, con su procedimiento, porque en este
+  entorno no hay herramienta para lanzar subagentes.* Se dice en voz alta en vez de dar el paso por
+  hecho, igual que en la integracion del 8-ago.
+- *No se corrigio nada de la rama.* Los tres hallazgos son cosmeticos (abajo) y ninguno es P1: la
+  regla de parada de la casa es por SEVERIDAD, y un integrador que «mejora» a mano las medidas que
+  un sistema acaba de cerrar es exactamente como se deshace un sistema en tres commits.
+- *El movimiento de `AVISO_PRINCIPAL` se fusiona.* Es ruta sensible y la direccion pedia bendicion
+  de legales. Se fusiona porque **su texto no cambia ni una palabra** y porque sigue estando antes
+  de cualquier accion con consecuencias: la casilla de revision y el boton de descarga **no
+  existen** hasta que hay documento cargado. Queda escrito para que se pueda discutir, no
+  enterrado.
+- *Medido de paso, y contesta una pregunta que `ESTADO.md` tenia abierta:* GitHub Pages sirve el
+  `.woff2` con **`Cache-Control: max-age=600`** (diez minutos) y ETag. No es «se paga una vez y ya»:
+  a partir de los diez minutos hay una revalidacion condicional por visita. La respuesta suele ser
+  un 304 de cero bytes, asi que los 45,7 kB si se pagan una vez por cache de navegador, pero el
+  viaje de ida y vuelta existe y en una red lenta puede comerse la ventana de 100 ms de `optional`
+  — en cuyo caso el visitante ve la pila de respaldo esa vez, que es justo el riesgo que `optional`
+  esta puesto para acotar. **No tiene arreglo desde un sitio estatico en Pages:** no controlamos la
+  cabecera. Deja de ser un desconocido y pasa a ser un residual medido.
+
+### Residuales de esta pasada (verificados, NO arreglados, con su porque)
+
+1. **El campo «Tipo de documento» y la zona de carga no comparten borde derecho en escritorio**
+   (544 px contra 878). `.campo` lleva `max-width: var(--medida)` y la zona de carga va al ancho
+   del panel. Los dos son defendibles por separado —la medida es para texto, la zona de carga es
+   una figura— y juntos dejan el borde derecho del formulario en escalon. En movil no pasa (los dos
+   llenan los 390). Es la decision de quien lleve el sistema, no del integrador.
+2. **El boton nativo de fichero habla el idioma del NAVEGADOR, no el de la pagina:** en `/en/` con
+   Chrome en espanol dice «Seleccionar archivo». Es el control del sistema operativo y **ya pasaba
+   en master**; lo que cambia es que ahora, al ir con el relleno de acento, se lee como un boton
+   NUESTRO. El comprobador ya lo tiene resuelto con un `<label for>`; la salida es la que la
+   direccion autorizaba: promover `comprobador.dropzone` a clave compartida. Cero palabras nuevas.
+3. **En el pie de `/actas/` y `/nominas/` los separadores «·» quedan colgando al final de linea**,
+   porque los enlaces legales pasaron a `inline-flex` de 44 px para cumplir la diana tactil. Las dos
+   paginas estan congeladas a la espera de la reescritura completa que `ESTADO.md` ya pide; se
+   arregla ahi, no con un cuarto parche.
+
+**Bloqueos / pendiente:** PARADA 6 sigue abierta y sigue sin bloquear ningun despliegue
+(`/.claude/settings.json` da 200 en el dominio; es gate del dueno porque toca borrar una rama en la
+nube). Los gates G1-G3 de Gumroad, intactos. Sin favicon y sin figura del informe en la web;
+`public/og-image.png` sigue ensenando un informe VERDE cuando el estado normal es el ambar.
+Auditoria Codex externa: sigue constando como pendiente.
+
+**Enlaces:** merge `--no-ff` **`0deded4`** en `master`, empujado a `origin/master`.
+Desplegado con `npm run deploy-pages` (exit 0) y verificado contra https://www.tachadopdf.com.
+
+---
 
 ## AAAA-MM-DD · [rol: ingeniero|growth|soporte|auditoría] · [título corto]
 **Hecho:** ...

@@ -8,13 +8,17 @@
 - **La portada ya se publica CON su texto dentro.** Antes `dist/index.html` era
   `<body><div id="app"></div></body>`: todo lo pintaba JavaScript. Ahora el HTML lo emite
   `src/content/generar.ts` (`npm run gen:pages`, ficheros commiteados) y la aplicación solo monta
-  los controles en los huecos `#herramienta` y `#licencia`.
+  los controles en los huecos `#carga`, `#gancho`, `#trabajo` y `#licencia`. **Son cuatro y no dos
+  a propósito:** el orden de la primera pantalla lo fija el HTML —zona de carga, «el archivo nunca
+  sale de tu equipo», documento de ejemplo, aviso de alcance— y esas dos frases son texto
+  INDEXABLE. Con un solo hueco al final, los controles caían detrás de los párrafos y el orden se
+  invertía.
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1002/1002 en 71 ficheros** en `master` (842 era el suelo del 8-ago; subió al desarmar la
-  exclusión del guardián de precios y al añadir `afirmaciones-respaldadas` y `legal/faq-ambar`).
-  En la rama `diseno/sistema-visual-registro`, **1111/1111**.
+- Suite: **1111/1111 en 71 ficheros** en `master` (842 era el suelo del 8-ago y 1002 el del 10-ago
+  por la mañana; subió al desarmar la exclusión del guardián de precios, al añadir
+  `afirmaciones-respaldadas` y `legal/faq-ambar`, y al fusionar el sistema visual).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -43,6 +47,15 @@
   PARCIAL» y «PARTIAL CHECK». **Regla nueva de la casa:** una afirmación retirada de la fuente NO
   está retirada hasta que está retirada de producción; el registro de la retirada y el despliegue de
   la retirada son la misma tarea, no dos. Lo vigila `afirmaciones-respaldadas`.
+- ✅ **DESPLEGADO OTRA VEZ el 2026-08-10 con el sistema visual** (merge `--no-ff` `0deded4`).
+  Verificado contra el dominio: **18 URLs + sitemap + robots en 200**; los cuatro ficheros de
+  `/fuentes/` en 200 con sus bytes exactos; el bundle que la página referencia de verdad en 200 y
+  **los dos anteriores (`main-BDvxK17w.css`, `main-CellcmQp.js`) en 404**, que es la prueba de que
+  se sirve el build nuevo y no una copia cacheada; precio 59 € de pago único en las cuatro
+  superficies y cero coincidencias de 149, «Despacho» y «/año»; mancheta, `@font-face`, papel
+  `#f6f5f3` y `color-scheme: light` en las seis páginas comprobadas, con **cero** bloques
+  `prefers-color-scheme: dark`; y **cero peticiones a ningún dominio externo**, medido en el
+  navegador sobre el sitio vivo. `dist/CNAME` se comprobó ANTES de desplegar (19 bytes, LF).
 
 ## El sello del informe
 - El sello **ya no es `clean ? verde : rojo`**. Es función de (cobertura ∧ resultado), en una
@@ -151,11 +164,18 @@
   bonito y el verde grande son el mismo fallo con dos caras, y ninguna guarda mide «cuánta
   tranquilidad transmite un titular». El guion de vistas vive fuera de `src/` (`_vistas/`).
 
-## Diseño de la web — SISTEMA VISUAL (rama `diseno/sistema-visual-registro`, 2026-08-10, SIN FUSIONAR)
+## Diseño de la web — SISTEMA VISUAL «Registro» (FUSIONADO Y DESPLEGADO, 2026-08-10)
 
-> ⚠ **Cuatro commits en rama, no fusionados y no desplegados.** Ver la bitácora del 2026-08-10 para
-> las decisiones con su porqué. Antes de fusionar: bendición de legales sobre el MOVIMIENTO de
-> `AVISO_PRINCIPAL` (mismo texto, debajo del control en vez de encima).
+> ✅ **`diseno/sistema-visual-registro` FUSIONADA en master** (merge `--no-ff` `0deded4`, 4 commits)
+> **y DESPLEGADA**, verificada contra el dominio vivo. Ver la bitácora del 2026-08-10 (entrada de
+> integración) para lo que se midió y cómo.
+>
+> El MOVIMIENTO de `AVISO_PRINCIPAL` (mismo texto, debajo del control en vez de encima) es ruta
+> sensible y entró **sin** bendición previa de legales, con este razonamiento escrito para que se
+> pueda discutir en vez de quedar enterrado: su texto no cambia ni una palabra, y sigue estando
+> antes de cualquier acción con consecuencias, porque la casilla de revisión y el botón de descarga
+> **no existen** hasta que hay documento cargado. Si legales lo quiere arriba, se sube: es un
+> cambio de orden en el generador.
 
 - **Una sola fuente de tokens: `src/estilo/sistema.css`.** Tipografía, escala, escalera de
   espaciado, radios y paleta. La consumen `src/estilo.css` y los `<style>` incrustados de las
@@ -196,6 +216,21 @@
   glifos, y `report/maquetacion` mide posiciones de glifo mientras `report/vinetas`,
   `report/medidor` y `report/cobertura-destacada` miden tinta sobre el PDF rasterizado. Es tarea
   aparte con re-medición de cuatro guardas, no un efecto colateral.
+- **Verificado en la integración, mirando y midiendo** (Chrome headless por CDP, seis páginas × dos
+  anchos, ANTES y DESPUÉS, y la aplicación conducida VIVA con el acta de ejemplo): **cero**
+  peticiones externas en las doce combinaciones —también contra el dominio ya desplegado—; la
+  página más profunda (`/en/guide/…`) resuelve `/fuentes/…` con su prefijo; CSP **byte a byte**
+  igual a la de master en las 18; **0 fallos de contraste** medidos sobre lo PINTADO y mínimo
+  5,24:1; dianas táctiles bajo 44 px a 390: **14 → 0**; medida de línea real 140 → 77 en legales;
+  y el TEXTO comparado **palabra a palabra** contra master (las únicas altas son «TachadoPDF» y
+  «Español»/«English» de la mancheta, cadenas que ya existían).
+- **Las dos guardas nuevas se probaron poniéndolas rojas EN LA INTEGRACIÓN, no solo al escribirlas:**
+  devolver un bloque oscuro a una guía inglesa da 2 fallos de `legal/cta-visible` en un fichero que
+  la guarda vieja no abría; devolver `--acento: #0284c7` da 3 fallos de `estilo`, incluido el token
+  que la vieja no miraba.
+- **Los `.woff2` son byte a byte los publicados por fontsource** (sha256 idéntico): sin subsetear,
+  que es lo que la FAQ 2.6 de la OFL exige para conservar el nombre reservado «Plex». Su `OFL.txt`
+  es el de upstream palabra por palabra.
 
 ## Diseño de la aplicación y de la web (misma pasada)
 - **Lo hueco sigue ahí, lo macizo se va.** Una detección sin elegir es un contorno discontinuo con
@@ -259,13 +294,13 @@
   (la marca de agua) caen todos por debajo de la banda del sello, que se localiza por su color.
 - `ui/entrega` — el acuse de entrega enseña el MISMO veredicto que el informe, con literales
   congelados, y un documento escaneado entero no se anuncia como verde en pantalla.
-- `legal/cta-visible` — **reapuntado a las DIECIOCHO páginas en la rama de diseño, derivando la
+- `legal/cta-visible` — **reapuntado a las DIECIOCHO páginas, derivando la
   lista del registro del sitio.** Antes era `const PAGINAS = ['actas','nominas']` y el mismo defecto
   —un pulsable con el mismo relleno que su fondo— seguía vivo, medido, en doce ficheros que la
   guarda nunca abría. Ahora comprueba, en las dieciocho: que ninguna declara bloque de tema oscuro,
   que todas declaran `color-scheme: light`, y que el relleno de cada CTA está a ≥ 3:1 de su fondo
   y su texto a ≥ 4,5:1 de su relleno, **resolviendo los tokens y calculando**.
-- `estilo` — **reescrito en la rama de diseño.** Los tokens usados como color de texto se DERIVAN
+- `estilo` — **reescrito con el sistema visual.** Los tokens usados como color de texto se DERIVAN
   del CSS (ocho hoy, sin lista escrita a mano) y cada uno se calcula contra las DOS superficies
   (`--papel` y `--superficie`). La versión anterior nombraba `gris`, `enlace` y `tinta-suave`: **los
   tres que aprobaban** — `--acento` (4,10:1 en tres sitios) y `--verde` (3,30:1 haciendo de ✓) no
@@ -430,16 +465,33 @@ G4. ⚪ **PARADA 6** (abajo): `git push origin --delete gh-pages` + `npm run dep
   cual, y en E5 esa línea termina en «Alcance y límites, abajo» — en la pantalla no hay ningún
   «abajo». Es el precio de NO escribir una segunda redacción, que es lo que garantiza que las dos
   superficies no deriven. Arreglarlo bien pide tocar el texto del informe: puerta del dueño.
-- ✅ **La app YA se ha visto en captura** (2026-08-10, rama de diseño). El panel del Browser no
+- ✅ **La app YA se ha visto en captura** (2026-08-10, y otra vez en la integración). El panel del Browser no
   compositaba, así que las capturas se hacen con **Chrome headless por CDP** (portada ES y EN,
   comprobador, guía ES, guía EN y landing, a 390×844 y 1440×900) y se MIRAN. La misma conexión CDP
   mide geometría, familias resueltas, dianas táctiles y caracteres por línea sobre el `dist/`
   construido. Guion en el borrador de la sesión, fuera de `src/`.
-- **La rama de diseño no mide el rendimiento de la fuente en red real.** `font-display: optional`
-  acota el riesgo por diseño (si no llega en la ventana, no se usa en esa carga), pero nadie ha
-  cronometrado la portada en 3G ni ha comprobado qué cabecera de caché pone GitHub Pages al
-  `.woff2`. Si esa caché fuera corta, el coste de 45,7 kB se pagaría más veces de lo que dice el
-  cálculo de arriba.
+- **La caché del `.woff2` en producción: MEDIDA, y es corta.** GitHub Pages lo sirve con
+  `Cache-Control: max-age=600` (diez minutos) y ETag. O sea: **no es «se paga una vez y ya»** — a
+  partir de los diez minutos hay una revalidación condicional por visita. La respuesta normal es un
+  304 de cero bytes, así que los 45,7 kB sí se pagan una vez por caché de navegador, pero el viaje
+  de ida y vuelta existe, y en una red lenta puede comerse la ventana de ~100 ms de `optional`: ese
+  visitante ve la pila de respaldo esa vez. Es justo el riesgo que `optional` está puesto para
+  acotar, y **no tiene arreglo desde un sitio estático en Pages** (no controlamos la cabecera). Lo
+  que sigue sin medirse es la portada cronometrada en 3G real.
+- **El campo «Tipo de documento» y la zona de carga no comparten borde derecho en escritorio**
+  (544 px contra 878): `.campo` lleva `max-width: var(--medida)` y la zona de carga va al ancho del
+  panel. Cada regla es defendible por separado —la medida es para texto, la zona de carga es una
+  figura— y juntas dejan el borde derecho del formulario en escalón. En móvil no ocurre. Decisión
+  de quien lleve el sistema; el integrador no la tomó por su cuenta.
+- **El botón nativo de fichero habla el idioma del NAVEGADOR, no el de la página:** en `/en/` con el
+  navegador en español dice «Seleccionar archivo». Es el control del sistema operativo y ya pasaba
+  en master; lo que cambia es que ahora, con el relleno de acento, se lee como un botón NUESTRO. La
+  salida es la que la dirección autorizaba y que sigue sin hacerse: promover `comprobador.dropzone`
+  a clave compartida y usar un `<label for>` como ya hace el comprobador. Cero palabras nuevas.
+- **En el pie de `/actas/` y `/nominas/` los separadores «·» quedan colgando al final de línea**,
+  porque los enlaces legales pasaron a `inline-flex` de 44 px para cumplir la diana táctil. Se
+  arregla en la reescritura completa que estas dos páginas ya tienen pendiente, no con un cuarto
+  parche.
 - **El coste de rendimiento de la ronda no está medido.** `processDocument` hace ahora una pasada
   más por página (el dispositivo que cuenta glifos ilegibles) sobre las que ya hacía. En documentos
   largos puede notarse; nadie lo ha cronometrado.
@@ -477,12 +529,17 @@ G4. ⚪ **PARADA 6** (abajo): `git push origin --delete gh-pages` + `npm run dep
   lo comercial (precio real, tramo fuera, pie legal), no en lo estructural; hay que reescribir las
   dos páginas enteras, no parchearlas una tercera vez. Por eso el pie legal que se añadió el
   2026-08-10 usa URL **absolutas al dominio**, que sí sobreviven a la base de emergencia; lo ata
-  `precios-coherentes`. La rama de diseño **no las reescribe**: solo les pone la mancheta, el
+  `precios-coherentes`. El sistema visual **no las reescribe**: solo les pone la mancheta, el
   sistema visual y la cara clara — su estructura y su copia siguen congeladas.
 - **Sigue sin figura del informe en la web y sin favicon.** Medido: las páginas tienen 0 `<img>`,
   0 `<svg>` y 0 `rel="icon"`. El producto ES el informe y no se ve por ninguna parte. Lo honesto
   sería una figura y solo una: la primera página del informe de ejemplo **rasterizada por el
   generador que ya existe**, en su estado ÁMBAR (el 86 % de las entregas), nunca dibujada a mano.
+  El favicon se nota en la consola: `/favicon.ico` da **404 en producción** en cada primera visita.
+  El hueco de 20×20 para el símbolo está pensado y **ausente del DOM** a propósito (un cuadrado
+  vacío se lee como imagen rota); cuando el símbolo exista, tiene que funcionar a 20 px, en una
+  sola tinta y sin degradado, y **no puede ser un candado ni un escudo** — es lo que usan las webs
+  de phishing.
 - **`public/og-image.png` enseña un informe VERDE.** Está mejor diseñado que la web, pero el estado
   normal del producto es el ámbar: la primera impresión que se reparte por WhatsApp y LinkedIn
   promete el sello que casi nadie va a recibir. Es el falso verde mudado a marketing. La rama de
