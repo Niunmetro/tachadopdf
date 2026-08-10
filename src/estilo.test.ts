@@ -287,8 +287,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
     localesDe(p).map((l) => ({ pagina: p, locale: l, ruta: rutaDe(p, l) ?? '' })),
   );
 
-  it('el barrido ve las diez paginas generadas', () => {
-    expect(generadas.length).toBe(10);
+  // Eran diez (home ES+EN, comprobador ES+EN, seis guias inglesas); el 2026-08-10 se sumaron las
+  // CINCO landings de cola larga sectorial (generadas, solo en espanol), y pasaron a quince.
+  it('el barrido ve las quince paginas generadas', () => {
+    expect(generadas.length).toBe(15);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(

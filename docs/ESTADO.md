@@ -2,9 +2,15 @@
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
-- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **18 URLs (10 ES + 8 EN)**, un solo
+- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **23 URLs (15 ES + 8 EN)**, un solo
   sitemap con alternos `hreflang` recíprocos y `x-default` al español. Las dos landings de sector
   (`/actas/`, `/nominas/`) solo existen en español: ver PARADA 2.
+- **✅ CINCO landings de cola larga sectorial FUSIONADAS Y DESPLEGADAS** (2026-08-10, rama
+  `seo/landings-cola-larga-sectorial`). Generadas (no estáticas), solo en español, una por consulta
+  real medida con WebSearch: CV/RRHH, prueba en juicio, publicar en internet, datos de alumnos,
+  copia del DNI. Genuinamente distintas (Jaccard 3-gramas ≤ 0,074), lo ata
+  `content/landings-keyword.test.ts`. El juez de su éxito es Google Search Console con umbral a
+  4 semanas (2026-09-07) en `docs/SEO-EXPERIMENTO.md`. Ver la bitácora del 2026-08-10 (entrada seo).
 - **La portada ya se publica CON su texto dentro.** Antes `dist/index.html` era
   `<body><div id="app"></div></body>`: todo lo pintaba JavaScript. Ahora el HTML lo emite
   `src/content/generar.ts` (`npm run gen:pages`, ficheros commiteados) y la aplicación solo monta
@@ -16,8 +22,9 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1170/1170 en 74 ficheros** en `master` (1111 era el suelo tras el sistema visual; +59
-  al añadir las tres guardas de marca — `content/marca`, `content/iconos`, `content/og-social`).
+- Suite: **1343/1343 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
+  las 5 landings de keyword: las guardas por-página `it.each` se multiplican por las 5 nuevas más el
+  test propio `content/landings-keyword`).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -351,8 +358,12 @@
 
 ## Embudo / marketing
 - Outreach y Ads: sin cambios desde el 22-07 (ver bitácora).
-- SEO: 18 URLs en sitemap. Las guías inglesas apuntan a intención de búsqueda inglesa
+- SEO: 23 URLs en sitemap. Las guías inglesas apuntan a intención de búsqueda inglesa
   (Rule 5.2, DSAR/ICO, comprobar un tachado), NO son traducciones de las españolas.
+- **Cola larga sectorial (2026-08-10):** 5 landings nuevas persiguen la demanda real por sector con
+  verbos que la gente SÍ teclea («censurar/ocultar/borrar/tapar»), no «tachar». El diagnóstico:
+  el embudo se rompe en adquisición, la cabeza la poseen los gigantes, el hueco es la cola sectorial
+  española. Medición y umbral de kill/keep en `docs/SEO-EXPERIMENTO.md` (GSC, 2026-09-07).
 
 ## Bloqueos / PARADAS del owner
 
