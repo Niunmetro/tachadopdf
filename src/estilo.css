@@ -1,93 +1,80 @@
 /* Estilo de TachadoPDF. Sobrio y profesional a propósito: el comprador (gestoría,
    administrador de fincas, RRHH) paga por CONFIANZA — un aspecto de herramienta seria vale
    más que cualquier florituras. Sin fuentes remotas ni CDNs: la CSP los bloquea y la promesa
-   del producto es que nada sale del navegador. */
+   del producto es que nada sale del navegador.
 
-:root {
-  --tinta: #0f172a;
-  --tinta-suave: #475569;
-  /* --gris era #94a3b8: un gris pensado para tema OSCURO aplicado tal cual sobre blanco, donde
-     da 2,56:1. Y le habia tocado, por casualidad, a las dos frases que peor pueden faltar: la que
-     le dice al visitante «esto es para ti» (.hero__nicho, el reconocimiento del comprador en una
-     landing de anuncio) y la que sostiene la promesa central del producto —que el documento no
-     sale del navegador— junto con la licencia (.pie). A 2,56:1 desaparecen en cualquier pantalla
-     con reflejos. */
-  --gris: #64748b;
-  --linea: #e2e8f0;
-  --fondo: #f8fafc;
-  --acento: #0284c7;
-  /* Color de ENLACE, separado del acento. El acento (#0284c7) vive de fondo bajo texto blanco y
-     ahi funciona, pero como color de texto sobre blanco da 4,10:1 y no llega al 4,5 que necesita.
-     Y donde no habia regla ninguna —la lista de guias y el pie de la portada— el navegador ponia
-     su azul por defecto (#0000EE) subrayado: HTML crudo de 1996 dentro de una pagina cuidada, y
-     justo donde el visitante va a profundizar. */
-  --enlace: #0369a1;
-  --acento-oscuro: #075985;
-  --verde: #16a34a;
-  --rojo: #b91c1c;
-  --rojo-fondo: #fef2f2;
-  --radio: 10px;
-  --fuente: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+   ESTA HOJA NO DECLARA TOKENS. La tipografía, la escala, la escalera de espaciado y la paleta
+   viven en `src/estilo/sistema.css`, que es la única fuente del sitio y que cada página incrusta
+   en su <head> ANTES que esto (ver `src/estilo/sistema.ts`). Aquí solo hay componentes, y ningún
+   componente escribe a mano un tamaño, un espacio, un radio ni un color: si un valor no está en
+   el sistema, no existe. Lo vigila `estilo.test.ts`, que además calcula los contrastes. */
+
+#app { max-width: var(--ancho); margin: 0 auto; padding: 0 var(--e-4) var(--e-16); }
+
+/* TODO <h2> del sitio, a 21/600. Hoy había cuatro y TRES iban a 13 px en versalitas («Tacha tu
+   documento», «Versión Pro», «Preguntas frecuentes») mientras el cuarto, «Guías», no tenía ni una
+   regla y salía a 24 px por defecto del navegador: el rótulo de una lista de enlaces era 1,85×
+   el rótulo de la herramienta y el del precio. Jerarquía invertida, y la más cara de la página. */
+h2 {
+  font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte);
+  letter-spacing: -.01em; color: var(--tinta); margin: 0 0 var(--e-2);
 }
-
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: var(--fuente);
-  color: var(--tinta);
-  background: #fff;
-  line-height: 1.6;
-}
-
-/* Un SOLO color de enlace en toda la superficie clara. El subrayado se conserva: es la unica
-   señal no cromatica que tiene un enlace. */
-a { color: var(--enlace); }
-
-#app { max-width: 880px; margin: 0 auto; padding: 0 20px 64px; }
 
 /* ---------- Hero ---------- */
-.hero {
-  border-bottom: 1px solid var(--linea);
-  padding: 44px 0 32px;
-  margin-bottom: 32px;
-}
-.hero__marca {
-  font-size: 15px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--acento); margin: 0 0 14px;
-}
+.hero { padding: var(--e-8) 0 var(--e-6); }
 .hero__titular {
-  font-size: clamp(26px, 4vw, 38px); line-height: 1.22;
-  font-weight: 700; margin: 0 0 16px; letter-spacing: -.02em;
+  font-size: var(--t-700); line-height: var(--lh-titular);
+  font-weight: var(--peso-veredicto); margin: 0 0 var(--e-4); letter-spacing: -.02em;
+  max-width: 20ch;
 }
+/* EL ROJO ES E1, Y E1 ES LA ÚNICA ALARMA DEL PRODUCTO.
+   Este bloque era un baño rojo de doscientas palabras: se lee más despacio, se lee como alarma DE
+   NUESTRA PÁGINA en vez de riesgo del lector, y le gasta al único estado que no puede desteñirse
+   su color entero. Ahora es prosa normal en tinta con una MARCA DE MARGEN roja. No cambia ni una
+   palabra: cambia de forma. Y el contraste del texto sube de 9,16:1 a 15,97:1. */
 .hero__dolor {
-  font-size: 15.5px; line-height: 1.6; color: #7f1d1d; background: #fef2f2;
-  border-left: 4px solid #dc2626; border-radius: 8px; padding: 14px 16px;
-  margin: 0 0 18px; max-width: 68ch;
+  font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta);
+  border-left: 3px solid var(--rojo); padding: 0 0 0 var(--e-4);
+  margin: 0 0 var(--e-8); max-width: var(--medida);
 }
-.hero__sub { font-size: 17px; color: var(--tinta-suave); margin: 0 0 22px; max-width: 62ch; }
-.hero__bullets { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 8px; }
-.hero__bullets li { position: relative; padding-left: 26px; color: var(--tinta); }
+.hero__sub { font-size: var(--t-400); color: var(--tinta-suave); margin: 0 0 var(--e-6); max-width: var(--medida); }
+.argumento { margin-bottom: var(--e-16); }
+.hero__bullets { list-style: none; margin: 0 0 var(--e-8); padding: 0; display: grid; gap: var(--e-4); }
+.hero__bullets li { position: relative; padding-left: var(--e-6); color: var(--tinta); max-width: var(--medida); }
 .hero__bullets li::before {
   content: "✓"; position: absolute; left: 0; top: 0;
-  color: var(--verde); font-weight: 700;
+  color: var(--verde); font-weight: var(--peso-fuerte);
 }
-.hero__nicho { font-size: 14px; color: var(--gris); margin: 18px 0 0; }
+.hero__nicho { font-size: var(--t-200); color: var(--gris); margin: var(--e-8) 0 0; max-width: var(--medida); }
+/* «El archivo nunca sale de tu equipo», PEGADA a la zona de carga (8 px). A media página de
+   distancia era un dato más; aquí es la respuesta a la pregunta que el control acaba de provocar. */
+.nota-local {
+  font-size: var(--t-200); color: var(--tinta-suave);
+  margin: var(--e-2) 0 0; max-width: var(--medida);
+}
 
-/* ---------- Panel de trabajo ---------- */
+/* ---------- Panel de trabajo ----------
+   LA INVERSIÓN: la página es el PAPEL y el panel es la SUPERFICIE blanca. Antes estaba al revés
+   (cuerpo blanco, panel gris frío). El panel de trabajo es literalmente la hoja que vas a tachar
+   apoyada en la mesa. Como entre las dos superficies hay 1,06:1, el borde lo lleva el filete de
+   1 px — y por eso `--linea` se separa del papel por color (ΔE00 6,7) y no por luminancia. */
 .panel {
-  background: var(--fondo);
+  background: var(--superficie);
   border: 1px solid var(--linea);
   border-radius: var(--radio);
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: var(--e-6);
+  margin-bottom: var(--e-6);
 }
-.panel__titulo { font-size: 13px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .08em; color: var(--tinta-suave); margin: 0 0 14px; }
+.panel__titulo { margin: 0 0 var(--e-4); }
 
+/* El aviso de alcance, DEBAJO del control que gobierna y no encima. Sigue estando antes de
+   cualquier acción con consecuencias: la casilla de revisión y el botón de descarga no existen
+   hasta que hay documento cargado. */
 .aviso-principal {
-  font-size: 13.5px; color: var(--tinta-suave); background: #fffbeb;
-  border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; margin: 0 0 20px;
+  font-size: var(--t-200); color: var(--tinta-suave); background: var(--ambar-fondo);
+  border-left: 3px solid var(--ambar); border-radius: var(--radio-marca);
+  padding: var(--e-3) var(--e-4); margin: var(--e-4) 0 0;
+  max-width: var(--medida);
 }
 
 /* La ÚNICA forma de cargar un archivo en el producto de pago era el control nativo del sistema,
@@ -96,99 +83,152 @@ a { color: var(--enlace); }
    con «Arrastra tu PDF aquí», y la guía dice literalmente «abre la herramienta y arrastra tu PDF».
    La afordancia estaba construida, pero en la página que no cobra.
    El `<input type=file>` acepta soltar ficheros de forma nativa: dándole cuerpo de zona de carga,
-   el gesto que promete la guía funciona de verdad, sin una línea de texto nueva. */
+   el gesto que promete la guía funciona de verdad, sin una línea de texto nueva.
+
+   Y el borde reutiliza la gramática que el producto ya se ganó: HUECO/DISCONTINUO = pendiente de
+   decidir, MACIZO/CONTINUO = consumado. Una zona de carga vacía es, literalmente, algo pendiente;
+   al enfocarla o al arrastrar encima, el contorno se hace continuo y se tiñe de acento. */
+/* Flex CON ajuste de línea: el navegador pinta a la derecha del botón su propio rótulo («Ningún
+   archivo seleccionado»), que no es texto nuestro y no se puede acortar. Sin `wrap` se recortaba
+   a media palabra —«Ningú…nado»— en la primera pantalla del móvil, que es exactamente el aspecto
+   de página rota que esta pasada viene a quitar. */
 input[type="file"] {
-  font: inherit; font-size: 14.5px; width: 100%; max-width: 100%;
-  padding: 20px 16px; background: #fff; color: var(--tinta-suave);
-  border: 2px dashed var(--acento); border-radius: var(--radio); cursor: pointer;
+  font-size: var(--t-200); width: 100%;
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--e-3); min-height: 8rem;
+  padding: var(--e-4); background: var(--superficie);
+  border: 2px dashed var(--linea-fuerte); border-radius: var(--radio);
 }
-input[type="file"]:hover { background: #f0f9ff; }
-input[type="file"]::file-selector-button {
-  font: inherit; font-size: 14.5px; font-weight: 600; cursor: pointer;
-  margin-right: 12px; padding: 9px 16px; border-radius: 8px;
-  border: 1px solid var(--acento); background: var(--acento); color: #fff;
-}
+input[type="file"]:hover { background: var(--acento-tenue); border-color: var(--acento); }
+input[type="file"]:focus-visible { border-style: solid; border-color: var(--acento); outline: none; }
+input[type="file"]::file-selector-button { margin-right: 0; }
+/* La clave de licencia es un IDENTIFICADOR que se compara carácter a carácter contra el correo
+   de compra: va en la familia de datos, que es donde el 0 y la O no se parecen. */
 input[type="text"] {
-  font: inherit; font-size: 15px; padding: 9px 12px; border: 1px solid var(--linea);
-  border-radius: 8px; background: #fff; min-width: 260px; color: var(--tinta);
+  font-family: var(--fuente-dato); font-size: var(--t-300);
+  min-height: 2.75rem; padding: var(--e-2) var(--e-3); border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio); background: var(--superficie); min-width: 16rem; color: var(--tinta);
 }
 input[type="text"]:focus { outline: 2px solid var(--acento); outline-offset: 1px; }
 
-button {
-  font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
-  padding: 10px 18px; border-radius: 8px; border: 1px solid var(--tinta);
-  background: var(--tinta); color: #fff;
+/* Rótulo de un campo: pegado a su control (8 px) y POR ENCIMA, nunca al lado. */
+.campo { display: grid; gap: var(--e-2); margin-bottom: var(--e-4); max-width: var(--medida); }
+.campo > label { font-size: var(--t-200); font-weight: var(--peso-fuerte); color: var(--tinta-suave); }
+select {
+  font-size: var(--t-300); width: 100%; min-height: 2.75rem;
+  padding: var(--e-2) var(--e-3); border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio); background: var(--superficie); color: var(--tinta);
 }
-button:hover:not([disabled]) { background: #1e293b; }
+
+/* UN SOLO RELLENO MACIZO POR PANEL. El botón por defecto es FANTASMA.
+   Antes el elemento de más peso visual del panel Pro era «Verificar licencia» (relleno tinta,
+   ~15,9:1), que es el botón de quien YA PAGÓ, mientras «Comprar Pro — 59 €» iba en un azul que
+   suspendía a 4,10:1. Estaba invertido: el macizo se lo lleva la acción que hace falta hacer. */
+button {
+  font-size: var(--t-300); font-weight: var(--peso-fuerte); cursor: pointer;
+  min-height: 2.75rem; padding: var(--e-3) var(--e-4); border-radius: var(--radio);
+  border: 1px solid var(--acento); background: var(--superficie); color: var(--acento);
+}
+button:hover:not([disabled]) { background: var(--acento-tenue); }
 button[disabled] { opacity: .45; cursor: not-allowed; }
+/* El macizo del panel de trabajo: descargar, que es el final del trabajo. */
+.principal { background: var(--acento); color: var(--tinta-inversa); }
+.principal:hover:not([disabled]) { background: var(--acento-fuerte); border-color: var(--acento-fuerte); }
 
 /* ---------- Documento de ejemplo (gancho de activación) ---------- */
-.ejemplo {
-  background: #fff; color: var(--tinta); border: 1px solid var(--acento);
-  font-weight: 600; font-size: 14.5px; padding: 9px 15px;
-}
-.ejemplo:hover:not([disabled]) { background: #f0f9ff; }
 .pista-ejemplo {
-  font-size: 13.5px; color: var(--tinta-suave); margin: -4px 0 16px; max-width: 62ch;
+  font-size: var(--t-200); color: var(--tinta-suave); margin: var(--e-2) 0 0; max-width: var(--medida);
 }
+.estado-cuota { margin: var(--e-2) 0 0; }
+#gancho { margin-top: var(--e-4); }
 
 /* ---------- Preguntas frecuentes ---------- */
-.faq__item { border-bottom: 1px solid var(--linea); padding: 4px 0; }
+.faq__item { border-bottom: 1px solid var(--linea); padding: var(--e-1) 0; }
 .faq__item:last-child { border-bottom: 0; }
 .faq__item summary {
-  cursor: pointer; font-weight: 600; font-size: 15px; color: var(--tinta);
-  padding: 11px 4px; list-style: none;
+  cursor: pointer; font-weight: var(--peso-fuerte); font-size: var(--t-300); color: var(--tinta);
+  padding: var(--e-3) var(--e-1); list-style: none;
 }
 .faq__item summary::-webkit-details-marker { display: none; }
-.faq__item summary::before { content: '+ '; color: var(--acento); font-weight: 700; }
+.faq__item summary::before { content: '+ '; color: var(--acento); font-weight: var(--peso-veredicto); }
 .faq__item[open] summary::before { content: '– '; }
-.faq__item p { margin: 0 4px 14px; color: var(--tinta-suave); font-size: 14.5px; line-height: 1.6; }
+.faq__item p { margin: 0 var(--e-1) var(--e-3); color: var(--tinta-suave); font-size: var(--t-300);
+  line-height: var(--lh-texto); max-width: var(--medida); }
+
+/* El panel Pro: sus dos párrafos no tenían tope y corrían a 114 caracteres por línea. */
+.pro__gratis, .pro__argumento { max-width: var(--medida); }
 
 /* ---------- Estados ---------- */
-.estado-cuota { font-size: 14px; color: var(--tinta-suave); }
-.aviso-rojo { color: var(--rojo); background: var(--rojo-fondo); border: 1px solid #fecaca;
-  border-radius: 8px; padding: 10px 12px; font-size: 14px; }
-.aviso-rojo:empty, .estado-licencia:empty { display: none; padding: 0; border: 0; }
-.estado-licencia { font-size: 14px; }
+.estado-cuota { font-size: var(--t-200); color: var(--tinta-suave); }
+#trabajo:not(:empty) { margin-top: var(--e-6); }
+/* Los márgenes se declaran SIEMPRE, aunque parezca que sobran: sin regla, el navegador pone su
+   `1em`, que sobre 14 px son 14 y se sale de la escalera de 4. Medido en la página: los tres
+   únicos espaciados fuera de rejilla que quedaban venían del navegador, no de esta hoja. */
+.aviso-rojo { color: var(--rojo); background: var(--rojo-fondo); border-left: 3px solid var(--rojo);
+  border-radius: var(--radio-marca); padding: var(--e-2) var(--e-3); font-size: var(--t-200);
+  margin: var(--e-4) 0; max-width: var(--medida); }
+.aviso-rojo:empty, .estado-licencia:empty { display: none; padding: 0; border: 0; margin: 0; }
+.estado-licencia { font-size: var(--t-200); margin: var(--e-4) 0 0; }
 
-.fila { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
-.confirmacion { display: flex; gap: 9px; align-items: flex-start; margin: 18px 0 14px;
-  font-size: 14.5px; color: var(--tinta); }
-.confirmacion input { margin-top: 4px; }
+.fila { display: flex; flex-wrap: wrap; gap: var(--e-3); align-items: center; margin-bottom: var(--e-3); }
+.confirmacion { display: flex; gap: var(--e-2); align-items: flex-start; margin: var(--e-4) 0 var(--e-3);
+  font-size: var(--t-300); color: var(--tinta); max-width: var(--medida); }
+.confirmacion input { margin: var(--e-1) 0 0; }
 
 /* ---------- Compra ---------- */
 .comprar {
-  display: inline-block; background: var(--acento); color: #fff; text-decoration: none;
-  font-weight: 600; padding: 11px 18px; border-radius: 8px; font-size: 15px;
+  display: inline-flex; align-items: center; min-height: 2.75rem;
+  background: var(--acento); color: var(--tinta-inversa); text-decoration: none;
+  font-weight: var(--peso-fuerte); padding: var(--e-3) var(--e-4); border-radius: var(--radio);
+  font-size: var(--t-300);
 }
-.comprar:hover { background: var(--acento-oscuro); }
+.comprar:hover { background: var(--acento-fuerte); }
 .comprar[hidden] { display: none; }
 
 /* ---------- Legales (plegados: no deben tapar el producto) ---------- */
-.legales { border-top: 1px solid var(--linea); margin-top: 40px; padding-top: 20px; }
+.legales { border-top: 1px solid var(--linea); margin-top: var(--e-12); padding-top: var(--e-6); }
 .legales details { border-bottom: 1px solid var(--linea); }
 .legales summary {
-  cursor: pointer; padding: 12px 2px; font-size: 14px; font-weight: 600;
+  cursor: pointer; padding: var(--e-3) 0; font-size: var(--t-300); font-weight: var(--peso-fuerte);
   color: var(--tinta-suave); list-style: revert;
 }
 .legales summary:hover { color: var(--acento); }
+/* El tope de medida se aplica TAMBIÉN aquí. Estos bloques corrían a 136–142 caracteres por línea
+   —casi el doble del máximo tolerable— porque el tope existía en cuatro bloques y en los demás
+   no, y son los textos legales: justo donde nadie quiere volver a leer una línea. */
 .legales pre {
-  white-space: pre-wrap; font-family: var(--fuente); font-size: 13.5px;
-  color: var(--tinta-suave); margin: 0 0 16px; padding: 0 2px;
+  white-space: pre-wrap; font-family: var(--fuente); font-size: var(--t-200);
+  color: var(--tinta-suave); margin: 0 0 var(--e-4); padding: 0; max-width: var(--medida);
 }
-.pie { font-size: 12.5px; color: var(--tinta-suave); margin-top: 22px; }
-.pie a { color: var(--enlace); }
+.pie { font-size: var(--t-100); color: var(--tinta-suave); margin-top: var(--e-6); max-width: var(--medida); }
+
+/* Enlaces del pie de sector: en el móvil cada uno en su propia fila de 44 px. Medidos a 20 px de
+   alto, que es menos de la mitad de la diana mínima de la casa. */
+.enlaces-sector { display: grid; gap: var(--e-2); margin: var(--e-4) 0 0; }
+.enlaces-sector a { display: inline-flex; align-items: center; min-height: 2.75rem; }
 
 @media (max-width: 640px) {
-  .hero { padding: 32px 0 24px; }
+  .hero { padding: var(--e-6) 0 var(--e-6); }
+  .panel { padding: var(--e-4); }
+  .argumento { margin-bottom: var(--e-12); }
+  .hero__bullets { margin: 0 0 var(--e-6); }
+  .hero__dolor { margin: 0 0 var(--e-6); }
+  .hero__nicho { margin: var(--e-6) 0 0; }
+  .legales { margin-top: var(--e-12); }
   input[type="text"] { min-width: 0; width: 100%; }
+  /* En columna: el botón arriba y el rótulo del navegador debajo, cada uno con el ancho entero.
+     Ese rótulo («Ningún archivo seleccionado», y después el nombre del fichero) NO es texto
+     nuestro y trae de fábrica su `ellipsis`: compartiendo línea a 390 px salía «Ningún …cionado»
+     en la primera pantalla, que es justo el aspecto de página rota que esta pasada viene a
+     quitar. Y el nombre del fichero elegido es un dato que hay que poder leer entero. */
+  input[type="file"] { display: block; padding: var(--e-6) var(--e-4); }
+  input[type="file"]::file-selector-button { display: block; width: 100%; margin-bottom: var(--e-3); }
 }
 
 /* ---------- Tachar todas las apariciones ---------- */
 .tachar-todas {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--e-3);
 }
 
 /* El botón AJUSTA en varias líneas y no se recorta. Recortándolo, los 33 primeros caracteres de
@@ -202,21 +242,19 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
   white-space: normal;
   overflow-wrap: anywhere;
   text-align: left;
-  line-height: 1.35;
+  line-height: var(--lh-corto);
 }
 
-/* ---------- Selector de idioma ---------- */
-/* Enlaces <a> reales, no un <select> con JavaScript: funciona con los scripts desactivados y
-   tambien en paginas que no cargan ninguno. Cada idioma se rotula en SU PROPIO idioma; nunca
-   banderas (una bandera es un pais, no un idioma). */
-.idiomas {
-  display: flex; gap: 14px; align-items: center;
-  padding: 12px 0 0; margin: 0;
-  font-size: 14px;
-}
-.idiomas__actual { font-weight: 700; color: var(--tinta); }
-.idiomas__enlace { color: var(--enlace); text-decoration: none; }
-.idiomas__enlace:hover { text-decoration: underline; }
+/* Y dentro de ese botón, el VALOR va en la familia de datos: es lo único que distingue un botón
+   de otro y es lo que el usuario compara carácter a carácter contra su documento. La frase que
+   lo envuelve sigue en la letra del texto — no se cambia ni un carácter, solo se marca cuál de
+   ellos es el dato. */
+.dato { font-family: var(--fuente-dato); }
+
+/* ---------- Guías ---------- */
+.guias { margin-bottom: var(--e-8); }
+.guias ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-1); }
+.guias a { display: inline-flex; align-items: center; min-height: 2.75rem; }
 
 /* ---------- Datos detectados sobre el documento ----------
    LO HUECO SIGUE AHÍ, LO MACIZO SE VA.
@@ -236,23 +274,24 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
    (que además deja comprobar si la detección acertó). Elegido = macizo con su marca. */
 button.hit-box {
   padding: 0;
-  border-radius: 2px;
-  background: rgba(180, 83, 9, 0.14);
-  border: 2px dashed #b45309;
+  min-height: 0;
+  border-radius: var(--radio-marca);
+  background: rgba(124, 74, 3, 0.14);
+  border: 2px dashed var(--ambar);
   cursor: pointer;
 }
-button.hit-box:hover:not([disabled]) { background: rgba(180, 83, 9, 0.3); }
+button.hit-box:hover:not([disabled]) { background: rgba(124, 74, 3, 0.3); }
 button.hit-box--selected {
   background: var(--tinta);
   border: 2px solid var(--tinta);
 }
-button.hit-box--selected:hover:not([disabled]) { background: #1e293b; }
+button.hit-box--selected:hover:not([disabled]) { background: var(--tinta-suave); }
 button.hit-box--selected::after {
   content: "✓";
-  position: absolute; top: -9px; right: -8px;
-  width: 16px; height: 16px; line-height: 16px;
-  border-radius: 50%; background: var(--tinta); color: #fff;
-  font-size: 10px; font-weight: 700; text-align: center;
+  position: absolute; top: calc(var(--e-2) * -1); right: calc(var(--e-2) * -1);
+  width: var(--e-4); height: var(--e-4); line-height: var(--e-4);
+  border-radius: 50%; background: var(--tinta); color: var(--tinta-inversa);
+  font-size: var(--t-100); font-weight: var(--peso-veredicto); text-align: center;
 }
 
 /* ---------- Acuse de entrega ----------
@@ -265,25 +304,31 @@ button.hit-box--selected::after {
    El panel reutiliza LITERALMENTE las cadenas del informe (rótulo del sello y su línea): dos
    redacciones del mismo hecho es deriva garantizada. */
 .entrega {
-  background: #fff; border: 1px solid var(--linea); border-left: 6px solid var(--gris);
-  border-radius: var(--radio); padding: 16px 18px; margin: 18px 0 0;
+  background: var(--superficie); border: 1px solid var(--linea); border-left: 6px solid var(--gris);
+  border-radius: var(--radio); padding: var(--e-4); margin: var(--e-4) 0 0;
 }
-.entrega__estado { font-size: 15.5px; font-weight: 700; letter-spacing: .03em; margin: 0 0 6px; }
-.entrega__linea { font-size: 14px; line-height: 1.55; color: var(--tinta-suave);
-  margin: 0 0 12px; max-width: 70ch; }
-.entrega__ficheros { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px;
-  font-size: 14px; color: var(--tinta); }
-.entrega__ficheros li::before { content: "↓ "; color: var(--gris); font-weight: 700; }
-.entrega[data-estado="E1"] { border-left-color: #9b1c1c; }
-.entrega[data-estado="E1"] .entrega__estado { color: #9b1c1c; }
-.entrega[data-estado="E2"] { border-left-color: #9b1c1c; }
-.entrega[data-estado="E2"] .entrega__estado { color: #9b1c1c; }
-.entrega[data-estado="E3"] { border-left-color: #7c4a03; background: #fffdf7; }
-.entrega[data-estado="E3"] .entrega__estado { color: #7c4a03; }
-.entrega[data-estado="E4"] { border-left-color: #4a5568; }
-.entrega[data-estado="E4"] .entrega__estado { color: #4a5568; }
-.entrega[data-estado="E5"] { border-left-color: #0f6b41; }
-.entrega[data-estado="E5"] .entrega__estado { color: #0f6b41; }
+/* El veredicto es el ÚNICO sitio de la pantalla, junto al titular de portada, donde se gasta el
+   peso 700: que el peso máximo signifique «esto es el veredicto» es información. */
+.entrega__estado { font-size: var(--t-500); line-height: var(--lh-corto);
+  font-weight: var(--peso-veredicto); letter-spacing: -.01em; margin: 0 0 var(--e-2); }
+.entrega__linea { font-size: var(--t-200); line-height: var(--lh-texto); color: var(--tinta-suave);
+  margin: 0 0 var(--e-3); max-width: var(--medida); }
+/* Los nombres de fichero son datos: el visitante tiene que distinguir cuál es cuál. */
+.entrega__ficheros { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-1);
+  font-family: var(--fuente-dato); font-size: var(--t-200); color: var(--tinta); }
+.entrega__ficheros li::before { content: "↓ "; color: var(--gris); font-weight: var(--peso-veredicto); }
+.entrega[data-estado="E1"] { border-left-color: var(--rojo); }
+.entrega[data-estado="E1"] .entrega__estado { color: var(--rojo); }
+.entrega[data-estado="E2"] { border-left-color: var(--rojo); }
+.entrega[data-estado="E2"] .entrega__estado { color: var(--rojo); }
+.entrega[data-estado="E3"] { border-left-color: var(--ambar); background: var(--ambar-fondo); }
+.entrega[data-estado="E3"] .entrega__estado { color: var(--ambar); }
+/* E4 era #4a5568, una pizarra FRÍA. El significado de E4 es «neutro» y lo lleva la ausencia de
+   color, no ese tono concreto; sobre papel cálido un gris azulado se lee como error de render. */
+.entrega[data-estado="E4"] { border-left-color: var(--tinta-suave); }
+.entrega[data-estado="E4"] .entrega__estado { color: var(--tinta-suave); }
+.entrega[data-estado="E5"] { border-left-color: var(--verde); }
+.entrega[data-estado="E5"] .entrega__estado { color: var(--verde); }
 
 /* La casilla de revisión y el botón de descarga NO existen hasta que hay documento: ofrecer la
    declaración legal más cargada del producto cuando no hay nada que revisar enseña a marcarla por
@@ -295,7 +340,7 @@ button.hit-box--selected::after {
    validan identificadores españoles con su digito de control, asi que insinuar una cobertura mas
    amplia seria un falso verde en forma de marketing. */
 .hero__deteccion {
-  font-size: 14.5px; line-height: 1.6; color: var(--tinta-suave);
-  background: var(--fondo); border: 1px solid var(--linea); border-radius: 8px;
-  padding: 12px 14px; margin: 16px 0 0; max-width: 68ch;
+  font-size: var(--t-200); line-height: var(--lh-texto); color: var(--tinta-suave);
+  background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio);
+  padding: var(--e-3) var(--e-4); margin: var(--e-4) 0 0; max-width: var(--medida);
 }

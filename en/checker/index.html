@@ -4,6 +4,163 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="preload" href="../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+    @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    }
+    @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    }
+    :root {
+    --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+    --t-100: 0.75rem;
+    --t-200: 0.875rem;
+    --t-300: 1rem;
+    --t-400: 1.125rem;
+    --t-500: 1.3125rem;
+    --t-600: 1.75rem;
+    --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+    --lh-titular: 1.15;
+    --lh-corto: 1.35;
+    --lh-texto: 1.6;
+    --peso-normal: 400;
+    --peso-fuerte: 600;
+    --peso-veredicto: 700;
+    --ancho: 60rem;
+    --medida: 34em;
+    --e-1: 0.25rem;
+    --e-2: 0.5rem;
+    --e-3: 0.75rem;
+    --e-4: 1rem;
+    --e-6: 1.5rem;
+    --e-8: 2rem;
+    --e-12: 3rem;
+    --e-16: 4rem;
+    --e-24: 6rem;
+    --radio: 6px;
+    --radio-marca: 2px;
+    color-scheme: light;
+    --papel: #f6f5f3;
+    --superficie: #ffffff;
+    --tinta: #1b1a17;
+    --tinta-suave: #43403a;
+    --gris: #6a665e;
+    --linea: #dedad1;
+    --linea-fuerte: #8a857a;
+    --acento: #164a7e;
+    --acento-fuerte: #0e3159;
+    --acento-tenue: #dde7f3;
+    --tinta-inversa: #ffffff;
+    --rojo: #9b1c1c;
+    --rojo-fondo: #f9e6e4;
+    --ambar: #7c4a03;
+    --ambar-fondo: #fbefd2;
+    --verde: #0f6b41;
+    --verde-fondo: #dfeee4;
+    }
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
+    body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: var(--t-300);
+    line-height: var(--lh-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    }
+    a {
+    color: var(--acento);
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font: inherit;
+    }
+    input[type="file"] {
+    max-width: 100%;
+    cursor: pointer;
+    color: var(--tinta-suave);
+    }
+    input[type="file"]::file-selector-button {
+    font: inherit;
+    font-size: var(--t-300);
+    font-weight: var(--peso-fuerte);
+    cursor: pointer;
+    margin-right: var(--e-3);
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-4);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    }
+    input[type="file"]::file-selector-button:hover {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
+    }
+    .cabecera {
+    border-bottom: 1px solid var(--linea);
+    background: var(--superficie);
+    }
+    .cabecera__interior {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 var(--e-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    }
+    .cabecera__marca {
+    font-size: var(--t-200);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0;
+    }
+    .idiomas {
+    display: flex;
+    gap: var(--e-3);
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: var(--t-200);
+    }
+    .idiomas > * {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    }
+    .idiomas__actual {
+    font-weight: var(--peso-fuerte);
+    color: var(--tinta);
+    }
+    .idiomas__enlace {
+    color: var(--acento);
+    text-decoration: none;
+    }
+    .idiomas__enlace:hover {
+    text-decoration: underline;
+    }
+    .dato {
+    font-family: var(--fuente-dato);
+    }
+    </style>
     <title>Check what personal data your PDF actually contains</title>
     <meta name="description" content="Load a PDF and find out what personal data it contains before you share it. Free, entirely in your browser: the file never leaves your machine. This check does not redact anything." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/checker/" />
@@ -34,68 +191,50 @@
     }
     </script>
     <style>
-      :root {
-        color-scheme: light dark;
-        --cp-fondo: #0f172a;
-        --cp-texto: #e2e8f0;
-        --cp-acento: #38bdf8;
-        --cp-borde: #334155;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        margin: 0;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        background: var(--cp-fondo);
-        color: var(--cp-texto);
-        line-height: 1.55;
-      }
       main {
-        max-width: 720px;
+        max-width: var(--ancho);
         margin: 0 auto;
-        padding: 2.5rem 1.25rem 4rem;
+        padding: var(--e-12) var(--e-4) var(--e-16);
       }
       h1 {
-        font-size: 1.75rem;
-        margin-bottom: 0.75rem;
+        font-size: var(--t-600);
+        line-height: var(--lh-titular);
+        font-weight: var(--peso-fuerte);
+        margin: 0 0 var(--e-2);
       }
       p {
-        margin: 0 0 1rem;
+        margin: 0 0 var(--e-4);
+        max-width: var(--medida);
       }
       .cp-intro {
-        font-size: 1.05rem;
+        font-size: var(--t-400);
+        color: var(--tinta-suave);
       }
-      .idiomas {
-        display: flex;
-        gap: 0.75rem;
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-      }
-      .idiomas a {
-        color: var(--cp-acento);
-      }
-      /* El borde de la zona de soltar era var(--cp-borde) (#334155) sobre el navy del fondo: 1,72:1.
-         La afordancia principal de la pagina estaba delineada por un borde que casi no se ve, y lo
-         unico que la salvaba era el texto de dentro. El minimo para el contorno de un control es 3:1. */
+      /* La zona de soltar reutiliza la gramática del producto: HUECO/DISCONTINUO = pendiente de
+         decidir. Su borde llegó a estar a 1,72:1 sobre el fondo; ahora es el borde de control de la
+         casa, 3,37:1 sobre papel y 3,67 sobre blanco. */
       #cp-dropzone {
-        border: 2px dashed #94a3b8;
-        border-radius: 12px;
-        padding: 2rem 1.25rem;
+        border: 2px dashed var(--linea-fuerte);
+        border-radius: var(--radio);
+        padding: var(--e-8) var(--e-4);
         text-align: center;
-        margin: 1.75rem 0;
-        background: rgba(148, 163, 184, 0.06);
+        margin: var(--e-8) 0;
+        background: var(--superficie);
+        max-width: var(--medida);
       }
       #cp-dropzone label {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
         cursor: pointer;
-        font-weight: 600;
+        font-weight: var(--peso-fuerte);
+        color: var(--acento);
       }
       #cp-password-form {
-        margin-top: 1rem;
+        margin-top: var(--e-4);
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: var(--e-2);
         align-items: center;
       }
       /* El marcador de posicion se cortaba a media frase y sin cerrar el parentesis —«Contraseña del
@@ -103,41 +242,64 @@
          que dice lee como pagina rota, y esta es la herramienta gratuita que hace de embudo. */
       #cp-password {
         width: 100%;
-        max-width: 340px;
-        padding: 0.4rem 0.6rem;
-        border-radius: 6px;
-        border: 1px solid var(--cp-borde);
-        background: transparent;
-        color: inherit;
+        max-width: 21rem;
+        min-height: 2.75rem;
+        padding: var(--e-2) var(--e-3);
+        border-radius: var(--radio);
+        border: 1px solid var(--linea-fuerte);
+        background: var(--superficie);
+        color: var(--tinta);
+      }
+      /* La caja la pone ya #cp-dropzone: aqui el control solo aporta su boton, que es el mismo del
+         sistema que usa la herramienta de pago. Dos recuadros anidados serian dos zonas de carga. */
+      #cp-file {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--e-3);
+        justify-content: center;
+        width: 100%;
+        margin-top: var(--e-4);
       }
       .cp-aviso {
-        font-size: 0.9rem;
-        color: #94a3b8;
-        border-left: 3px solid var(--cp-borde);
-        padding-left: 0.9rem;
-        margin: 1.5rem 0;
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+        border-left: 3px solid var(--linea-fuerte);
+        padding-left: var(--e-4);
+        margin: var(--e-8) 0;
+        max-width: var(--medida);
       }
       #cp-error {
-        color: #fca5a5;
+        color: var(--rojo);
       }
       .cp-cta {
-        display: inline-block;
-        margin-top: 2rem;
-        padding: 0.85rem 1.5rem;
-        background: var(--cp-acento);
-        color: #0f172a;
-        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        margin-top: var(--e-8);
+        padding: var(--e-3) var(--e-6);
+        background: var(--acento);
+        color: var(--tinta-inversa);
+        font-weight: var(--peso-fuerte);
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: var(--radio);
+      }
+      .cp-cta:hover {
+        background: var(--acento-fuerte);
       }
     </style>
   </head>
   <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca">TachadoPDF</p>
+        <nav class="idiomas" aria-label="Language">
+          <a class="idiomas__enlace" hreflang="es" lang="es" href="../../comprobador/">Español</a>
+          <span class="idiomas__actual" lang="en">English</span>
+        </nav>
+      </div>
+    </header>
     <main>
-      <nav class="idiomas" aria-label="Language">
-        <a class="idiomas__enlace" hreflang="es" lang="es" href="../../comprobador/">Español</a>
-        <span class="idiomas__actual" lang="en">English</span>
-      </nav>
       <h1>Check what personal data your PDF actually contains</h1>
       <p class="cp-intro">This tool analyses your PDF and tells you what personal data it contains, using automatic pattern detection. It is a diagnosis: it does not redact or modify the file.</p>
       <p>The PDF never leaves your machine: the whole analysis happens in your browser, verifiably. No document is sent to any server.</p>

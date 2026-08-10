@@ -4,6 +4,163 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="preload" href="../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+    @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: optional;
+    src: url("../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    }
+    @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    }
+    :root {
+    --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+    --t-100: 0.75rem;
+    --t-200: 0.875rem;
+    --t-300: 1rem;
+    --t-400: 1.125rem;
+    --t-500: 1.3125rem;
+    --t-600: 1.75rem;
+    --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+    --lh-titular: 1.15;
+    --lh-corto: 1.35;
+    --lh-texto: 1.6;
+    --peso-normal: 400;
+    --peso-fuerte: 600;
+    --peso-veredicto: 700;
+    --ancho: 60rem;
+    --medida: 34em;
+    --e-1: 0.25rem;
+    --e-2: 0.5rem;
+    --e-3: 0.75rem;
+    --e-4: 1rem;
+    --e-6: 1.5rem;
+    --e-8: 2rem;
+    --e-12: 3rem;
+    --e-16: 4rem;
+    --e-24: 6rem;
+    --radio: 6px;
+    --radio-marca: 2px;
+    color-scheme: light;
+    --papel: #f6f5f3;
+    --superficie: #ffffff;
+    --tinta: #1b1a17;
+    --tinta-suave: #43403a;
+    --gris: #6a665e;
+    --linea: #dedad1;
+    --linea-fuerte: #8a857a;
+    --acento: #164a7e;
+    --acento-fuerte: #0e3159;
+    --acento-tenue: #dde7f3;
+    --tinta-inversa: #ffffff;
+    --rojo: #9b1c1c;
+    --rojo-fondo: #f9e6e4;
+    --ambar: #7c4a03;
+    --ambar-fondo: #fbefd2;
+    --verde: #0f6b41;
+    --verde-fondo: #dfeee4;
+    }
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
+    body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: var(--t-300);
+    line-height: var(--lh-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    }
+    a {
+    color: var(--acento);
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font: inherit;
+    }
+    input[type="file"] {
+    max-width: 100%;
+    cursor: pointer;
+    color: var(--tinta-suave);
+    }
+    input[type="file"]::file-selector-button {
+    font: inherit;
+    font-size: var(--t-300);
+    font-weight: var(--peso-fuerte);
+    cursor: pointer;
+    margin-right: var(--e-3);
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-4);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    }
+    input[type="file"]::file-selector-button:hover {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
+    }
+    .cabecera {
+    border-bottom: 1px solid var(--linea);
+    background: var(--superficie);
+    }
+    .cabecera__interior {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 var(--e-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    }
+    .cabecera__marca {
+    font-size: var(--t-200);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0;
+    }
+    .idiomas {
+    display: flex;
+    gap: var(--e-3);
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: var(--t-200);
+    }
+    .idiomas > * {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    }
+    .idiomas__actual {
+    font-weight: var(--peso-fuerte);
+    color: var(--tinta);
+    }
+    .idiomas__enlace {
+    color: var(--acento);
+    text-decoration: none;
+    }
+    .idiomas__enlace:hover {
+    text-decoration: underline;
+    }
+    .dato {
+    font-family: var(--fuente-dato);
+    }
+    </style>
     <title>Redact a PDF and verify it worked — TachadoPDF</title>
     <meta name="description" content="A black box doesn't delete anything: the text stays in the PDF and copies back out. TachadoPDF removes it from the file, re-checks the result, and gives you a verification report. Runs entirely in your browser — nothing is uploaded." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/" />
@@ -130,16 +287,29 @@
     </script>
   </head>
   <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca">TachadoPDF</p>
+        <nav class="idiomas" aria-label="Language">
+          <a class="idiomas__enlace" hreflang="es" lang="es" href="../">Español</a>
+          <span class="idiomas__actual" lang="en">English</span>
+        </nav>
+      </div>
+    </header>
     <div id="app" data-lang="en" data-ejemplo="../ejemplo-acta-comunidad.pdf">
-      <nav class="idiomas" aria-label="Language">
-        <a class="idiomas__enlace" hreflang="es" lang="es" href="../">Español</a>
-        <span class="idiomas__actual" lang="en">English</span>
-      </nav>
       <header class="hero">
-        <p class="hero__marca">TachadoPDF</p>
         <h1 class="hero__titular">Redact a PDF. Then prove the text is gone.</h1>
-        <p class="hero__dolor">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
         <p class="hero__sub">TachadoPDF deletes the selected text from the PDF itself and clears the pixels inside the areas you mark. Then it reopens the file it just produced, searches it again, and releases nothing if any of it comes back. You get a verification report with the SHA-256 fingerprint of the file you deliver.</p>
+      </header>
+      <section class="panel" id="herramienta">
+        <h2 class="panel__titulo">Redact your document</h2>
+        <div id="carga"></div>
+        <p class="nota-local">Most online redaction tools upload your document to a server first. TachadoPDF doesn't have one. The file is opened, redacted and checked inside your browser, and never leaves your machine.</p>
+        <div id="gancho"></div>
+        <p class="aviso-principal">TachadoPDF removes the selected text and the pixels inside the areas you mark from the file. It does not establish that the document is free of personal data, and it does not replace human review.</p>
+        <div id="trabajo"></div>
+      </section>
+      <section class="argumento">
         <ul class="hero__bullets">
           <li>The text is removed from the file. Nothing is painted over it.</li>
           <li>Everything runs in your browser. The document is never uploaded — disconnect from the internet and it still works.</li>
@@ -147,13 +317,9 @@
           <li>If anything you redacted survives, the download is blocked. No file, no report.</li>
           <li>The report lists what was redacted and where, which metadata was stripped, which pages have no text layer, and the SHA-256 fingerprint of the file you deliver.</li>
         </ul>
+        <p class="hero__dolor">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
         <p class="hero__deteccion">What is detected automatically: email addresses in any document, plus Spanish identifiers — DNI, NIE, Spanish IBAN, social security number and cadastral reference. Detection of UK and US identifiers (National Insurance number, NHS number, Social Security number, sort codes, local phone formats) is not built yet. Everything else you redact by drawing over it, and the removal and the verification are exactly the same either way.</p>
-        <p class="hero__local">Most online redaction tools upload your document to a server first. TachadoPDF doesn't have one. The file is opened, redacted and checked inside your browser, and never leaves your machine.</p>
         <p class="hero__nicho">Built for people who redact as part of the job: solicitors and paralegals preparing filings and disclosure, public bodies answering freedom-of-information and subject access requests, HR and payroll teams sharing employee documents, and journalists publishing source material.</p>
-      </header>
-      <section class="panel" id="herramienta">
-        <h2 class="panel__titulo">Redact your document</h2>
-        <p class="aviso-principal">TachadoPDF removes the selected text and the pixels inside the areas you mark from the file. It does not establish that the document is free of personal data, and it does not replace human review.</p>
       </section>
       <section class="panel" id="licencia">
         <h2 class="panel__titulo">Pro version</h2>

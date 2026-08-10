@@ -1,0 +1,336 @@
+/* SISTEMA VISUAL DE TACHADOPDF — ÚNICA FUENTE DE TOKENS DEL SITIO.
+   ============================================================================================
+   Este fichero es el ORIGEN de la tipografía y de la escala. No hay un segundo sitio donde se
+   declaren: `src/estilo.css` (la hoja de la aplicación) y los <style> incrustados que emite
+   `src/content/generar.ts` consumen ESTOS bytes, no una copia. Lo ata `estilo.test.ts`.
+
+   POR QUÉ SE INCRUSTA EN CADA PÁGINA EN VEZ DE ENLAZARSE:
+   dieciséis de las dieciocho páginas del sitio (las guías, el comprobador y las dos landings)
+   NO enlazan ninguna hoja externa — llevan su CSS dentro de un <style>. Dentro de un <style> en
+   línea las URL relativas se resuelven CONTRA EL DOCUMENTO, no contra un fichero CSS: un
+   `url(fuentes/…)` escrito aquí y servido en /guia/tachar-dni-pdf/ pediría
+   /guia/tachar-dni-pdf/fuentes/… y daría 404 en silencio, con la portada saliendo en Plex y las
+   guías en la letra del sistema. Y una URL raíz-absoluta (/fuentes/…) muere bajo la base de
+   emergencia /tachadopdf/, que es justo el modo pensado para cuando el dominio se cae.
+   Por eso la ruta lleva un MARCADOR (ver `MARCA_RUTA` en sistema.ts) y cada página lo sustituye
+   por su prefijo de profundidad — el mismo mecanismo (`navHref(ruta, '')`) y por el mismo motivo
+   que el PDF de ejemplo en generar.ts.
+
+   LICENCIA DE LA TIPOGRAFÍA: IBM Plex Sans e IBM Plex Mono, SIL Open Font License 1.1, con
+   «Plex» como Nombre de Fuente Reservado. El texto íntegro de la licencia viaja con los ficheros
+   en public/fuentes/<familia>/OFL.txt. Se sirven los .woff2 PUBLICADOS TAL CUAL por fontsource:
+   NO se subsetean. La FAQ 2.6 de la OFL considera modificación el subsetting, y una Versión
+   Modificada no puede llevar el Nombre de Fuente Reservado. Empaquetar la fuente dentro de un
+   repositorio AGPL está expresamente permitido (cláusula 2 y FAQ 1.3) y NO la relicencia: se
+   distribuye enteramente bajo la OFL (cláusula 5).
+   ============================================================================================ */
+
+/* font-display: optional — NO swap.
+   `optional` da al navegador una ventana de bloqueo de ~100 ms; si la fuente no llegó a tiempo,
+   pinta con la pila de respaldo Y NO CAMBIA en esa carga. Cero salto de letra, cero reflujo, cero
+   desplazamiento de línea a mitad de lectura. Un `swap` en la primera pantalla mueve el titular
+   debajo de los ojos de quien ya está leyendo, que es peor que no estrenar tipografía.
+   Que la ventana de 100 ms baste casi siempre lo consigue el <link rel="preload"> del sans, que
+   emite cada página (ver `enlacePreloadFuente`). El mono NUNCA se precarga: el navegador no baja
+   una fuente que ningún glifo de la página usa. */
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: optional;
+  src: url("__RUTA__fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: optional;
+  src: url("__RUTA__fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+}
+
+:root {
+  /* --- TIPOGRAFÍA -------------------------------------------------------------------------
+     Las cifras de Plex Sans miden 600/1000 upem las diez: son TABULARES POR DEFECTO, sin una
+     línea de CSS. Este producto pinta DNI, NIE, IBAN, números de la Seguridad Social,
+     referencias catastrales y teléfonos en listas y botones que el usuario compara de un
+     vistazo para decidir qué tacha; un identificador que no cuadra en columna se lee como
+     descuido en el único producto que vende exactitud. Y el dígito del mono mide EXACTAMENTE
+     lo mismo (600/1000 también), así que un identificador en mono metido en una frase en sans
+     no descuadra nada.
+     La pila de respaldo se conserva entera: con `optional`, quien no alcance la ventana de
+     carga se queda en ella para siempre en esa visita. El respaldo del mono sigue siendo
+     monoespaciado, así que no se pierde lo que la elección compra. */
+  --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+
+  /* --- ESCALA: SIETE PASOS, CADA UNO CON UN OFICIO ------------------------------------------
+     Si un tamaño no está aquí, no existe. Antes la portada usaba ONCE tamaños y nueve de ellos
+     cabían en 4,5 px, con saltos de ×1,03: eso no es una jerarquía, es textura — el ojo no
+     distingue 13,5 de 14, así que la página no ordenaba nada.
+     Van en `rem` y no en px: un comprador de cincuenta años que ha subido el tamaño de letra de
+     su navegador hoy no consigue absolutamente nada.
+       --t-100  12  letra pequeña legal, pie, estado de cuota, versalitas. Nunca un párrafo.
+       --t-200  14  rótulo de un campo, ayuda pegada a un control, nicho, celdas.
+       --t-300  16  CUERPO. Botones, campos, viñetas, respuestas del FAQ. El tamaño por defecto.
+       --t-400  18  prosa larga (guías y legales) y el subtítulo del hero.
+       --t-500  21  TODO <h2> del sitio y el veredicto de la entrega.
+       --t-600  28  <h1> de página interior.
+       --t-700  28→40  <h1> de portada, y nada más. Se define desde el móvil hacia arriba. */
+  --t-100: 0.75rem;
+  --t-200: 0.875rem;
+  --t-300: 1rem;
+  --t-400: 1.125rem;
+  --t-500: 1.3125rem;
+  --t-600: 1.75rem;
+  --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+
+  /* Interlineado: TRES valores y ya. Los 1,55 y 1,65 sueltos de las otras hojas desaparecen —
+     entre 1,6 y 1,65 no hay nadie que vea la diferencia y sí dos variantes que mantener. */
+  --lh-titular: 1.15; /* >= 28 px */
+  --lh-corto: 1.35; /* 21 px y controles de varias líneas */
+  --lh-texto: 1.6; /* todo el texto */
+
+  /* Pesos: TRES, con regla. 400 todo el texto · 600 titulares, rótulos y botones ·
+     700 RESERVADO al <h1> de portada y a los rótulos de veredicto. Que el peso máximo signifique
+     «esto es el veredicto» es información; que signifique «esto me pareció importante» es ruido
+     (hoy hay siete elementos a 700 en la portada). */
+  --peso-normal: 400;
+  --peso-fuerte: 600;
+  --peso-veredicto: 700;
+
+  /* Anchos. `--ancho` es el contenedor de página; `--medida` capa TODO bloque de texto.
+     Va en `em` y NO en `ch`: el `ch` de Plex es el ancho del cero (0,6 em) mientras la anchura
+     media de una minúscula es ~0,5 em, así que el `68ch` de antes entregaba ~82 caracteres.
+     Y en `em` y no en `rem` por una razón MEDIDA: un tope fijo de 544 px da ~68 caracteres a
+     16 px, pero ~81 a 14 px y ~60 a 18 px — o sea, el mismo token deja fuera de banda justo a la
+     letra pequeña, que es donde más cuesta volver a encontrar la línea. En `em` el tope escala
+     con el tamaño del propio bloque y entrega ~68 caracteres a cualquier tamaño.
+     Antes los bloques del Aviso Legal corrían a 136–142 caracteres por línea porque el tope
+     existía en cuatro bloques y en los demás no. */
+  --ancho: 60rem;
+  --medida: 34em;
+
+  /* --- RITMO VERTICAL: UNA ESCALERA, Y PROHIBIDO SALIRSE DE ELLA ----------------------------
+     Medido antes de esta rama: la portada usaba VEINTIDÓS valores de espaciado distintos y ONCE
+     no caían en ninguna rejilla de 4 px (−4, 9, 11, 12,5, 19,9, 22, 26, 44…). Eso es lo que
+     hace que una página con buen contenido se lea como una maqueta: nada se alinea con nada.
+     Unidad 4 px. Ningún margen, padding o gap puede llevar un valor que no esté aquí —incluidos
+     los −4 de corrección óptica: si algo pide un −4 para cuadrar, lo que está mal es el espacio
+     de al lado.
+     Y CUATRO DE ELLOS LLEVAN SIGNIFICADO, que es lo que de verdad cambia lo que el visitante
+     entiende, porque el espacio es lo que le dice qué va con qué:
+       8  pegado   «esto pertenece a eso»: rótulo→control, encabezado→su primer párrafo
+       16 interno  párrafo tras párrafo dentro del mismo bloque; filas de una lista
+       32 bloque   entre bloques de una misma sección
+       64 sección  entre secciones (48 en móvil: 64 px de aire son el 7,6 % de una pantalla) */
+  --e-1: 0.25rem;
+  --e-2: 0.5rem;
+  --e-3: 0.75rem;
+  --e-4: 1rem;
+  --e-6: 1.5rem;
+  --e-8: 2rem;
+  --e-12: 3rem;
+  --e-16: 4rem;
+  --e-24: 6rem;
+
+  /* Radios: DOS, y cada uno significa algo. Había cuatro (6, 8, 10, 12) sin criterio. A 10–12 px
+     un panel se lee como tarjeta de aplicación de consumo; a 6 px, como campo de un formulario
+     oficial, que es lo que este producto es. `--radio-marca` es SOLO para las marcas de tachado:
+     una marca de redacción tiene esquinas de rectángulo porque es un rectángulo. */
+  --radio: 6px;
+  --radio-marca: 2px;
+
+  /* --- PALETA «REGISTRO» --------------------------------------------------------------------
+     Papel cálido, tinta cálida, UN acento frío y profundo. Es como se ve la impresión legal y
+     financiera: papel crema, tinta negra, sello azul. La paleta de antes era la de Tailwind por
+     defecto (slate + sky) y podía ser el panel de cualquier cosa: b* −14,1 la tinta, −14,5 el
+     gris, −1,2 el fondo. Ahora: +2,3 · +5,1 · +1,1.
+
+     LOS TOKENS SE NOMBRAN POR FUNCIÓN, no por color: el día que el acento deje de ser azul, el
+     nombre sigue siendo verdad.
+
+     LO QUE ARREGLA, medido y no supuesto:
+     · el acento de antes (#0284c7) daba 4,10:1 sobre blanco Y 4,10:1 para el blanco encima —el
+       contraste es simétrico, así que fallaba en LAS DOS direcciones—, y era el color de la
+       marca, del botón que cobra y del botón de elegir archivo. Por eso hubo que inventar un
+       `--enlace` aparte: había TRES azules porque el azul elegido no valía como texto. El de
+       ahora da 8,33 sobre papel, 9,07 sobre blanco y 9,07 para el blanco encima: un solo azul.
+     · el verde de antes (#16a34a) daba 3,30:1 y hacía de ✓ en las viñetas, o sea era el elemento
+       que dice «esto está bien». El de ahora, 6,02.
+     · `--gris` sube de 4,76 (raspando) a 5,24 sobre papel. Los contrastes ya peleados SOLO SUBEN.
+
+     El mínimo de TODA la paleta, sobre las dos superficies posibles, es 5,24:1. */
+  color-scheme: light;
+  --papel: #f6f5f3;
+  --superficie: #ffffff;
+  --tinta: #1b1a17;
+  --tinta-suave: #43403a;
+  --gris: #6a665e;
+  /* Filete decorativo. No es un borde de control: su trabajo es SEPARAR, y lo hace por diferencia
+     de color (ΔE00 6,7 contra el papel), no por contraste de luminancia. */
+  --linea: #dedad1;
+  /* Borde de CONTROL: 3,37:1 sobre papel y 3,67 sobre blanco, o sea cumple 1.4.11 en las dos. */
+  --linea-fuerte: #8a857a;
+  --acento: #164a7e;
+  --acento-fuerte: #0e3159;
+  --acento-tenue: #dde7f3;
+  /* Tinta que va ENCIMA de un relleno macizo. No se lee sobre papel y no tiene por qué: se
+     comprueba contra los rellenos sobre los que de verdad se pinta (9,07 sobre el acento, 13,11
+     sobre el acento fuerte, 8,15 sobre el rojo). */
+  --tinta-inversa: #ffffff;
+
+  /* --- SEMÁFOROS: no se inventa ninguno ------------------------------------------------------
+     Estas tintas YA existían sueltas en la hoja y son las de la familia del informe. No se tocan:
+     se les pone nombre. Lo único que cambia de valor es el neutro de E4 (era #4a5568, una pizarra
+     FRÍA que sobre papel cálido se lee como un error de render) y los rellenos pálidos, que
+     estaban a ΔE00 2,5–6,2 del papel: un relleno a esa distancia no es un canal, es una excusa.
+
+     EL ÁMBAR ES EL PUNTO DELICADO, y es el 86 % de las entregas: es el resultado NORMAL del
+     producto, no una avería. `#FEF3C7` separaba más (ΔE00 14,3) pero lleva C* 22,8 de croma, y
+     subirle el volumen al estado corriente empuja contra la regla de redacción del ámbar, que
+     existe justo para que el resultado normal no se lea como disculpa. `#FBEFD2` da ΔE00 10,6
+     sobre papel y 11,9 sobre blanco —mejor separación que el 6,2 de hoy— con C* 15,5, dos
+     tercios de croma. Se separa más y grita menos.
+     El relleno NUNCA es el único canal: siguen los cuatro de la casa (relleno, tinta, acento y
+     forma/rótulo), y la banda maciza de E1 sigue siendo la única alarma que se distingue sin
+     color. */
+  --rojo: #9b1c1c;
+  --rojo-fondo: #f9e6e4;
+  --ambar: #7c4a03;
+  --ambar-fondo: #fbefd2;
+  --verde: #0f6b41;
+  --verde-fondo: #dfeee4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* La tipografía se hereda desde `body` en las dieciocho páginas: es lo que acaba con las TRES
+   pilas tipográficas y los DOS tamaños base distintos que convivían (16/1,6, 16/1,55, 17/1,65).
+   Y la superficie de página es el PAPEL, no el blanco: el blanco se reserva para el panel de
+   trabajo, que es literalmente la hoja que vas a tachar apoyada en la mesa. Antes estaba al
+   revés (cuerpo blanco, panel gris frío). */
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  font-size: var(--t-300);
+  line-height: var(--lh-texto);
+  color: var(--tinta);
+  background: var(--papel);
+}
+
+/* UN SOLO color de enlace en toda la superficie. Con el acento a 9,07:1 ya no hacen falta dos
+   azules. El subrayado se conserva donde lo hay: es la única señal no cromática de un enlace. */
+a {
+  color: var(--acento);
+}
+
+/* Los controles no heredan la tipografía por su cuenta: sin esto, el <select> de tipo de
+   documento salía en la letra del sistema a 13,33 px dentro de una página en Plex a 16. */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* EL BOTÓN DE ELEGIR ARCHIVO, UNA SOLA VEZ PARA LAS DOS HERRAMIENTAS.
+   Las dos superficies que cargan un PDF —la de pago y la gratuita— dibujaban dos controles
+   distintos: la de pago tenía recuadro y botón teñido, y la gratuita, que es la que hace de
+   embudo, servía el control desnudo del sistema operativo. El mismo gesto tiene que verse igual
+   en las dos, así que la regla vive en el sistema y no en la hoja de la aplicación. */
+input[type="file"] {
+  max-width: 100%;
+  cursor: pointer;
+  color: var(--tinta-suave);
+}
+input[type="file"]::file-selector-button {
+  font: inherit;
+  font-size: var(--t-300);
+  font-weight: var(--peso-fuerte);
+  cursor: pointer;
+  margin-right: var(--e-3);
+  min-height: 2.75rem;
+  padding: var(--e-2) var(--e-4);
+  border-radius: var(--radio);
+  border: 1px solid var(--acento);
+  background: var(--acento);
+  color: var(--tinta-inversa);
+}
+input[type="file"]::file-selector-button:hover {
+  background: var(--acento-fuerte);
+  border-color: var(--acento-fuerte);
+}
+
+/* ---------- LA MANCHETA, común a las dieciocho páginas ----------
+   Marca a la izquierda, idiomas a la derecha, filete A SANGRE de borde a borde de la ventana. Ese
+   filete es lo que hace que 1440 px dejen de leerse como una columna suelta flotando en el vacío,
+   y es lo que le faltaba entero a /actas/ y /nominas/: en el móvil la palabra «TachadoPDF» no
+   aparecía hasta 1,83 pantallas, justo en las dos páginas donde cae el tráfico de pago.
+   La marca va en TINTA. El acento significa «esto es lo que se pulsa» y no puede significar
+   además «esto es la marca»; y el azul que gastaba suspendía a 4,10:1.
+   Vive aquí, y no en la hoja de la aplicación, porque dieciséis de las dieciocho páginas no
+   enlazan ninguna hoja externa. */
+.cabecera {
+  border-bottom: 1px solid var(--linea);
+  background: var(--superficie);
+}
+.cabecera__interior {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 0 var(--e-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-4);
+}
+.cabecera__marca {
+  font-size: var(--t-200);
+  font-weight: var(--peso-fuerte);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta);
+  margin: 0;
+}
+
+/* Selector de idioma: enlaces <a> reales, no un <select> con JavaScript — funciona con los
+   scripts desactivados y también en páginas que no cargan ninguno. Cada idioma se rotula en SU
+   PROPIO idioma; nunca banderas (una bandera es un país, no un idioma). */
+.idiomas {
+  display: flex;
+  gap: var(--e-3);
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  font-size: var(--t-200);
+}
+/* Caja táctil de 44 px manteniendo el texto a 14: el conmutador medía 22 px de alto. */
+.idiomas > * {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.idiomas__actual {
+  font-weight: var(--peso-fuerte);
+  color: var(--tinta);
+}
+.idiomas__enlace {
+  color: var(--acento);
+  text-decoration: none;
+}
+.idiomas__enlace:hover {
+  text-decoration: underline;
+}
+
+/* MONO = IDENTIFICADOR QUE UN HUMANO COMPARA CARÁCTER A CARÁCTER: DNI, NIE, IBAN, nº de la
+   Seguridad Social, referencia catastral, teléfono, correo, clave de licencia, huella SHA-256 y
+   nombres de fichero entregados. No es un adorno técnico: es la señal de «esto es un dato,
+   léelo entero». Fuera del mono va todo lo demás, incluidas las cifras dentro de frases
+   corridas — el sans ya es tabular. */
+.dato {
+  font-family: var(--fuente-dato);
+}

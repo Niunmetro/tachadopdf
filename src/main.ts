@@ -74,6 +74,26 @@ function unionSorted(a: number[], b: number[]): number[] {
   return Array.from(new Set([...a, ...b])).sort((x, y) => x - y);
 }
 
+/**
+ * Escribe un rótulo marcando cuál de sus caracteres es el DATO (un DNI, un IBAN, un teléfono).
+ * NO cambia el texto: los mismos caracteres en el mismo orden — `textContent` sigue siendo la
+ * cadena entera. Lo único que cambia es que el identificador se pinta en la familia de datos,
+ * que es donde el 0 y la O no se parecen. En los nueve botones de «tachar todas las apariciones»
+ * los 33 primeros caracteres son idénticos y lo único que los distingue es ese valor: merece
+ * ser lo que se lee primero.
+ */
+function etiquetarConDato(nodo: HTMLElement, rotulo: string, dato: string): void {
+  const i = dato.length === 0 ? -1 : rotulo.indexOf(dato);
+  if (i < 0) {
+    nodo.textContent = rotulo;
+    return;
+  }
+  nodo.textContent = '';
+  const marca = el('span', { class: 'dato' });
+  marca.textContent = dato;
+  nodo.append(rotulo.slice(0, i), marca, rotulo.slice(i + dato.length));
+}
+
 function loadPng(bytes: Uint8Array): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const blob = new Blob([bytes as BlobPart], { type: 'image/png' });
@@ -172,7 +192,7 @@ async function renderFileVisor(
       const n = occ.reduce((acc, m) => acc + m.rects.length, 0);
       if (n === 0) continue;
       const boton = el('button', { type: 'button' });
-      boton.textContent = copia.tacharTodas(valor, n);
+      etiquetarConDato(boton, copia.tacharTodas(valor, n), valor);
       boton.addEventListener('click', () => {
         fileWork.manual = mergeOccurrenceMarks(fileWork.manual, occ);
         for (const entry of pageEntries) {
@@ -300,7 +320,14 @@ function hueco(root: HTMLElement, id: string): HTMLElement {
 
 export function initApp(root: HTMLElement, contenido: Contenido): void {
   const copia = contenido.app;
-  const panelTrabajo = hueco(root, 'herramienta');
+  // Tres huecos dentro del panel de la herramienta, no uno. El orden de la primera pantalla lo
+  // fija el HTML —zona de carga, «el archivo nunca sale de tu equipo», documento de ejemplo,
+  // aviso de alcance—, y esas dos frases son texto INDEXABLE que tiene que seguir viniendo en el
+  // HTML. Con un solo hueco al final, los controles caían detrás de los dos párrafos y el orden
+  // se invertía.
+  const panelCarga = hueco(root, 'carga');
+  const panelGancho = hueco(root, 'gancho');
+  const panelTrabajo = hueco(root, 'trabajo');
   const panelPro = hueco(root, 'licencia');
 
   const licenseInput = el('input', { type: 'text', placeholder: copia.licenciaPlaceholder });
@@ -323,12 +350,16 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   const checkboxLabel = el('label', { for: 'checkbox-confirmado' });
   checkboxLabel.textContent = copia.checkboxRevisado;
 
-  const downloadButton = el('button', { type: 'button' });
+  // El ÚNICO relleno macizo del panel de trabajo: descargar es el final del trabajo.
+  const downloadButton = el('button', { type: 'button', class: 'principal' });
   downloadButton.textContent = copia.botonDescargar;
   downloadButton.setAttribute('disabled', 'true');
 
   // Selector de tipo de documento: solo cambia qué categorías vienen premarcadas al montar el
   // visor de un fichero (T2). No altera la detección.
+  // Medido a 390 px: era el control MÁS PEQUEÑO de la página (137×19 px) y estaba justo encima
+  // de la zona de carga, con su rótulo al lado robándole el ancho. Pasa a campo de ancho
+  // completo con el rótulo ENCIMA y 44 px de alto, que es la diana táctil de la casa.
   const presetLabel = el('label', { for: 'preset-tipo-documento' });
   presetLabel.textContent = copia.tipoDocumento;
   const presetSelector = buildPresetSelector(
@@ -338,7 +369,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     },
     copia.presets,
   );
-  const filaPreset = el('div', { class: 'fila' });
+  const filaPreset = el('div', { class: 'campo' });
   filaPreset.append(presetLabel, presetSelector);
 
   // Enlace de compra: sin esto, quien agota la cuota gratuita no sabe dónde comprar Pro.
@@ -349,14 +380,14 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   });
   proLink.textContent = copia.comprarPro;
 
-  // Panel 1: el trabajo (subir el PDF y tacharlo). El título y el aviso de alcance ya vienen en
-  // el HTML estático; aquí solo se cuelgan los controles.
-  const filaArchivo = el('div', { class: 'fila' });
-  filaArchivo.append(fileInput, ejemploBtn);
+  // Panel 1: el trabajo (subir el PDF y tacharlo). El título, la frase del procesado local y el
+  // aviso de alcance ya vienen en el HTML estático; aquí solo se cuelgan los controles, en los
+  // tres huecos que fijan el orden de la primera pantalla.
   const confirmacion = el('div', { class: 'confirmacion' });
   confirmacion.append(checkbox, checkboxLabel);
+  panelCarga.append(filaPreset, fileInput);
+  panelGancho.append(ejemploBtn, pistaEjemplo, quotaStatus);
   panelTrabajo.append(
-    filaPreset, filaArchivo, pistaEjemplo, quotaStatus,
     filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus, entregaContainer,
   );
 

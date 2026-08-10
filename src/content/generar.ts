@@ -12,6 +12,7 @@
 // Que el fichero de disco esté al día lo vigila src/content/pages-generadas.test.ts.
 
 import { CONTENIDOS } from './index';
+import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
 import { esc, jsonLd, sangrar, texto } from './html';
 import {
   LOCALES,
@@ -77,6 +78,8 @@ interface OpcionesCabecera {
   ogLocale: string;
   ogLocalesAlternos: string[];
   alternates: Alternate[];
+  /** Ruta de vuelta a la raíz del sitio DESDE ESTE DOCUMENTO ('./', '../', '../../../'). */
+  prefijo: string;
   extra: string[];
 }
 
@@ -85,6 +88,13 @@ function cabecera(o: OpcionesCabecera): string {
     '<meta charset="UTF-8" />',
     '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
     `<meta http-equiv="Content-Security-Policy" content="${esc(CSP)}">`,
+    '',
+    // El sistema visual va en TODAS las páginas y va ANTES que el <style> propio de cada una:
+    // los tokens se declaran una sola vez (src/estilo/sistema.css) y lo de la página manda
+    // encima. Las dieciséis páginas que no enlazan hoja externa recibían la letra del sistema
+    // mientras la portada estrenaba tipografía; esto es lo que cierra ese desfase.
+    enlacePreloadFuente(o.prefijo),
+    `<style>\n${sistemaCss(o.prefijo)}</style>`,
     '',
     texto('title', {}, o.titulo),
     `<meta name="description" content="${esc(o.descripcion)}" />`,
@@ -181,6 +191,43 @@ function selectorIdioma(pagina: PaginaRegistro, locale: Locale): string {
   return `<nav class="idiomas" aria-label="${esc(CONTENIDOS[locale].secciones.idiomas)}">\n${sangrar(enlaces, 1)}\n</nav>`;
 }
 
+/**
+ * LA MANCHETA. Una cabecera común a las dieciocho páginas: la marca a la izquierda, los idiomas a
+ * la derecha, y un filete A SANGRE de borde a borde de la ventana. Ese filete es lo que hace que
+ * 1440 px dejen de leerse como una columna suelta flotando en el vacío, y es lo que hoy le falta
+ * a `/actas/` y `/nominas/`, que no tienen cabecera ninguna: en el móvil la palabra «TachadoPDF»
+ * no aparecía hasta 1,83 pantallas, en las dos páginas donde cae el tráfico de pago.
+ *
+ * ES UNA MANCHETA DE PERIÓDICO, NO UN LOGOTIPO. El producto no tiene símbolo y aquí no se le
+ * inventa uno: la marca se resuelve tipográficamente (Plex Sans 600, 14 px, versalitas,
+ * `letter-spacing` .14em, en tinta). No se parte en dos colores, no lleva «PDF» en acento y no se
+ * le tacha una parte — un tachado dentro del nombre SERÍA inventar el símbolo.
+ *
+ * Y la marca deja de gastar el acento. El acento tiene que significar «esto es lo que se pulsa»;
+ * si además significa «esto es la marca», no significa ninguna de las dos. (De paso, el azul que
+ * gastaba suspendía a 4,10:1.)
+ *
+ * El HUECO PARA EL SÍMBOLO está pensado pero AUSENTE del DOM: un cuadrado vacío que ocupa sitio
+ * se lee como una imagen rota, no como un hueco. Cuando llegue, entra a la izquierda de la
+ * palabra con `gap: 8px` y 20×20 px, y no mueve nada más que su propio ancho.
+ */
+function mancheta(pagina: PaginaRegistro, locale: Locale): string {
+  const c = CONTENIDOS[locale];
+  const selector = selectorIdioma(pagina, locale);
+  return [
+    '<header class="cabecera">',
+    sangrar(
+      [
+        '<div class="cabecera__interior">',
+        sangrar([texto('p', { class: 'cabecera__marca' }, c.marca), selector], 1),
+        '</div>',
+      ],
+      1,
+    ),
+    '</header>',
+  ].join('\n');
+}
+
 // --- bloques de prosa -------------------------------------------------------
 
 function bloque(b: Bloque): string {
@@ -226,22 +273,13 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
 
   const bloques: string[] = [];
 
-  const selector = selectorIdioma(pagina, locale);
-  if (selector.length > 0) bloques.push(selector);
-
   bloques.push(
     [
       '<header class="hero">',
       sangrar(
         [
-          texto('p', { class: 'hero__marca' }, c.marca),
           texto('h1', { class: 'hero__titular' }, c.landing.titular),
-          texto('p', { class: 'hero__dolor' }, c.landing.dolor),
           texto('p', { class: 'hero__sub' }, c.landing.subtitulo),
-          `<ul class="hero__bullets">\n${sangrar(c.landing.bullets.map((b) => texto('li', {}, b)), 1)}\n</ul>`,
-          texto('p', { class: 'hero__deteccion' }, c.landing.notaDeteccion),
-          texto('p', { class: 'hero__local' }, c.landing.procesadoLocal),
-          texto('p', { class: 'hero__nicho' }, c.landing.nicho),
         ],
         1,
       ),
@@ -249,15 +287,54 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
     ].join('\n'),
   );
 
-  // Hueco de la herramienta: el título y el aviso de alcance son texto indexable; los controles
-  // (input de fichero, visor, botón de descarga) los monta initApp aquí dentro.
+  // GANA LA HERRAMIENTA, y no está reñido con el argumento.
+  //
+  // Medido antes de esta rama, a 390×844: el primer control del producto estaba a 1,37 pantallas,
+  // la zona de carga a 2,05 y «Comprar Pro» a 3,06; por encima del pliegue el ÚNICO elemento
+  // accionable era el enlace «English». El visitante tenía que leer doscientas palabras de prosa
+  // sobre sanciones antes de descubrir qué le deja hacer la página.
+  //
+  // El argumento de este producto ES la herramienta: el modo gratuito procesa un documento
+  // entero, y la única prueba real de «nada sale de tu navegador» es que el visitante lo
+  // compruebe. Así que la zona de carga sube, y con ella solo lo que hace falta para atreverse a
+  // soltar un acta con DNI dentro: dos frases que YA ESTABAN ESCRITAS y estaban mal colocadas.
+  //
+  // `procesadoLocal` iba a media página de distancia: ahí abajo es un dato más; pegada al control
+  // es la respuesta a la pregunta que el control acaba de provocar. Y `avisoPrincipal` iba ANTES
+  // del control: una advertencia sobre lo que la herramienta no garantiza, leída antes de saber
+  // qué es la herramienta, es un muro de descargo. Debajo es la letra pequeña del control que
+  // gobierna — y sigue estando antes de cualquier acción con consecuencias, porque la casilla de
+  // revisión y el botón de descarga no existen hasta que hay documento.
+  //
+  // Ni una palabra nueva: las dos cadenas son las de siempre y cambian de sitio, no de contenido.
   bloques.push(
     [
       '<section class="panel" id="herramienta">',
       sangrar(
         [
           texto('h2', { class: 'panel__titulo' }, c.secciones.trabajo),
+          '<div id="carga"></div>',
+          texto('p', { class: 'nota-local' }, c.landing.procesadoLocal),
+          '<div id="gancho"></div>',
           texto('p', { class: 'aviso-principal' }, c.landing.avisoPrincipal),
+          '<div id="trabajo"></div>',
+        ],
+        1,
+      ),
+      '</section>',
+    ].join('\n'),
+  );
+
+  // El argumento, entero, debajo de la herramienta. No se recorta ni se reescribe: se coloca.
+  bloques.push(
+    [
+      '<section class="argumento">',
+      sangrar(
+        [
+          `<ul class="hero__bullets">\n${sangrar(c.landing.bullets.map((b) => texto('li', {}, b)), 1)}\n</ul>`,
+          texto('p', { class: 'hero__dolor' }, c.landing.dolor),
+          texto('p', { class: 'hero__deteccion' }, c.landing.notaDeteccion),
+          texto('p', { class: 'hero__nicho' }, c.landing.nicho),
         ],
         1,
       ),
@@ -340,6 +417,7 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
   const ejemplo = `${navHref(ruta, '')}ejemplo-acta-comunidad.pdf`.replace(/^\.\//, '');
 
   return [
+    sangrar([mancheta(pagina, locale)], 2),
     `    <div id="app" data-lang="${esc(c.htmlLang)}" data-ejemplo="${esc(ejemplo)}">`,
     sangrar(bloques, 3),
     '    </div>',
@@ -407,6 +485,7 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
       alternates: alternatesDe(pagina),
+      prefijo: navHref(rutaDe(pagina, locale) ?? '', ''),
       extra,
     }),
     cuerpoHome(pagina, locale),
@@ -416,69 +495,59 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
 // --- página del comprobador -------------------------------------------------
 
 /** Estilo propio del comprobador. Va en línea (la CSP lo permite con 'unsafe-inline' en
- *  style-src) para que la página se vea bien sin depender de ninguna hoja externa. */
-const CSS_COMPROBADOR = `  :root {
-    color-scheme: light dark;
-    --cp-fondo: #0f172a;
-    --cp-texto: #e2e8f0;
-    --cp-acento: #38bdf8;
-    --cp-borde: #334155;
-  }
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--cp-fondo);
-    color: var(--cp-texto);
-    line-height: 1.55;
-  }
-  main {
-    max-width: 720px;
+ *  style-src) para que la página se vea bien sin depender de ninguna hoja externa.
+ *
+ *  EL COMPROBADOR ERA LA ÚNICA PÁGINA NEGRA DEL SITIO. Con el móvil en claro, la herramienta
+ *  gratuita —la que hace de embudo— era una pantalla azul marino en un sitio blanco; con el móvil
+ *  en oscuro, el recorrido guía → portada → comprobador daba marino, FOGONAZO BLANCO y marino
+ *  otra vez, porque la portada no declaraba tema y las guías seguían al sistema. Lo que este
+ *  producto ENTREGA es un papel blanco: la herramienta que lo fabrica pareciéndose a él es lo
+ *  verdadero, y de paso el salto entre páginas desaparece. Registro «fondo negro» es estética de
+ *  pentester; el comprador es una gestoría con el Excel abierto a las diez de la mañana. */
+const CSS_COMPROBADOR = `  main {
+    max-width: var(--ancho);
     margin: 0 auto;
-    padding: 2.5rem 1.25rem 4rem;
+    padding: var(--e-12) var(--e-4) var(--e-16);
   }
   h1 {
-    font-size: 1.75rem;
-    margin-bottom: 0.75rem;
+    font-size: var(--t-600);
+    line-height: var(--lh-titular);
+    font-weight: var(--peso-fuerte);
+    margin: 0 0 var(--e-2);
   }
   p {
-    margin: 0 0 1rem;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
   }
   .cp-intro {
-    font-size: 1.05rem;
+    font-size: var(--t-400);
+    color: var(--tinta-suave);
   }
-  .idiomas {
-    display: flex;
-    gap: 0.75rem;
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-  }
-  .idiomas a {
-    color: var(--cp-acento);
-  }
-  /* El borde de la zona de soltar era var(--cp-borde) (#334155) sobre el navy del fondo: 1,72:1.
-     La afordancia principal de la pagina estaba delineada por un borde que casi no se ve, y lo
-     unico que la salvaba era el texto de dentro. El minimo para el contorno de un control es 3:1. */
+  /* La zona de soltar reutiliza la gramática del producto: HUECO/DISCONTINUO = pendiente de
+     decidir. Su borde llegó a estar a 1,72:1 sobre el fondo; ahora es el borde de control de la
+     casa, 3,37:1 sobre papel y 3,67 sobre blanco. */
   #cp-dropzone {
-    border: 2px dashed #94a3b8;
-    border-radius: 12px;
-    padding: 2rem 1.25rem;
+    border: 2px dashed var(--linea-fuerte);
+    border-radius: var(--radio);
+    padding: var(--e-8) var(--e-4);
     text-align: center;
-    margin: 1.75rem 0;
-    background: rgba(148, 163, 184, 0.06);
+    margin: var(--e-8) 0;
+    background: var(--superficie);
+    max-width: var(--medida);
   }
   #cp-dropzone label {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: var(--peso-fuerte);
+    color: var(--acento);
   }
   #cp-password-form {
-    margin-top: 1rem;
+    margin-top: var(--e-4);
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--e-2);
     align-items: center;
   }
   /* El marcador de posicion se cortaba a media frase y sin cerrar el parentesis —«Contraseña del
@@ -486,32 +555,50 @@ const CSS_COMPROBADOR = `  :root {
      que dice lee como pagina rota, y esta es la herramienta gratuita que hace de embudo. */
   #cp-password {
     width: 100%;
-    max-width: 340px;
-    padding: 0.4rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--cp-borde);
-    background: transparent;
-    color: inherit;
+    max-width: 21rem;
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-3);
+    border-radius: var(--radio);
+    border: 1px solid var(--linea-fuerte);
+    background: var(--superficie);
+    color: var(--tinta);
+  }
+  /* La caja la pone ya #cp-dropzone: aqui el control solo aporta su boton, que es el mismo del
+     sistema que usa la herramienta de pago. Dos recuadros anidados serian dos zonas de carga. */
+  #cp-file {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-3);
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--e-4);
   }
   .cp-aviso {
-    font-size: 0.9rem;
-    color: #94a3b8;
-    border-left: 3px solid var(--cp-borde);
-    padding-left: 0.9rem;
-    margin: 1.5rem 0;
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    border-left: 3px solid var(--linea-fuerte);
+    padding-left: var(--e-4);
+    margin: var(--e-8) 0;
+    max-width: var(--medida);
   }
   #cp-error {
-    color: #fca5a5;
+    color: var(--rojo);
   }
   .cp-cta {
-    display: inline-block;
-    margin-top: 2rem;
-    padding: 0.85rem 1.5rem;
-    background: var(--cp-acento);
-    color: #0f172a;
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: var(--e-8);
+    padding: var(--e-3) var(--e-6);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    font-weight: var(--peso-fuerte);
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: var(--radio);
+  }
+  .cp-cta:hover {
+    background: var(--acento-fuerte);
   }`;
 
 function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
@@ -536,7 +623,6 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
     `<style>\n${CSS_COMPROBADOR}\n</style>`,
   ];
 
-  const selector = selectorIdioma(pagina, locale);
   const cuerpo = [
     texto('h1', {}, c.comprobador.titular),
     texto('p', { class: 'cp-intro' }, c.comprobador.intro),
@@ -569,8 +655,9 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
   ];
 
   const main = [
+    sangrar([mancheta(pagina, locale)], 2),
     '    <main>',
-    sangrar(selector.length > 0 ? [selector, ...cuerpo] : cuerpo, 3),
+    sangrar(cuerpo, 3),
     '    </main>',
     '    <script type="module" src="/src/comprobador/main.ts"></script>',
   ].join('\n');
@@ -587,6 +674,7 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
       alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
       extra,
     }),
     main,
@@ -595,35 +683,49 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
 
 // --- guías ------------------------------------------------------------------
 
-/** Estilo de artículo, con el mismo aspecto que las guías españolas escritas a mano: claro por
- *  defecto, oscuro si el sistema lo pide. En línea, sin hoja externa (lo exige la CSP). */
-const CSS_GUIA = `  :root { color-scheme: light dark; }
-  body {
-    max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
-    font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: #1e293b; background: #fff;
+/** Estilo de artículo, el mismo para las guías escritas a mano y para las generadas. En línea,
+ *  sin hoja externa (lo exige la CSP).
+ *
+ *  UNA SOLA CARA, CLARA. El bloque `prefers-color-scheme: dark` desaparece, y con él el defecto
+ *  que vivía dentro: medido en modo oscuro forzado, el CTA de las SEIS guías españolas era
+ *  relleno #0f172a sobre fondo #0f172a —1,00:1, sin borde: el botón dejaba de existir y solo
+ *  flotaba su texto cian— y el de las SEIS inglesas, 1,22:1 (1.4.11 pide 3:1). Es exactamente el
+ *  defecto que la casa ya cazó y escribió como regla, arreglado en /actas/ y /nominas/… mientras
+ *  el guardián solo abría esos dos ficheros y el fallo vivía en doce que nunca miraba. */
+const CSS_GUIA = `  main, article, footer {
+    max-width: var(--ancho); margin: 0 auto; padding-left: var(--e-4); padding-right: var(--e-4);
   }
-  h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
-  h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
-  a { color: #0369a1; }
-  ul, ol { padding-left: 1.3rem; }
-  li { margin: .35rem 0; }
-  .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
-  .idiomas__actual { font-weight: 700; }
+  main, article { padding-top: var(--e-12); padding-bottom: var(--e-16); }
+  /* El texto se capa a la MEDIDA, pero el bloque se alinea con la marca de la mancheta: una
+     columna centrada dentro de otra columna deja el articulo flotando a la deriva del titulo. */
+  h1, h2, p, li, .nota, .lede, .cp-cta, .cta { max-width: var(--medida); }
+  ul, ol { max-width: var(--medida); }
+  p, li { font-size: var(--t-400); }
+  h1 { font-size: var(--t-600); line-height: var(--lh-titular); font-weight: var(--peso-fuerte); margin: 0 0 var(--e-4); }
+  h2 { font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte); margin: var(--e-12) 0 var(--e-2); }
+  p { margin: 0 0 var(--e-4); }
+  ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
+  li { margin: 0 0 var(--e-2); }
+  .lede { color: var(--tinta-suave); }
+  /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
+     superado, y no se gasta en un aparte de una guia. */
   .nota {
-    background: #fef2f2; border-left: 4px solid #ef4444;
-    padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d;
+    background: var(--ambar-fondo); border-left: 3px solid var(--ambar);
+    padding: var(--e-3) var(--e-4); border-radius: var(--radio-marca); color: var(--tinta);
+    font-size: var(--t-300); margin: 0 0 var(--e-4);
   }
-  .cp-cta {
-    display: block; margin: 2.4rem 0 0; padding: 1.2rem 1.4rem;
-    background: #0f172a; color: #7dd3fc; border-radius: 10px;
-    text-decoration: none; font-weight: 600;
+  .cp-cta, .cta {
+    display: block; margin: var(--e-12) 0 0; padding: var(--e-4);
+    background: var(--acento); color: var(--tinta-inversa); border-radius: var(--radio);
+    text-decoration: none; font-weight: var(--peso-fuerte); font-size: var(--t-300);
   }
-  @media (prefers-color-scheme: dark) {
-    body { background: #0f172a; color: #e2e8f0; }
-    a { color: #7dd3fc; }
-    .nota { background: #450a0a; color: #fecaca; border-color: #ef4444; }
-    .cp-cta { background: #1e293b; }
+  .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
+  footer {
+    margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
+    font-size: var(--t-200); color: var(--tinta-suave);
+  }
+  @media (max-width: 640px) {
+    footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
   }`;
 
 function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia): string {
@@ -648,7 +750,6 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     `<style>\n${CSS_GUIA}\n</style>`,
   ];
 
-  const selector = selectorIdioma(pagina, locale);
   const cuerpo = [
     texto('h1', {}, guia.titulo),
     ...guia.cuerpo.map(bloque),
@@ -657,8 +758,9 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
   ];
 
   const main = [
+    sangrar([mancheta(pagina, locale)], 2),
     '    <main>',
-    sangrar(selector.length > 0 ? [selector, ...cuerpo] : cuerpo, 3),
+    sangrar(cuerpo, 3),
     '    </main>',
   ].join('\n');
 
@@ -674,6 +776,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
       alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
       extra,
     }),
     main,
