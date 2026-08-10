@@ -196,6 +196,7 @@ const INFORME_EN: CopiaInforme = {
   filaReferencia: 'Report reference',
   filaHuella: 'SHA-256 fingerprint of the delivered file',
   filaPaginasTotal: 'Pages in the document',
+  filaPaginasSinReserva: 'Pages fully checked (nothing left out of scope)',
   filaPaginasReleidas: 'Pages re-read after redaction',
   filaPaginasSinTexto: 'Pages with no text layer (cannot be checked)',
   filaPaginasImagenCompleta: 'Pages with a full-page image',

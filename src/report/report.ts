@@ -177,7 +177,14 @@ export function lineaDelSello(estado: EstadoSello, data: ReportData, copia: Copi
         : reservaSoloPorImagenes(data)
           ? copia.lineaParcialSoloImagenes(total, data.paginasConImagen.length)
           : copia.lineaParcial(paginasReleidas(data), total, reservas);
-    return hayObjetoNoExaminado(data) ? `${base} ${copia.clausulaObjetosSinExaminar}` : base;
+    // `lineaParcialSoloObjetos` YA nombra los objetos: encolarle la clausula imprime la misma
+    // oracion dos veces, y con `reservas === 0` esa rama es el caso entero, no uno raro. Con cero
+    // reservas de pagina la UNICA forma de estar en E3 es tener un objeto sin examinar
+    // (`estadoDelSello`), asi que `hayObjetoNoExaminado` es cierto SIEMPRE ahi.
+    const laBaseYaLosNombra = reservas === 0;
+    return hayObjetoNoExaminado(data) && !laBaseYaLosNombra
+      ? `${base} ${copia.clausulaObjetosSinExaminar}`
+      : base;
   }
   if (estado === 'E4') return copia.lineaSinTachados(total);
   return copia.lineaVerificado(total, zonasTachadas(data));
@@ -641,6 +648,18 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   const noLegibles = data.paginasTextoNoLegible.map((p) => p.page);
   const cobertura: [string, string, boolean][] = [
     [copia.filaPaginasTotal, String(data.totalPaginas), false],
+    // EL NUMERADOR DEL MEDIDOR, EN LA TABLA. El disco del sello ambar se llena en la proporcion
+    // `sinReserva / total` y esa cifra no se imprimia en ninguna parte: el dibujo era el unico
+    // portador de la unica afirmacion que un tercero no podia contrastar. Va pegada a la fila del
+    // total para que el par se lea como fraccion.
+    // Cifra desnuda (no «0 de 4»): `report/cobertura-destacada` parsea los digitos de la linea, y
+    // el denominador ya esta en la fila de encima. Y NO se destaca: destacar es la marca de una
+    // reserva, y esta fila es el resultado de haberlas contado, no una mas.
+    [
+      copia.filaPaginasSinReserva,
+      String(data.totalPaginas - paginasConReserva(data).length),
+      false,
+    ],
     [copia.filaPaginasReleidas, String(paginasReleidas(data)), false],
     [copia.filaPaginasSinTexto, cifraConPaginas(copia, data.paginasSinCapaDeTexto), data.paginasSinCapaDeTexto.length > 0],
     [copia.filaPaginasImagenCompleta, cifraConPaginas(copia, data.paginasImagenCompleta), data.paginasImagenCompleta.length > 0],

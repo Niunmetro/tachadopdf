@@ -98,6 +98,19 @@ export interface CopiaInforme {
   /** Filas de cobertura. Cada una lleva su cifra SIEMPRE, también cuando es cero: un «Ninguna»
    *  no distingue «no había» de «no miramos», y sin denominador no hay alcance. */
   filaPaginasTotal: string;
+  /**
+   * EL NUMERADOR QUE DIBUJA EL MEDIDOR, PUESTO EN PALABRAS. El disco del sello ámbar se llena en
+   * la proporción «páginas sin ninguna reserva / páginas del documento», y hasta el 2026-08-10
+   * ese numerador NO se imprimía en ningún sitio: la tabla daba «Páginas del documento»,
+   * «releídas», «sin capa de texto», «con imágenes»… y ninguna era la cifra que el dibujo
+   * afirma. En un producto cuya sección estrella se titula «Cómo comprobar este informe», el
+   * único dato que un tercero no podía contrastar era el que solo existía como dibujo.
+   * Va INMEDIATAMENTE debajo de `filaPaginasTotal` para que el par se lea como fracción por
+   * adyacencia. Cifra desnuda, sin «0 de 4»: las demás filas imprimen un número solo y
+   * `report/cobertura-destacada` parsea los dígitos de la línea.
+   * NO se destaca (no es una reserva, es el resultado de contarlas): va en redonda.
+   */
+  filaPaginasSinReserva: string;
   filaPaginasReleidas: string;
   filaPaginasSinTexto: string;
   filaPaginasImagenCompleta: string;

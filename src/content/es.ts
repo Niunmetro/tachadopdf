@@ -135,6 +135,7 @@ const INFORME_ES: CopiaInforme = {
   filaReferencia: 'Referencia del informe',
   filaHuella: 'Huella SHA-256 del documento entregado',
   filaPaginasTotal: 'Páginas del documento',
+  filaPaginasSinReserva: 'Páginas comprobadas del todo (sin nada fuera de alcance)',
   filaPaginasReleidas: 'Páginas releídas tras el tachado',
   filaPaginasSinTexto: 'Páginas sin capa de texto (no comprobables)',
   filaPaginasImagenCompleta: 'Páginas con imagen a página completa',
