@@ -16,9 +16,8 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1111/1111 en 71 ficheros** en `master` (842 era el suelo del 8-ago y 1002 el del 10-ago
-  por la mañana; subió al desarmar la exclusión del guardián de precios, al añadir
-  `afirmaciones-respaldadas` y `legal/faq-ambar`, y al fusionar el sistema visual).
+- Suite: **1170/1170 en 74 ficheros** en `master` (1111 era el suelo tras el sistema visual; +59
+  al añadir las tres guardas de marca — `content/marca`, `content/iconos`, `content/og-social`).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -56,6 +55,32 @@
   `#f6f5f3` y `color-scheme: light` en las seis páginas comprobadas, con **cero** bloques
   `prefers-color-scheme: dark`; y **cero peticiones a ningún dominio externo**, medido en el
   navegador sobre el sitio vivo. `dist/CNAME` se comprobó ANTES de desplegar (19 bytes, LF).
+
+## Marca: símbolo, favicon y og-image (FUSIONADO Y DESPLEGADO, 2026-08-10)
+
+> ✅ **`diseno/marca-simbolo-favicon-og` FUSIONADA en master** (merge `--no-ff` `a799112`, 3
+> commits) **y DESPLEGADA**, verificada contra el dominio vivo. Ver la bitácora del 2026-08-10.
+
+- **El símbolo** (concepto B, validado por el dueño): documento con renglones, uno con un HUECO
+  limpio — el dato borrado de verdad, no tapado con un rectángulo negro. Una sola tinta vía
+  `currentColor` (hereda `--tinta`); NO es candado ni escudo. Va INLINE en la mancheta de las 18
+  (`SIMBOLO_MANCHETA` en `generar.ts`), en la ranura de 20×20 con `gap: 8px`. `public/simbolo.svg`
+  es la fuente vectorial; `content/marca.test.ts` ata que la copia inline y el fichero no deriven,
+  que sea una sola tinta y que sea un documento (no candado/escudo), en las 18.
+- **El favicon** (fin del 404): `favicon.svg` + `favicon.ico` (16/32/48) + `apple-touch-icon.png`
+  (180×180), self-hosted, referenciados con ruta RELATIVA en las 18 (`enlacesFavicon`). A 16 px
+  gana la variante MACIZA (medido rasterizando y mirando). `content/iconos.test.ts` ata las
+  referencias, la multi-medida del `.ico`, el 180×180 del PNG y que el `.svg` sea una sola tinta;
+  y, si hay `dist/`, que los ficheros estén dentro y el HTML los cite.
+- **La og-image** honesta y por idioma: tipográfica, sobria, 1200×630, papel `--papel` + tinta
+  `--tinta`, IBM Plex, con el claim LITERAL de la home y **sin sello de color**. `ogImage(locale)`
+  emite `og-image.png` (ES) y `og-image-en.png` (EN). `content/og-social.test.ts` ata la coherencia
+  por idioma y las dimensiones (revertir a la vieja 1280×720 la pone roja).
+- **⚠ Las 8 páginas estáticas llevan copia CONGELADA del sistema**: el símbolo (SVG + CSS) y los
+  `<link>` de icono se les añadieron a mano; el generador solo toca las 10 generadas. Al tocar la
+  mancheta o el favicon, recordar las dos superficies.
+- **Decisión de tinta:** se usó `--tinta #1b1a17` (el token vivo), NO `#0f172a` que pedía la tarea:
+  la web nueva ya retiró ese slate frío. Trivial de revertir si el dueño prefiere el hex literal.
 
 ## El sello del informe
 - El sello **ya no es `clean ? verde : rojo`**. Es función de (cobertura ∧ resultado), en una
@@ -208,8 +233,8 @@
   al 525 (de 2,05 pantallas a 0,62). **Criterio que hay que mantener: por encima de 600 px.** Lo
   vigila, sin navegador, la guarda de ORDEN del pliegue.
 - **Mancheta común a las 18**: marca en versalitas a la izquierda, idiomas a la derecha, filete a
-  sangre. **NO hay logotipo y no se inventa**: el hueco de 20×20 para el símbolo está pensado pero
-  AUSENTE del DOM (un cuadrado vacío se lee como imagen rota). Sigue sin haber favicon.
+  sangre. **YA lleva su símbolo** en la ranura de 20×20 (documento con un renglón roto, una sola
+  tinta vía `currentColor`), y **ya hay favicon**: ver §«Marca: símbolo, favicon y og-image».
 - **Medida de línea en `em`, no en `rem`**: un tope fijo da ~68 caracteres a 16 px pero ~81 a 14.
   Medido después: 63–71 caracteres en todas las familias de página.
 - **El informe PDF queda FUERA de esta pasada, a propósito.** Incrustar Plex movería TODOS los
@@ -531,19 +556,14 @@ G4. ⚪ **PARADA 6** (abajo): `git push origin --delete gh-pages` + `npm run dep
   2026-08-10 usa URL **absolutas al dominio**, que sí sobreviven a la base de emergencia; lo ata
   `precios-coherentes`. El sistema visual **no las reescribe**: solo les pone la mancheta, el
   sistema visual y la cara clara — su estructura y su copia siguen congeladas.
-- **Sigue sin figura del informe en la web y sin favicon.** Medido: las páginas tienen 0 `<img>`,
-  0 `<svg>` y 0 `rel="icon"`. El producto ES el informe y no se ve por ninguna parte. Lo honesto
-  sería una figura y solo una: la primera página del informe de ejemplo **rasterizada por el
-  generador que ya existe**, en su estado ÁMBAR (el 86 % de las entregas), nunca dibujada a mano.
-  El favicon se nota en la consola: `/favicon.ico` da **404 en producción** en cada primera visita.
-  El hueco de 20×20 para el símbolo está pensado y **ausente del DOM** a propósito (un cuadrado
-  vacío se lee como imagen rota); cuando el símbolo exista, tiene que funcionar a 20 px, en una
-  sola tinta y sin degradado, y **no puede ser un candado ni un escudo** — es lo que usan las webs
-  de phishing.
-- **`public/og-image.png` enseña un informe VERDE.** Está mejor diseñado que la web, pero el estado
-  normal del producto es el ámbar: la primera impresión que se reparte por WhatsApp y LinkedIn
-  promete el sello que casi nadie va a recibir. Es el falso verde mudado a marketing. La rama de
-  diseño **no lo toca**; sustituirlo por el mismo render honesto es tarea aparte.
+- ✅ **El símbolo y el favicon: HECHOS y desplegados** (2026-08-10, ver §«Marca»). Sigue sin
+  **figura del informe en la web**: el producto ES el informe y no se ve por ninguna parte. Lo
+  honesto sería una figura y solo una: la primera página del informe de ejemplo **rasterizada por
+  el generador que ya existe**, en su estado ÁMBAR (el 86 % de las entregas), nunca dibujada a
+  mano. Es tarea aparte (no es marca: es una captura del propio producto).
+- ✅ **`og-image.png` ya NO enseña un sello verde** (2026-08-10, ver §«Marca»). Rehecha tipográfica
+  y sobria, 1200×630, sin sello de color que afirme un veredicto, por idioma
+  (`og-image.png` ES + `og-image-en.png` EN). Sustituido el falso verde mudado a marketing.
 - ✅ **La cita del ICO se retiró el 2026-08-10** («in July 2025 the ICO published dedicated
   guidance…»), de los dos sitios donde vivía, antes de que el primer deploy de `/en/` la publicara.
   Las otras dos citas inglesas —Manafort (8-ene-2019) y PSNI (750.000 £, oct-2024)— **sí** están

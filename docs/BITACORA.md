@@ -4,6 +4,85 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-10 · diseno · Las tres piezas de marca: simbolo, favicon y og-image honesto
+
+**Hecho:** las tres piezas que el sistema visual dejo pendientes, integradas, fusionadas
+(`--no-ff`, merge `a799112`), push y DESPLEGADAS. Verificado MIRANDO cada asset y contra el
+dominio VIVO. Un commit por pieza; suite **1111 -> 1170** (+20 marca, +23 iconos, +16 og).
+
+### 1 · El simbolo en su ranura (18 paginas)
+- Concepto B (validado por Angel a varios tamanos): documento con renglones, uno con un HUECO
+  limpio — el dato borrado de verdad, no tapado con un rectangulo negro. Una sola tinta via
+  `currentColor` (hereda `--tinta`), sin degradado; no es candado ni escudo.
+- `SIMBOLO_MANCHETA` INLINE en la mancheta (no `<img>`): asi toma `currentColor` y no cuesta una
+  peticion. `public/simbolo.svg` es la fuente vectorial (438 B) de la que nacen favicon y apple-
+  touch; `marca.test.ts` ata que no derive de la copia inline.
+- CSS: `.cabecera__marca` pasa a `inline-flex` con `gap: var(--e-2)` (8 px) y `.cabecera__simbolo`
+  fija la ranura de 20x20 en **rem** (crece con el zoom de letra). Publicado del sistema: **3266 B**
+  (< 4096). Las 16 paginas con CSS congelado (8 estaticas) se parchearon a mano; las 10 generadas
+  por el generador.
+- Verificado en el navegador VIVO: la caja del svg mide **20x20**, color `rgb(27,26,23)=--tinta`,
+  **gap 8 px**, a la izquierda del nombre, **centro vertical exacto** (delta 0). Y el glifo, mirado
+  rasterizado, es una hoja con la linea del medio rota — no un candado.
+
+### 2 · El favicon (se acabo el 404)
+- Cero `rel="icon"` en el sitio: `/favicon.ico` daba 404 en cada primera visita. Ahora las 18 lo
+  citan junto a `.svg` y `apple-touch`, con ruta **relativa** al documento (una raiz-absoluta muere
+  bajo la base de emergencia `/tachadopdf/`) y self-hosted (**CSP intacta**).
+- **A 16 px gana el MACIZO, no el contorno** — decidido rasterizando las dos variantes con Pillow y
+  MIRANDOLAS: el contorno se deslavaza a gris fino, el macizo (documento relleno, renglones en
+  negativo, uno con hueco) aguanta la silueta. Sobre una teja de papel para que se vea en pestanas
+  claras y oscuras.
+- `favicon.svg` (papel `#f6f5f3` + tinta `#1b1a17`, dos colores y basta), `favicon.ico` 16/32/48
+  (PNG por tamano, dibujado a 24x y LANCZOS; el `sizes=`+`append_images` de Pillow solo guardaba
+  uno, se empaqueto el ICO a mano), `apple-touch-icon.png` 180x180 sobre papel con margen.
+  `favicon.svg` rasterizado en el navegador para comprobarlo: teja de papel, documento en tinta,
+  renglones en negativo, esquina doblada.
+
+### 3 · La tarjeta social deja de mentir
+- La anterior mostraba un sello VERDE mientras el resultado normal es el AMBAR (navy oscuro,
+  1280x720): el falso verde mudado a marketing. La nueva es tipografica y sobria, **SIN sello de
+  color que afirme veredicto**, 1200x630 (medida OG estandar).
+- Copy **LITERAL de la home** (no inventada): ES `LANDING_TITULAR` «El dato que tachaste con un
+  rectangulo negro sigue dentro del PDF» + 1a frase del subtitulo; EN `LANDING_HEADLINE_EN`
+  «Redact a PDF. Then prove the text is gone.» + 1a frase del subhead. IBM Plex auto-alojada,
+  cargada por Pillow directo del `.woff2` (Pillow 12.3 lo abre; peso variable via
+  `set_variation_by_axes`).
+- `ogImage(locale)` emite `og:image`/`twitter:image` por idioma: las 8 paginas inglesas pasan a
+  `og-image-en.png`; las estaticas ES siguen citando `og-image.png` sin tocarse. Ambas MIRADAS a
+  tamano real antes de darlas por buenas.
+
+**Decisiones y porques:**
+- *Tinta `#1b1a17`, NO `#0f172a`.* La tarea pedia `#0f172a` «coherente con la web nueva», pero la
+  web nueva ya RETIRO ese slate frio (sistema.css lo dice: la paleta vieja era Tailwind slate+sky).
+  Coherente-con-la-web-viva = usar el token `--tinta` real. La diferencia es imperceptible a estos
+  tamanos y trivial de revertir si el dueno prefiere el hex literal.
+- *Simbolo INLINE, no `<img src=simbolo.svg>`*: `<img>` no hereda `currentColor` y costaria una
+  peticion por pagina. El fichero suelto existe igual como fuente vectorial.
+- *og-image NEUTRO, sin chip.* La tarea permitia neutro o el chip ambar «COMPROBACION PARCIAL». Un
+  chip a secas abre en negativo, contra la regla de redaccion del ambar; el claim real ya es
+  honesto y no promete verde. Neutro es imposible de malinterpretar.
+
+**Verificacion (exit codes reales, nunca a `| tail`):** `tsc` 0 · `vitest` **1170** (74 ficheros)
+· `build` 0. CSP **byte a byte** igual a master (const + pagina generada + pagina estatica). Las
+tres guardas probadas EN ROJO con su mutacion (stroke hex en el simbolo; favicon a ruta raiz-
+absoluta; og-image revertido a 1280x720). Revision interna (procedimiento `auditor-interno`,
+agente independiente): **LISTO PARA PR**. Binarios comiteados verificados decodificando el blob de
+git (ICO 3 marcos, PNGs a su medida): sin corrupcion por CRLF.
+
+**Deploy y dominio vivo:** `npm run deploy-pages` exit 0, CNAME incluido (`public/CNAME` 19 B
+comprobado antes). Sobre www.tachadopdf.com: `/favicon.ico` `/favicon.svg` `/apple-touch-icon.png`
+`/og-image.png` `/og-image-en.png` `/simbolo.svg` **todos 200** (el favicon daba 404); home 200
+(CNAME intacto) y referencia el favicon; `/en/` cita `og-image-en.png`; la og-image viva es la
+nueva **1200x630 / 35 KB** (la vieja pesaba 132 KB) y el `.ico` vivo lleva **3 marcos 16/32/48**.
+
+**Bloqueos / pendiente:** ninguno de estas piezas. Siguen las PARADAS del dueno de `ESTADO.md`
+(gates de Gumroad G1-G3, PARADA 6 de la rama gh-pages). Auditoria Codex externa: pendiente.
+
+**Enlaces:** rama `diseno/marca-simbolo-favicon-og` (3 commits) -> merge `--no-ff` `a799112` ->
+push -> desplegado. Guion de rasterizado/mirado en el scratchpad de la sesion, fuera de `src/`.
+
+---
 ## 2026-08-10 · integracion · El sistema visual «Registro», fusionado y DESPLEGADO
 
 **Hecho:** revision de integracion de `diseno/sistema-visual-registro`, fusion `--no-ff` a master
