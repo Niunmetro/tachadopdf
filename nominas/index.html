@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
 <title>Tachar DNI, NSS e IBAN en nóminas y expedientes PDF · TachadoPDF</title>
 <meta name="description" content="Gestorías, asesorías laborales y RRHH envían nóminas y expedientes con DNI, número de la Seguridad Social e IBAN a la vista. TachadoPDF los borra de verdad del archivo en 60 segundos, sin subir el documento a ningún sitio." />
 <link rel="canonical" href="https://www.tachadopdf.com/nominas/" />
@@ -38,7 +39,17 @@
   .precio { background: #f1f5f9; border-radius: 10px; padding: 1rem 1.2rem; margin: 1.2rem 0; }
   .precio ul { margin: .4rem 0 0; padding-left: 1.2rem; }
   footer { margin-top: 3rem; font-size: .9rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 1rem; }
-  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; } .lede { color: #94a3b8; } .nota { background: #1e293b; color: #cbd5e1; } .alerta { background: #2a1215; color: #fecaca; } .precio { background: #1e293b; } a { color: #7dd3fc; } footer { color: #94a3b8; border-color: #334155; } }
+  @media (prefers-color-scheme: dark) { body { background: #0f172a; color: #e2e8f0; }
+    /* El CTA INVIERTE en oscuro. Medido: el relleno del boton y el fondo de la pagina eran los
+       dos #0f172a — contraste 1:1, cero borde: los dos unicos botones de conversion de esta
+       landing DESAPARECIAN y solo quedaba el texto blanco flotando. En claro se ven perfectamente,
+       asi que no salta en ninguna revision que no mire la pagina en oscuro.
+       Regla para toda la casa: ningun elemento pulsable puede compartir color de relleno con su
+       fondo; si lo comparte, lleva borde si o si.
+       Es un cambio SOLO de CSS: la copia comercial de esta pagina sigue congelada (PARADA 2). */
+    .cta { background: #38bdf8; color: #0b1220; }
+    .cta strong { color: #0b1220; }
+    .lede { color: #94a3b8; } .nota { background: #1e293b; color: #cbd5e1; } .alerta { background: #2a1215; color: #fecaca; } .precio { background: #1e293b; } a { color: #7dd3fc; } footer { color: #94a3b8; border-color: #334155; } }
 </style>
 </head>
 <body>
@@ -67,13 +78,19 @@
 
 <h2>Precio</h2>
 <div class="precio">
-  <p><strong>Pro: 59 €/año</strong> — documentos ilimitados, un puesto.</p>
-  <p><strong>Despacho: 149 €/año</strong> — 3 puestos y el logo del despacho en el informe.</p>
-  <p>Garantía de devolución de 30 días sobre la compra de la licencia Pro.</p>
+  <p><strong>Pro: 59 €, pago único</strong> — no es una suscripción. Documentos ilimitados, un puesto.</p>
+  <p>El modo gratuito tacha 5 documentos al mes de hasta 3 páginas, con el mismo borrado real: puedes probarlo entero antes de pagar.</p>
 </div>
 
+<!--
+  Pie legal (art. 10 LSSI): esta pagina publica un precio, asi que tiene que dar acceso a la
+  identificacion del titular. Las URL son ABSOLUTAS a proposito: esta landing lleva enlaces
+  raiz-absolutos que la base de emergencia `/tachadopdf/` romperia, y los tres anclajes son
+  `<details>` de index.html, que el navegador abre al llegar por fragmento.
+-->
 <footer>
 Equipo de TachadoPDF. Contenido informativo de carácter general; no sustituye el asesoramiento de un profesional en protección de datos.
+<br><a href="https://www.tachadopdf.com/#aviso-legal">Aviso Legal</a> · <a href="https://www.tachadopdf.com/#terminos">Términos de uso</a> · <a href="https://www.tachadopdf.com/#privacidad">Política de privacidad</a>
 </footer>
 </article>
 </body>

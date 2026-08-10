@@ -3,19 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- 'wasm-unsafe-eval' es OBLIGATORIO para instanciar mupdf-wasm; permite compilar WebAssembly
-         pero NO eval() de JS arbitrario (a diferencia de 'unsafe-eval'). connect-src limita el
-         egress a Gumroad; ningun documento sale del navegador. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
-
-    <meta name="google-site-verification" content="0y8mSNb6_j9BfT2wCfVhPP4XowuUkIjkg5jz9M7EBdU" />
-    <!-- Verificación de la propiedad de dominio propio www.tachadopdf.com en Search Console. -->
-    <meta name="google-site-verification" content="wAB_9e6EFyixB6e1jITVlH5DFp1q5scYBpxHaxlFx9g" />
     <title>TachadoPDF · El rectángulo negro no borra: tacha de verdad los datos de un PDF</title>
     <meta name="description" content="El DNI que tapas con un rectángulo negro sigue dentro del PDF y se copia en dos clics — la AEPD ya ha sancionado actas y listados con datos expuestos. TachadoPDF elimina el dato del archivo, 100% en tu navegador, con informe de comprobación. Para gestorías, administradores de fincas y RRHH." />
     <link rel="canonical" href="https://www.tachadopdf.com/" />
-
-    <!-- Open Graph: cómo se ve el enlace al compartirlo en WhatsApp, LinkedIn, etc. -->
+    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/" />
+    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="TachadoPDF · El rectángulo negro no borra: tacha de verdad" />
@@ -23,12 +17,13 @@
     <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/" />
     <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta name="google-site-verification" content="0y8mSNb6_j9BfT2wCfVhPP4XowuUkIjkg5jz9M7EBdU" />
+    <meta name="google-site-verification" content="wAB_9e6EFyixB6e1jITVlH5DFp1q5scYBpxHaxlFx9g" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="TachadoPDF · El rectángulo negro no borra: tacha de verdad" />
     <meta name="twitter:description" content="El dato tapado con un recuadro sigue en el PDF y se copia en dos clics. Elimínalo de verdad, en tu navegador, con informe de comprobación." />
     <meta name="twitter:image" content="https://www.tachadopdf.com/og-image.png" />
-
-    <!-- Datos estructurados: ayuda a Google a entender que es una app web gratuita con opción Pro. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -40,14 +35,21 @@
       "url": "https://www.tachadopdf.com/",
       "inLanguage": "es",
       "offers": [
-        { "@type": "Offer", "price": "0", "priceCurrency": "EUR", "name": "Gratuito (3 documentos/mes, hasta 3 páginas)" },
-        { "@type": "Offer", "price": "59", "priceCurrency": "EUR", "name": "Pro (pago único, documentos ilimitados)" }
+        {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR",
+          "name": "Gratuito (5 documentos/mes, hasta 3 páginas)"
+        },
+        {
+          "@type": "Offer",
+          "price": "59",
+          "priceCurrency": "EUR",
+          "name": "Pro (pago único, documentos ilimitados)"
+        }
       ]
     }
     </script>
-
-    <!-- FAQPage: permite que Google muestre las preguntas desplegables en el resultado de busqueda
-         (resultado enriquecido). El texto debe coincidir en esencia con el FAQ que ve el usuario. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -56,41 +58,201 @@
         {
           "@type": "Question",
           "name": "¿Se sube mi documento a algún servidor?",
-          "acceptedAnswer": { "@type": "Answer", "text": "No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión."
+          }
         },
         {
           "@type": "Question",
           "name": "¿De verdad se borra el dato o solo se tapa?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno."
+          }
         },
         {
           "@type": "Question",
           "name": "¿Y si se le escapa un dato?",
-          "acceptedAnswer": { "@type": "Answer", "text": "La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana."
+          }
         },
         {
           "@type": "Question",
           "name": "¿Qué diferencia hay entre el modo gratuito y Pro?",
-          "acceptedAnswer": { "@type": "Answer", "text": "El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro. Lo que cambia es el informe de comprobación: en el modo gratuito lleva una marca 'DEMO' y no sirve como evidencia archivable; el informe de Pro no lleva marca. Pro es un pago único de 59 € (no una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez."
+          }
         },
         {
           "@type": "Question",
           "name": "¿Funciona con documentos escaneados?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿El informe sirve como prueba legal?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar."
+          }
         },
         {
           "@type": "Question",
           "name": "¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?",
-          "acceptedAnswer": { "@type": "Answer", "text": "La compra la gestiona Gumroad como vendedor (merchant of record). En el correo de confirmación de tu compra tienes un enlace para generar la factura y añadir tus datos fiscales (NIF y empresa). Si necesitas algo especial, escribe a admin@tachadopdf.com." }
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La compra la gestiona Gumroad como vendedor (merchant of record). En el correo de confirmación de tu compra tienes un enlace para generar la factura y añadir tus datos fiscales (NIF y empresa). Si necesitas algo especial, escribe a admin@tachadopdf.com."
+          }
         }
       ]
     }
     </script>
-    <script type="module" crossorigin src="/assets/main-CEMLMNWa.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/report-Bbl6ogcz.js">
-    <link rel="stylesheet" crossorigin href="/assets/main-C-sXhZNZ.css">
+    <script type="module" crossorigin src="/assets/patterns-YUjrQaq6.js"></script>
+    <script type="module" crossorigin src="/assets/main-CellcmQp.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/main-BDvxK17w.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" data-lang="es" data-ejemplo="ejemplo-acta-comunidad.pdf">
+      <nav class="idiomas" aria-label="Idioma">
+        <span class="idiomas__actual" lang="es">Español</span>
+        <a class="idiomas__enlace" hreflang="en" lang="en" href="en/">English</a>
+      </nav>
+      <header class="hero">
+        <p class="hero__marca">TachadoPDF</p>
+        <h1 class="hero__titular">El dato que tachaste con un rectángulo negro sigue dentro del PDF</h1>
+        <p class="hero__dolor">Cualquiera que reciba el archivo puede seleccionarlo y copiarlo en dos clics. Y difundirlo así no es solo un descuido: el RGPD obliga a proteger los datos frente a la comunicación no autorizada (arts. 5.1.f y 32), y la AEPD ya ha multado con 15.000 € a una comunidad de propietarios por exponer el acta de una junta con los nombres, pisos y puertas de los vecinos — expediente PS/00378/2019. Es un fallo silencioso: nadie se entera hasta que alguien lo descubre.</p>
+        <p class="hero__sub">TachadoPDF elimina el texto del propio archivo en lugar de taparlo: el dato deja de ser extraíble. Y descarga un informe de comprobación técnica que puedes archivar como prueba de diligencia.</p>
+        <ul class="hero__bullets">
+          <li>El texto se elimina del archivo, no se tapa con un rectángulo negro.</li>
+          <li>Todo ocurre en tu navegador: el documento no se sube a ningún servidor.</li>
+          <li>Detección automática por patrones de DNI, NIE, IBAN, Nº de la Seguridad Social, referencias catastrales, teléfonos y emails.</li>
+          <li>Informe de comprobación técnica descargable para tu expediente.</li>
+        </ul>
+        <p class="hero__deteccion">Qué se detecta automáticamente: correos electrónicos, y los identificadores españoles DNI, NIE, IBAN español, número de la Seguridad Social, referencia catastral y teléfonos en formato español. Todo lo demás —nombres, direcciones, firmas, fotografías, importes— lo marcas tú arrastrando un recuadro; lo que se borra y lo que se comprueba después es exactamente igual en los dos casos.</p>
+        <p class="hero__local">Las herramientas de tachado online habituales envían tus documentos a un servidor. TachadoPDF procesa todo en tu propio navegador: el archivo nunca sale de tu equipo.</p>
+        <p class="hero__nicho">Pensado para administradores de fincas que reparten actas con datos de propietarios, gestorías que envían documentación de clientes y departamentos de RRHH que gestionan expedientes.</p>
+      </header>
+      <section class="panel" id="herramienta">
+        <h2 class="panel__titulo">Tacha tu documento</h2>
+        <p class="aviso-principal">TachadoPDF elimina del archivo el texto seleccionado y los píxeles de las zonas marcadas. No garantiza que el documento quede libre de datos personales ni sustituye la revisión humana.</p>
+      </section>
+      <section class="panel" id="licencia">
+        <h2 class="panel__titulo">Versión Pro</h2>
+        <p class="pro__gratis">El modo gratuito tacha 5 documentos al mes, de hasta 3 páginas cada uno, con el mismo borrado real que Pro.</p>
+        <p class="pro__argumento">Pro es un pago único de 59 € y no es una suscripción: no se renueva ni genera cobros periódicos. Incluye documentos ilimitados, sin tope de páginas, procesado por lotes de varios ficheros a la vez e informe de comprobación sin marca de agua.</p>
+      </section>
+      <section class="panel faq" aria-label="Preguntas frecuentes">
+        <h2 class="panel__titulo">Preguntas frecuentes</h2>
+        <details class="faq__item">
+          <summary>¿Se sube mi documento a algún servidor?</summary>
+          <p>No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo desconectando internet: la herramienta sigue tachando y descargando el documento sin conexión.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿De verdad se borra el dato o solo se tapa?</summary>
+          <p>Se elimina del contenido del archivo, no se cubre con un rectángulo por encima. Además, al terminar, la herramienta vuelve a leer el PDF resultante y busca de nuevo los datos: si quedara cualquier resto, te avisa y no da el trabajo por bueno.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Y si se le escapa un dato?</summary>
+          <p>La detección automática cubre los formatos habituales, pero puede no verlo todo. Por eso puedes tachar a mano cualquier zona arrastrando el ratón, y debes revisar el documento final página a página antes de entregarlo. La herramienta no sustituye la revisión humana.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Qué diferencia hay entre el modo gratuito y Pro?</summary>
+          <p>El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Funciona con documentos escaneados?</summary>
+          <p>Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?</summary>
+          <p>Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿El informe sirve como prueba legal?</summary>
+          <p>No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?</summary>
+          <p>La compra la gestiona Gumroad como vendedor (merchant of record). En el correo de confirmación de tu compra tienes un enlace para generar la factura y añadir tus datos fiscales (NIF y empresa). Si necesitas algo especial, escribe a admin@tachadopdf.com.</p>
+        </details>
+      </section>
+      <nav class="guias" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="guia/tachar-dni-pdf/">Cómo tachar un DNI de un PDF sin que se pueda recuperar</a></li>
+          <li><a href="guia/rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+          <li><a href="guia/proteccion-datos-administradores-fincas/">Datos personales en actas y documentos de comunidades</a></li>
+          <li><a href="guia/tachar-pdf-sin-subir-internet/">Cómo tachar datos de un PDF sin subirlo a internet</a></li>
+          <li><a href="guia/sanciones-aepd-comunidades-propietarios/">Sanciones de la AEPD a comunidades de propietarios</a></li>
+          <li><a href="guia/enviar-nominas-pdf-datos-personales/">Enviar nóminas en PDF sin exponer datos personales</a></li>
+        </ul>
+      </nav>
+      <footer class="legales" aria-label="Información legal">
+        <details id="aviso-legal">
+          <summary>Aviso Legal</summary>
+          <pre>Aviso Legal
+
+En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa a los usuarios de los siguientes datos del titular de este sitio web:
+
+Titular: Ángel Talón Villa
+NIF: 48611594J
+Domicilio: Murcia (España). Dirección postal a disposición de quien acredite interés legítimo, solicitándola en el correo de contacto.
+Correo electrónico de contacto: ccsshaft@gmail.com
+
+El acceso y uso de este sitio web atribuye la condición de usuario y supone la aceptación plena de las condiciones incluidas en este Aviso Legal, en los Términos de uso y en la Política de privacidad.
+
+TachadoPDF es una herramienta que se ejecuta enteramente en el navegador del usuario. El titular no accede, almacena ni transmite el contenido de los documentos procesados por la aplicación.</pre>
+        </details>
+        <details id="terminos">
+          <summary>Términos de uso</summary>
+          <pre>Términos de uso
+
+1. Objeto. TachadoPDF es una herramienta para la preparación de documentos PDF antes de su entrega a terceros o su publicación, mediante la eliminación real de texto y de píxeles de las zonas marcadas por el usuario.
+
+2. Uso prohibido. Queda prohibido utilizar TachadoPDF para alterar documentos con valor probatorio o cuya integridad esté protegida por ley, contrato o resolución judicial. El usuario es el único responsable del uso que haga de la herramienta y de comprobar que el documento resultante cumple sus obligaciones legales.
+
+3. Ausencia de garantía. TachadoPDF no garantiza que el documento resultante quede libre de datos personales ni sustituye la revisión humana. El usuario debe revisar visualmente el documento final página a página antes de darlo por válido.
+
+4. Responsabilidad. En la máxima medida permitida por la ley, la responsabilidad del titular frente al usuario por cualquier daño derivado del uso de TachadoPDF queda limitada al precio pagado por la licencia, en su caso.
+
+5. Licencia Pro. La licencia Pro se adquiere mediante un pago único y no es una suscripción: no se renueva ni genera cobros periódicos. La contratación y el cobro los gestiona Gumroad como plataforma de venta.
+
+6. Modificaciones. Estos Términos de uso pueden actualizarse; la versión vigente es la publicada en cada momento en este sitio.</pre>
+        </details>
+        <details id="privacidad">
+          <summary>Política de privacidad</summary>
+          <pre>Política de privacidad
+
+Procesamiento 100% local. TachadoPDF procesa los documentos enteramente en el navegador del usuario. El documento nunca se transmite a ningún servidor ni a terceros.
+
+Único dato que sale del navegador: cuando el usuario activa una licencia Pro, la clave de licencia se envía a Gumroad para su verificación. Ningún otro dato ni el contenido de los documentos sale nunca del navegador.
+
+Sin cookies ni analítica: esta aplicación no utiliza cookies de seguimiento ni herramientas de analítica, por lo que no se muestra ningún banner de consentimiento.
+
+Gumroad Inc. actúa como vendedor (merchant of record) de la licencia Pro y procesa los datos de pago conforme a su propia política de privacidad.</pre>
+        </details>
+        <p class="pie">TachadoPDF funciona enteramente en tu navegador. Código abierto (AGPL-3.0). La licencia Pro la vende Gumroad.</p>
+        <p class="enlaces-sector">
+          <a href="actas/">Para administradores de fincas</a>
+          <a href="nominas/">Para gestorías y RRHH</a>
+          <a href="comprobador/">Comprueba gratis qué datos contiene tu PDF</a>
+        </p>
+      </footer>
+    </div>
   </body>
 </html>

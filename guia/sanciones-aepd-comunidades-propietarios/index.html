@@ -3,12 +3,37 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
 <title>Sanciones de la AEPD a comunidades de propietarios por datos personales: por qué llegan y cómo evitarlas · TachadoPDF</title>
-<meta name="description" content="La AEPD ha sancionado a más de 200 comunidades de propietarios: listados de morosos en el tablón, actas con DNI y cuentas repartidas sin limpiar. Qué está multando exactamente, quién responde y cómo evitarlo en un minuto." />
+<!--
+  FUENTES DE LAS AFIRMACIONES DE ESTA PÁGINA (comprobadas el 2026-08-08 contra la fuente
+  primaria). Si cambias una cifra, vuelve a comprobarla y actualiza esta nota.
+
+   · Multa de 15.000 € por un acta expuesta: AEPD, procedimiento sancionador PS/00378/2019,
+     por infracción del art. 5.1.f) del RGPD. Hechos probados: exposición del acta de la junta
+     en los ascensores del edificio, identificando con nombre, apellidos, piso y puerta a
+     asistentes y representados. Procedimiento acordado el 18-12-2019.
+     https://www.aepd.es/documento/ps-00378-2019.pdf
+   · Deuda de un vecino publicada en el tablón: AEPD, PS/00143/2020, sanción de APERCIBIMIENTO
+     (no multa) por infracción del art. 5.1.f) del RGPD. Hechos probados: la convocatoria de
+     junta expuesta en el tablón mostraba el nombre y apellidos del reclamante junto a una deuda
+     de 286,81 €. https://www.aepd.es/documento/ps-00143-2020.pdf
+   · Cuándo se puede exponer la lista de morosos: FAQ oficial de la AEPD, que remite a los
+     arts. 9.h y 16.2 de la Ley de Propiedad Horizontal.
+     https://www.aepd.es/preguntas-frecuentes/9-comunidades-de-propietarios/FAQ-0909-se-puede-exponer-cumpliendo-ciertos-requisitos-en-el-tablon-la-relacion-de-los-vecinos-morosos
+   · RGPD arts. 5.1.c) (minimización), 5.1.f) (integridad y confidencialidad) y 32.2
+     («la comunicación o acceso no autorizados» a los datos). Reglamento (UE) 2016/679, DOUE L 119.
+
+  REGLA DE ESTA PÁGINA: aquí no entra ningún importe ni recuento sin su número de expediente.
+  Dos cifras que circulan mucho por blogs del sector se comprobaron el 2026-08-08 y NO superaron
+  ese listón (detalle y trazas en docs/BITACORA.md). Si alguien propone añadirlas, pide primero
+  el expediente.
+-->
+<meta name="description" content="La AEPD ya ha multado con 15.000 € a una comunidad por exponer el acta de una junta con los datos de los vecinos. Qué está sancionando exactamente, quién responde y cómo evitarlo en un minuto." />
 <link rel="canonical" href="https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Sanciones de la AEPD a comunidades de propietarios: por qué llegan y cómo evitarlas" />
-<meta property="og:description" content="6.000 € por un listado de morosos, 15.000 € por un acta con datos expuestos. Qué está multando la AEPD y cómo evitar que le pase a tu comunidad." />
+<meta property="og:description" content="15.000 € por un acta de junta expuesta con los datos de los vecinos (expediente PS/00378/2019). Qué está sancionando la AEPD y cómo evitar que le pase a tu comunidad." />
 <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
 <meta property="og:url" content="https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/" />
 <meta property="og:locale" content="es_ES" />
@@ -30,14 +55,16 @@
 <body>
 <article>
 <h1>Sanciones de la AEPD a comunidades de propietarios: por qué llegan y cómo evitarlas</h1>
-<p class="lede">Entre 2020 y 2024 la Agencia Española de Protección de Datos ha sancionado a más de 200 comunidades de propietarios. Casi nunca es por un ciberataque: es por documentos de la propia comunidad — actas, listados, circulares — repartidos con datos personales que no debían ir ahí. Y la multa no la paga «la empresa»: sale de las cuotas de los vecinos.</p>
+<p class="lede">La Agencia Española de Protección de Datos sanciona a comunidades de propietarios por sus propios documentos: actas, convocatorias y listados repartidos o expuestos con datos personales que no debían ir ahí. Casi nunca es por un ciberataque. Y la multa no la paga «la empresa»: sale de las cuotas de los vecinos.</p>
 
-<h2>Qué está multando la AEPD exactamente</h2>
+<h2>Qué está sancionando la AEPD exactamente</h2>
 <ul>
-  <li><strong>Listados de morosos expuestos o repartidos sin cuidado:</strong> nombres y deudas en el tablón del portal o enviados a todo el edificio. Hay resoluciones con multas de <strong>6.000&nbsp;€</strong> por un listado de morosos.</li>
-  <li><strong>Actas de junta con datos de más:</strong> DNI, cuentas bancarias o datos de salud de vecinos, repartidas a toda la comunidad o a terceros. Hay resoluciones que han llegado a <strong>15.000&nbsp;€</strong> por un acta con datos expuestos.</li>
-  <li><strong>Documentos «tachados» que no lo estaban:</strong> el dato tapado con un rectángulo negro sigue dentro del PDF y cualquiera lo recupera copiándolo. A efectos de la AEPD, ese dato se ha difundido igual.</li>
+  <li><strong>Actas de junta expuestas o repartidas con datos de más:</strong> la AEPD impuso una multa de <strong>15.000&nbsp;€</strong> a una comunidad que expuso el acta de una junta en los ascensores del edificio, identificando con nombre, apellidos, piso y puerta a los asistentes y a los vecinos afectados por unas obras (<a href="https://www.aepd.es/documento/ps-00378-2019.pdf">expediente PS/00378/2019</a>, por infracción del art. 5.1.f del RGPD).</li>
+  <li><strong>Deudas de vecinos a la vista:</strong> en otro expediente, una comunidad expuso en el tablón la convocatoria de la junta con el nombre y apellidos de un propietario junto al importe que debía (286,81&nbsp;€). La AEPD resolvió con <strong>apercibimiento</strong> y le exigió acreditar las medidas correctoras (<a href="https://www.aepd.es/documento/ps-00143-2020.pdf">expediente PS/00143/2020</a>). Según la <a href="https://www.aepd.es/preguntas-frecuentes/9-comunidades-de-propietarios/FAQ-0909-se-puede-exponer-cumpliendo-ciertos-requisitos-en-el-tablon-la-relacion-de-los-vecinos-morosos">propia AEPD</a>, la lista de deudores solo puede exponerse en el tablón cuando se acredita que no fue posible notificar al propietario.</li>
+  <li><strong>Documentos «tachados» que no lo estaban:</strong> el dato tapado con un rectángulo negro sigue dentro del PDF y cualquiera lo recupera copiándolo. A efectos de protección de datos, ese dato se ha difundido igual.</li>
 </ul>
+
+<div class="nota">Una advertencia sobre las cifras que circulan: hay recuentos muy citados («más de 200 comunidades sancionadas») que no proceden de la AEPD y que no hemos podido rastrear hasta ningún expediente. En esta guía solo damos importes que puedes abrir y leer tú mismo en la web de la Agencia.</div>
 
 <div class="alerta">El RGPD exige dos cosas que fallan a la vez en estos casos: repartir solo los datos imprescindibles (minimización, art. 5.1.c) y aplicar <strong>medidas de seguridad que eviten comunicaciones no autorizadas</strong> (art. 32). Un PDF mal tachado incumple las dos.</div>
 

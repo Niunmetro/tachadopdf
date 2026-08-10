@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <title>Redacting a subject access request response without exposing third parties · TachadoPDF</title>
+    <meta name="description" content="DSAR responses are the highest-risk disclosure a small organisation makes. Where the data hides, what enforcement looks like, and a workflow that fits the one-month clock." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-subject-access-request/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="Redacting a subject access request response without exposing third parties" />
+    <meta property="og:description" content="DSAR responses are the highest-risk disclosure a small organisation makes. Where the data hides, what enforcement looks like, and a workflow that fits the one-month clock." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-subject-access-request/" />
+    <meta property="og:locale" content="en_GB" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Redacting a subject access request response without exposing third parties",
+      "description": "DSAR responses are the highest-risk disclosure a small organisation makes. Where the data hides, what enforcement looks like, and a workflow that fits the one-month clock.",
+      "inLanguage": "en",
+      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-subject-access-request/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
+        font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1e293b; background: #fff;
+      }
+      h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
+      h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+      a { color: #0369a1; }
+      ul, ol { padding-left: 1.3rem; }
+      li { margin: .35rem 0; }
+      .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
+      .idiomas__actual { font-weight: 700; }
+      .nota {
+        background: #fef2f2; border-left: 4px solid #ef4444;
+        padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d;
+      }
+      .cp-cta {
+        display: block; margin: 2.4rem 0 0; padding: 1.2rem 1.4rem;
+        background: #0f172a; color: #7dd3fc; border-radius: 10px;
+        text-decoration: none; font-weight: 600;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0f172a; color: #e2e8f0; }
+        a { color: #7dd3fc; }
+        .nota { background: #450a0a; color: #fecaca; border-color: #ef4444; }
+        .cp-cta { background: #1e293b; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="idiomas" aria-label="Language">
+        <a class="idiomas__enlace" hreflang="es" lang="es" href="../../../">Español</a>
+        <span class="idiomas__actual" lang="en">English</span>
+      </nav>
+      <h1>Redacting a subject access request response without exposing third parties</h1>
+      <p>A subject access request is the one disclosure where the reader will examine every line, has a statutory right to complain, and already suspects you of something. It also has a clock: normally one month.</p>
+      <h2>Why the risk is concentrated here</h2>
+      <p>A DSAR bundle is assembled quickly, from mailboxes and shared drives, by whoever is available. Third-party personal data has to come out, and the material that has to come out is scattered through email threads, attachments and spreadsheets rather than sitting in one tidy field.</p>
+      <h2>What enforcement looks like</h2>
+      <p>On 31 July 2025 the Information Commissioner's Office published guidance specifically on disclosing documents to the public securely, addressing personal information hidden inside files. Announcing it, the ICO pointed to serious breaches at the Police Service of Northern Ireland and the Ministry of Defence in which documents had been disclosed without proper checks for hidden personal information. The PSNI case cost £750,000: a hidden worksheet in a spreadsheet released under freedom of information exposed the surnames, initials, ranks and roles of all 9,483 officers and staff. In the MoD case, a spreadsheet believed to concern a small number of applicants in fact carried hidden data on more than 18,000 people. And in March 2026 the ICO fined Police Scotland £66,000 and issued a reprimand after the full unredacted contents of a crime victim's mobile phone were put into a misconduct disclosure bundle and shared with a third party who should not have received it — the ICO found that appropriate review, redaction and security procedures were not in place.</p>
+      <h2>The four hiding places in a bundle</h2>
+      <ul>
+        <li>Text that was covered rather than deleted — a black box, a highlight, a white-filled shape.</li>
+        <li>Hidden rows, hidden columns and filtered ranges in spreadsheets exported to PDF.</li>
+        <li>Metadata and tracked changes carried over from the original documents.</li>
+        <li>Scanned annexes, where nothing can be searched and only a human can see what is on the page.</li>
+      </ul>
+      <h2>A workflow that fits the deadline</h2>
+      <ol>
+        <li>Assemble the bundle first and freeze it; redact once, at the end, on the final PDF.</li>
+        <li>Remove third-party names, contact details and identifiers by marking them directly.</li>
+        <li>Strip metadata from the finished file.</li>
+        <li>Re-extract the text of the finished file and search it for the names you removed.</li>
+        <li>Read the scanned annexes with your own eyes; nothing else can.</li>
+        <li>Keep the verification record with the response, so that if the requester complains you can show what you checked and when.</li>
+      </ol>
+      <p class="nota">General information, not legal advice. TachadoPDF removes and verifies; deciding what a data subject is entitled to receive is a judgement it cannot make for you.</p>
+      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+    </main>
+  </body>
+</html>

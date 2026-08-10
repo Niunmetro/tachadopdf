@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <title>How to redact a PDF without uploading it anywhere · TachadoPDF</title>
+    <meta name="description" content="Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="How to redact a PDF without uploading it anywhere" />
+    <meta property="og:description" content="Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/" />
+    <meta property="og:locale" content="en_GB" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "How to redact a PDF without uploading it anywhere",
+      "description": "Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself.",
+      "inLanguage": "en",
+      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <style>
+      :root { color-scheme: light dark; }
+      body {
+        max-width: 720px; margin: 0 auto; padding: 2rem 1.2rem 4rem;
+        font: 17px/1.65 -apple-system, "Segoe UI", Roboto, sans-serif;
+        color: #1e293b; background: #fff;
+      }
+      h1 { font-size: 1.9rem; line-height: 1.25; margin: 0 0 .8rem; }
+      h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; }
+      a { color: #0369a1; }
+      ul, ol { padding-left: 1.3rem; }
+      li { margin: .35rem 0; }
+      .idiomas { display: flex; gap: .9rem; font-size: .9rem; margin: 0 0 1.5rem; }
+      .idiomas__actual { font-weight: 700; }
+      .nota {
+        background: #fef2f2; border-left: 4px solid #ef4444;
+        padding: .8rem 1rem; border-radius: 6px; color: #7f1d1d;
+      }
+      .cp-cta {
+        display: block; margin: 2.4rem 0 0; padding: 1.2rem 1.4rem;
+        background: #0f172a; color: #7dd3fc; border-radius: 10px;
+        text-decoration: none; font-weight: 600;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0f172a; color: #e2e8f0; }
+        a { color: #7dd3fc; }
+        .nota { background: #450a0a; color: #fecaca; border-color: #ef4444; }
+        .cp-cta { background: #1e293b; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="idiomas" aria-label="Language">
+        <a class="idiomas__enlace" hreflang="es" lang="es" href="../../../">Español</a>
+        <span class="idiomas__actual" lang="en">English</span>
+      </nav>
+      <h1>How to redact a PDF without uploading it anywhere</h1>
+      <p>If the document you need to redact is the reason you cannot use an online tool — a client file, a personnel record, a case bundle — then "we delete it after an hour" is not an answer. The answer is not sending it at all.</p>
+      <h2>Why "we delete it afterwards" is the wrong question</h2>
+      <p>Once a document leaves your machine, you are relying on a retention promise, on the security of a system you cannot inspect, and often on a processing agreement nobody at your organisation has read. None of that is visible to you, and none of it is something you can demonstrate later if you are asked.</p>
+      <h2>How to verify a no-upload claim yourself</h2>
+      <ol>
+        <li>Load the page.</li>
+        <li>Disconnect from the internet — turn off Wi-Fi, unplug the cable, enable flight mode.</li>
+        <li>Redact your document and download the result.</li>
+      </ol>
+      <p>If it still works, nothing was sent. That test is the whole argument, and it is the reason TachadoPDF has no server: there is no upload step, and no machine on the other end that could receive one. The single outbound request the application ever makes is checking a Pro licence key with Gumroad, and that only happens if you type one in.</p>
+      <h2>Local does not mean unverified</h2>
+      <p>Working locally usually means losing the audit trail. It does not have to. After redacting, TachadoPDF reopens the file it produced, searches it again for everything you removed, checks the metadata too, and refuses to release the download if anything survived. The verification report it generates lists what was redacted and where, which metadata was stripped, which pages could not be checked, and the SHA-256 fingerprint of the file you deliver — all produced on your own machine.</p>
+      <p class="nota">The source code is open under AGPL-3.0, so the no-upload claim is not something you have to take on trust.</p>
+      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+    </main>
+  </body>
+</html>
