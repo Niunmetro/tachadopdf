@@ -9,7 +9,10 @@
    componente escribe a mano un tamaño, un espacio, un radio ni un color: si un valor no está en
    el sistema, no existe. Lo vigila `estilo.test.ts`, que además calcula los contrastes. */
 
-#app { max-width: var(--ancho); margin: 0 auto; padding: 0 var(--e-4) var(--e-16); }
+/* El wrapper de la aplicación ya NO capa el ancho. La portada rediseñada alterna masas de color a
+   sangre (de borde a borde de la ventana) y cada sección centra su propio contenido con su
+   contenedor interno. `main.ts` sigue montando los controles en los huecos que hay dentro. */
+#app { isolation: isolate; }
 
 /* TODO <h2> del sitio, a 21/600. Hoy había cuatro y TRES iban a 13 px en versalitas («Tacha tu
    documento», «Versión Pro», «Preguntas frecuentes») mientras el cuarto, «Guías», no tenía ni una
@@ -20,37 +23,32 @@ h2 {
   letter-spacing: -.01em; color: var(--tinta); margin: 0 0 var(--e-2);
 }
 
-/* ---------- Hero ---------- */
-.hero { padding: var(--e-8) 0 var(--e-6); }
+/* ---------- Hero ----------
+   EL TITULAR de portada es lo ÚNICO que se estila aquí: va en `<h1 class="hero__titular">` DESNUDO
+   porque `content/contenido-indexable` lo fija byte a byte, así que su tamaño no puede ir inline.
+   Lo pone el sistema (--t-700, 28→48). El resto de la portada rediseñada (subtítulo, viñetas como
+   fichas, dolor, detección, nicho) se maqueta EN LÍNEA en `generar.ts`, dentro de sus masas de
+   color; sus clases se conservan solo como GANCHOS que las guardas del pliegue vigilan. */
 .hero__titular {
   font-size: var(--t-700); line-height: var(--lh-titular);
-  font-weight: var(--peso-veredicto); margin: 0 0 var(--e-4); letter-spacing: -.02em;
+  font-weight: var(--peso-veredicto); margin: 0; letter-spacing: -.02em;
   max-width: 20ch;
 }
-/* EL ROJO ES E1, Y E1 ES LA ÚNICA ALARMA DEL PRODUCTO.
-   Este bloque era un baño rojo de doscientas palabras: se lee más despacio, se lee como alarma DE
-   NUESTRA PÁGINA en vez de riesgo del lector, y le gasta al único estado que no puede desteñirse
-   su color entero. Ahora es prosa normal en tinta con una MARCA DE MARGEN roja. No cambia ni una
-   palabra: cambia de forma. Y el contraste del texto sube de 9,16:1 a 15,97:1. */
-.hero__dolor {
-  font-size: var(--t-300); line-height: var(--lh-texto); color: var(--tinta);
-  border-left: 3px solid var(--rojo); padding: 0 0 0 var(--e-4);
-  margin: 0 0 var(--e-8); max-width: var(--medida);
+/* Los cuatro argumentos: una masa BLANCA a sangre. Las fichas y su rejilla se maquetan en línea
+   sobre `<ul class="hero__bullets">`; aquí solo va el fondo de la sección (la marca `argumento` va
+   desnuda porque la guarda del pliegue la busca como `<section class="argumento">`). */
+.argumento {
+  background: var(--superficie);
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+  padding: var(--e-seccion) var(--e-4);
 }
-.hero__sub { font-size: var(--t-400); color: var(--tinta-suave); margin: 0 0 var(--e-6); max-width: var(--medida); }
-.argumento { margin-bottom: var(--e-16); }
-.hero__bullets { list-style: none; margin: 0 0 var(--e-8); padding: 0; display: grid; gap: var(--e-4); }
-.hero__bullets li { position: relative; padding-left: var(--e-6); color: var(--tinta); max-width: var(--medida); }
-.hero__bullets li::before {
-  content: "✓"; position: absolute; left: 0; top: 0;
-  color: var(--verde); font-weight: var(--peso-fuerte);
-}
-.hero__nicho { font-size: var(--t-200); color: var(--gris); margin: var(--e-8) 0 0; max-width: var(--medida); }
-/* «El archivo nunca sale de tu equipo», PEGADA a la zona de carga (8 px). A media página de
-   distancia era un dato más; aquí es la respuesta a la pregunta que el control acaba de provocar. */
+/* «El archivo nunca sale de tu equipo», PEGADA a la zona de carga (8 px), dentro de la ficha
+   blanca de la herramienta. A media página de distancia era un dato más; aquí es la respuesta a la
+   pregunta que el control acaba de provocar. */
 .nota-local {
   font-size: var(--t-200); color: var(--tinta-suave);
-  margin: var(--e-2) 0 0; max-width: var(--medida);
+  margin: var(--e-4) 0 0; max-width: var(--medida);
 }
 
 /* ---------- Panel de trabajo ----------
@@ -207,13 +205,12 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 .enlaces-sector a { display: inline-flex; align-items: center; min-height: 2.75rem; }
 
 @media (max-width: 640px) {
-  .hero { padding: var(--e-6) 0 var(--e-6); }
-  .panel { padding: var(--e-4); }
-  .argumento { margin-bottom: var(--e-12); }
-  .hero__bullets { margin: 0 0 var(--e-6); }
-  .hero__dolor { margin: 0 0 var(--e-6); }
-  .hero__nicho { margin: var(--e-6) 0 0; }
-  .legales { margin-top: var(--e-12); }
+  /* LA PRIMERA PANTALLA, TAMBIÉN EN EL HERO-FIRST. El rediseño premium pone un hero con espécimen
+     ANTES de la herramienta; en el móvil ese espécimen (decorativo) y la microcopia empujarían la
+     zona de carga muy por debajo del pliegue. Se ocultan en el móvil: el pitch (titular + subtítulo
+     + CTA) gana la primera pantalla y el CTA salta a la herramienta. El espécimen se conserva
+     entero en escritorio, que es donde hay sitio. */
+  .hero__aparte { display: none; }
   input[type="text"] { min-width: 0; width: 100%; }
   /* En columna: el botón arriba y el rótulo del navegador debajo, cada uno con el ancho entero.
      Ese rótulo («Ningún archivo seleccionado», y después el nombre del fichero) NO es texto
@@ -341,6 +338,5 @@ button.hit-box--selected::after {
    amplia seria un falso verde en forma de marketing. */
 .hero__deteccion {
   font-size: var(--t-200); line-height: var(--lh-texto); color: var(--tinta-suave);
-  background: var(--superficie); border: 1px solid var(--linea); border-radius: var(--radio);
-  padding: var(--e-3) var(--e-4); margin: var(--e-4) 0 0; max-width: var(--medida);
+  max-width: var(--medida);
 }

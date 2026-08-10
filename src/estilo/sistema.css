@@ -76,14 +76,17 @@
        --t-400  18  prosa larga (guías y legales) y el subtítulo del hero.
        --t-500  21  TODO <h2> del sitio y el veredicto de la entrega.
        --t-600  28  <h1> de página interior.
-       --t-700  28→40  <h1> de portada, y nada más. Se define desde el móvil hacia arriba. */
+       --t-700  28→48  <h1> de portada, y nada más. Se define desde el móvil hacia arriba. Es el
+                       ÚNICO texto que debe parar el scroll de la primera pantalla, así que el
+                       techo sube a 48 px en escritorio (antes 40): la portada rediseñada apoya
+                       toda su jerarquía en que el titular pese de verdad. */
   --t-100: 0.75rem;
   --t-200: 0.875rem;
   --t-300: 1rem;
   --t-400: 1.125rem;
   --t-500: 1.3125rem;
   --t-600: 1.75rem;
-  --t-700: clamp(1.75rem, 1.1rem + 2.6vw, 2.5rem);
+  --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
 
   /* Interlineado: TRES valores y ya. Los 1,55 y 1,65 sueltos de las otras hojas desaparecen —
      entre 1,6 y 1,65 no hay nadie que vea la diferencia y sí dos variantes que mantener. */
@@ -109,6 +112,10 @@
      Antes los bloques del Aviso Legal corrían a 136–142 caracteres por línea porque el tope
      existía en cuatro bloques y en los demás no. */
   --ancho: 60rem;
+  /* La HERRAMIENTA es el centro de gravedad de la portada rediseñada, y su mesa de trabajo se
+     ensancha más que la columna de prosa para leerse como el escenario y no como un bloque más.
+     El texto sigue capado a `--ancho`/`--medida`; solo el panel de la herramienta usa esto. */
+  --ancho-herramienta: 76rem;
   --medida: 34em;
 
   /* --- RITMO VERTICAL: UNA ESCALERA, Y PROHIBIDO SALIRSE DE ELLA ----------------------------
@@ -133,6 +140,11 @@
   --e-12: 3rem;
   --e-16: 4rem;
   --e-24: 6rem;
+  /* El ritmo de SECCIÓN, tokenizado: 48 px en móvil, 64 en escritorio. Antes vivía solo en un
+     comentario («64 px de aire son el 7,6 % de una pantalla»); la portada rediseñada alterna
+     masas de color de sección a sección y necesita ese aire como un valor de verdad, no como una
+     nota. NO entra en la escalera de `--e-N` (no es un paso fijo de 4 px, es un clamp fluido). */
+  --e-seccion: clamp(3rem, 7vw, 4rem);
 
   /* Radios: DOS, y cada uno significa algo. Había cuatro (6, 8, 10, 12) sin criterio. A 10–12 px
      un panel se lee como tarjeta de aplicación de consumo; a 6 px, como campo de un formulario
@@ -201,6 +213,14 @@
   --ambar-fondo: #fbefd2;
   --verde: #0f6b41;
   --verde-fondo: #dfeee4;
+
+  /* --- SOMBRAS: DOS, y solo para las dos figuras que se levantan del papel ------------------
+     La portada rediseñada apoya una hoja (el espécimen, las fichas del informe) y una mesa (la
+     herramienta, la tarjeta Pro) sobre el papel. La sombra es larga y muy difusa —tinta cálida a
+     baja opacidad, nunca negro puro— para que sea profundidad y no un recuadro. No se usan en
+     ningún control: un botón con sombra se lee como flotante y este producto no lo es. */
+  --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+  --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
 }
 
 *,
@@ -227,6 +247,19 @@ body {
    azules. El subrayado se conserva donde lo hay: es la única señal no cromática de un enlace. */
 a {
   color: var(--acento);
+}
+/* Al pasar por encima, el enlace se oscurece al acento fuerte: única señal de estado, sin cambiar
+   de familia de color. Lo usa la portada rediseñada en cada enlace y cada CTA fantasma. */
+a:hover {
+  color: var(--acento-fuerte);
+}
+
+/* FOCO VISIBLE, común a las dieciocho páginas. El teclado tiene que ver dónde está: un aro de
+   acento de 2 px separado 2 px del control. Va en el sistema para que también lo tengan las
+   dieciséis páginas que no enlazan la hoja de la aplicación. */
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
 }
 
 /* Los controles no heredan la tipografía por su cuenta: sin esto, el <select> de tipo de

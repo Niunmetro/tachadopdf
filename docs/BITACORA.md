@@ -4,6 +4,74 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-10 · diseno · Home rediseñada «legal-tech premium» (integracion de Claude Design)
+
+**Hecho:** la portada se reescribe al diseño premium de Claude Design (masas de color alternas,
+espécimen del producto en el hero, fichas, chips, precedente AEPD, tarjetas de precio, acordeón FAQ
+y rejilla de guías) SIN tocar `main.ts` ni el motor. Rama `diseno/home-legaltech-premium`, merge
+`--no-ff`. Suite **1343 -> 1344**, verde. Construida, RENDERIZADA y MIRADA a 1440 y 390, y la
+herramienta CONDUCIDA VIVA con el acta de ejemplo (carga -> detecta -> tacha -> re-verifica ->
+informe -> acuse E5). Desplegada y verificada en el dominio.
+
+### El hallazgo que reencuadra la tarea
+El README de la importación decía que había que convertir la home de «JS pinta todo en #app» a HTML
+estático indexable. **Ese trabajo YA estaba hecho**: la home la emite `generar.ts` desde el
+2026-08-10 y `main.ts` solo monta controles en cuatro huecos (`#carga`, `#gancho`, `#trabajo`,
+`#licencia`). Y el diseño nuevo usa EXACTAMENTE los mismos tokens que el sistema «Registro» ya
+desplegado. Así que la integración real no era «hacer estática la home» sino «adoptar el layout
+premium sobre la home ya estática», con los mismos tokens. Se reescribe `cuerpoHome`.
+
+### La estrategia que blindó la herramienta y las guardas
+- **`main.ts` NO se toca.** Los cuatro huecos se conservan y siguen siendo descendientes de `#app`;
+  la casilla y el botón de descarga los monta `main.ts` al final de `#trabajo`, que en el diseño
+  nuevo es el pie de la ficha de la herramienta — donde el diseño los quería, sin cablear nada. La
+  app montó los 4 slots y el pipeline entero funciona (medido en vivo).
+- **Fragmentos FIJADOS por guardas, intactos byte a byte:** `<h1 class="hero__titular">` desnudo
+  (`contenido-indexable`), `<summary>`/`<p>` desnudos del FAQ (`faq-paridad`, lee del disco),
+  `<details id>` legales, `dolor`/`avisoPrincipal` como texto ÍNTEGRO de un solo nodo. Todo el copy
+  sale de `CONTENIDOS`; ni una palabra inventada de venta.
+- **Los ganchos de clase del pliegue se conservan** (`hero__titular` < `hero__sub` < `#carga` <
+  `nota-local` < `#gancho` < `aviso-principal` < `<section class="argumento">`), así que la guarda
+  de orden de `estilo.test.ts` pasa SIN reescribirse. El diseño rico va por estilos INLINE en el
+  HTML generado (`generar.ts` está exento de `sin-cadenas-sueltas` y la guarda de valores solo mira
+  los .css), que es también el formato nativo del `.dc.html`.
+- **3 cambios de token** (MERGE en `sistema.css`): `--t-700` 28→48, nuevo `--ancho-herramienta`
+  76rem, nuevo `--e-seccion` clamp(3rem,7vw,4rem). Más comportamiento: `a:hover`, `:focus-visible`,
+  y dos sombras (`--sombra-hoja`, `--sombra-mesa`) para las dos figuras que se levantan del papel.
+- **Microcopy decorativo bilingüe** (rótulos del espécimen, «100 % en el navegador», etiquetas de
+  precio) en un `Record<Locale, …>` dentro de `generar.ts`, no en la fuente de contenido: es
+  andamiaje de maqueta, no copia que el producto prometa. Los chips de identificadores son
+  LOCALE-AWARE: la home inglesa solo enseña «Email» porque fuera de España solo el email valida su
+  dígito de control — enseñar DNI/IBAN allí sería un falso verde en marketing.
+
+### Los «cuadros tapando letras» — ARREGLADOS mirando la geometría
+El render original de Claude Design apilaba tarjetas con `position:absolute`, rotación y márgenes
+negativos: eso era la fuente de los solapamientos. El espécimen se rehízo como UNA sola ficha, con
+el rectángulo negro AL LADO del dato (no encima) y las filas separadas por un filete — así nada
+desborda una banda ni pisa otro texto a ningún ancho. Medido en el navegador: **cero elementos
+desbordando (`wideCount=0`) y overflow horizontal 0 a 1440 y a 390**.
+
+### Trade-off del pliegue móvil — DECIDIDO Y FLAGGEADO al comité
+El principio medido del repo era «la primera pantalla la gana la herramienta»: zona de carga por
+encima de 600 px a 390×844 (estaba en 525). El diseño es HERO-FIRST (hero con espécimen ANTES de la
+herramienta), lo que empujaba la zona de carga a **1404 px** en móvil. **Decisión de compromiso:**
+en móvil se ocultan el espécimen (decorativo) y la microcopia; el pitch (titular + subtítulo + CTA)
+gana la primera pantalla y el CTA «Tacha tu documento» (a 456 px) salta a la herramienta. La zona de
+carga queda en **897 px** (~1,06 pantallas). El desktop conserva el diseño premium entero. Ninguna
+guarda automática lo impone (la de pliegue solo mira el ORDEN del DOM, que se conserva), pero es un
+principio de conversión muy defendido: **si el comité quiere volver al tool-first estricto en móvil,
+la palanca es reordenar la herramienta por encima del hero en móvil, o recortar más el hero.**
+
+### Verificación (exit codes reales, nunca a `| tail`)
+- `npx --no-install tsc --noEmit` -> 0.
+- `npx --no-install vitest run` -> **1344/1344** en 75 ficheros.
+- `npx --no-install vite build` -> 0; `dist/CNAME` = `www.tachadopdf.com` (19 B) ANTES de desplegar.
+- Vivo, conducido en el navegador sobre `dist/`: 4 slots montados; ejemplo cargado (2 páginas
+  renderizadas, 9 detecciones, 9 botones «tachar todas»); descarga -> acuse **E5 TACHADO
+  VERIFICADO** con los dos ficheros; cero errores de consola; home EN con «PARTIAL CHECK» y chips
+  = [Email]; precio «59 €» en las dos.
+
+---
 ## 2026-08-10 · seo · Cinco landings de cola larga sectorial (acto de DISTRIBUCION)
 
 **Hecho:** cinco paginas nuevas, una por consulta real, para perseguir la demanda que SI existe

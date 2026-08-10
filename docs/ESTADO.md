@@ -22,9 +22,8 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1343/1343 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
-  las 5 landings de keyword: las guardas por-página `it.each` se multiplican por las 5 nuevas más el
-  test propio `content/landings-keyword`).
+- Suite: **1344/1344 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
+  las 5 landings de keyword; +1 con la home rediseñada).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -62,6 +61,31 @@
   `#f6f5f3` y `color-scheme: light` en las seis páginas comprobadas, con **cero** bloques
   `prefers-color-scheme: dark`; y **cero peticiones a ningún dominio externo**, medido en el
   navegador sobre el sitio vivo. `dist/CNAME` se comprobó ANTES de desplegar (19 bytes, LF).
+
+## Home rediseñada «legal-tech premium» (FUSIONADA Y DESPLEGADA, 2026-08-10)
+
+> ✅ **`diseno/home-legaltech-premium` FUSIONADA en master y DESPLEGADA.** Adopta el rediseño de
+> Claude Design sobre la home YA estática, con los MISMOS tokens del sistema «Registro». Ver la
+> bitácora del 2026-08-10 (entrada `diseno`).
+
+- **`cuerpoHome` (en `generar.ts`) reescrita** a masas de color alternas (papel→tinta→blanco→azul
+  tenue→tinta→papel→blanco→papel→azul→tinta→pie), con espécimen del producto en el hero, cuatro
+  fichas de argumento, chips, precedente AEPD (`PS/00378/2019 · 15.000 €`), tarjetas de precio,
+  acordeón FAQ y rejilla de guías. El diseño va por estilos INLINE; el copy sale de `CONTENIDOS`.
+- **`main.ts` NO se tocó.** Los 4 huecos (`#carga`, `#gancho`, `#trabajo`, `#licencia`) siguen
+  dentro de `#app`; la casilla y el botón de descarga caen en el pie de la ficha de la herramienta.
+  Pipeline entero verificado en vivo (carga→detecta→tacha→re-verifica→informe→acuse E5).
+- **Guardas conservadas sin reescribir**: los ganchos de clase del pliegue y los fragmentos fijados
+  (`<h1 class="hero__titular">`, `<summary>`/`<p>` del FAQ, `<details id>` legales, `dolor`/
+  `avisoPrincipal` íntegros) se mantienen byte a byte. 3 tokens nuevos/cambiados en `sistema.css`
+  (`--t-700` 28→48, `--ancho-herramienta`, `--e-seccion`) + 2 sombras + `a:hover`/`:focus-visible`.
+- **Solapamientos («cuadros tapando letras») ARREGLADOS**: el espécimen se rehízo sin tarjetas
+  superpuestas/rotadas; medido en navegador, cero desbordes a 1440 y 390.
+- **⚠ TRADE-OFF DEL PLIEGUE MÓVIL, para el comité.** El diseño hero-first empuja la zona de carga
+  de 525 px a ~897 px en 390×844 (se ocultan espécimen y microcopia en móvil; el CTA a 456 px salta
+  a la herramienta). Ninguna guarda lo impone (la de pliegue solo mira orden DOM). Si se quiere
+  volver al principio «tool-first <600 px» en móvil, la palanca es reordenar la herramienta por
+  encima del hero en móvil. Documentado en la bitácora.
 
 ## Marca: símbolo, favicon y og-image (FUSIONADO Y DESPLEGADO, 2026-08-10)
 
