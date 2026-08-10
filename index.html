@@ -84,7 +84,7 @@
           "name": "¿Qué diferencia hay entre el modo gratuito y Pro?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro. Lo que cambia es el informe de comprobación: en el modo gratuito lleva una marca \"DEMO\" y no sirve como evidencia archivable; el informe de Pro no lleva marca. Pro es un pago único de 59 € (no una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez."
+            "text": "El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez."
           }
         },
         {
@@ -93,6 +93,22 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿El informe sirve como prueba legal?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar."
           }
         },
         {
@@ -153,11 +169,19 @@
         </details>
         <details class="faq__item">
           <summary>¿Qué diferencia hay entre el modo gratuito y Pro?</summary>
-          <p>El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro. Lo que cambia es el informe de comprobación: en el modo gratuito lleva una marca "DEMO" y no sirve como evidencia archivable; el informe de Pro no lleva marca. Pro es un pago único de 59 € (no una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.</p>
+          <p>El modo gratuito permite tachar 5 documentos al mes, de hasta 3 páginas cada uno: el borrado real de datos es completo e idéntico al de Pro, y el informe hace las mismas comprobaciones. Lo único que cambia en el informe es que el gratuito lleva impresa la marca «DEMO — versión gratuita» y el de Pro no. Pro es un pago único de 59 € (no es una suscripción) e incluye además documentos ilimitados y procesado por lotes de varios ficheros a la vez.</p>
         </details>
         <details class="faq__item">
           <summary>¿Funciona con documentos escaneados?</summary>
           <p>Sobre una imagen escaneada se borran los píxeles de la zona que marques a mano. La detección automática lee texto, no imágenes, así que en un escaneado debes señalar tú las zonas a tachar y revisar el resultado.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿Por qué mi informe dice «COMPROBACIÓN PARCIAL» y no «TACHADO VERIFICADO»?</summary>
+          <p>Porque el documento lleva alguna imagen —casi siempre el logo del membrete— y esta herramienta no lee lo que hay dentro de una imagen. En ese caso el informe dice «COMPROBACIÓN PARCIAL» y detalla lo que sí ha hecho: releer el texto de todas las páginas del archivo entregado y sus metadatos, sin que quede ningún dato de los patrones buscados, y nombrar una a una las páginas cuyo contenido de imagen queda fuera. «TACHADO VERIFICADO» se reserva a los documentos de solo texto, donde no queda nada fuera de alcance. La mayoría de actas y nóminas llevan logo, así que «COMPROBACIÓN PARCIAL» es el resultado normal y no significa que algo haya salido mal: es el informe diciendo hasta dónde llega. Si dentro de una de esas imágenes hay datos, márcalos a mano y se borrarán sus píxeles, pero la página seguirá constando como no comprobada del todo: no queda texto que releer para confirmarlo, y por eso el informe te pide que la revises a ojo.</p>
+        </details>
+        <details class="faq__item">
+          <summary>¿El informe sirve como prueba legal?</summary>
+          <p>No, y no se vende como tal. El informe es el registro técnico de lo que la herramienta hizo: qué zonas se tacharon, qué metadatos se eliminaron, qué patrones se volvieron a buscar en el archivo terminado, qué páginas no se pudieron comprobar y la huella SHA-256 del documento que entregas. Documenta que realizaste el borrado y que lo comprobaste después. No dice nada sobre tus obligaciones legales: ninguna herramienta puede decidir qué había que tachar.</p>
         </details>
         <details class="faq__item">
           <summary>¿Necesito factura de la licencia Pro? ¿Cómo la obtengo?</summary>

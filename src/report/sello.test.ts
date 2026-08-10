@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { es } from '../content/es';
 import { loadPdf } from '../pdf/engine';
 import type { InventarioObjetos, PatternKind, ReportData } from '../types';
+import { coberturaComprobada } from './estado';
 import { buildReport } from './report';
 
 const COPIA = es.informe;
@@ -152,6 +153,45 @@ describe('G6: un objeto presente y no examinado degrada el sello y consta en el 
     expect(t).toContain('Marcadores del documento (índice)');
     expect(t).toContain('NO EXAMINADO');
   });
+
+  /**
+   * LA FRASE DUPLICADA. Cuando el ambar se debe UNICAMENTE a un objeto no examinado (ninguna
+   * pagina con reserva), el sello imprimia la misma oracion dos veces seguidas:
+   * `lineaParcialSoloObjetos` ya nombra los objetos y encima se le encolaba
+   * `clausulaObjetosSinExaminar`. Y no era un caso raro: con cero reservas de pagina, la unica
+   * forma de estar en E3 es tener un objeto sin examinar, asi que era el caso ENTERO.
+   *
+   * El literal va CONGELADO. La cuenta se hace sobre la oracion nuclear —sin el «Ademas,» ni el
+   * «Pero» que las distingue— para que cazar las dos redacciones no dependa de la puntuacion.
+   */
+  const NUCLEO = 'este documento contiene objetos que la comprobación no examina';
+
+  function veces(texto: string, aguja: string): number {
+    return texto.split(aguja).length - 1;
+  }
+
+  it('con SOLO un objeto sin examinar, el sello dice la frase UNA vez, no dos', async () => {
+    const t = await texto(datosConAliasDelEsquemaAnterior({ objetos: objetos({ marcadores: 'noExaminado' }) }));
+
+    expect(veces(t, NUCLEO)).toBe(1);
+    // Y sigue diciendo lo que tiene que decir: la frase esta, y esta la parte afirmativa.
+    expect(t).toContain('Se han releído las 3 páginas del archivo y sus metadatos');
+    expect(t).toContain('constan en «Objetos del archivo»');
+  });
+
+  it('con una reserva de pagina ADEMAS del objeto, la coletilla SI se anade', async () => {
+    // Aqui la base es `lineaParcial`/`lineaParcialSoloImagenes`, que NO nombra los objetos: sin la
+    // coletilla el sello se callaria su propia reserva. Es la rama que el arreglo no puede tocar.
+    const t = await texto(
+      datosConAliasDelEsquemaAnterior({
+        paginasConImagen: [1],
+        objetos: objetos({ marcadores: 'noExaminado' }),
+      }),
+    );
+
+    expect(veces(t, NUCLEO)).toBe(1);
+    expect(t).toContain('Además, este documento contiene objetos que la comprobación no examina');
+  });
 });
 
 describe('el verde, cuando de verdad toca', () => {
@@ -198,6 +238,50 @@ describe('la cobertura lleva SIEMPRE su cifra y su denominador', () => {
   it('cuando hay páginas afectadas, la cifra va acompañada de la lista', async () => {
     const t = await texto(datos({ paginasSinCapaDeTexto: [0, 2] }));
     expect(t).toContain('Páginas sin capa de texto (no comprobables) 2 · páginas 1, 3');
+  });
+});
+
+/**
+ * EL NUMERADOR DEL MEDIDOR TIENE QUE ESTAR ESCRITO, NO SOLO DIBUJADO.
+ *
+ * El disco del sello ambar se llena en la proporcion `paginas sin ninguna reserva / paginas del
+ * documento`. Hasta el 2026-08-10 ese numerador no se imprimia en ningun sitio: la tabla daba el
+ * total, las releidas, las sin capa de texto, las que llevan imagenes… y ninguna era la cifra que
+ * el dibujo afirma. O sea que en un producto cuya seccion estrella se titula «Como comprobar este
+ * informe», el unico dato que un tercero NO podia contrastar era justamente el que solo existia
+ * como dibujo.
+ *
+ * Estas dos aserciones son las que impiden que el dibujo y el texto deriven: la fila se ata a
+ * `coberturaComprobada`, que es la misma funcion que dibuja el aro.
+ */
+describe('la cifra que dibuja el medidor consta ademas en «Cobertura»', () => {
+  it('la fila va pegada al total, para que el par se lea como fraccion', async () => {
+    const t = await texto(datos({ paginasConImagen: [1] }));
+    expect(t).toContain(
+      'Páginas del documento 3 Páginas comprobadas del todo (sin nada fuera de alcance) 2',
+    );
+  });
+
+  it('el caso corriente: releidas 3 y comprobadas del todo 0 son las dos ciertas', async () => {
+    // Un acta de tres paginas con el logo del membrete en todas: se releyo el texto de las tres y
+    // en ninguna se llego a todo el contenido. El medidor sale VACIO y la tabla ya no se calla
+    // por que.
+    const t = await texto(datos({ paginasConImagen: [0, 1, 2] }));
+    expect(t).toContain('Páginas comprobadas del todo (sin nada fuera de alcance) 0');
+    expect(t).toContain('Páginas releídas tras el tachado 3');
+  });
+
+  it.each([
+    { nombre: 'sin reservas', over: {} },
+    { nombre: 'una imagen', over: { paginasConImagen: [1] } },
+    { nombre: 'todas con imagen', over: { paginasConImagen: [0, 1, 2] } },
+    { nombre: 'una sin capa de texto', over: { paginasSinCapaDeTexto: [2] } },
+    { nombre: 'mezcla', over: { paginasConImagen: [0], unverifiableManualPages: [1] } },
+  ])('$nombre: la cifra impresa es la que llena el disco', async ({ over }) => {
+    const data = datos(over as Partial<ReportData>);
+    const esperada = Math.round(coberturaComprobada(data) * data.totalPaginas);
+    const t = await texto(data);
+    expect(t).toContain(`Páginas comprobadas del todo (sin nada fuera de alcance) ${esperada}`);
   });
 });
 

@@ -137,4 +137,18 @@ describe('G13: en «Cobertura», la fila con reserva se distingue de la fila de 
     }
     expect(cifraDe(todas, 'Zonas tachadas').some((n) => n)).toBe(false);
   });
+
+  /**
+   * LA FILA DEL NUMERADOR DEL MEDIDOR NO ES UNA RESERVA. Cuenta las paginas que quedaron LIMPIAS
+   * del todo, asi que destacarla seria pintar de ambar la buena noticia y confundir al lector
+   * sobre que le pide accion. En el caso corriente ademas vale 0, y un 0 en negrita sobre fondo
+   * ambar se lee como una alarma que no existe.
+   */
+  it('la fila «Páginas comprobadas del todo» va en redonda, tenga el valor que tenga', async () => {
+    const conTodo = await lineas(datos({ paginasConImagen: [0, 1, 2, 3] })); // vale 0
+    const sinNada = await lineas(datos()); // vale 4
+
+    expect(cifraDe(conTodo, 'Páginas comprobadas del todo').some((n) => n)).toBe(false);
+    expect(cifraDe(sinNada, 'Páginas comprobadas del todo').some((n) => n)).toBe(false);
+  });
 });
