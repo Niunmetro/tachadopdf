@@ -13,9 +13,10 @@
 
 import { CONTENIDOS } from './index';
 import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
-import { esc, jsonLd, sangrar, texto } from './html';
+import { esc, escTexto, jsonLd, sangrar, texto } from './html';
 import {
   LOCALES,
+  LOCALE_POR_DEFECTO,
   PAGINAS,
   SITIO,
   type Locale,
@@ -43,7 +44,34 @@ const VERIFICACIONES_GOOGLE = [
   'wAB_9e6EFyixB6e1jITVlH5DFp1q5scYBpxHaxlFx9g',
 ];
 
-const OG_IMAGE = `${SITIO}/og-image.png`;
+/**
+ * LA TARJETA SOCIAL, POR IDIOMA. La anterior mostraba un sello VERDE mientras el resultado normal
+ * del producto es el ámbar: prometía por WhatsApp y LinkedIn el veredicto que casi nadie recibe.
+ * La nueva es tipográfica y sobria (papel `--papel`, tinta `--tinta`, IBM Plex), con el símbolo,
+ * la marca y el CLAIM LITERAL de la home — sin ningún sello de color que afirme un veredicto.
+ * El idioma por defecto conserva el nombre `og-image.png` (las páginas estáticas lo citan tal
+ * cual y su URL ya está repartida); cada otro idioma lleva su sufijo con su claim traducido.
+ */
+export function ogImage(locale: Locale): string {
+  const sufijo = locale === LOCALE_POR_DEFECTO ? '' : `-${locale}`;
+  return `${SITIO}/og-image${sufijo}.png`;
+}
+
+/**
+ * LOS ICONOS DEL SITIO. Con ruta RELATIVA al documento (`prefijo`), igual que la fuente y el PDF
+ * de ejemplo: una ruta raíz-absoluta (`/favicon.svg`) moriría bajo la base de emergencia
+ * `/tachadopdf/`, que es justo el modo pensado para cuando el dominio se cae. Los tres son
+ * self-hosted (viven en `public/`), así que la CSP `img-src 'self'` no cambia ni un byte.
+ * El `.ico` (16/32/48) sirve a los navegadores viejos —hoy `/favicon.ico` da 404 en cada primera
+ * visita—, el `.svg` a los modernos (escala sin pixelarse) y el `apple-touch` al iOS.
+ */
+export function enlacesFavicon(prefijo: string): string[] {
+  return [
+    `<link rel="icon" href="${prefijo}favicon.ico" sizes="32x32" />`,
+    `<link rel="icon" href="${prefijo}favicon.svg" type="image/svg+xml" />`,
+    `<link rel="apple-touch-icon" href="${prefijo}apple-touch-icon.png" />`,
+  ];
+}
 
 export interface FicheroGenerado {
   /** Ruta relativa a la raíz del repositorio, siempre con '/'. */
@@ -77,6 +105,8 @@ interface OpcionesCabecera {
   ogDescripcion: string;
   ogLocale: string;
   ogLocalesAlternos: string[];
+  /** URL absoluta de la tarjeta social de ESTE idioma (`og-image.png`, `og-image-en.png`, …). */
+  ogImage: string;
   alternates: Alternate[];
   /** Ruta de vuelta a la raíz del sitio DESDE ESTE DOCUMENTO ('./', '../', '../../../'). */
   prefijo: string;
@@ -88,6 +118,8 @@ function cabecera(o: OpcionesCabecera): string {
     '<meta charset="UTF-8" />',
     '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
     `<meta http-equiv="Content-Security-Policy" content="${esc(CSP)}">`,
+    '',
+    ...enlacesFavicon(o.prefijo),
     '',
     // El sistema visual va en TODAS las páginas y va ANTES que el <style> propio de cada una:
     // los tokens se declaran una sola vez (src/estilo/sistema.css) y lo de la página manda
@@ -111,7 +143,7 @@ function cabecera(o: OpcionesCabecera): string {
     '<meta property="og:site_name" content="TachadoPDF" />',
     `<meta property="og:title" content="${esc(o.ogTitulo)}" />`,
     `<meta property="og:description" content="${esc(o.ogDescripcion)}" />`,
-    `<meta property="og:image" content="${esc(OG_IMAGE)}" />`,
+    `<meta property="og:image" content="${esc(o.ogImage)}" />`,
     `<meta property="og:url" content="${esc(o.canonical)}" />`,
     `<meta property="og:locale" content="${esc(o.ogLocale)}" />`,
   );
@@ -192,34 +224,48 @@ function selectorIdioma(pagina: PaginaRegistro, locale: Locale): string {
 }
 
 /**
+ * EL SÍMBOLO DE LA MARCA, por fin en su ranura. Concepto B: un documento con renglones donde uno
+ * tiene un HUECO limpio — el dato borrado DE VERDAD, no tapado con un rectángulo negro, que es la
+ * promesa entera del producto dibujada. Una sola tinta vía `currentColor` (la hereda de
+ * `.cabecera__marca`, que va en `--tinta`): no se parte en colores y no lleva degradado. NO es un
+ * candado ni un escudo — es lo que usan las webs de phishing —: es una hoja de papel.
+ * Se incrusta EN LÍNEA en vez de referenciar `public/simbolo.svg` para que tome `currentColor` y
+ * no cueste una petición de red por página; el fichero suelto existe igual (es la fuente vectorial
+ * y de él nacen el favicon y el apple-touch), y `content/marca.test.ts` ata que no deriven.
+ */
+export const SIMBOLO_MANCHETA =
+  '<svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+  'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ' +
+  'focusable="false">' +
+  '<path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/>' +
+  '<line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/>' +
+  '<line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/>' +
+  '</svg>';
+
+/**
  * LA MANCHETA. Una cabecera común a las dieciocho páginas: la marca a la izquierda, los idiomas a
  * la derecha, y un filete A SANGRE de borde a borde de la ventana. Ese filete es lo que hace que
  * 1440 px dejen de leerse como una columna suelta flotando en el vacío, y es lo que hoy le falta
  * a `/actas/` y `/nominas/`, que no tienen cabecera ninguna: en el móvil la palabra «TachadoPDF»
  * no aparecía hasta 1,83 pantallas, en las dos páginas donde cae el tráfico de pago.
  *
- * ES UNA MANCHETA DE PERIÓDICO, NO UN LOGOTIPO. El producto no tiene símbolo y aquí no se le
- * inventa uno: la marca se resuelve tipográficamente (Plex Sans 600, 14 px, versalitas,
- * `letter-spacing` .14em, en tinta). No se parte en dos colores, no lleva «PDF» en acento y no se
- * le tacha una parte — un tachado dentro del nombre SERÍA inventar el símbolo.
- *
- * Y la marca deja de gastar el acento. El acento tiene que significar «esto es lo que se pulsa»;
- * si además significa «esto es la marca», no significa ninguna de las dos. (De paso, el azul que
- * gastaba suspendía a 4,10:1.)
- *
- * El HUECO PARA EL SÍMBOLO está pensado pero AUSENTE del DOM: un cuadrado vacío que ocupa sitio
- * se lee como una imagen rota, no como un hueco. Cuando llegue, entra a la izquierda de la
- * palabra con `gap: 8px` y 20×20 px, y no mueve nada más que su propio ancho.
+ * ES UNA MANCHETA DE PERIÓDICO CON SU SÍMBOLO. La marca se resuelve tipográficamente (Plex Sans
+ * 600, 14 px, versalitas, `letter-spacing` .14em, en tinta) y el símbolo entra a su izquierda con
+ * `gap: 8px` en una ranura de 20×20 px, sin mover nada más que su propio ancho. La palabra
+ * `TACHADOPDF` NO se parte en colores y no se le tacha una parte — un tachado dentro del nombre
+ * sería un segundo símbolo. El símbolo comparte la tinta de la palabra (`currentColor`), así que
+ * la marca sigue en una sola tinta y el acento se reserva para «esto es lo que se pulsa».
  */
 function mancheta(pagina: PaginaRegistro, locale: Locale): string {
   const c = CONTENIDOS[locale];
   const selector = selectorIdioma(pagina, locale);
+  const marca = `<p class="cabecera__marca">${SIMBOLO_MANCHETA}${escTexto(c.marca)}</p>`;
   return [
     '<header class="cabecera">',
     sangrar(
       [
         '<div class="cabecera__interior">',
-        sangrar([texto('p', { class: 'cabecera__marca' }, c.marca), selector], 1),
+        sangrar([marca, selector], 1),
         '</div>',
       ],
       1,
@@ -468,7 +514,7 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
     '<meta name="twitter:card" content="summary_large_image" />',
     `<meta name="twitter:title" content="${esc(c.home.ogTitulo)}" />`,
     `<meta name="twitter:description" content="${esc(c.home.twitterDescripcion)}" />`,
-    `<meta name="twitter:image" content="${esc(OG_IMAGE)}" />`,
+    `<meta name="twitter:image" content="${esc(ogImage(locale))}" />`,
     '',
     jsonLdHome(locale, canonical),
   );
@@ -484,6 +530,7 @@ function paginaHome(pagina: PaginaRegistro, locale: Locale): string {
       ogDescripcion: c.home.ogDescripcion,
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
       alternates: alternatesDe(pagina),
       prefijo: navHref(rutaDe(pagina, locale) ?? '', ''),
       extra,
@@ -673,6 +720,7 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
       ogDescripcion: c.comprobador.ogDescripcion,
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
       alternates: alternatesDe(pagina),
       prefijo: navHref(ruta, ''),
       extra,
@@ -775,6 +823,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       ogDescripcion: guia.descripcion,
       ogLocale: c.ogLocale,
       ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
       alternates: alternatesDe(pagina),
       prefijo: navHref(ruta, ''),
       extra,

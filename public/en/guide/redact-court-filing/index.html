@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="icon" href="../../../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../../apple-touch-icon.png" />
     <link rel="preload" href="../../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <style>
     @font-face {
@@ -126,12 +129,20 @@
     gap: var(--e-4);
     }
     .cabecera__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
     font-size: var(--t-200);
     font-weight: var(--peso-fuerte);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--tinta);
     margin: 0;
+    }
+    .cabecera__simbolo {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
     }
     .idiomas {
     display: flex;
@@ -168,7 +179,7 @@
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="Redacting court filings: what Rule 5.2 requires, and how filings leak anyway" />
     <meta property="og:description" content="What FRCP 5.2 actually mandates, why the sealed-plus-public pairing is where mistakes happen, and a pre-filing checklist." />
-    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-court-filing/" />
     <meta property="og:locale" content="en_GB" />
     <script type="application/ld+json">
@@ -230,7 +241,7 @@
   <body>
     <header class="cabecera">
       <div class="cabecera__interior">
-        <p class="cabecera__marca">TachadoPDF</p>
+        <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
         <nav class="idiomas" aria-label="Language">
           <a class="idiomas__enlace" hreflang="es" lang="es" href="../../../">Español</a>
           <span class="idiomas__actual" lang="en">English</span>
