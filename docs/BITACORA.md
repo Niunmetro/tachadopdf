@@ -13,6 +13,132 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
 
+## 2026-08-10 · comité + ejecución · Tres afirmaciones falsas sobre nuestro propio dinero, y un sello verde sobre lo que no se ha mirado (rama `higiene/precio-real-y-ambar-anunciado`)
+
+**Hecho:** ejecutada entera el acta del CEO del 2026-08-10. Seis commits, uno por decisión, para
+poder revertir una sin deshacer el resto. Suite **842 → 1002** en 71 ficheros.
+`npx --no-install tsc --noEmit` = 0 · `npx --no-install vitest run` = 0 (1002/1002) ·
+`npm run build` = 0, con exit codes reales y sin canalizar a `| tail`. `dist/CNAME` verificado
+byte a byte tras el build (`cat -A` → `www.tachadopdf.com$`, LF).
+
+**Lo que el CEO comprobó antes de decidir, y que corrigió al comité** (todo con `curl`, sin
+contraseñas):
+
+- **El tramo de 149 € EXISTE y se puede comprar hoy.** El JSON incrustado de la ficha de Gumroad
+  lista la variante `Despacho - 3 puestos` con `price_difference_cents: 9000` sobre los 59 €.
+  `src/license/gumroad.ts` no mira la variante: **un desconocido puede pagar 149 € y recibir el
+  producto de 59 €.** Deja de ser una discusión de copy.
+- **Lo vivo firma en verde lo que no ha mirado.** El bundle publicado (`assets/report-Bbl6ogcz.js`)
+  contiene `o(b?"VERIFICADO":"NO APTO",…)` y **cero** coincidencias de «COMPROBACIÓN PARCIAL»: los
+  cinco estados del sello no están desplegados. 111 de 129 documentos reales reciben hoy un papel
+  que dice lo que no puede sostener.
+- **Las tres cifras retiradas el 8-ago seguían vivas en el dominio.** Diecisiete días.
+- **El medidor NO es el único portador de su cifra:** `es.ts:114` ya la dice en palabras, pegada al
+  disco. Eso cambió la decisión 3(b) respecto a lo que proponían las tres voces.
+
+**Decisiones y porqués:**
+
+- **PRECIO: 59 € de pago único.** No es una preferencia: es lo único que el checkout sabe cobrar
+  (`is_recurring_billing:false`, `recurrences:null`). «59 €/año» exigiría un SKU *Membership* nuevo
+  y caducidad en el verificador, sobre un producto congelado con 0 ventas.
+- **El tramo Despacho se RETIRA, no se construye.** Sus dos funciones (ancla de precio, cebo de
+  prescriptores) eran instrumentos de una campaña que el dueño cerró el 4-ago. **Sacarlo de
+  nuestras páginas NO cierra el agujero**: la variante vive en Gumroad y la ficha es alcanzable
+  desde `PRO_URL` y desde Google → owner-gate con fecha (12-ago) en `docs/ESTADO.md`.
+  *Descartado* preseleccionar la variante con `?option=` en `PRO_URL`: el comprador puede cambiarla
+  igual, y un tapón que no tapa es peor que ninguno porque parece un arreglo.
+- **La garantía de 30 días sale de las landings y NO entra en los Términos.** `refund_policy` es
+  `null` en Gumroad, y el art. 61.2 TRLGDCU integra la publicidad en el contrato: la frase ya nos
+  obliga y no la podemos honrar, porque el merchant of record es Gumroad. Meterla en los Términos
+  convertiría una imprecisión de marketing en un pasivo firmado.
+  *Descartado también* sustituirla por «la política de devolución es la de Gumroad, con enlace»:
+  con `refund_policy: null` esa frase apunta a nada y sería una segunda afirmación falsa donde
+  acabamos de quitar la primera. Lo que sí se dice, porque es verdad y lo controlamos: el modo
+  gratuito permite probar el producto entero antes de pagar.
+- **Pie legal en las dos landings** (art. 10 LSSI: publicaban un precio sin dar acceso a la
+  identificación del titular). URL absolutas a propósito: esas dos páginas llevan enlaces
+  raíz-absolutos que la base de emergencia `/tachadopdf/` rompería.
+- **El guardián de precios se desarma de su propia excepción.** `precios-coherentes.test.ts`
+  excluía `public/actas/` y `public/nominas/` con una nota de PARADA: estaba desarmado exactamente
+  en las dos páginas donde entró el fallo entero. **Una excepción a un guardián sobrevive a la
+  razón que la creó.** Fuera la exclusión, y tres guardas nuevas (tramo inexistente, garantía de
+  devolución, pie legal). Fail-to-pass: 9 rojos contra la copia anterior.
+- **FAQ: sí se avisa del ámbar, en ES y EN.** El miedo que compra este producto es «que me diga que
+  está bien y no lo esté», así que anunciar por adelantado que el resultado normal es PARCIAL vende
+  exactamente la mercancía que el cliente vino a buscar. Y con 59 € de pago único y la bandeja sin
+  vigilar, **el aviso cuesta una vez y el soporte cuesta cada vez**.
+- **Dos correcciones más en el mismo FAQ, del mismo delito.** (i) «el informe gratuito lleva marca
+  DEMO **y no sirve como evidencia archivable**» afirmaba POR CONTRASTE que el de pago sí: la misma
+  construcción que se quitó de la marca de agua el 8-ago, sobreviviendo donde más se lee (esa
+  respuesta se publica como resultado enriquecido en Google). `en.ts:72` arrastraba
+  `is not meant to be filed`. (ii) «Can I use the report as legal proof?» existía **solo en
+  inglés**: el idioma que más promete era el que menos acotaba. Se porta al español.
+- **SELLO (a): la frase duplicada se arregla.** No es decisión de texto, es defecto: con
+  `reservas === 0` la única forma de estar en E3 es tener un objeto sin examinar, así que la
+  repetición era el caso ENTERO, no uno raro.
+- **SELLO (b): la cifra va a la tabla «Cobertura»; el rótulo al pie del medidor se CORTA.** El
+  numerador que dibuja el disco no se imprimía en ningún sitio, en un producto cuya sección estrella
+  se titula «Cómo comprobar este informe». Fila nueva pegada al total, cifra desnuda y en redonda.
+  **Descartado el rótulo bajo el medidor**, que pedían las tres voces: `es.ts:114` ya dice en
+  palabras, a 9,3 pt y pegado al disco, que se releyeron todas las páginas. Sería un tercer sitio
+  para el mismo número, fuera de la caja del disco, en la banda más alta, en cinco estados y dos
+  idiomas, contra tres guardas de píxel. Coste alto, información cero.
+  **Descartado también** «Revisar a ojo: páginas 1, 2, 3, 4» dentro del sello: es afirmación nueva
+  (una instrucción) y la tabla ya destaca esas filas.
+- **La cita del ICO se borra entera, en los dos sitios donde vivía.** `/en/` da 404 hoy: nunca se
+  desplegó, así que este deploy habría sido el acto que la PUBLICA. `ESTADO.md` la tenía anotada
+  como no contrastada contra fuente y el comprador inglés es un despacho. Manafort y PSNI se quedan:
+  están verificadas por contenido.
+- **PUBLICAR: sí.** No es un acto de crecimiento, es retirada de responsabilidad. Lo vivo entrega
+  un PDF con datos dentro y un papel que dice que no los tiene, sobre el 86 % de los documentos
+  reales, y encima cita al regulador diciendo lo que no dijo. **No publicar también sangra.**
+
+**Guardas nuevas (las tres probadas con su mutación, fail-to-pass real):**
+
+- `afirmaciones-respaldadas` — sobre el HTML del repo, que es lo que sale por la puerta: todo
+  importe presentado como sanción cita su expediente (ventana de 700 caracteres, que es la mayor
+  distancia legítima MEDIDA: 570); «más de N comunidades» solo puede aparecer para desmentirlo; los
+  literales del plural sin recuento y la cita del ICO, prohibidos. **Su límite está escrito en la
+  cabecera, medido**: una cifra inventada a dos párrafos de un expediente legítimo pasa la
+  proximidad — por eso hay además barrido literal.
+- `legal/faq-ambar` — ata dos sitios independientes: los rótulos que IMPRIME el informe y los que
+  el FAQ le promete al comprador. Si alguien renombra un estado y no toca el FAQ, la web explica un
+  rótulo que el papel ya no imprime. Codifica además la regla de redacción del ámbar.
+- `report/sello` y `report/cobertura-destacada` — la frase nuclear aparece **una** vez en la rama
+  «solo objetos» y la coletilla **sí** se sigue añadiendo cuando hay además reserva de página; y la
+  cifra impresa se ata a `coberturaComprobada`, la misma función que dibuja el aro.
+
+**Lección propia, anotada porque costó un rojo:** un comentario HTML **se publica**. Citar la frase
+prohibida dentro de la página para explicar por qué se retiraba la reintrodujo; lo cazó el test
+recién escrito. Los literales prohibidos viven en el test, no en la página.
+
+**Verificado MIRANDO, no solo midiendo** (lo exige `docs/ESTADO.md` al tocar el sello): rasterizados
+E3 (caso corriente), E5 y el E3 «solo objetos», y comparados. El par «Páginas del documento 4 /
+Páginas comprobadas del todo 0» explica por fin el disco vacío del caso corriente.
+
+**Vocabulario prohibido sobre `dist/` construido: 0 hallazgos** en 26 ficheros, con las listas ES y
+EN completas (`anonimiz`, `certific`, `rgpd garantizado`, `inteligencia artificial`, ` ia `,
+`anonymi`, `certif`, `gdpr compliant`, `\bA.?I.?\b`, `machine learning`, `guarantee` sin negación,
+teatro de confianza, reclamos de admisibilidad, promesas de ingresos). El barrido se comprobó con
+una sonda (`/tachado/i` → 359 coincidencias): no da cero por estar vacío.
+
+**Bloqueos / pendiente (del dueño; nada de esto bloquea el despliegue):**
+
+1. 🔴 **Retirar la variante «Despacho - 3 puestos» de Gumroad.** Es lo único de la cartera que puede
+   cobrar 149 € por algo que no existe. **Umbral: 2026-08-12.** Si a las 48 h sigue publicada, se
+   despublica el producto entero hasta poder retirarla.
+2. 🟠 Corregir la descripción de «Pro - 1 puesto», que dice «Licencia individual **anual**».
+3. 🟠 El nombre de la marca: la ficha publica `"brand":{"name":"Angel Fh"}` — nombre real en
+   superficie externa, contra la regla de la casa. Es su identidad: la decide él.
+4. ⚪ `git push origin --delete gh-pages` + `npm run deploy-pages`, para quitar `.claude/**` de la
+   rama publicada. Higiene, sin credenciales dentro (PARADA 6, medida).
+
+**Enlaces:** rama `higiene/precio-real-y-ambar-anunciado`, 6 commits: `e18c57f` (precio) ·
+`3b208a6` (citas ES) · `7523fe0` (cita ICO) · `1e424da` (notas del tramo retirado) · `ebea689`
+(FAQ) · `09464f7` (sello). Merge `--no-ff` a `master`; deploy con `npm run deploy-pages`.
+
+---
+
 ## 2026-08-08 · diseño · El medidor de cobertura tenía forma de medidor y no medía nada (rama `diseno/medidor-de-cobertura-que-mide`, fusionada)
 
 **Hecho:** el icono del sello ámbar —un disco que se llena, llamado «medidor de cobertura» desde la
