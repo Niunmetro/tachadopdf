@@ -1005,6 +1005,10 @@ const CSS_GUIA = `  main, article, footer {
     text-decoration: none; font-weight: var(--peso-fuerte); font-size: var(--t-300);
   }
   .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
+  /* FAQ de la pieza de autoridad: <details> desnudo reestilado con los tokens del sistema. */
+  details.faq__item { max-width: var(--medida); border-top: 1px solid var(--linea); padding: var(--e-3) 0; }
+  details.faq__item summary { font-weight: var(--peso-fuerte); cursor: pointer; font-size: var(--t-400); }
+  details.faq__item p { margin: var(--e-2) 0 0; }
   footer {
     margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
     font-size: var(--t-200); color: var(--tinta-suave);
@@ -1020,6 +1024,27 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
 
+  // Datos estructurados: SIEMPRE el Article de la guía y, si la guía declara `faqs`, además un
+  // FAQPage. El FAQPage y los <details> visibles de abajo salen del MISMO `guia.faqs`, así que no
+  // pueden divergir por construcción (el fallo que `faq-paridad` cazó en la home). Un buscador con
+  // motor generativo cita la respuesta de una pregunta explícita: por eso la pieza de autoridad las
+  // sirve estructuradas (regla 55, AEO).
+  const faqSchema =
+    guia.faqs === undefined
+      ? []
+      : [
+          jsonLd({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: guia.faqs.map((item) => ({
+              '@type': 'Question',
+              name: item.pregunta,
+              acceptedAnswer: { '@type': 'Answer', text: item.respuesta },
+            })),
+          }),
+          '',
+        ];
+
   const extra = [
     jsonLd({
       '@context': 'https://schema.org',
@@ -1032,6 +1057,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       publisher: { '@type': 'Organization', name: c.marca },
     }),
     '',
+    ...faqSchema,
     `<style>\n${CSS_GUIA}\n</style>`,
   ];
 
@@ -1057,7 +1083,28 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     texto('a', { class: 'cp-cta', href: `${navHref(ruta, rutaHome)}?utm_source=guia` }, c.guiaCta),
   );
 
-  const cuerpo = [texto('h1', {}, guia.titulo), ...guia.cuerpo.map(bloque), '', ...ctas];
+  // Las mismas preguntas del FAQPage, ahora VISIBLES: un motor generativo exige que la respuesta
+  // que cita esté también en la página. `<details>` desnudo con <summary>/<p>, derivado de
+  // `guia.faqs` igual que el schema, para que los dos no puedan decir cosas distintas.
+  const faqVisible: string[] = [];
+  if (guia.faqs !== undefined) {
+    faqVisible.push(texto('h2', {}, c.secciones.faq));
+    for (const item of guia.faqs) {
+      faqVisible.push(
+        '<details class="faq__item">',
+        sangrar([texto('summary', {}, item.pregunta), texto('p', {}, item.respuesta)], 1),
+        '</details>',
+      );
+    }
+  }
+
+  const cuerpo = [
+    texto('h1', {}, guia.titulo),
+    ...guia.cuerpo.map(bloque),
+    ...faqVisible,
+    '',
+    ...ctas,
+  ];
 
   const main = [
     sangrar([mancheta(pagina, locale)], 2),

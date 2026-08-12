@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { CONTENIDOS } from './index';
 import { CSP } from './generar';
-import { esc } from './html';
+import { esc, escTexto } from './html';
 import { PAGINAS, ficheroDe, rutaDe, urlCanonica } from './registro';
 import { externalResourceRefs } from '../test/landing-helpers';
 
@@ -82,9 +82,19 @@ function jaccard(a: Set<string>, b: Set<string>): number {
 }
 
 describe('las cinco landings de cola larga sectorial existen y están integradas', () => {
-  it('el barrido ve las cinco (derivadas del registro, no escritas a mano)', () => {
+  it('el barrido ve las páginas generadas en español (derivadas del registro, no escritas a mano)', () => {
+    // Las cinco landings de cola larga sectorial (2026-08-10) MÁS la pieza de autoridad AEO
+    // (2026-08-12). Cualquier página generada en español entra sola en el barrido anti-duplicado:
+    // ese es justo el punto, que ninguna sea casi-igual a otra ni a las guías que ya existen.
     expect(LANDINGS.map((p) => p.id).sort()).toEqual(
-      ['guia-alumnos', 'guia-copia-dni', 'guia-curriculum', 'guia-prueba-juicio', 'guia-publicar-internet'].sort(),
+      [
+        'guia-alumnos',
+        'guia-copia-dni',
+        'guia-curriculum',
+        'guia-prueba-juicio',
+        'guia-publicar-internet',
+        'guia-recuperar-tachado',
+      ].sort(),
     );
     expect(GUIAS_ESTATICAS.length).toBe(6);
   });
@@ -132,6 +142,50 @@ describe('las cinco landings de cola larga sectorial existen y están integradas
       it('está en el sitemap', () => {
         const sitemap = readFileSync(resolve(RAIZ, 'public', 'sitemap.xml'), 'utf-8');
         expect(sitemap).toContain(`<loc>${urlCanonica(pagina, 'es')}</loc>`);
+      });
+    });
+  }
+});
+
+describe('la pieza de autoridad sirve su FAQ estructurada Y visible, sin divergir (AEO)', () => {
+  // El valor de AEO es que un motor generativo cite la respuesta; para eso hace falta el FAQPage
+  // de datos estructurados Y que esa misma respuesta esté visible en la página. Los dos salen del
+  // mismo `guia.faqs` en el generador, pero esta guarda lo ata sobre el HTML de disco: si alguien
+  // toca uno y no el otro, o cambia la fuente sin regenerar, se pone roja.
+  const conFaqs = LANDINGS.map((p) => ({
+    pagina: p,
+    guia: CONTENIDOS.es.guias.find((g) => g.id === p.id),
+  })).filter((x) => (x.guia?.faqs?.length ?? 0) > 0);
+
+  it('al menos una página generada declara FAQ (el barrido no está vacío)', () => {
+    expect(conFaqs.length).toBeGreaterThan(0);
+  });
+
+  for (const { pagina, guia } of conFaqs) {
+    const html = htmlDe(pagina.id);
+    const faqs = guia?.faqs ?? [];
+    const nombre = ficheroDe(pagina, 'es') ?? pagina.id;
+
+    describe(nombre, () => {
+      it('el FAQPage tiene exactamente las preguntas y respuestas de la fuente, en orden', () => {
+        let faqPage: { name: string; acceptedAnswer: { text: string } }[] | undefined;
+        for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+          const datos = JSON.parse(m[1] ?? '') as {
+            '@type'?: string;
+            mainEntity?: { name: string; acceptedAnswer: { text: string } }[];
+          };
+          if (datos['@type'] === 'FAQPage') faqPage = datos.mainEntity;
+        }
+        expect(faqPage).toBeDefined();
+        expect(faqPage?.map((q) => q.name)).toEqual(faqs.map((f) => f.pregunta));
+        expect(faqPage?.map((q) => q.acceptedAnswer.text)).toEqual(faqs.map((f) => f.respuesta));
+      });
+
+      it('cada pregunta y su respuesta están VISIBLES en la página (details desnudo)', () => {
+        for (const item of faqs) {
+          expect(html).toContain(`<summary>${escTexto(item.pregunta)}</summary>`);
+          expect(html).toContain(`<p>${escTexto(item.respuesta)}</p>`);
+        }
       });
     });
   }

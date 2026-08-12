@@ -104,3 +104,81 @@ Ventana: 4 semanas desde el deploy. Lectura **direccional a 2 semanas (2026-08-2
 |-------|------------------|----------------------------|-----------------|-------|---------|
 | 2026-08-24 (direccional) | | | | | |
 | 2026-09-07 (veredicto)   | | | | | |
+
+---
+
+# Pieza de autoridad / AEO — «¿Se puede recuperar el texto tachado de un PDF?»
+
+> Segundo experimento, de TIPO distinto al de arriba. Las cinco landings persiguen la **tarea por
+> sector** («ocultar datos de un CV / de un juicio / de una copia del DNI»). Esta pieza persigue la
+> **curiosidad y el miedo**: gente que YA sospecha que un tachado puede fallar y teclea «¿se puede
+> recuperar un texto tachado?», «el negro se quita», «copiar el texto de debajo». Capta al curioso y
+> asusta con hechos al profesional, que es el comprador. No es un casi-duplicado de las cinco
+> (medido: Jaccard de 3-gramas **máximo 0,036** contra ellas y **0,029** contra las seis guías; lo
+> ata `landings-keyword.test.ts`, que la barre sola por ser generada en español).
+
+## Qué se probó y por qué es un hueco
+
+La SERP de la intención de recuperación («recuperar texto tachado pdf», «el tachado negro se puede
+quitar / copiar el texto de debajo») la ocupan blogs de los gigantes (Smallpdf, Adobe, pdfFiller,
+PDFgear) con una respuesta **binaria y tranquilizadora**: «las herramientas profesionales borran de
+verdad, las anotaciones se quitan». **Nadie publica el ESTUDIO por métodos**: qué tipos de tachado
+fallan, cómo, y qué rastro deja incluso uno hecho bien. Ese es el hueco de **AEO** (regla 55): ser
+la **fuente citable** sobre los tipos de fallo del tachado, no una guía genérica más.
+
+- **Búsquedas de validación (2026-08-12):** `recuperar texto tachado pdf` (SERP de blogs how-to, sin
+  estudio); `el tachado negro de un pdf se puede quitar / copiar texto debajo` (misma familia); la
+  variante inglesa (`copy text from redacted pdf`, `redaction failed`) está **muy poblada** por
+  sitios de autoridad dedicados (piiblackout, redactifyai, unredact) → **ES a propósito**, igual que
+  las cinco de arriba.
+
+## Los datos propios y las fuentes (regla 55 + juez, cifra con fuente)
+
+- **Dato propio, medido en `src/pdf/*.test.ts`** (banco de PDF de datos inventados): el hueco de
+  glifos vale **61,765 pt** para un DNI en Helvetica 11 y **20 nombres → 20 anchuras distintas**
+  (`hueco-de-glifos.test.ts`); seis tipos de escondite reproducidos y atados (recuadro superpuesto,
+  hueco de glifos, página escaneada, marcador, adjunto/metadatos, capa apagada).
+- **Fuente pública citada con fecha:** arXiv **2206.02285** «Glyph Positions Break PDF Text
+  Redaction» (2022; 11 herramientas, Acrobat incluida; cientos de PDF reales des-tachados); caso
+  **Manafort, 8-ene-2019** (escrito judicial con el tachado legible por copiar-pegar).
+- **Límite propio declarado:** el hueco de glifos **también nos afecta** (nuestro motor conserva la
+  capa de texto). La pieza lo dice; la honestidad es el argumento.
+
+## La métrica — GSC, misma que la cohorte
+
+Sin analítica en la web (por diseño). **Juez = Google Search Console**, métrica **Impresiones
+orgánicas** de la URL `https://www.tachadopdf.com/guia/recuperar-texto-tachado-pdf/`.
+
+- **Fecha de despliegue:** 2026-08-12.
+- **Prerrequisito (control de confusión):** en «Indexación de páginas», comprobar que la URL está
+  **indexada** antes de leer la demanda. El sitemap ya la incluye (24 URLs). Si a las 2 semanas no
+  está indexada, se solicita indexación y se reinicia el reloj: no se lee demanda sobre una página
+  que Google todavía no conoce.
+- **Señal secundaria de AEO (cualitativa, no decide sola):** preguntar a un motor generativo «¿se
+  puede recuperar un texto tachado de un PDF?» y ver si cita la página. Es indicativa, no el juez.
+
+### Umbral de decisión (fecha y cifra)
+
+Es **una** página, no cinco: el bar es proporcional. Lectura **direccional a 2026-08-24**,
+**veredicto a 2026-09-07** (≈26 días vivos).
+
+- **VALIDA la intención de recuperación/autoridad:** **≥ 10 impresiones orgánicas acumuladas** a
+  2026-09-07 por una consulta de la familia de recuperación, **estando indexada**. Cualquier clic es
+  bonus. → Se itera: pieza compañera (p. ej. «cómo tachar de verdad un PDF») y afinar el título.
+- **ZONA GRIS:** **1-9 impresiones** → se reescriben título/meta y se vuelve a medir a 4 semanas más.
+- **MATA esta intención (con fundamento):** **0 impresiones estando indexada** a 2026-09-07. Que
+  Google no nos muestre NI UNA VEZ para su propia consulta de recuperación, con la página indexada,
+  dice que ni esta intención tiene demanda medible que persigamos en español. → No se reescribe: se
+  acepta que el ángulo de autoridad no capta por búsqueda y se reconsidera.
+
+### Nota honesta sobre el alcance
+- Impresiones **no** son ventas ni citas de IA generativa: miden que la demanda existe y aparecemos.
+- El bar (10) es más bajo que el de la cohorte (30) porque es **una** URL, no cinco; misma exigencia
+  por página, no menos.
+
+### Registro de lectura (rellenar en cada checkpoint)
+
+| Fecha | Indexada (sí/no) | Impresiones (acum.) | Consulta real | Clics | Citada por IA gen. | Lectura |
+|-------|------------------|---------------------|---------------|-------|--------------------|---------|
+| 2026-08-24 (direccional) | | | | | | |
+| 2026-09-07 (veredicto)   | | | | | | |

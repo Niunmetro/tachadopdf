@@ -42,6 +42,15 @@ export interface ContenidoGuia {
    * no cambia ni un byte. El href lo calcula el generador (ruta relativa al comprobador del idioma).
    */
   enlaceComprobador?: string;
+  /**
+   * Preguntas frecuentes de la guía, para AEO (que los buscadores con motor generativo citen la
+   * respuesta). OPCIONAL: solo la declara la pieza de autoridad. Cuando está, el generador emite
+   * UN bloque `FAQPage` de datos estructurados Y los mismos `<details>` visibles, ambos derivados
+   * de este array — no pueden divergir por construcción, que es el fallo que `faq-paridad` cazó en
+   * la home. La respuesta va entera en `respuesta`: los motores citan la primera frase, así que la
+   * primera frase responde la pregunta de forma directa (regla 55 de la casa).
+   */
+  faqs?: EntradaFaq[];
 }
 
 /** Textos del informe de comprobación. El informe ES el producto: aquí no entra ni una promesa. */
