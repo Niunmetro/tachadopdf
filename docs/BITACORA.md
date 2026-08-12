@@ -4,6 +4,106 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-12 · growth · Pieza de AUTORIDAD / AEO: «¿Se puede recuperar un texto tachado de un PDF?» (acto de DISTRIBUCION)
+
+**Hecho:** una pieza de autoridad, no otra landing de tarea. Rama
+`seo/autoridad-recuperar-tachado`, merge `--no-ff` `d958099`, push a `origin/master` (verificado
+sincronizado) y DESPLEGADA. VIVA en https://www.tachadopdf.com/guia/recuperar-texto-tachado-pdf/
+(200). Suite **1344 -> 1381** en 75 ficheros, verde. No es ingenieria: es el segundo acto de
+distribucion con juez escrito, de TIPO distinto al de las cinco landings del 10-ago.
+
+### El tipo, y por que es un hueco distinto (regla 55, AEO)
+Las cinco landings de cola larga persiguen la TAREA por sector («ocultar datos de un CV / de un
+juicio / de una copia del DNI»). Esta persigue la CURIOSIDAD y el MIEDO: gente que YA sospecha que
+un tachado puede fallar y teclea «¿se puede recuperar un texto tachado?», «el negro se quita»,
+«copiar el texto de debajo». El comprobante de la keyword (WebSearch, 2026-08-12): la SERP de esa
+intencion la ocupan blogs de los gigantes (Smallpdf, Adobe, pdfFiller, PDFgear) con una respuesta
+BINARIA y tranquilizadora —«las herramientas profesionales borran de verdad, las anotaciones se
+quitan»—, y **nadie publica el ESTUDIO por metodos**. Ese es el hueco de AEO: ser LA fuente citable
+sobre los tipos de fallo del tachado. Capta al curioso Y asusta con hechos al profesional, que es el
+comprador.
+
+### Los datos que la sostienen (regla 55: dato propio + fuente que resuelve)
+- **Dato propio, MEDIDO en nuestro banco `src/pdf/*.test.ts`** (PDF de datos inventados, uno por
+  escondite): el hueco de glifos vale **61,765 pt** para un DNI en Helvetica 11 y **20 nombres dan
+  20 anchuras distintas** (`hueco-de-glifos.test.ts`); seis tipos de fuga reproducidos y atados
+  (recuadro superpuesto, hueco de glifos, pagina escaneada, marcador, adjunto/metadatos, capa
+  apagada). No se reinvento el banco: se cita el que ya existe y mide justo esto.
+- **Fuente publica con fecha:** arXiv **2206.02285** «Glyph Positions Break PDF Text Redaction»
+  (2022; 11 herramientas, Acrobat incluida; cientos de PDF reales des-tachados) y el caso **Manafort,
+  8-ene-2019** (escrito judicial legible por copiar-pegar). Verificadas por WebSearch antes de citar.
+- **Limitacion propia declarada:** el hueco de glifos **tambien nos afecta** (conservamos la capa de
+  texto). La pieza lo dice con todas las letras; la honestidad ES el argumento.
+- **Lineas que NO se cruzaron:** cero difamacion de producto nombrado (se presentan TIPOS de fallo y
+  METODOLOGIA; los productos los nombra el estudio citado, no nosotros); cero cifra sin fuente que
+  resuelva; cero vocabulario prohibido (`anonimiz`/`certific`/`rgpd garantizado`/`IA`, medido 0 en
+  la pagina viva); la pieza termina llevando al comprobador, sin prometer cumplimiento.
+
+### Integracion (hereda el sistema, igual que las landings)
+- Guia **generada** solo en espanol (`origen: 'generado'`, slug `guia/recuperar-texto-tachado-pdf`).
+  Hereda sin copiar el sistema visual, la CSP estricta (**0 recursos externos**, medido en el
+  navegador: solo el documento + la fuente self-hosted), el canonical auto-referente, la mancheta y
+  el favicon. Entra en el sitemap (**24 URLs**) y da acceso al comprobador Y a la herramienta.
+- **Estructura pregunta->respuesta + schema para AEO.** El cuerpo abre respondiendo en la primera
+  frase; los H2 son las preguntas reales. Ademas se anadio un campo opcional `faqs` a `ContenidoGuia`
+  y el generador emite un **FAQPage** de datos estructurados (junto al Article que ya llevaban las
+  guias) Y los `<details>` visibles, **derivados del mismo `guia.faqs`**: no pueden divergir por
+  construccion (el fallo que `faq-paridad` cazo en la home). Verificado vivo: Article + FAQPage + 5
+  Question en la pagina desplegada.
+- El FAQ CSS (`details.faq__item`) va en `CSS_GUIA`, compartido por todas las guias con tokens del
+  sistema: por eso las 11 guias generadas cambiaron +4 lineas (consistencia, como ya se comparte
+  `.cp-cta`). `comprobador`/home-EN/checker-EN NO se tocaron (eran churn de CRLF, restaurados).
+
+### No es casi-duplicado (el peligro central: «scaled content abuse»)
+Medido con Jaccard de 3-gramas de palabra (mismo metodo que `landings-keyword.test.ts`, umbral 0,30):
+**maximo 0,036** contra las cinco landings y **0,029** contra las seis guias estaticas — mas bajo aun
+que el 0,074 de la cohorte anterior. La pieza entra SOLA en el barrido anti-duplicado por ser
+generada en espanol; se actualizo la lista de ids (5 -> 6) y se anadio una guarda de paridad del FAQ
+(FAQPage == fuente == `<details>`). 1606 palabras visibles sin JS.
+
+### El juez de distribucion (instrumentado)
+`docs/SEO-EXPERIMENTO.md`, segunda seccion: consulta objetivo (familia de recuperacion), fecha de
+deploy (2026-08-12), prerrequisito de indexacion, y **umbral con fecha y cifra a 2026-09-07**: es UNA
+pagina, asi que el bar es proporcional — **>=10 impresiones organicas** = VALIDA e itera; 1-9 = zona
+gris, se afinan titulo/meta; **0 estando indexada = la intencion de autoridad no capta por busqueda**
+y se acepta con dato. Senal secundaria (cualitativa, no decide): que un motor generativo cite la
+pagina. El juez que decide es GSC, misma metrica que la cohorte.
+
+### Verificacion (exit codes REALES, nunca a `| tail`)
+`npx --no-install tsc --noEmit` = **0** · `npx --no-install vitest run` = **0** (**1381/1381** en 75
+ficheros; +37 sobre 1344 = barrido de la nueva pagina + paridad FAQ + dedup) · `npm run build` = 0 y
+otra vez dentro de `deploy-pages`. `dist/CNAME` = `www.tachadopdf.com` (LF) comprobado ANTES de
+desplegar. Contadores de guarda actualizados con su motivo (`estilo` 15->16 generadas, `cta-visible`
+23->24 del sitio). Pagina RENDERIZADA y MIRADA en el navegador (mancheta, H1, cuerpo, nota de
+limitacion propia, los seis tipos, FAQ y los dos CTA), **0 peticiones externas** y **0 errores de
+consola**. Dominio vivo tras desplegar: home/pagina/sitemap/comprobador **200** (CNAME intacto), el
+sitemap sirve la URL nueva, y vocabulario prohibido **0** en la pagina publicada.
+
+**Decisiones y porques:**
+- *Solo en espanol, a proposito.* La variante inglesa de la intencion (`copy text from redacted pdf`,
+  `redaction failed`) esta MUY poblada por sitios de autoridad dedicados (piiblackout, redactifyai,
+  unredact, textfixer): mercado mas dificil, igual que decidio la cohorte de las cinco. ES capta el
+  hueco; EN seria pelear cuesta arriba.
+- *Se cito el banco que ya existe, no se reconstruyo.* La tarea permitia reconstruir el banco con
+  datos inventados o describir la metodologia; `src/pdf/*.test.ts` ya mide exactamente los seis
+  escondites con datos inventados, asi que la metodologia reproducible ya estaba y es honesta citarla.
+- *FAQPage ademas del Article.* Un motor generativo cita la respuesta de una pregunta explicita: el
+  Article solo no basta para AEO. El coste (un campo opcional + rama en el generador + una guarda) se
+  paga una vez y solo lo usa esta pieza; las guias que no declaran `faqs` no cambian de schema.
+- *Sin importes de sancion.* Se menciona a la AEPD de forma cualitativa (un documento mal tachado que
+  se difunde es una brecha de datos), sin cifra ni expediente inventado: `afirmaciones-respaldadas`
+  solo exige expediente si hay un importe en €, y aqui no lo hay a proposito.
+
+**Bloqueos / pendiente:** ninguno de esta pieza. Siguen los gates del dueno de `ESTADO.md` (variante
+Despacho en Gumroad G1-G3, PARADA 6 de `.claude/**` en `gh-pages`). Auditoria Codex externa: sin
+cupo, consta pendiente. Primer dato de GSC de esta pieza: **2026-08-24** (direccional), veredicto
+**2026-09-07**.
+
+**Enlaces:** rama `seo/autoridad-recuperar-tachado` (commit `4c6e512`) -> merge `--no-ff` `d958099`
+-> push `origin/master` (sincronizado, verificado) -> `npm run deploy-pages` (exit 0, CNAME) ->
+`origin/gh-pages@37ab834`. Viva: https://www.tachadopdf.com/guia/recuperar-texto-tachado-pdf/
+
+---
 ## 2026-08-10 · diseno · Home rediseñada «legal-tech premium» (integracion de Claude Design)
 
 **Hecho:** la portada se reescribe al diseño premium de Claude Design (masas de color alternas,

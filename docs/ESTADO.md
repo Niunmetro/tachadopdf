@@ -1,8 +1,16 @@
-# ESTADO — TachadoPDF (actualizado 2026-08-10)
+# ESTADO — TachadoPDF (actualizado 2026-08-12)
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
-- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **23 URLs (15 ES + 8 EN)**, un solo
+- **✅ PIEZA DE AUTORIDAD / AEO DESPLEGADA** (2026-08-12, rama `seo/autoridad-recuperar-tachado`,
+  merge `--no-ff` `d958099`, `origin/master` sincronizado, `origin/gh-pages@37ab834`). Guía generada
+  solo en español `/guia/recuperar-texto-tachado-pdf/` que ataca la intención de curiosidad y miedo
+  («¿se puede recuperar un texto tachado?»), un TIPO distinto al de las 5 landings sectoriales.
+  Datos propios medidos (banco `src/pdf/*.test.ts`) + fuentes públicas con fecha (arXiv 2206.02285,
+  Manafort 8-ene-2019) + limitación propia declarada (el hueco de glifos nos afecta). Schema Article
+  **y FAQPage** (para AEO). No es casi-duplicado: Jaccard ≤ 0,036 vs las 5, ≤ 0,029 vs las 6 guías.
+  Juez y umbral (GSC, 2026-09-07) en `docs/SEO-EXPERIMENTO.md`. Ver la bitácora del 2026-08-12.
+- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **24 URLs (16 ES + 8 EN)**, un solo
   sitemap con alternos `hreflang` recíprocos y `x-default` al español. Las dos landings de sector
   (`/actas/`, `/nominas/`) solo existen en español: ver PARADA 2.
 - **✅ CINCO landings de cola larga sectorial FUSIONADAS Y DESPLEGADAS** (2026-08-10, rama
@@ -22,8 +30,9 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1344/1344 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
-  las 5 landings de keyword; +1 con la home rediseñada).
+- Suite: **1381/1381 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
+  las 5 landings de keyword; +1 con la home rediseñada; +37 con la pieza de autoridad AEO —barrido
+  de la nueva página + paridad del FAQ + dedup).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -382,12 +391,19 @@
 
 ## Embudo / marketing
 - Outreach y Ads: sin cambios desde el 22-07 (ver bitácora).
-- SEO: 23 URLs en sitemap. Las guías inglesas apuntan a intención de búsqueda inglesa
+- SEO: 24 URLs en sitemap. Las guías inglesas apuntan a intención de búsqueda inglesa
   (Rule 5.2, DSAR/ICO, comprobar un tachado), NO son traducciones de las españolas.
 - **Cola larga sectorial (2026-08-10):** 5 landings nuevas persiguen la demanda real por sector con
   verbos que la gente SÍ teclea («censurar/ocultar/borrar/tapar»), no «tachar». El diagnóstico:
   el embudo se rompe en adquisición, la cabeza la poseen los gigantes, el hueco es la cola sectorial
   española. Medición y umbral de kill/keep en `docs/SEO-EXPERIMENTO.md` (GSC, 2026-09-07).
+- **Pieza de autoridad / AEO (2026-08-12):** `/guia/recuperar-texto-tachado-pdf/` ataca la intención
+  de curiosidad y miedo («¿se puede recuperar un texto tachado?»), donde la SERP la ocupan blogs de
+  los gigantes con una respuesta binaria y nadie publica el estudio por métodos (hueco de AEO,
+  regla 55). Sostenida por dato propio medido (banco `src/pdf/*.test.ts`: hueco de glifos 61,765 pt,
+  6 tipos de escondite) + arXiv 2206.02285 + Manafort (8-ene-2019), y declara nuestra propia
+  limitación. Schema Article + FAQPage. Segundo experimento con su umbral en `docs/SEO-EXPERIMENTO.md`
+  (una página, bar proporcional: ≥10 impresiones = valida; 0 indexada = la intención no capta).
 
 ## Bloqueos / PARADAS del owner
 
