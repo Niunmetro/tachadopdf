@@ -288,9 +288,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
   );
 
   // Eran diez (home ES+EN, comprobador ES+EN, seis guias inglesas); el 2026-08-10 se sumaron las
-  // CINCO landings de cola larga sectorial (generadas, solo en espanol), y pasaron a quince.
-  it('el barrido ve las quince paginas generadas', () => {
-    expect(generadas.length).toBe(15);
+  // CINCO landings de cola larga sectorial (generadas, solo en espanol), y pasaron a quince; el
+  // 2026-08-12 se sumo la pieza de autoridad AEO (generada, solo en espanol) y pasaron a dieciseis.
+  it('el barrido ve las dieciseis paginas generadas', () => {
+    expect(generadas.length).toBe(16);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(

@@ -139,6 +139,19 @@ export const PAGINAS: PaginaRegistro[] = [
     slugs: { es: 'guia/tapar-datos-copia-dni-tramite' },
   },
 
+  // Pieza de AUTORIDAD / AEO (2026-08-12). Distinta en TIPO de las cinco de arriba: no es una
+  // tarea sectorial, ataca la intención de curiosidad y miedo («¿se puede recuperar un texto
+  // tachado?»). Es `origen: 'generado'`, así que hereda sin copiar el sistema visual, la CSP, el
+  // canonical y el sitemap, y entra sola en el barrido anti-duplicado de landings-keyword.test.ts.
+  // Además declara `faqs`, y por eso su HTML lleva FAQPage de datos estructurados. Solo en español.
+  {
+    id: 'guia-recuperar-tachado',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/recuperar-texto-tachado-pdf' },
+  },
+
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen
   // audiencia inglesa, y tres de las inglesas (Rule 5.2, DSAR, comprobar el tachado) no tienen

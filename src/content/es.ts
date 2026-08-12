@@ -522,6 +522,134 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+  // PIEZA DE AUTORIDAD / AEO (2026-08-12). No es una landing de tarea sectorial como las cinco de
+  // arriba: ataca la intención de CURIOSIDAD y de MIEDO —«¿se puede recuperar un texto tachado?»,
+  // «el negro se quita», «copiar el texto de debajo»—, que el diagnóstico de keywords midió con
+  // demanda real. La SERP la ocupan blogs de los gigantes que dan una respuesta binaria y
+  // tranquilizadora; nadie publica el ESTUDIO por métodos. Ese es el hueco de AEO: ser la fuente
+  // citable sobre los TIPOS de fallo. Los datos que la sostienen son propios y medidos (nuestro
+  // banco de pruebas en src/pdf/*.test.ts) y públicos y con fecha (arXiv 2206.02285; Manafort,
+  // 8-ene-2019). Y declara NUESTRA propia limitación (el hueco de glifos nos afecta también): la
+  // honestidad es el argumento. Ver docs/SEO-EXPERIMENTO.md para su medición.
+  {
+    id: 'guia-recuperar-tachado',
+    titulo:
+      '¿Se puede recuperar el texto tachado de un PDF? Por qué muchos tachados se pueden deshacer',
+    tituloEnlace: '¿Se puede recuperar un texto tachado de un PDF?',
+    descripcion:
+      'Sí, en muchos casos: si el tachado solo tapa el dato con un recuadro, el texto sigue dentro del archivo y se copia en segundos. Repasamos, con casos reales y un banco de pruebas propio, los tipos de tachado que se pueden deshacer, cuáles aguantan y cómo comprobar el tuyo.',
+    enlaceComprobador: 'Comprueba gratis, sin subir el archivo, si tu tachado deja rastro',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Sí, muchos tachados de PDF se pueden deshacer, y en los casos más comunes ni siquiera hace falta una herramienta especial. Cuando el tachado solo pinta un recuadro negro encima, el texto sigue guardado dentro del archivo: se selecciona con el ratón y se pega en cualquier sitio, y aparece. Que no se vea en pantalla no significa que no esté. La pregunta útil no es «¿se ve?», sino «¿sigue el dato dentro del archivo?», y la respuesta depende por completo del método con el que se tapó.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Esta página repasa, por tipos, qué tachados se pueden recuperar y cuáles no, con casos reales y con las medidas de un banco de pruebas propio. Y algo que casi nadie dice: incluso un tachado hecho bien deja un rastro geométrico que conviene conocer, el nuestro incluido.',
+      },
+      { t: 'h2', texto: '¿Por qué el recuadro negro no borra nada?' },
+      {
+        t: 'p',
+        texto:
+          'Porque el recuadro es una capa dibujada por delante, no una goma de borrar. El texto vive en el contenido del PDF y el rectángulo se pone encima, como una pegatina opaca sobre una hoja escrita: quitas la pegatina, o copias por debajo, y la frase sigue ahí entera. La mayoría de los editores de PDF permiten dibujar esa forma en dos clics, y por eso es el error más repetido.',
+      },
+      {
+        t: 'p',
+        texto:
+          'El caso más conocido lo protagonizó la defensa de Paul Manafort. El 8 de enero de 2019 presentó ante un tribunal un escrito con varios párrafos tapados en negro; los periodistas seleccionaron el texto, lo pegaron en un procesador de textos y leyeron en minutos lo que se pretendía ocultar. El tachado era solo una capa por encima. No fue un fallo informático raro: es exactamente lo que le pasa a cualquier PDF tapado con un recuadro.',
+      },
+      { t: 'h2', texto: 'Y si borro el texto de verdad, ¿ya está a salvo?' },
+      {
+        t: 'p',
+        texto:
+          'Casi, pero no del todo: cuando el texto se elimina de verdad, el hueco que ocupaba se queda. Al quitar una palabra, la de detrás no se desplaza a rellenar el espacio; queda un vacío cuya anchura es exactamente la del texto borrado. Y esa anchura habla. En nuestro banco de pruebas, un DNI español entre dos espacios en la tipografía Helvetica de 11 puntos deja un hueco de 61,765 puntos, siempre el mismo; y veinte nombres de pila frecuentes dejan veinte anchuras distintas. Con una lista corta de candidatos, medir el hueco puede bastar para deducir cuál era la palabra tachada.',
+      },
+      {
+        t: 'p',
+        texto:
+          'No es una teoría nuestra. Un estudio académico publicado en 2022 —«Story Beyond the Eye: Glyph Positions Break PDF Text Redaction», arXiv 2206.02285— examinó once herramientas de tachado de uso común, Adobe Acrobat entre ellas, y consiguió recuperar el texto de cientos de documentos reales ya tachados aprovechando justo esa información de posición. Dos de las once ni siquiera llegaban a borrar el texto marcado; el resto lo borraban pero dejaban el rastro de las posiciones.',
+      },
+      {
+        t: 'nota',
+        texto:
+          'Esto nos afecta también a nosotros, y lo decimos porque es la verdad: nuestro motor elimina el texto del archivo, pero no recompone la línea, así que el hueco de posición permanece. Por eso el informe lo declara con todas las letras y, cuando el dato es especialmente sensible, propone convertir esa página a imagen antes de entregarla. Ninguna herramienta que conserve la capa de texto está libre de este rastro.',
+      },
+      { t: 'h2', texto: 'Los seis sitios donde sobrevive un dato que creías tachado' },
+      {
+        t: 'p',
+        texto:
+          'Un PDF tiene muchos más rincones que la parte que se ve. Mantenemos un banco de pruebas con documentos de datos inventados, uno por escondite, y cada uno mide si el dato sigue siendo recuperable después de tacharlo. Estos son los seis tipos de fuga que aparecen una y otra vez:',
+      },
+      {
+        t: 'ol',
+        items: [
+          'El recuadro superpuesto: el negro es una anotación por encima; el texto sigue en el contenido y se copia. Es el de Manafort y el más frecuente.',
+          'El hueco de glifos: el texto se borró, pero la anchura del vacío que dejó identifica la palabra dentro de una lista corta.',
+          'La página escaneada: un negro sobre una imagen es una imagen sobre otra; se puede levantar o subir el contraste, y como el escaneo no tiene capa de texto, una revisión que solo lea texto pasa de largo en silencio.',
+          'El marcador o índice: un dato metido en el título de un marcador del documento no se ve en la página y sobrevive al tachado; un lector de texto corriente no lo mira.',
+          'El adjunto y los metadatos: un archivo incrustado, la miniatura que el PDF guarda de cada página (un retrato de la página SIN tachar), el texto alternativo de una imagen o restos de la aplicación que creó el documento pueden conservar el dato aunque la página se vea limpia.',
+          'La capa apagada: el dato dibujado dentro de una capa opcional que el documento declara oculta no aparece al abrirlo, pero está en el contenido de la página y se enciende con un clic en el panel de capas.',
+        ],
+      },
+      {
+        t: 'p',
+        texto:
+          'La lección no es «esta herramienta falla y esta no». Es que «tapar» y «borrar» son cosas distintas, y que un archivo puede parecer limpio en pantalla y llevar el dato en cualquiera de esos seis sitios a la vez.',
+      },
+      { t: 'h2', texto: '¿Cómo sé en treinta segundos si mi tachado se puede deshacer?' },
+      {
+        t: 'p',
+        texto:
+          'Haz la prueba del copiar y pegar: abre tu PDF ya tachado, selecciona con el ratón por encima del recuadro negro y pega en un bloc de notas. Si aparece el texto, no estaba borrado, estaba tapado. Si el documento es un escaneo o una foto, sube el brillo y el contraste sobre la zona negra a ver si asoma algo. Esta comprobación casera caza el fallo más común, el del recuadro superpuesto, pero no ve los otros cinco: el hueco de glifos, el marcador, el adjunto, los metadatos o la capa apagada no se detectan a ojo.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Para eso hicimos el comprobador de TachadoPDF: abre el PDF en tu propio navegador —no se sube a ningún servidor— y te dice qué datos de los patrones que reconoce siguen siendo recuperables y en qué páginas. Es gratis y sirve tanto para revisar un tachado que hiciste tú como uno que te ha llegado de otra persona.',
+      },
+      { t: 'h2', texto: '¿Qué hace falta para que un dato desaparezca de verdad?' },
+      {
+        t: 'p',
+        texto:
+          'Que el dato se elimine del contenido del archivo, no que se tape; que, si está sobre una imagen escaneada, se borren los píxeles de esa zona; y que después alguien vuelva a abrir el archivo y busque otra vez para confirmar que ya no está. Ese último paso es el que separa un tachado fiable de una promesa: TachadoPDF borra el texto y los píxeles, detecta de forma automática por patrones los datos habituales, y luego relee el archivo entregado —contenido, marcadores, adjuntos, metadatos y capas— para comprobar que no queda rastro. Lo que encuentra, lo dice; si algo no se puede comprobar, no lo firma en verde.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Y donde el propio método tiene un límite —el hueco de glifos, que ninguna herramienta que conserve el texto evita—, el informe lo declara en lugar de callarlo. La regla, al final, es sencilla: no te fíes de que un dato «no se vea»; comprueba que ya no está dentro del archivo.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Se puede recuperar el texto tachado de un PDF?',
+        respuesta:
+          'Sí, en muchos casos. Si el tachado solo tapa el texto con un recuadro negro, el texto sigue guardado dentro del archivo y se recupera seleccionándolo con el ratón y pegándolo en otro sitio. Solo desaparece de verdad cuando se elimina del contenido del PDF, no cuando se cubre.',
+      },
+      {
+        pregunta: '¿Por qué puedo copiar el texto que hay debajo de un recuadro negro?',
+        respuesta:
+          'Porque el recuadro es una capa dibujada por encima, no un borrado. El texto permanece en el contenido del PDF y el rectángulo solo lo oculta a la vista; al seleccionar y copiar sobre esa zona, se copia el texto que hay debajo. Le pasó a la defensa de Paul Manafort en un escrito judicial del 8 de enero de 2019.',
+      },
+      {
+        pregunta: 'Si borro el texto de verdad, ¿queda algún rastro?',
+        respuesta:
+          'Sí, queda el hueco que ocupaba. Al eliminar el texto, la palabra siguiente no se mueve, así que el vacío tiene la anchura exacta de lo borrado, y esa anchura puede identificar la palabra dentro de una lista corta de candidatos. Es el ataque descrito en el estudio arXiv 2206.02285, y afecta a cualquier tachado que conserve la capa de texto, el de TachadoPDF incluido.',
+      },
+      {
+        pregunta: '¿Cómo compruebo si mi tachado se puede deshacer?',
+        respuesta:
+          'Haz la prueba del copiar y pegar: selecciona sobre el recuadro negro y pega en un bloc de notas; si aparece el texto, no estaba borrado. Esa prueba caza el fallo más común, pero no ve los datos escondidos en marcadores, adjuntos, metadatos o capas ocultas. El comprobador de TachadoPDF los revisa en tu propio navegador, sin subir el archivo.',
+      },
+      {
+        pregunta: '¿Un recuadro negro sobre un documento escaneado es seguro?',
+        respuesta:
+          'No. Sobre un escaneo, el recuadro negro es una imagen encima de otra imagen: se puede quitar o realzar el contraste hasta que asome lo de debajo. Además, como el escaneo no tiene capa de texto, una revisión que solo lea texto no detecta el dato. Para borrarlo hay que eliminar los píxeles de esa zona de la imagen.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
