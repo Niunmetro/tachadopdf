@@ -1,7 +1,15 @@
-# ESTADO — TachadoPDF (actualizado 2026-08-12)
+# ESTADO — TachadoPDF (actualizado 2026-08-21)
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
+- **✅ FIX FALSO BLOQUEO (2026-08-21, merge `5d5ff7c`, desplegado)**: tachar SOLO una frase y dejar
+  un dato detectado a la vista ya NO bloquea la descarga. La verificación distingue «ofrecido y
+  RECHAZADO por el usuario» (→ se entrega, `verify.datosNoTachados`, sello ÁMBAR) de un residuo real
+  (seleccionado que sobrevive / partido en dos líneas / en metadatos → bloquea). `verifyRedaction`
+  recibe `declinedValues` (ofrecidos − seleccionados) y FALLA CERRADO sin él. El informe pinta esos
+  datos en ámbar, nunca verde (sin nuevo falso verde). Además: al cargar, la vista salta a
+  `#trabajo` (antes el documento nacía fuera de pantalla en la portada larga). Ver bitácora 2026-08-21.
+  Suite **1390/1390**.
 - **✅ PIEZA DE AUTORIDAD / AEO DESPLEGADA** (2026-08-12, rama `seo/autoridad-recuperar-tachado`,
   merge `--no-ff` `d958099`, `origin/master` sincronizado, `origin/gh-pages@37ab834`). Guía generada
   solo en español `/guia/recuperar-texto-tachado-pdf/` que ataca la intención de curiosidad y miedo
@@ -30,9 +38,9 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1381/1381 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
-  las 5 landings de keyword; +1 con la home rediseñada; +37 con la pieza de autoridad AEO —barrido
-  de la nueva página + paridad del FAQ + dedup).
+- Suite: **1390/1390 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
+  las 5 landings de keyword; +1 con la home rediseñada; +37 con la pieza de autoridad AEO; +9 con el
+  fix del falso bloqueo —unidad ofrecido/rechazado, estado E5→E3, integración pipeline).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).

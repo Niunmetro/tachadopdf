@@ -4,6 +4,53 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-21 · fix · Tachar SOLO una frase dejaba de bloquear la descarga (falso bloqueo) + salto de vista al cargar
+
+**Hecho:** merge `--no-ff` `5d5ff7c` (rama `fix/tachado-parcial-no-bloquea`, commit `96f59f6`),
+desplegado y verificado en el dominio vivo. Suite **1381 → 1390** (+9), tsc 0, build 0. Reportado
+por Ángel usando la herramienta con un documento real suyo.
+
+### El bug (de diseño, ruta sensible)
+Ángel quería tachar SOLO una frase y dejar el DNI a la vista. La herramienta le NEGABA su propio
+archivo: «Se han detectado residuos en algún documento del lote: no se ha descargado ningún fichero».
+`verifyRedaction` reescaneaba el documento de salida con `detect()` y marcaba como residuo
+BLOQUEANTE **cualquier** dato detectable en cualquier parte —incluido el que el usuario decidió NO
+tachar—; `clean=false` → `canDownloadBatch` bloqueaba la entrega. El guardián confundía «lo que
+pediste tachar sobrevivió» (falso verde real) con «queda un dato que decidiste dejar» (decisión
+legítima).
+
+### La distinción correcta: no es «objetivo/no», es «¿pudo el usuario elegir dejarlo?»
+- Un dato que la herramienta OFRECIÓ como caja y el usuario RECHAZÓ (no lo seleccionó) = decisión
+  suya → sale en `verify.datosNoTachados`, se ENTREGA el fichero, sello a ÁMBAR (E3), nunca verde.
+- Cualquier otro residuo (uno seleccionado que sobrevivió, uno partido en dos renglones que nunca se
+  pudo ofrecer, uno escondido en metadatos) = no se pudo rechazar → residuo bloqueante. Intacto.
+
+`verifyRedaction` recibe un 4º parámetro `declinedValues` = ofrecidos − seleccionados, que el
+pipeline calcula (`offeredValues` de `detectAutomaticBoxes`, ahora con `value`; `selectedValues` de
+`selectedAutomatic`). **FALLA CERRADO:** sin ese conjunto (`undefined`) todo residuo bloquea, el
+comportamiento antiguo — por eso los ~1381 tests previos no cambiaron. Metadatos y saltos de línea
+siguen bloqueando SIEMPRE (no se eligen por objeto / nunca se ofrecieron). Regresión evitada: los
+tests `dos-lineas` y `escondites-estructura` fallaron con mi primer intento (que condicionaba TODO
+al conjunto) y me obligaron a la distinción correcta.
+
+### Sin nuevo falso verde dentro del informe
+Un dato sin tachar dejaría de ser residuo → la sección «Comprobaciones» lo pintaría «limpio» (verde)
+con el DNI a la vista = falso verde NUEVO. Se pinta en ÁMBAR («N sin tachar, siguen en el
+documento»). El sello degrada E5→E3 (`hayDatosNoTachados`) con su frase propia
+(`lineaParcialDatosSinTachar`), distinta de las reservas de cobertura (ahí SÍ se comprobó). Copia
+nueva ES+EN. Vocabulario vetado: 0.
+
+### Además: feedback de subida
+Ángel: «sí sube, pero no aparece ninguna marca… solo aparece abajo». Medido en vivo: input a 935px,
+`#trabajo` a 1450px, viewport 720px → el documento nacía fuera de pantalla. `cargarEntradas` ahora
+hace `panelTrabajo.scrollIntoView` (protegido contra jsdom) al cargar o al errar.
+
+**Verificación:** unidad (ofrecido/rechazado, metadatos y saltos siguen bloqueando), estado
+(E5→E3), integración pipeline con el escenario EXACTO de Ángel (DNI desmarcado + frase manual →
+`clean=true`, DNI en `datosNoTachados`, informe ámbar). No es previewable local (el navegador de la
+sesión está anclado al proyecto raíz, que sirve Remotion en :3000): verificado en el dominio vivo.
+
+---
 ## 2026-08-12 · growth · Pieza de AUTORIDAD / AEO: «¿Se puede recuperar un texto tachado de un PDF?» (acto de DISTRIBUCION)
 
 **Hecho:** una pieza de autoridad, no otra landing de tarea. Rama
