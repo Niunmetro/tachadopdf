@@ -12,15 +12,10 @@ import { PRO_URL } from './config';
 import { contenidoDe, localeDelDocumento, type Contenido } from './content/index';
 import { FREE_MAX_PAGES, getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
-import { detect } from './detect/patterns';
-import { patternsForPreset, type DocumentPreset } from './detect/presets';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
-import { findAllOccurrenceMarks } from './pdf/occurrences';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, ReportData, VerifyResult } from './types';
-import { selectAll, type SelectionState, type Viewport } from './ui/boxes';
-import { buildPresetSelector } from './ui/preset-selector';
-import { mergeOccurrenceMarks } from './ui/tachar-todas';
+import { type SelectionState, type Viewport } from './ui/boxes';
 import { panelDeEntrega } from './ui/entrega';
 import { attachManualBoxDrawing, mountCanvas, renderHitOverlay, renderManualBoxes } from './ui/viewer';
 
@@ -57,7 +52,6 @@ const state: AppState = {
 };
 
 let fileWorks: FileWork[] = [];
-let currentPreset: DocumentPreset = 'generico';
 
 function el<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -123,31 +117,32 @@ async function loadWithPassword(bytes: Uint8Array, promptPassword: () => string 
 }
 
 /**
- * Monta el visor real de un fichero: una página por cada página que NO
- * necesita revisión visual (A7), con overlay de hits automáticos
- * marcables/desmarcables (selectAll/toggleHit) y dibujo de cajas manuales
- * (attachManualBoxDrawing). Todo lo que el usuario marca se acumula en
- * `fileWork.selected` / `fileWork.manual`, que es lo que luego se le pasa a
- * processDocument en el momento de la descarga.
+ * Monta el visor real de un fichero. POR DEFECTO NO HAY NADA MARCADO: los datos detectados se
+ * RESALTAN pero se tachan solo si el usuario lo pide. Cada valor detectado (un DNI, un teléfono)
+ * tiene un botón que MARCA o QUITA de golpe todas sus apariciones —un único control que alterna—, y
+ * además cada aparición se puede marcar suelta con un clic. Las páginas sin capa de texto se
+ * renderizan igual para poder tacharlas a mano (arrastrando el ratón). Lo que el usuario marca se
+ * acumula en `fileWork.selected` / `fileWork.manual`, que es lo que se pasa a processDocument al
+ * descargar.
  */
 async function renderFileVisor(
   container: HTMLElement,
   doc: PdfDoc,
   fileWork: FileWork,
-  preset: DocumentPreset,
   copia: Contenido['app'],
 ): Promise<void> {
   const visualReviewPages = doc.pagesNeedingVisualReview();
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
-  const kindsPremarcados = new Set(patternsForPreset(preset));
-  fileWork.selected = automaticBoxes.map((box) => kindsPremarcados.has(box.kind));
+  // POR DEFECTO, NADA MARCADO (decisión del dueño). Pre-marcar obligaba a desmarcar uno a uno lo
+  // que no se quiere tachar, y tachar de más es tan peligroso como tachar de menos.
+  fileWork.selected = automaticBoxes.map(() => false);
 
   const title = el('p');
   title.textContent = fileWork.fileName;
   container.appendChild(title);
 
-  // Instrucción visible del tachado manual. Sin ella, nadie sabía que se podía tachar a mano
-  // arrastrando el ratón (la queja "no deja tachar" del 2026-07-17).
+  // Instrucción visible. Sin ella, nadie sabía que se podía tachar a mano arrastrando el ratón
+  // (la queja "no deja tachar" del 2026-07-17), ni que hay botones para marcar/quitar en bloque.
   const comoTachar = el('p', { class: 'como-tachar' });
   comoTachar.textContent = copia.comoTachar;
   container.appendChild(comoTachar);
@@ -160,51 +155,47 @@ async function renderFileVisor(
 
   const total = doc.pageCount();
 
-  // Botón "tachar todas las apariciones": por cada VALOR único detectado en el documento
-  // (no por caja) precalculamos, con el doc todavía abierto, las marcas de TODAS sus apariciones
-  // (incluida la propia). Al pulsar se fusionan en fileWork.manual (dedupe por rect exacto) y se
-  // repinta; como fileWork.manual lo procesa processDocument igual que cualquier otro tachado
-  // manual, el borrado es el mismo pipeline real + re-verificación, sin vía nueva.
-  const valoresUnicos: string[] = [];
-  const vistos = new Set<string>();
-  for (let page = 0; page < total; page++) {
-    if (visualReviewPages.includes(page)) continue;
-    for (const hit of detect(doc.extractText(page))) {
-      if (!vistos.has(hit.value)) {
-        vistos.add(hit.value);
-        valoresUnicos.push(hit.value);
-      }
+  // Un botón por VALOR detectado (no por caja): marca o QUITA de golpe TODAS sus apariciones. Es un
+  // toggle —si ya están todas marcadas las quita, si no las marca todas— y su rótulo lo dice. Opera
+  // sobre `fileWork.selected` agrupando por `value`, el MISMO sitio donde caen los clics sueltos, así
+  // que las dos vías no divergen. (Antes «tachar todas» metía marcas manuales aparte y no había forma
+  // de deshacerlas en bloque: había que ir una a una, que es justo la queja del dueño.)
+  const grupos = new Map<string, number[]>();
+  automaticBoxes.forEach((box, i) => {
+    const arr = grupos.get(box.value);
+    if (arr) arr.push(i);
+    else grupos.set(box.value, [i]);
+  });
+
+  const pageEntries: { rerender: () => void }[] = [];
+  const botonesPorValor: { valor: string; boton: HTMLButtonElement; indices: number[]; n: number }[] = [];
+
+  function rerenderAllPages(): void {
+    for (const entry of pageEntries) entry.rerender();
+  }
+  function refrescarBotones(): void {
+    for (const b of botonesPorValor) {
+      const todasMarcadas = b.indices.every((i) => fileWork.selected[i]);
+      const rotulo = todasMarcadas
+        ? copia.destacharTodas(b.valor, b.n)
+        : copia.tacharTodas(b.valor, b.n);
+      etiquetarConDato(b.boton, rotulo, b.valor);
+      b.boton.classList.toggle('activo', todasMarcadas);
+      b.boton.setAttribute('aria-pressed', todasMarcadas ? 'true' : 'false');
     }
   }
 
-  const pageEntries: {
-    page: number;
-    container: HTMLElement;
-    viewport: Viewport;
-    getState: () => SelectionState;
-    setState: (s: SelectionState) => void;
-  }[] = [];
-
-  if (valoresUnicos.length > 0) {
+  if (grupos.size > 0) {
     const occContainer = el('div', { class: 'tachar-todas' });
-    for (const valor of valoresUnicos) {
-      const occ = findAllOccurrenceMarks(doc, valor, visualReviewPages);
-      const n = occ.reduce((acc, m) => acc + m.rects.length, 0);
-      if (n === 0) continue;
+    for (const [valor, indices] of grupos) {
       const boton = el('button', { type: 'button' });
-      etiquetarConDato(boton, copia.tacharTodas(valor, n), valor);
+      botonesPorValor.push({ valor, boton, indices, n: indices.length });
       boton.addEventListener('click', () => {
-        fileWork.manual = mergeOccurrenceMarks(fileWork.manual, occ);
-        for (const entry of pageEntries) {
-          renderManualBoxes({
-            container: entry.container,
-            viewport: entry.viewport,
-            page: entry.page,
-            getState: entry.getState,
-            setState: entry.setState,
-            etiquetaQuitar: copia.quitarTachado,
-          });
-        }
+        // Si ya están todas marcadas, el botón las QUITA; si no, las marca todas.
+        const marcar = !indices.every((i) => fileWork.selected[i]);
+        for (const i of indices) fileWork.selected[i] = marcar;
+        rerenderAllPages();
+        refrescarBotones();
       });
       occContainer.appendChild(boton);
     }
@@ -271,29 +262,29 @@ async function renderFileVisor(
         setState,
         etiquetaQuitar: copia.quitarTachado,
       });
+      // Un clic suelto puede completar o vaciar un valor: el botón de ese valor tiene que reflejarlo.
+      refrescarBotones();
     };
 
     renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState });
     renderManualBoxes({
-        container: pageContainer,
-        viewport,
-        page,
-        getState,
-        setState,
-        etiquetaQuitar: copia.quitarTachado,
-      });
+      container: pageContainer,
+      viewport,
+      page,
+      getState,
+      setState,
+      etiquetaQuitar: copia.quitarTachado,
+    });
     attachManualBoxDrawing({ canvas, viewport, page, getState, setState });
-    pageEntries.push({ page, container: pageContainer, viewport, getState, setState });
-
-    if (hitRects.length > 0) {
-      const selectAllButton = el('button', { type: 'button' });
-      selectAllButton.textContent = copia.seleccionarHits(page + 1);
-      selectAllButton.addEventListener('click', () => setState(selectAll(getState())));
-      pageContainer.appendChild(selectAllButton);
-    }
+    pageEntries.push({
+      rerender: () =>
+        renderHitOverlay({ container: pageContainer, hitRects, viewport, getState, setState }),
+    });
 
     container.appendChild(pageContainer);
   }
+
+  refrescarBotones();
 }
 
 function downloadBytes(bytes: Uint8Array, fileName: string): void {
@@ -355,22 +346,9 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   downloadButton.textContent = copia.botonDescargar;
   downloadButton.setAttribute('disabled', 'true');
 
-  // Selector de tipo de documento: solo cambia qué categorías vienen premarcadas al montar el
-  // visor de un fichero (T2). No altera la detección.
-  // Medido a 390 px: era el control MÁS PEQUEÑO de la página (137×19 px) y estaba justo encima
-  // de la zona de carga, con su rótulo al lado robándole el ancho. Pasa a campo de ancho
-  // completo con el rótulo ENCIMA y 44 px de alto, que es la diana táctil de la casa.
-  const presetLabel = el('label', { for: 'preset-tipo-documento' });
-  presetLabel.textContent = copia.tipoDocumento;
-  const presetSelector = buildPresetSelector(
-    document,
-    (preset) => {
-      currentPreset = preset;
-    },
-    copia.presets,
-  );
-  const filaPreset = el('div', { class: 'campo' });
-  filaPreset.append(presetLabel, presetSelector);
+  // (Se retiró el selector de «tipo de documento»: solo servía para PRE-MARCAR categorías, y ahora
+  // por defecto no se marca nada — el usuario elige qué tachar con los botones por valor y los clics
+  // sueltos. Un control muerto en la primera pantalla resta claridad.)
 
   // Enlace de compra: sin esto, quien agota la cuota gratuita no sabe dónde comprar Pro.
   // Se muestra solo cuando NO hay Pro activo (a un cliente que ya pagó no se le vende nada).
@@ -385,7 +363,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   // tres huecos que fijan el orden de la primera pantalla.
   const confirmacion = el('div', { class: 'confirmacion' });
   confirmacion.append(checkbox, checkboxLabel);
-  panelCarga.append(filaPreset, fileInput);
+  panelCarga.append(fileInput);
   panelGancho.append(ejemploBtn, pistaEjemplo, quotaStatus);
   panelTrabajo.append(
     filesContainer, scannedWarning, confirmacion, downloadButton, resultStatus, entregaContainer,
@@ -485,7 +463,7 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
         const fileWork: FileWork = { fileName: entrada.nombre, bytes: entrada.bytes, manual: [], selected: [] };
         const fileContainer = el('div', { class: 'file-visor' });
         try {
-          await renderFileVisor(fileContainer, doc, fileWork, currentPreset, copia);
+          await renderFileVisor(fileContainer, doc, fileWork, copia);
         } finally {
           doc.close();
         }

@@ -128,6 +128,7 @@ describe('interpolaciones traducidas', () => {
     expect(c.app.cuotaGratis(1, 5, 3)).toContain('1/5');
     expect(c.app.limitePaginas('acta.pdf', 9, 3)).toContain('acta.pdf');
     expect(c.app.tacharTodas('12345678Z', 2)).toContain('12345678Z');
+    expect(c.app.destacharTodas('12345678Z', 2)).toContain('12345678Z');
     expect(c.comprobadorUi.veredictoSoloEscaneos(2)).toContain('2');
   });
 });

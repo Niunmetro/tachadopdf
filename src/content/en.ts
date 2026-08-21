@@ -143,12 +143,13 @@ const APP_EN: CopiaApp = {
   avisoEscaneadas: (paginas) =>
     `Warning — these pages have no text layer (probably scanned) and need checking by eye: ${paginas}.`,
   comoTachar:
-    'Detected data is marked for you — click to choose what to redact. To redact anything else (a name, a signature, a photo), drag the mouse across it to draw a box. Every box has an "x" if you want to remove it.',
+    'Detected data is highlighted but NOT redacted yet: click the ones you want to redact, or use the buttons above to mark or clear every occurrence of a value at once. To redact anything else (a name, a signature, a photo), drag the mouse across it to draw a box. Every box has an "x" if you want to remove it.',
   revisionVisual: (paginas) =>
     `Pages needing a visual check (no text layer, or a full-page image): ${paginas}.`,
   paginaEscaneada: (numero) =>
     `Page ${numero}: no text layer (scanned). No automatic detection here — redact the areas with data by hand.`,
   tacharTodas: (valor, ocurrencias) => `Redact all occurrences of "${valor}" (${ocurrencias})`,
+  destacharTodas: (valor, ocurrencias) => `Clear redaction of "${valor}" (${ocurrencias})`,
   seleccionarHits: (pagina) => `Page ${pagina}: select all detected items`,
   quitarTachado: 'Remove this redaction',
 };
