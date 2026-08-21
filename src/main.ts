@@ -512,9 +512,12 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     // vista no se movía y el usuario trabajaba a ciegas —«no aparece ninguna marca de que se ha
     // subido»—. Se lleva la vista al trabajo (o al mensaje de error, que también sale ahí) para que
     // el resultado esté donde el usuario mira. `scrollIntoView` no existe en jsdom: se protege.
+    // Salto INSTANTÁNEO a propósito: con `behavior:'smooth'` el desplazamiento no llega a ocurrir
+    // bajo «reduced motion» ni en algunos navegadores/entornos (medido: no movía la vista), y este
+    // aviso TIENE que verse siempre. El salto seco, además, es inequívoco: el documento aparece.
     if (fileWorks.length > 0 || resultStatus.textContent !== '') {
       try {
-        panelTrabajo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        panelTrabajo.scrollIntoView({ block: 'start' });
       } catch {
         /* entorno sin layout (tests): no hay nada que desplazar */
       }
