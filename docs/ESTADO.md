@@ -2,6 +2,11 @@
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
+- **✅ SELECCIÓN POR DEFECTO DESMARCADA (2026-08-21, merge `967e5cb`, desplegado y verificado en
+  vivo)**: al cargar un documento NO se pre-marca nada. Un botón por valor detectado ALTERNA (marca
+  todas sus apariciones ↔ las quita todas), con rótulo y `aria-pressed` que reflejan el estado; los
+  clics sueltos siguen y actualizan el botón del valor. Retirado el selector de «tipo de documento»
+  (solo pre-marcaba). Suite **1391/1391**. Ver bitácora 2026-08-21 (ux).
 - **✅ FIX FALSO BLOQUEO (2026-08-21, merge `5d5ff7c`, desplegado)**: tachar SOLO una frase y dejar
   un dato detectado a la vista ya NO bloquea la descarga. La verificación distingue «ofrecido y
   RECHAZADO por el usuario» (→ se entrega, `verify.datosNoTachados`, sello ÁMBAR) de un residuo real
@@ -38,9 +43,9 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1390/1390 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
+- Suite: **1391/1391 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
   las 5 landings de keyword; +1 con la home rediseñada; +37 con la pieza de autoridad AEO; +9 con el
-  fix del falso bloqueo —unidad ofrecido/rechazado, estado E5→E3, integración pipeline).
+  fix del falso bloqueo; +1 con la selección por defecto desmarcada —paridad de copia `destacharTodas`).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).

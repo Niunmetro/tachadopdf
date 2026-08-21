@@ -4,6 +4,32 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-21 · ux · Selección por defecto DESMARCADA + botón por valor que marca/quita en bloque
+
+**Hecho:** merge `--no-ff` `967e5cb` (rama `feat/seleccion-por-defecto-off`, commit `64a6143`),
+desplegado y **verificado en vivo** (0 marcados de 9 por defecto, botón alterna, sin errores de
+consola). Reportado por Ángel. Suite **1390→1391** (+1 paridad copia), tsc 0, build 0.
+
+**El problema:** había «Tachar todas las apariciones de X» pero NO forma de desmarcarlas en bloque
+(una a una), y se pre-marcaba por defecto obligando a desmarcar lo no deseado.
+
+**El cambio (`renderFileVisor` en `main.ts`):**
+- **Por defecto NADA marcado** (`fileWork.selected = automaticBoxes.map(() => false)`). Decisión del
+  dueño: pre-marcar obliga a desmarcar uno a uno, y tachar de más es tan peligroso como de menos.
+- **Un botón por VALOR que ALTERNA**: si no están todas marcadas las marca todas, si ya lo están las
+  quita todas. Rótulo y `aria-pressed` reflejan el estado (`copia.tacharTodas` / `destacharTodas`).
+  Opera sobre `fileWork.selected` agrupando por `value` (el MISMO sitio de los clics sueltos), NO
+  sobre marcas manuales aparte → las dos vías no divergen y es coherente con `declinedValues` del fix
+  del falso bloqueo. Un clic suelto que completa/vacía un valor actualiza su botón (`refrescarBotones`).
+- **Retirado el selector de «tipo de documento»** (`buildPresetSelector`): solo pre-marcaba, que ya no
+  hacemos; era un control muerto en la primera pantalla. `preset-selector.ts`/`presets.ts` quedan sin
+  usar (con sus tests), no se borran para no ampliar el diff.
+
+**Verificado en vivo (dominio real):** default 0/9 marcados; botón «Tachar todas»→click→«Quitar el
+tachado de»+1 marcado→click→«Tachar todas»+0; clic suelto desmarca una y el botón del valor vuelve a
+«Tachar». `main-D8zw2T6b.js`. `origin/master` sincronizado (empujado a mano, el deploy no empuja master).
+
+---
 ## 2026-08-21 · fix · Tachar SOLO una frase dejaba de bloquear la descarga (falso bloqueo) + salto de vista al cargar
 
 **Hecho:** merge `--no-ff` `5d5ff7c` (rama `fix/tachado-parcial-no-bloquea`, commit `96f59f6`),
