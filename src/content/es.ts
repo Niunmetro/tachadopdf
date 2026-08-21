@@ -115,6 +115,8 @@ const INFORME_ES: CopiaInforme = {
     `Se han releído las ${total} páginas del archivo entregado y sus metadatos, y en el texto no queda ningún dato de los patrones buscados. Lo que queda fuera es el contenido de ${paginasConImagen} página(s) con imágenes: esta herramienta no lee lo que hay dentro de una imagen, así que un dato fotografiado o escaneado no se detecta. Revísalas visualmente; constan en «Cobertura».`,
   lineaParcialSoloObjetos: (total) =>
     `Se han releído las ${total} páginas del archivo y sus metadatos, y no queda en ellas ningún dato de los patrones buscados. Pero este documento contiene objetos que la comprobación no examina: constan en «Objetos del archivo».`,
+  lineaParcialDatosSinTachar: (cuantos) =>
+    `El texto que marcaste se ha eliminado y verificado. Pero quedan ${cuantos} dato(s) detectado(s) que NO marcaste para tachar y siguen en el documento entregado: constan en «Comprobaciones realizadas». Es correcto si era lo que querías; si no, vuelve a tacharlos.`,
   clausulaObjetosSinExaminar:
     'Además, este documento contiene objetos que la comprobación no examina: constan en «Objetos del archivo».',
   lineaSinTachados: (total) =>
@@ -174,6 +176,8 @@ const INFORME_ES: CopiaInforme = {
   patronLimpio: (etiqueta) => `${etiqueta}: 0 ocurrencias en el texto extraíble`,
   patronSucio: (etiqueta, ocurrencias, paginas) =>
     `${etiqueta}: ${ocurrencias} ocurrencia(s) en el texto extraíble (páginas: ${paginas})`,
+  patronSinTachar: (etiqueta, ocurrencias, paginas) =>
+    `${etiqueta}: ${ocurrencias} sin tachar, siguen en el documento (páginas: ${paginas})`,
   zonasPagina: (pagina, cuenta) => `Página ${pagina}: ${cuenta} zona(s)`,
   // Cuatro párrafos, y cada enunciado negativo va PEGADO al positivo que acota. Un bloque de
   // descargos suelto no acota nada: solo asusta. Las listas son cerradas y contables a

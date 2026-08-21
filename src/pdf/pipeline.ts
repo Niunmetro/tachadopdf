@@ -61,16 +61,16 @@ export interface ProcessResult {
 export function detectAutomaticBoxes(
   doc: PdfDoc,
   visualReviewPages: number[],
-): { page: number; rect: BoxRect; kind: PatternKind }[] {
+): { page: number; rect: BoxRect; kind: PatternKind; value: string }[] {
   const reviewSet = new Set(visualReviewPages);
   const total = doc.pageCount();
-  const boxes: { page: number; rect: BoxRect; kind: PatternKind }[] = [];
+  const boxes: { page: number; rect: BoxRect; kind: PatternKind; value: string }[] = [];
   for (let page = 0; page < total; page++) {
     if (reviewSet.has(page)) continue;
     const text = doc.extractText(page);
     for (const hit of detect(text)) {
       for (const rect of doc.searchText(page, hit.value)) {
-        boxes.push({ page, rect, kind: hit.kind });
+        boxes.push({ page, rect, kind: hit.kind, value: hit.value });
       }
     }
   }
@@ -108,11 +108,23 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
   const selectedAutomatic = input.selectedAutomatic ?? automaticBoxes.map(() => true);
   let automaticMarks: PageMark[] = [];
+  // «Ofrecidos» = todo valor que la herramienta detectó y presentó como caja. «Seleccionados» =
+  // los que el usuario dejó marcados. Su diferencia —ofrecido pero NO seleccionado— es lo que el
+  // usuario decidió DEJAR sin tachar teniendo la opción de tacharlo: eso, y solo eso, puede seguir
+  // en el documento sin bloquear la entrega. Si un valor está seleccionado aunque sea en una sola
+  // caja, su supervivencia se trata como fallo (falla cerrado), no como decisión.
+  const offeredValues = new Set<string>();
+  const selectedValues = new Set<string>();
   automaticBoxes.forEach((box, i) => {
+    offeredValues.add(box.value);
     if (selectedAutomatic[i]) {
       automaticMarks = addBox(automaticMarks, box.page, box.rect);
+      selectedValues.add(box.value);
     }
   });
+  const declinedValues = new Set<string>(
+    [...offeredValues].filter((value) => !selectedValues.has(value)),
+  );
 
   // A3.4: el texto de cada caja manual se captura ANTES de redactar (después
   // de aplicar la redacción ya no queda nada que leer), y solo cuenta como
@@ -150,7 +162,7 @@ export async function processDocument(input: ProcessInput): Promise<ProcessResul
   const pageTexts = finalDoc.extractAllText();
   finalDoc.close();
 
-  const verify = verifyRedaction(pageTexts, manualStrings, metadataTexts);
+  const verify = verifyRedaction(pageTexts, manualStrings, metadataTexts, declinedValues);
 
   const reportData: ReportData = {
     fileName: input.fileName,

@@ -28,8 +28,15 @@ export function estadoDelSello(data: ReportData): EstadoSello {
   if (paginasSinTexto(data) >= data.totalPaginas) {
     return 'E2';
   }
-  // E3 · queda algo sin comprobar, en paginas o en objetos del archivo.
-  if (paginasConReserva(data).length > 0 || hayObjetoNoExaminado(data)) {
+  // E3 · queda algo sin comprobar (en paginas o en objetos del archivo), O el usuario dejo datos
+  // detectados sin tachar a proposito. Ese ultimo caso SI se comprobo —se detecto el dato—, pero
+  // un sello VERDE sobre un documento que aun contiene un DNI a la vista es el falso verde mas
+  // citable de todos: si algo detectado sigue en el entregable, el verde no se da.
+  if (
+    paginasConReserva(data).length > 0 ||
+    hayObjetoNoExaminado(data) ||
+    hayDatosNoTachados(data)
+  ) {
     return 'E3';
   }
   // E4 · se releyo todo y salio limpio, pero la herramienta no elimino NADA.
@@ -133,4 +140,10 @@ export function paginasConZonas(data: ReportData): number {
 
 export function hayObjetoNoExaminado(data: ReportData): boolean {
   return CATEGORIAS_OBJETO.some((categoria) => data.objetos[categoria] === 'noExaminado');
+}
+
+/** Hay datos detectados que el usuario decidio NO tachar y siguen en el documento entregado. No
+ *  es un fallo (se entrega), pero impide el verde: el sello no puede afirmar que no queda nada. */
+export function hayDatosNoTachados(data: ReportData): boolean {
+  return (data.verify?.datosNoTachados?.length ?? 0) > 0;
 }

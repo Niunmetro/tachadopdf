@@ -506,6 +506,19 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
 
     refreshQuotaAndBatchUI();
     refreshDownloadButton();
+
+    // El documento cargado, sus detecciones, la casilla y el botón nacen en `#trabajo`, que en la
+    // portada larga (hero primero) vive muy por debajo de la zona de carga: al elegir el archivo la
+    // vista no se movía y el usuario trabajaba a ciegas —«no aparece ninguna marca de que se ha
+    // subido»—. Se lleva la vista al trabajo (o al mensaje de error, que también sale ahí) para que
+    // el resultado esté donde el usuario mira. `scrollIntoView` no existe en jsdom: se protege.
+    if (fileWorks.length > 0 || resultStatus.textContent !== '') {
+      try {
+        panelTrabajo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } catch {
+        /* entorno sin layout (tests): no hay nada que desplazar */
+      }
+    }
   }
 
   fileInput.addEventListener('change', () => {

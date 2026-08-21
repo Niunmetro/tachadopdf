@@ -176,6 +176,8 @@ const INFORME_EN: CopiaInforme = {
     `All ${total} pages of the delivered file and its metadata were re-read, and no data matching the searched patterns remains in the text. What is left out is the content of ${paginasConImagen} page(s) containing images: this tool does not read what is inside an image, so data in a photograph or a scan is not detected. Review them visually; they are listed under "Coverage".`,
   lineaParcialSoloObjetos: (total) =>
     `All ${total} pages of the file and its metadata were re-read, and no data matching the searched patterns remains in them. But this document contains objects that the check does not examine: they are listed under "File objects".`,
+  lineaParcialDatosSinTachar: (cuantos) =>
+    `The text you marked was removed and verified. But ${cuantos} detected item(s) you did NOT mark for redaction remain in the delivered document: they are listed under "Checks performed". That is correct if it was what you wanted; if not, redact them and run it again.`,
   clausulaObjetosSinExaminar:
     'This document also contains objects that the check does not examine: they are listed under "File objects".',
   lineaSinTachados: (total) =>
@@ -235,6 +237,8 @@ const INFORME_EN: CopiaInforme = {
   patronLimpio: (etiqueta) => `${etiqueta}: 0 occurrences in extractable text`,
   patronSucio: (etiqueta, ocurrencias, paginas) =>
     `${etiqueta}: ${ocurrencias} occurrence(s) in extractable text (pages: ${paginas})`,
+  patronSinTachar: (etiqueta, ocurrencias, paginas) =>
+    `${etiqueta}: ${ocurrencias} left un-redacted, still in the document (pages: ${paginas})`,
   zonasPagina: (pagina, cuenta) => `Page ${pagina}: ${cuenta} area(s)`,
   alcanceParrafos: [
     'What was checked. After redacting, TachadoPDF reopened the file you are given and re-read the text of its pages, its metadata fields and the other text strings the file keeps inside, searching for seven formats: Spanish national ID (DNI), Spanish foreigner ID (NIE), Spanish IBAN, Spanish social security number, Spanish phone number, Spanish cadastral reference and email address. Apart from email, all of them are Spanish formats with a check digit and do not recognise identifiers from other countries. It also checked that the text that was inside the areas you marked by hand does not reappear.',
