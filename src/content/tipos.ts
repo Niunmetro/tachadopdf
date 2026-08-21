@@ -242,6 +242,8 @@ export interface CopiaApp {
   revisionVisual: (paginas: string) => string;
   paginaEscaneada: (numero: number) => string;
   tacharTodas: (valor: string, ocurrencias: number) => string;
+  /** El MISMO botón cuando todas las apariciones ya están marcadas: al pulsarlo, las quita. */
+  destacharTodas: (valor: string, ocurrencias: number) => string;
   seleccionarHits: (pagina: number) => string;
   quitarTachado: string;
 }

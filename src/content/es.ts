@@ -79,13 +79,15 @@ const APP_ES: CopiaApp = {
   avisoEscaneadas: (paginas) =>
     `Atención: páginas sin capa de texto (probablemente escaneadas), revísalas manualmente: ${paginas}.`,
   comoTachar:
-    'Los datos detectados aparecen marcados: haz clic para elegir cuáles tachar. Para tachar cualquier otra cosa (un nombre, una firma, una foto), arrastra sobre ella dibujando un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.',
+    'Los datos detectados aparecen resaltados, SIN tachar todavía: haz clic en los que quieras tachar, o usa los botones de arriba para marcar o quitar de golpe todas las apariciones de un mismo valor. Para tachar cualquier otra cosa (un nombre, una firma, una foto), arrastra sobre ella dibujando un recuadro. Cada recuadro negro tiene una «×» por si quieres quitarlo.',
   revisionVisual: (paginas) =>
     `Páginas que requieren revisión visual (sin capa de texto o con imagen a página completa): ${paginas}.`,
   paginaEscaneada: (numero) =>
     `Página ${numero}: sin capa de texto (escaneada). No hay detección automática — tacha a mano las zonas con datos.`,
   tacharTodas: (valor, ocurrencias) =>
     `Tachar todas las apariciones de «${valor}» (${ocurrencias})`,
+  destacharTodas: (valor, ocurrencias) =>
+    `Quitar el tachado de «${valor}» (${ocurrencias})`,
   seleccionarHits: (pagina) => `Página ${pagina}: seleccionar todos los datos detectados`,
   quitarTachado: 'Quitar este tachado',
 };
