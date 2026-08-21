@@ -26,8 +26,17 @@ export interface VerifyResidue {
 }
 
 export interface VerifyResult {
+  /** true = todo lo que el usuario PIDIÓ tachar está verificado como borrado. NO significa «no
+   *  queda ningún dato en el documento»: un dato detectado que el usuario decidió NO tachar sale
+   *  en `datosNoTachados`, no bloquea la entrega, y degrada el sello a ámbar. */
   clean: boolean;
+  /** Residuos BLOQUEANTES: algo que el usuario marcó para tachar (una caja manual, o un valor
+   *  detectado que seleccionó) sigue siendo extraíble = falso verde real. Bloquea la descarga. */
   residues: VerifyResidue[];
+  /** Datos detectados que el usuario NO marcó para tachar y siguen en el documento entregado. Es
+   *  una decisión legítima suya (tachar solo una frase y dejar el resto), no un fallo: se ENTREGA
+   *  el fichero, pero el informe lo dice y el sello no puede ser verde. Ausente = ninguno. */
+  datosNoTachados?: VerifyResidue[];
 }
 
 /**

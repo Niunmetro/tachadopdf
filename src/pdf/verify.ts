@@ -35,17 +35,42 @@ const PATRONES_ROBUSTOS_AL_SALTO: ReadonlySet<PatternKind> = new Set<PatternKind
   'email',
 ]);
 
+/**
+ * `declinedValues` = valores que la herramienta SÍ ofreció tachar (los detectó como caja
+ * automática) y que el usuario dejó SIN seleccionar a propósito. Es la clave que separa un FALSO
+ * VERDE de una decisión legítima, y la distinción NO es «objetivo/no», sino «¿pudo el usuario
+ * elegir dejarlo?»:
+ *
+ *  - un dato detectado que la herramienta OFRECIÓ y el usuario RECHAZÓ (tachar solo una frase y
+ *    dejar el DNI) = decisión suya → sale en `datosNoTachados`, se ENTREGA el fichero, sello ámbar.
+ *  - cualquier otro dato que siga extraíble —uno que se pidió tachar y sobrevivió, uno partido en
+ *    dos renglones que nunca se pudo ofrecer, uno escondido en una clave de metadatos— NO se pudo
+ *    rechazar: es un falso verde → residuo bloqueante, no se entrega.
+ *
+ * ⚠ FALLA CERRADO: si `declinedValues` es `undefined` (un llamador que no dice qué se ofreció y
+ * rechazó), NADA se considera rechazado — todo residuo bloquea, el comportamiento antiguo. Solo el
+ * pipeline, que sabe qué cajas ofreció y cuáles dejó el usuario sin marcar, pasa el conjunto y
+ * relaja el bloqueo. Un default que fallara abierto sería un generador de falsos verdes.
+ */
 export function verifyRedaction(
   pageTexts: string[],
   manualStrings: string[],
   metadataTexts: string[] = [],
+  declinedValues?: ReadonlySet<string>,
 ): VerifyResult {
   const residues: VerifyResidue[] = [];
+  const datosNoTachados: VerifyResidue[] = [];
+  // Solo lo que la herramienta ofreció Y el usuario dejó sin marcar cuenta como decisión suya.
+  const esRechazado = (value: string): boolean =>
+    declinedValues !== undefined && declinedValues.has(value);
 
   pageTexts.forEach((texto, page) => {
     const directos = detect(texto);
     for (const hit of directos) {
-      residues.push({ kind: hit.kind, value: hit.value, page });
+      // Detectado directamente en el texto ⇒ la herramienta lo ofreció como caja. Si el usuario la
+      // rechazó, su presencia es una decisión (ámbar, no bloquea); si no, es un tachado que falló.
+      if (esRechazado(hit.value)) datosNoTachados.push({ kind: hit.kind, value: hit.value, page });
+      else residues.push({ kind: hit.kind, value: hit.value, page });
     }
 
     const unido = textoSinSaltos(texto);
@@ -54,6 +79,10 @@ export function verifyRedaction(
     for (const hit of detect(unido)) {
       if (!PATRONES_ROBUSTOS_AL_SALTO.has(hit.kind)) continue;
       if (yaVistos.has(`${hit.kind}:${hit.value}`)) continue;
+      // Un dato que SOLO aparece al juntar dos renglones nunca se pudo ofrecer como caja, así que
+      // el usuario no pudo rechazarlo: es un residuo bloqueante. (Si el MISMO valor ya salió entero
+      // en otra página y allí se rechazó, ya consta en `datosNoTachados`; aquí no se duplica.)
+      if (esRechazado(hit.value)) continue;
       residues.push({ kind: hit.kind, value: hit.value, page });
     }
   });
@@ -62,6 +91,8 @@ export function verifyRedaction(
     if (manual.trim() === '') continue;
     const manualUnido = textoSinSaltos(manual);
     pageTexts.forEach((texto, page) => {
+      // Una caja manual es, por definición, algo que el usuario pidió tachar: si su texto
+      // sobrevive es SIEMPRE residuo bloqueante, nunca «dato dejado a propósito».
       if (texto.includes(manual)) {
         residues.push({ kind: 'manual', value: manual, page });
         return;
@@ -75,6 +106,8 @@ export function verifyRedaction(
   }
 
   for (const texto of metadataTexts) {
+    // Los metadatos se limpian solos: el usuario no elige por objeto, así que un dato que sobrevive
+    // en una clave interna NUNCA es una decisión suya. Siempre bloquea.
     for (const hit of detect(texto)) {
       residues.push({ kind: hit.kind, value: hit.value, page: null });
     }
@@ -86,5 +119,5 @@ export function verifyRedaction(
     }
   }
 
-  return { clean: residues.length === 0, residues };
+  return { clean: residues.length === 0, residues, datosNoTachados };
 }

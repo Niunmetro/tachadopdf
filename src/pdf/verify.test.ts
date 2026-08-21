@@ -68,6 +68,83 @@ describe('verifyRedaction (tercer parámetro: metadataTexts)', () => {
   });
 });
 
+describe('verifyRedaction (cuarto parámetro: datos ofrecidos y rechazados por el usuario)', () => {
+  it('un dato detectado que el usuario RECHAZÓ tachar no bloquea: va a datosNoTachados y clean=true', () => {
+    const resultado = verifyRedaction(
+      ['El DNI del titular es 12345678Z.'],
+      [],
+      [],
+      new Set(['12345678Z']),
+    );
+    expect(resultado.clean).toBe(true);
+    expect(resultado.residues).toEqual([]);
+    expect(resultado.datosNoTachados).toContainEqual({ kind: 'dni', value: '12345678Z', page: 0 });
+  });
+
+  it('un dato detectado que NO está en el conjunto de rechazados sigue bloqueando (falla cerrado)', () => {
+    const resultado = verifyRedaction(
+      ['El DNI del titular es 12345678Z.'],
+      [],
+      [],
+      new Set(['99999999R']), // se rechazó OTRO valor; este no
+    );
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: 0 });
+    expect(resultado.datosNoTachados).toEqual([]);
+  });
+
+  it('rechazar un dato NO desactiva la guarda para OTROS: un residuo distinto sigue bloqueando', () => {
+    const resultado = verifyRedaction(
+      ['DNI 12345678Z e IBAN ES9121000418450200051332.'],
+      [],
+      [],
+      new Set(['12345678Z']), // solo el DNI se rechazó; el IBAN no
+    );
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'iban', value: 'ES9121000418450200051332', page: 0 });
+    expect(resultado.datosNoTachados).toContainEqual({ kind: 'dni', value: '12345678Z', page: 0 });
+  });
+
+  it('una caja MANUAL que sobrevive bloquea aunque su texto coincida con un valor rechazado', () => {
+    const resultado = verifyRedaction(
+      ['Frase secreta que había que borrar.'],
+      ['Frase secreta que había que borrar'],
+      [],
+      new Set(['Frase secreta que había que borrar']),
+    );
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({
+      kind: 'manual',
+      value: 'Frase secreta que había que borrar',
+      page: 0,
+    });
+  });
+
+  it('un dato PARTIDO en dos renglones bloquea: nunca se pudo ofrecer, así que no está entre los rechazados', () => {
+    // El detector directo no ve '1234\n5678Z'; solo la guarda de saltos lo reencuentra al juntar
+    // las líneas. En el pipeline real ese valor jamás llega a `offeredValues` (detect no lo ve en el
+    // texto crudo), así que nunca puede estar entre los rechazados — aquí se pasa OTRO valor
+    // rechazado para dejarlo explícito. Como no se pudo ofrecer, el usuario no pudo elegir dejarlo:
+    // residuo bloqueante.
+    const resultado = verifyRedaction(['1234\n5678Z'], [], [], new Set(['99999999R']));
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: 0 });
+  });
+
+  it('un dato en METADATOS bloquea aunque su valor esté entre los rechazados: no se elige por objeto', () => {
+    const resultado = verifyRedaction([], [], ['/Cliente (12345678Z)'], new Set(['12345678Z']));
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: null });
+  });
+
+  it('sin cuarto parámetro (undefined) el comportamiento antiguo se conserva: todo detectado bloquea', () => {
+    const resultado = verifyRedaction(['DNI 12345678Z.'], []);
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: 0 });
+    expect(resultado.datosNoTachados).toEqual([]);
+  });
+});
+
 describe('verifyRedaction (integración con motor mupdf y fixtures de T2/T3)', () => {
   it('un PDF ya limpio (sin datos) da clean=true', async () => {
     const bytes = await pdfConTexto('Documento sin ningún dato identificativo.');

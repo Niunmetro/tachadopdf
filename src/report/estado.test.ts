@@ -166,7 +166,20 @@ describe('G1: estadoDelSello sobre el espacio completo de entradas', () => {
       expect(d.unverifiableManualPages, caso.etiqueta).toEqual([]);
       expect(d.boxesPerPage.reduce((t, b) => t + b.count, 0), caso.etiqueta).toBeGreaterThan(0);
       expect(d.objetos.marcadores, caso.etiqueta).not.toBe('noExaminado');
+      // El verde afirma que no queda ningun dato: si el usuario dejo alguno sin tachar, no lo es.
+      expect(d.verify?.datosNoTachados ?? [], caso.etiqueta).toEqual([]);
     }
+  });
+
+  // Dejar datos detectados SIN tachar (tachar solo una frase y conservar el DNI a la vista) es una
+  // decision legitima: el fichero se entrega, pero el sello NO puede ser verde con un dato dentro.
+  it('datos detectados sin tachar degradan un E5 a E3, nunca verde', () => {
+    const verde = datos({});
+    expect(estadoDelSello(verde)).toBe('E5');
+    const conDatosSinTachar = datos({
+      verify: { clean: true, residues: [], datosNoTachados: [{ kind: 'dni', value: '12345678Z', page: 0 }] },
+    });
+    expect(estadoDelSello(conDatosSinTachar)).toBe('E3');
   });
 
   it('un documento entero sin capa de texto nunca es parcial ni verde: es E2', () => {

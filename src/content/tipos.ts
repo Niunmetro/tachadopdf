@@ -84,6 +84,9 @@ export interface CopiaInforme {
   lineaParcialSoloImagenes: (total: number, paginasConImagen: number) => string;
   /** E3 cuando todas las páginas se releyeron y lo que falta es un objeto del archivo. */
   lineaParcialSoloObjetos: (total: number) => string;
+  /** E3 cuando el usuario dejó datos detectados SIN tachar a propósito (tachar solo una frase):
+   *  se entrega el fichero, pero el sello no puede ser verde porque esos datos siguen dentro. */
+  lineaParcialDatosSinTachar: (cuantos: number) => string;
   /**
    * Coletilla de E3 cuando ADEMÁS queda un objeto del archivo sin examinar. Nombraba solo los
    * marcadores, pero el inventario tiene ocho categorías y cualquiera de ellas puede quedar en
@@ -168,6 +171,8 @@ export interface CopiaInforme {
   paginaImagenCompleta: (pagina: number) => string;
   patronLimpio: (etiqueta: string) => string;
   patronSucio: (etiqueta: string, ocurrencias: number, paginas: string) => string;
+  /** Un patrón detectado que el usuario NO marcó para tachar y sigue en el documento: ámbar. */
+  patronSinTachar: (etiqueta: string, ocurrencias: number, paginas: string) => string;
   zonasPagina: (pagina: number, cuenta: number) => string;
 
   /** Cuatro párrafos: qué se comprobó · qué NO se buscó · qué rastro deja · qué no dice. */

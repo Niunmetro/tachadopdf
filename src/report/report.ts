@@ -163,28 +163,32 @@ export function lineaDelSello(estado: EstadoSello, data: ReportData, copia: Copi
   }
   if (estado === 'E2') return copia.lineaSinComprobacion(total);
   if (estado === 'E3') {
+    const sinTachar = data.verify?.datosNoTachados?.length ?? 0;
     const reservas = paginasConReserva(data).length;
-    // Dos cifras con significado exacto: las paginas RELEIDAS (total menos las que no tienen capa
-    // de texto) y las que llevan alguna reserva. La redaccion anterior, «Comprobadas N de M»,
-    // restaba las reservas del numerador: una pagina releida con un logo se contaba como no
-    // comprobada, que es tan falso como lo contrario.
-    // Y cuando la UNICA reserva son imagenes —el caso corriente, un membrete— el sello lo dice
-    // con todas las letras en vez de mandar al lector a la tabla: un ambar que siempre dice lo
-    // mismo se deja de leer, y entonces el ambar deja de proteger a nadie.
-    const base =
-      reservas === 0
-        ? copia.lineaParcialSoloObjetos(total)
-        : reservaSoloPorImagenes(data)
-          ? copia.lineaParcialSoloImagenes(total, data.paginasConImagen.length)
-          : copia.lineaParcial(paginasReleidas(data), total, reservas);
-    // `lineaParcialSoloObjetos` YA nombra los objetos: encolarle la clausula imprime la misma
-    // oracion dos veces, y con `reservas === 0` esa rama es el caso entero, no uno raro. Con cero
-    // reservas de pagina la UNICA forma de estar en E3 es tener un objeto sin examinar
-    // (`estadoDelSello`), asi que `hayObjetoNoExaminado` es cierto SIEMPRE ahi.
-    const laBaseYaLosNombra = reservas === 0;
-    return hayObjetoNoExaminado(data) && !laBaseYaLosNombra
-      ? `${base} ${copia.clausulaObjetosSinExaminar}`
-      : base;
+    // La reserva de COBERTURA (páginas releídas con imágenes / sin capa de texto, u objetos sin
+    // examinar), si la hay. Dos cifras con significado exacto: las páginas RELEÍDAS (total menos
+    // las que no tienen capa de texto) y las que llevan alguna reserva. Y cuando la ÚNICA reserva
+    // son imágenes —el caso corriente, un membrete— el sello lo dice con todas las letras en vez
+    // de mandar al lector a la tabla: un ámbar que siempre dice lo mismo se deja de leer. Cuando
+    // la única razón del ámbar es que quedaron datos sin tachar, no hay reserva de cobertura y
+    // esta parte queda vacía.
+    let cobertura = '';
+    if (reservas > 0) {
+      cobertura = reservaSoloPorImagenes(data)
+        ? copia.lineaParcialSoloImagenes(total, data.paginasConImagen.length)
+        : copia.lineaParcial(paginasReleidas(data), total, reservas);
+      if (hayObjetoNoExaminado(data)) cobertura += ` ${copia.clausulaObjetosSinExaminar}`;
+    } else if (hayObjetoNoExaminado(data)) {
+      // `lineaParcialSoloObjetos` YA nombra los objetos: no se le encola la cláusula.
+      cobertura = copia.lineaParcialSoloObjetos(total);
+    }
+    // Los datos que el usuario dejó sin tachar van PRIMERO: es lo más importante que decir de un
+    // ámbar así —siguen en el documento entregado— y precede a cualquier reserva de cobertura.
+    if (sinTachar > 0) {
+      const clausula = copia.lineaParcialDatosSinTachar(sinTachar);
+      return cobertura === '' ? clausula : `${clausula} ${cobertura}`;
+    }
+    return cobertura;
   }
   if (estado === 'E4') return copia.lineaSinTachados(total);
   return copia.lineaVerificado(total, zonasTachadas(data));
@@ -589,14 +593,23 @@ export async function buildReport(data: ReportData, copia: CopiaInforme): Promis
   // está en la imagen, y de eso habla el sello.
   const sinTextoQueReleer = paginasReleidas(data) === 0 || data.verify === undefined;
 
+  const noTachados = data.verify?.datosNoTachados ?? [];
   subLabel(copia.subPatrones);
   for (const kind of data.patternsSearched) {
     const matching = residues.filter((r) => r.kind === kind);
-    if (matching.length === 0) {
-      bullet(copia.patronLimpio(copia.etiquetas[kind]), sinTextoQueReleer ? MUTED : OK, sinTextoQueReleer);
-    } else {
+    const dejados = noTachados.filter((r) => r.kind === kind);
+    if (matching.length > 0) {
+      // Residuo BLOQUEANTE: algo que se pidió tachar sobrevivió. Rojo.
       const pages = matching.map((r) => (r.page === null ? '?' : r.page + 1)).join(', ');
       bullet(copia.patronSucio(copia.etiquetas[kind], matching.length, pages), BAD);
+    } else if (dejados.length > 0) {
+      // Detectado y NO tachado por elección del usuario: sigue en el documento. NO es «limpio»
+      // —pintarlo verde aquí sería un falso verde dentro del propio informe— pero tampoco un
+      // fallo del tachado: ámbar, «presente, sin tachar».
+      const pages = dejados.map((r) => (r.page === null ? '?' : r.page + 1)).join(', ');
+      bullet(copia.patronSinTachar(copia.etiquetas[kind], dejados.length, pages), AMBER);
+    } else {
+      bullet(copia.patronLimpio(copia.etiquetas[kind]), sinTextoQueReleer ? MUTED : OK, sinTextoQueReleer);
     }
   }
   y -= 2;
