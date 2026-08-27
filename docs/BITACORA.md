@@ -4,6 +4,61 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-27 · seo · Pulido on-page: títulos SERP, meta y enlazado interno de las guías EN + validación de schema
+
+**Hecho:** merge `--no-ff` `150cd34` (rama `seo/afinar-titulos-enlaces-schema`, commit `f52adcf`),
+**desplegado y verificado en el dominio vivo**. Suite **1390 → 1421** (+31 con la guarda nueva),
+tsc 0, build 0. `origin/master` sincronizado a mano (el deploy no empuja master; `ls-remote` ==
+`150cd34`). Pasada de CALIDAD on-page, NO fábrica de páginas: **cero páginas nuevas**.
+
+### El diagnóstico (research del día)
+El nicho inglés «redact pdf offline / sin subir» está SATURADO: los gigantes (Xodo, Smallpdf,
+iLovePDF, Adobe, PDFgear, UPDF) y una camada de clones directos con NUESTRO mismo argumento
+(hddn.app, redactorhq.com, redactoffline.com, privacyscrubber.com, onlineredactorpdf.com). En inglés
+«offline» ya NO nos diferencia. Donde SÍ ganamos: (1) el **informe de comprobación** como prueba
+adjuntable; (2) la consulta de **comprobación/fallo** del tachado. Se orienta el SEO EN a esos ejes
+y a la HIGIENE on-page que los clones no cuidan.
+
+### Qué se afinó
+- **Títulos `<title>`:** nuevo campo opcional `ContenidoGuia.metaTitulo` — `<title>` de SERP corto
+  (keyword al frente, ≤60), DESACOPLADO del H1 descriptivo (mismo patrón que ya usan home y
+  comprobador). Si falta, se cae a `${titulo} · TachadoPDF`. Las 6 guías inglesas reciben metaTitulo
+  keyword-front (46-58 car.). **Las 5 landings del experimento y la pieza de autoridad NO declaran
+  metaTitulo**, así que su `<title>` NO cambia (`landings-keyword.test.ts:132` sigue verde).
+- **Meta descriptions EN** afinadas (~150-165, keyword al frente, con gancho de conversión hacia el
+  informe/comprobación).
+- **Home ES:** `<title>` keyword-front («Tachar un PDF de verdad: el rectángulo negro no borra»;
+  antes empezaba por la marca). **Home EN:** meta description recortada al diferenciador (informe de
+  comprobación adjuntable). El comprobador NO se tocó (su `<title>` lo fija `comprobador-page.test`).
+- **Enlazado interno EN:** cada guía inglesa enlaza a la herramienta gratuita (`/en/checker/`, con
+  UTM) y lleva un bloque «Related guides» con 2-4 guías hermanas. **Enlaces RELATIVOS al documento**
+  (`navHref`), nunca raíz-absolutos (romperían la base de emergencia `/tachadopdf/`). El CSS del
+  bloque va APARTE (`CSS_RELACIONADAS`) y solo se añade a las guías que lo llevan, así que las
+  páginas del experimento quedan **byte a byte iguales** (verificado: no aparecen en el `git diff`).
+
+### Schema (validado, no reinventado)
+La home ya emitía `SoftwareApplication` (offers 0 € + 59 € pago único) + `FAQPage`; el comprobador,
+`WebApplication`; las guías, `Article` (+`FAQPage` donde hay FAQs). Se validó el JSON-LD del artefacto
+construido: correcto y sin campos inventados. No hacía falta añadir schema a la home: ya estaba.
+
+### Guarda nueva (doctrina: que la mejora no se deshaga sola)
+`src/content/enlazado-interno-en.test.ts` (deriva del registro, una guía EN nueva entra sola): ata
+por guía inglesa que `metaTitulo` ≤ 60, que enlaza al comprobador, que lleva bloque relacionadas de
+2-4 hermanas, y que NO emite NINGÚN enlace de navegación raíz-absoluto.
+
+### Verificado en vivo (dominio real)
+`/`, `/en/`, dos guías EN y una landing del experimento en **200**; los `<title>` nuevos salen en el
+HTML servido; la landing de autoridad conserva su título (no tocada); el bloque «Related guides» y el
+enlace al comprobador salen con href RELATIVO; la meta description nueva de `/en/` sirve; **vocabulario
+vetado = 0** en cuatro páginas vivas. `assets/patterns-Cds40izJ.js`.
+
+### Medición (el juez, no «entregado»)
+Es distribución de HIGIENE, no una pieza para GSC: mejora CTR de SERP y crawl/autoridad interna, no
+crea una consulta nueva. Se lee con el resto de la cohorte en el próximo checkpoint de GSC
+(2026-09-07): si el CTR de las guías EN sube con el título keyword-front, valida; sin impresiones EN
+no hay nada que medir (el mercado EN ya se sabía difícil).
+
+---
 ## 2026-08-21 · ux · Selección por defecto DESMARCADA + botón por valor que marca/quita en bloque
 
 **Hecho:** merge `--no-ff` `967e5cb` (rama `feat/seleccion-por-defecto-off`, commit `64a6143`),

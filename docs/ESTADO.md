@@ -43,9 +43,12 @@
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.
-- Suite: **1391/1391 en 75 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
+- Suite: **1421/1421 en 76 ficheros** en `master` (1170 era el suelo tras la marca; +173 al sumar
   las 5 landings de keyword; +1 con la home rediseñada; +37 con la pieza de autoridad AEO; +9 con el
-  fix del falso bloqueo; +1 con la selección por defecto desmarcada —paridad de copia `destacharTodas`).
+  fix del falso bloqueo; +1 con la selección por defecto desmarcada —paridad de copia `destacharTodas`;
+  **+31 con la guarda de enlazado interno/títulos SERP de las guías EN**, 2026-08-27). ⚠ El punto de
+  partida medido de esa última pasada fue **1390** en el árbol, no 1391 (deriva de −1 previa a la
+  pasada, ajena a ella: el árbol colecta 1390 también sin mis cambios).
   Verificación: `npm install` (⚠ `npm ci` falla con EPERM en la máquina del dueño) ·
   `npx --no-install tsc --noEmit` · `npm test` · `npm run build`, exit codes reales, nunca `| tail`.
 - ✅ **`diseno/informe-veredicto-de-un-vistazo` FUSIONADA en master** (5 commits, 2026-08-08).
@@ -417,6 +420,17 @@
   6 tipos de escondite) + arXiv 2206.02285 + Manafort (8-ene-2019), y declara nuestra propia
   limitación. Schema Article + FAQPage. Segundo experimento con su umbral en `docs/SEO-EXPERIMENTO.md`
   (una página, bar proporcional: ≥10 impresiones = valida; 0 indexada = la intención no capta).
+- **Pulido on-page EN + home (2026-08-27, merge `150cd34`, desplegado y verificado en vivo):** pasada
+  de CALIDAD, sin páginas nuevas. Diagnóstico del día: en inglés «offline» ya no diferencia (gigantes
+  + clones directos con nuestro argumento); ganamos en el informe de comprobación como prueba
+  adjuntable y en la consulta de comprobación/fallo del tachado. (1) `<title>` de SERP corto y
+  keyword-front para las 6 guías EN vía `ContenidoGuia.metaTitulo` (desacoplado del H1; fallback
+  `${titulo} · TachadoPDF` → las 6 guías generadas ES del experimento NO cambian su título); home ES
+  keyword-front; metas EN afinadas al diferenciador. (2) Enlazado interno EN: cada guía → 2-4 guías
+  hermanas + `/en/checker/`, con href RELATIVO (`navHref`); CSS del bloque aparte para que las páginas
+  del experimento queden byte a byte iguales. (3) Schema validado (home ya tenía SoftwareApplication +
+  FAQPage; comprobador WebApplication; guías Article + FAQPage). Guarda `content/enlazado-interno-en`
+  lo ata. La medición es CTR de SERP + crawl, se lee con la cohorte en el checkpoint GSC 2026-09-07.
 
 ## Bloqueos / PARADAS del owner
 
