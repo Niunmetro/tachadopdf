@@ -677,7 +677,7 @@ export const es = {
   // Nota: un apercibimiento ES una sanción (art. 58.2.b RGPD), pero NO es una multa: si algún día
   // esta frase pasa de «sancionado» a «multado», el caso del listado deja de sostenerla.
   home: {
-    metaTitulo: 'TachadoPDF · El rectángulo negro no borra: tacha de verdad los datos de un PDF',
+    metaTitulo: 'Tachar un PDF de verdad: el rectángulo negro no borra',
     metaDescripcion:
       'El DNI que tapas con un rectángulo negro sigue dentro del PDF y se copia en dos clics — la AEPD ya ha sancionado actas y listados con datos expuestos. TachadoPDF elimina el dato del archivo, 100% en tu navegador, con informe de comprobación. Para gestorías, administradores de fincas y RRHH.',
     ogTitulo: 'TachadoPDF · El rectángulo negro no borra: tacha de verdad',

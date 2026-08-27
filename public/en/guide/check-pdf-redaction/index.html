@@ -183,13 +183,13 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>How to check whether a PDF has actually been redacted · TachadoPDF</title>
-    <meta name="description" content="A three-second test anyone can run, the four other places data hides in a PDF, and what checking can never tell you." />
+    <title>How to check if a PDF is really redacted · TachadoPDF</title>
+    <meta name="description" content="Check whether a PDF is really redacted before you send it: a three-second test anyone can run, the four other places data hides, and what a check can never tell you." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/guide/check-pdf-redaction/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="How to check whether a PDF has actually been redacted" />
-    <meta property="og:description" content="A three-second test anyone can run, the four other places data hides in a PDF, and what checking can never tell you." />
+    <meta property="og:description" content="Check whether a PDF is really redacted before you send it: a three-second test anyone can run, the four other places data hides, and what a check can never tell you." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/en/guide/check-pdf-redaction/" />
     <meta property="og:locale" content="en_GB" />
@@ -198,7 +198,7 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "How to check whether a PDF has actually been redacted",
-      "description": "A three-second test anyone can run, the four other places data hides in a PDF, and what checking can never tell you.",
+      "description": "Check whether a PDF is really redacted before you send it: a three-second test anyone can run, the four other places data hides, and what a check can never tell you.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/check-pdf-redaction/",
       "author": {
@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -286,6 +289,15 @@
       <h2>What checking cannot tell you</h2>
       <p class="nota">On a page with no text layer — a scan, a photograph, a full-page image — there is nothing to re-read, so nothing can confirm the removal the way it can on text. Those pages need eyes. Any tool that reports such a page as clean is telling you something it cannot know.</p>
       <p>That is why TachadoPDF lists the pages it could not check in the report instead of quietly counting them as fine, and why the free checker says so on the front of the verdict rather than in a footnote.</p>
+      <nav class="relacionadas" aria-label="Guides">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="../black-box-pdf-not-redacted/">Why the black box over your PDF does not delete the text</a></li>
+          <li><a href="../redact-pdf-without-uploading/">How to redact a PDF without uploading it</a></li>
+          <li><a href="../redact-subject-access-request/">Redacting a subject access request response</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../checker/?utm_source=guia">Run the free check on your own PDF now</a>
       <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>

@@ -183,13 +183,13 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Sending payslips and HR documents as PDFs without exposing personal data · TachadoPDF</title>
-    <meta name="description" content="Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone." />
+    <title>Redact payslips and HR PDFs before sharing · TachadoPDF</title>
+    <meta name="description" content="Redact payslips and HR PDFs before sharing: they carry bank details, national IDs and home addresses. What to remove, and how to confirm it's really gone." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="Sending payslips and HR documents as PDFs without exposing personal data" />
-    <meta property="og:description" content="Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone." />
+    <meta property="og:description" content="Redact payslips and HR PDFs before sharing: they carry bank details, national IDs and home addresses. What to remove, and how to confirm it's really gone." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/" />
     <meta property="og:locale" content="en_GB" />
@@ -198,7 +198,7 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Sending payslips and HR documents as PDFs without exposing personal data",
-      "description": "Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone.",
+      "description": "Redact payslips and HR PDFs before sharing: they carry bank details, national IDs and home addresses. What to remove, and how to confirm it's really gone.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/",
       "author": {
@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -286,6 +289,15 @@
       </ol>
       <p>TachadoPDF does steps 2 to 4 in your browser, without the document leaving your machine, and blocks the download if anything you redacted is still extractable from the result. Automatic detection currently covers email addresses and Spanish identifiers; in a payslip from any other country you mark the fields yourself, and the removal and the verification are identical either way.</p>
       <p class="nota">General information, not legal advice, and not a statement about your obligations as an employer.</p>
+      <nav class="relacionadas" aria-label="Guides">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="../redact-pdf-without-uploading/">How to redact a PDF without uploading it</a></li>
+          <li><a href="../redact-subject-access-request/">Redacting a subject access request response</a></li>
+          <li><a href="../check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../checker/?utm_source=guia">Check a payslip for leftover data — free</a>
       <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>

@@ -1017,6 +1017,18 @@ const CSS_GUIA = `  main, article, footer {
     footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
   }`;
 
+/**
+ * Estilo del bloque «Related guides» del enlazado interno. Va APARTE de `CSS_GUIA` y se añade solo
+ * a las guías que declaran `relacionadas`, para que las páginas que NO llevan bloque —las cinco
+ * landings del experimento y la pieza de autoridad, cuya copia es la variable de un experimento en
+ * curso— sigan byte a byte iguales: su `<style>` no gana ni una regla que no vaya a usar. Lista sin
+ * viñetas, cada enlace con su diana táctil de 44 px para el móvil (WCAG 2.5.8), en el azul de enlace
+ * de la casa.
+ */
+const CSS_RELACIONADAS = `  .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+  .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+  .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }`;
+
 function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia): string {
   const c = CONTENIDOS[locale];
   const canonical = urlCanonica(pagina, locale) ?? `${SITIO}/`;
@@ -1058,7 +1070,11 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     }),
     '',
     ...faqSchema,
-    `<style>\n${CSS_GUIA}\n</style>`,
+    // El bloque de relacionadas trae su propio CSS SOLO si esta guía lo lleva: así las páginas del
+    // experimento (sin relacionadas) no ven cambiar ni un byte de su `<style>`.
+    `<style>\n${CSS_GUIA}${
+      guia.relacionadas !== undefined && guia.relacionadas.length > 0 ? `\n${CSS_RELACIONADAS}` : ''
+    }\n</style>`,
   ];
 
   // Al pie: un enlace al comprobador gratuito (solo si la guía lo pide) y SIEMPRE el CTA a la
@@ -1098,10 +1114,40 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     }
   }
 
+  // ENLAZADO INTERNO: bloque «Related guides» al pie. Cada guía puede declarar 2-4 ids de guías
+  // hermanas del MISMO idioma; el generador las resuelve contra el registro y enlaza con `navHref`
+  // (RELATIVO al documento: un href raíz-absoluto rompería la base de emergencia `/tachadopdf/`).
+  // Un id que no exista en este idioma se ignora en silencio. El rótulo es el `tituloEnlace` de la
+  // guía destino, el mismo que usa el índice de la home, así que no aparece copia nueva.
+  const relacionadasBloque: string[] = [];
+  if (guia.relacionadas !== undefined && guia.relacionadas.length > 0) {
+    const enlaces: string[] = [];
+    for (const relId of guia.relacionadas) {
+      const relPagina = paginaPorId(relId);
+      if (relPagina === undefined) continue;
+      const relRuta = rutaDe(relPagina, locale);
+      if (relRuta === null) continue;
+      const relGuia = c.guias.find((g) => g.id === relId);
+      if (relGuia === undefined) continue;
+      enlaces.push(`<li>${texto('a', { href: navHref(ruta, relRuta) }, relGuia.tituloEnlace)}</li>`);
+    }
+    if (enlaces.length > 0) {
+      relacionadasBloque.push(
+        `<nav class="relacionadas" aria-label="${esc(c.secciones.guias)}">`,
+        sangrar(
+          [texto('h2', {}, c.secciones.guias), `<ul>\n${sangrar(enlaces, 1)}\n</ul>`],
+          1,
+        ),
+        '</nav>',
+      );
+    }
+  }
+
   const cuerpo = [
     texto('h1', {}, guia.titulo),
     ...guia.cuerpo.map(bloque),
     ...faqVisible,
+    ...relacionadasBloque,
     '',
     ...ctas,
   ];
@@ -1117,7 +1163,10 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     c.htmlLang,
     cabecera({
       lang: c.htmlLang,
-      titulo: `${guia.titulo} · ${c.marca}`,
+      // El `<title>` de la SERP: la guía puede fijar un `metaTitulo` corto con la keyword al frente
+      // (distinto del H1 descriptivo). Si no lo declara —las guías generadas en español, cuyo título
+      // está fijado por su guarda de dedup— se cae al patrón `${titulo} · TachadoPDF`.
+      titulo: guia.metaTitulo ?? `${guia.titulo} · ${c.marca}`,
       descripcion: guia.descripcion,
       canonical,
       ogTitulo: guia.titulo,
