@@ -183,7 +183,7 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Why the black box over your PDF does not delete the text · TachadoPDF</title>
+    <title>Black box on a PDF doesn't delete the text · TachadoPDF</title>
     <meta name="description" content="A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/" />
     <meta property="og:type" content="website" />
@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -281,6 +284,15 @@
       <p>Doing that by hand with professional PDF software is possible but slow, and the step people skip is the one that matters: checking the finished file afterwards. A redaction you did not verify is a redaction you are only assuming worked.</p>
       <h2>How TachadoPDF does it</h2>
       <p>TachadoPDF removes the text from the file and clears the pixels of the areas you mark, strips the metadata, and then reopens the PDF it just produced and searches it again — including the metadata — for everything you redacted. If any of it comes back, the download is blocked and you are told which page. You also get a verification report with the SHA-256 fingerprint of the file you deliver. Everything runs in your browser; the document is never uploaded.</p>
+      <nav class="relacionadas" aria-label="Guides">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="../check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
+          <li><a href="../redact-pdf-without-uploading/">How to redact a PDF without uploading it</a></li>
+          <li><a href="../redact-court-filing/">Redacting court filings: what Rule 5.2 requires</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../checker/?utm_source=guia">Check your PDF for free — see what text is still extractable</a>
       <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>

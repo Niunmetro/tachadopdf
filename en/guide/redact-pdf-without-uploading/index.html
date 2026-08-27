@@ -183,13 +183,13 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>How to redact a PDF without uploading it anywhere · TachadoPDF</title>
-    <meta name="description" content="Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself." />
+    <title>Redact a PDF without uploading it · TachadoPDF</title>
+    <meta name="description" content="Redact a PDF without uploading it: most online tools send your file to a server first. Here's how to redact entirely in your browser — and verify that claim yourself." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="How to redact a PDF without uploading it anywhere" />
-    <meta property="og:description" content="Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself." />
+    <meta property="og:description" content="Redact a PDF without uploading it: most online tools send your file to a server first. Here's how to redact entirely in your browser — and verify that claim yourself." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/" />
     <meta property="og:locale" content="en_GB" />
@@ -198,7 +198,7 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "How to redact a PDF without uploading it anywhere",
-      "description": "Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself.",
+      "description": "Redact a PDF without uploading it: most online tools send your file to a server first. Here's how to redact entirely in your browser — and verify that claim yourself.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/",
       "author": {
@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -278,6 +281,15 @@
       <h2>Local does not mean unverified</h2>
       <p>Working locally usually means losing the audit trail. It does not have to. After redacting, TachadoPDF reopens the file it produced, searches it again for everything you removed, checks the metadata too, and refuses to release the download if anything survived. The verification report it generates lists what was redacted and where, which metadata was stripped, which pages could not be checked, and the SHA-256 fingerprint of the file you deliver — all produced on your own machine.</p>
       <p class="nota">The source code is open under AGPL-3.0, so the no-upload claim is not something you have to take on trust.</p>
+      <nav class="relacionadas" aria-label="Guides">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="../check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
+          <li><a href="../black-box-pdf-not-redacted/">Why the black box over your PDF does not delete the text</a></li>
+          <li><a href="../redact-payslips-hr-documents/">Sending payslips and HR documents as PDFs</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../checker/?utm_source=guia">Check what's in your PDF, in your browser — free</a>
       <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
