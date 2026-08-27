@@ -34,6 +34,18 @@ export interface ContenidoGuia {
   titulo: string;
   tituloEnlace: string;
   descripcion: string;
+  /**
+   * TÍTULO `<title>` PARA LA SERP, distinto del H1. OPCIONAL: si falta, el generador usa
+   * `${titulo} · TachadoPDF`. El H1 (`titulo`) puede permitirse ser descriptivo y largo; el
+   * `<title>` que se enseña en el buscador quiere la keyword AL FRENTE y ~≤60 caracteres, marca
+   * incluida, para que el resultado invite a hacer clic sin que Google lo recorte. Es el MISMO
+   * patrón que ya usan la home y el comprobador (`metaTitulo` aparte de `ogTitulo`/H1). Cuando
+   * está presente se usa VERBATIM como `<title>` (la marca va dentro si se quiere).
+   * ⚠ NO se declara en las guías generadas en español (las cinco landings del experimento y la
+   * pieza de autoridad): su `<title>` está fijado a `${titulo} · TachadoPDF` por su guarda de
+   * dedup, y su copia es la variable de un experimento con veredicto en curso.
+   */
+  metaTitulo?: string;
   cuerpo: Bloque[];
   /**
    * Rótulo de un enlace EXTRA al comprobador (el diagnóstico gratuito) al pie de la guía. Es
@@ -51,6 +63,15 @@ export interface ContenidoGuia {
    * primera frase responde la pregunta de forma directa (regla 55 de la casa).
    */
   faqs?: EntradaFaq[];
+  /**
+   * IDs de guías RELACIONADAS del MISMO idioma, para el bloque de enlazado interno al pie. OPCIONAL:
+   * cuando está, el generador emite un `<nav>` «Related guides / Guías relacionadas» con enlaces
+   * RELATIVOS al documento (vía `navHref`, nunca raíz-absolutos: un `/…` rompe la base de emergencia
+   * `/tachadopdf/`). Sube el rastreo, la permanencia y el flujo de autoridad entre guías. Se listan
+   * 2-4; un id que no exista en este idioma se ignora en silencio (no rompe la página). El rótulo de
+   * cada enlace es el `tituloEnlace` de la guía destino, el mismo que usa el índice de la home.
+   */
+  relacionadas?: string[];
 }
 
 /** Textos del informe de comprobación. El informe ES el producto: aquí no entra ni una promesa. */

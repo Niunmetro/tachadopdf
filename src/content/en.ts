@@ -294,7 +294,7 @@ export const en: Contenido = {
   home: {
     metaTitulo: 'Redact a PDF and verify it worked — TachadoPDF',
     metaDescripcion:
-      "A black box doesn't delete anything: the text stays in the PDF and copies back out. TachadoPDF removes it from the file, re-checks the result, and gives you a verification report. Runs entirely in your browser — nothing is uploaded.",
+      "A black box doesn't delete text — it stays in the PDF and copies out. TachadoPDF removes it for real, re-checks the file, and gives you an attachable verification report.",
     ogTitulo: 'Redact a PDF. Then prove the text is gone.',
     ogDescripcion:
       "Black boxes don't delete text. This removes it from the file, checks the finished PDF, and blocks the download if anything survived.",

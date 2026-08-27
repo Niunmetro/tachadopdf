@@ -14,6 +14,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     tituloEnlace: 'Why the black box over your PDF does not delete the text',
     descripcion:
       'A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real.',
+    metaTitulo: "Black box on a PDF doesn't delete the text · TachadoPDF",
     cuerpo: [
       {
         t: 'p',
@@ -70,13 +71,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'TachadoPDF removes the text from the file and clears the pixels of the areas you mark, strips the metadata, and then reopens the PDF it just produced and searches it again — including the metadata — for everything you redacted. If any of it comes back, the download is blocked and you are told which page. You also get a verification report with the SHA-256 fingerprint of the file you deliver. Everything runs in your browser; the document is never uploaded.',
       },
     ],
+    enlaceComprobador: 'Check your PDF for free — see what text is still extractable',
+    relacionadas: ['guia-en-comprobar', 'guia-en-sin-subir', 'guia-en-tribunales'],
   },
   {
     id: 'guia-en-comprobar',
     titulo: 'How to check whether a PDF has actually been redacted',
     tituloEnlace: 'How to check whether a PDF has actually been redacted',
     descripcion:
-      'A three-second test anyone can run, the four other places data hides in a PDF, and what checking can never tell you.',
+      'Check whether a PDF is really redacted before you send it: a three-second test anyone can run, the four other places data hides, and what a check can never tell you.',
+    metaTitulo: 'How to check if a PDF is really redacted · TachadoPDF',
     cuerpo: [
       {
         t: 'p',
@@ -130,13 +134,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'That is why TachadoPDF lists the pages it could not check in the report instead of quietly counting them as fine, and why the free checker says so on the front of the verdict rather than in a footnote.',
       },
     ],
+    enlaceComprobador: 'Run the free check on your own PDF now',
+    relacionadas: ['guia-en-caja-negra', 'guia-en-sin-subir', 'guia-en-dsar'],
   },
   {
     id: 'guia-en-tribunales',
     titulo: 'Redacting court filings: what Rule 5.2 requires, and how filings leak anyway',
     tituloEnlace: 'Redacting court filings: what Rule 5.2 requires',
     descripcion:
-      'What FRCP 5.2 actually mandates, why the sealed-plus-public pairing is where mistakes happen, and a pre-filing checklist.',
+      'Redacting a court filing under FRCP Rule 5.2: what it actually mandates, why the sealed-plus-public pair is where filings leak, and a pre-filing checklist.',
+    metaTitulo: 'Redact a court filing right (FRCP Rule 5.2) · TachadoPDF',
     cuerpo: [
       {
         t: 'p',
@@ -203,13 +210,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'This page is general information about a procedural rule, not legal advice, and no tool can decide what you were required to redact. TachadoPDF performs and verifies the removal; the judgement about what must come out remains yours.',
       },
     ],
+    enlaceComprobador: 'Check a filing for leftover data before you file',
+    relacionadas: ['guia-en-dsar', 'guia-en-caja-negra', 'guia-en-comprobar'],
   },
   {
     id: 'guia-en-dsar',
     titulo: 'Redacting a subject access request response without exposing third parties',
     tituloEnlace: 'Redacting a subject access request response',
     descripcion:
-      'DSAR responses are the highest-risk disclosure a small organisation makes. Where the data hides, what enforcement looks like, and a workflow that fits the one-month clock.',
+      'Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow that fits the one-month clock.',
+    metaTitulo: 'Redact a subject access request (DSAR) safely · TachadoPDF',
     cuerpo: [
       {
         t: 'p',
@@ -276,13 +286,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'General information, not legal advice. TachadoPDF removes and verifies; deciding what a data subject is entitled to receive is a judgement it cannot make for you.',
       },
     ],
+    enlaceComprobador: 'Check a DSAR bundle for hidden data — free',
+    relacionadas: ['guia-en-tribunales', 'guia-en-comprobar', 'guia-en-nominas'],
   },
   {
     id: 'guia-en-sin-subir',
     titulo: 'How to redact a PDF without uploading it anywhere',
     tituloEnlace: 'How to redact a PDF without uploading it',
     descripcion:
-      'Most online redaction tools send your document to a server first. Here is how to redact entirely in your browser, and how to verify that claim yourself.',
+      "Redact a PDF without uploading it: most online tools send your file to a server first. Here's how to redact entirely in your browser — and verify that claim yourself.",
+    metaTitulo: 'Redact a PDF without uploading it · TachadoPDF',
     cuerpo: [
       {
         t: 'p',
@@ -321,13 +334,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'The source code is open under AGPL-3.0, so the no-upload claim is not something you have to take on trust.',
       },
     ],
+    enlaceComprobador: "Check what's in your PDF, in your browser — free",
+    relacionadas: ['guia-en-comprobar', 'guia-en-caja-negra', 'guia-en-nominas'],
   },
   {
     id: 'guia-en-nominas',
     titulo: 'Sending payslips and HR documents as PDFs without exposing personal data',
     tituloEnlace: 'Sending payslips and HR documents as PDFs',
     descripcion:
-      'Payroll and HR files carry bank details, national identifiers and home addresses. What to remove before sharing, and how to confirm it is gone.',
+      "Redact payslips and HR PDFs before sharing: they carry bank details, national IDs and home addresses. What to remove, and how to confirm it's really gone.",
+    metaTitulo: 'Redact payslips and HR PDFs before sharing · TachadoPDF',
     cuerpo: [
       {
         t: 'p',
@@ -373,5 +389,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
           'General information, not legal advice, and not a statement about your obligations as an employer.',
       },
     ],
+    enlaceComprobador: 'Check a payslip for leftover data — free',
+    relacionadas: ['guia-en-sin-subir', 'guia-en-dsar', 'guia-en-comprobar'],
   },
 ];
