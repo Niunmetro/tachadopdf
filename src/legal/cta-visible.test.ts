@@ -87,9 +87,10 @@ function fondoDe(css: string, selector: string): string | null {
 describe('G17: las paginas del sitio declaran UNA cara y ningun CTA se funde con su fondo', () => {
   // Eran dieciocho; el 2026-08-10 se sumaron las CINCO landings de cola larga sectorial (guias
   // generadas, solo en espanol) y el sitio paso a veintitres; el 2026-08-12 la pieza de autoridad
-  // AEO (generada, solo en espanol) lo dejo en veinticuatro.
-  it('el barrido ve las veinticuatro paginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(24);
+  // AEO (generada, solo en espanol) lo dejo en veinticuatro; el 2026-08-29 una guia inglesa nueva
+  // (redact-pdf-without-acrobat) lo dejo en veinticinco.
+  it('el barrido ve las veinticinco paginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(25);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s no declara ningun bloque de tema oscuro', (pagina) => {

@@ -198,6 +198,13 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/redact-payslips-hr-documents' },
   },
+  {
+    id: 'guia-en-sin-acrobat',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-pdf-without-acrobat' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {

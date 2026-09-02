@@ -72,7 +72,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
       },
     ],
     enlaceComprobador: 'Check your PDF for free — see what text is still extractable',
-    relacionadas: ['guia-en-comprobar', 'guia-en-sin-subir', 'guia-en-tribunales'],
+    relacionadas: ['guia-en-comprobar', 'guia-en-sin-subir', 'guia-en-sin-acrobat'],
   },
   {
     id: 'guia-en-comprobar',
@@ -391,5 +391,71 @@ export const GUIAS_EN: ContenidoGuia[] = [
     ],
     enlaceComprobador: 'Check a payslip for leftover data — free',
     relacionadas: ['guia-en-sin-subir', 'guia-en-dsar', 'guia-en-comprobar'],
+  },
+  {
+    id: 'guia-en-sin-acrobat',
+    titulo: 'How to redact a PDF without Adobe Acrobat',
+    tituloEnlace: 'Redact a PDF without Adobe Acrobat',
+    descripcion:
+      "You don't need Acrobat to redact a PDF. Here is how to remove the text for real — not hide it behind a black box — in your browser, for free, and how to check the result before you send the file.",
+    metaTitulo: 'Redact a PDF without Adobe Acrobat · TachadoPDF',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Adobe Acrobat Pro has a redaction tool, but it is a paid subscription, and most people who need to black out one address on one document do not have it. Redaction is a specific, well-defined operation, and you do not need Acrobat to do it. What you do need is to do it properly, because the routes that look easiest are the ones that leave the data sitting in the file.',
+      },
+      { t: 'h2', texto: 'What redacting a PDF actually involves' },
+      {
+        t: 'p',
+        texto:
+          'Removing a piece of information from a PDF is three separate jobs, and a tool that skips any one of them leaves data behind:',
+      },
+      {
+        t: 'ul',
+        items: [
+          'Delete the text itself from the page content, so it can no longer be selected, copied or extracted.',
+          'Clear the pixels where the information sits inside a scanned image: an image is not text, and deleting text does nothing to it.',
+          'Strip the metadata: the document title, the author field, and the separate XMP block often still carry a name, a file path or a case number.',
+        ],
+      },
+      { t: 'h2', texto: 'The methods people try, and where each one falls short' },
+      {
+        t: 'ul',
+        items: [
+          'A black rectangle over the text (in Preview, in a browser, or in a basic PDF editor): the rectangle is only a shape drawn on top. Select across it and the words copy straight out. Nothing was removed.',
+          'Flatten or print-to-PDF: this can help, but if the page keeps a searchable text layer, or the scan was made searchable, the words are still inside the file.',
+          'Free online redaction sites: these usually upload your document to someone else’s server, which is the opposite of what you want when the file is confidential.',
+          'Acrobat Pro: it does the job, but it is a monthly fee, the redaction is manual, and it does not reopen the finished file to show that nothing survived. That last step is the one people skip.',
+        ],
+      },
+      { t: 'h2', texto: 'Redact the PDF in your browser instead' },
+      {
+        t: 'p',
+        texto:
+          'TachadoPDF runs entirely in your browser, so the document is never uploaded to any server. You mark what to remove; it deletes the text from the file and clears the pixels of the areas you marked, strips the metadata, and then reopens the PDF it just produced and searches it again for everything you redacted. If any of it is still there, the download is blocked and you are told which page. You also get a verification report: a plain record of what was removed and that the finished file was re-read, which you can attach when you hand the document over.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Automatic detection currently covers email addresses and Spanish identifiers; anything else, such as a name, a foreign account number or a signature, you mark by hand, and the removal and the re-read are identical either way. The free tier handles a few documents a month; Pro is a one-time payment, not a subscription, for unlimited use and a report with no watermark.',
+      },
+      { t: 'h2', texto: 'Check it before you send, whatever tool you used' },
+      {
+        t: 'ol',
+        items: [
+          'Open the finished PDF.',
+          'Select the whole document, copy it, and paste into a plain text editor.',
+          'Search for what you removed. If it appears, it was never deleted: go back and remove it from the file, not with a box on top.',
+        ],
+      },
+      {
+        t: 'nota',
+        texto:
+          'General information, not legal advice. This describes how the file is handled, not a statement about your obligations.',
+      },
+    ],
+    enlaceComprobador: 'Check your PDF for free — see what text is still extractable',
+    relacionadas: ['guia-en-caja-negra', 'guia-en-comprobar', 'guia-en-sin-subir'],
   },
 ];

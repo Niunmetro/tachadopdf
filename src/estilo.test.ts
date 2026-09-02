@@ -289,9 +289,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
 
   // Eran diez (home ES+EN, comprobador ES+EN, seis guias inglesas); el 2026-08-10 se sumaron las
   // CINCO landings de cola larga sectorial (generadas, solo en espanol), y pasaron a quince; el
-  // 2026-08-12 se sumo la pieza de autoridad AEO (generada, solo en espanol) y pasaron a dieciseis.
-  it('el barrido ve las dieciseis paginas generadas', () => {
-    expect(generadas.length).toBe(16);
+  // 2026-08-12 se sumo la pieza de autoridad AEO (generada, solo en espanol) y pasaron a dieciseis;
+  // el 2026-08-29 una guia inglesa nueva (redact-pdf-without-acrobat) las dejo en diecisiete.
+  it('el barrido ve las diecisiete paginas generadas', () => {
+    expect(generadas.length).toBe(17);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(

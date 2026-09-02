@@ -183,24 +183,24 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Black box on a PDF doesn't delete the text · TachadoPDF</title>
-    <meta name="description" content="A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real." />
-    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/" />
+    <title>Redact a PDF without Adobe Acrobat · TachadoPDF</title>
+    <meta name="description" content="You don't need Acrobat to redact a PDF. Here is how to remove the text for real — not hide it behind a black box — in your browser, for free, and how to check the result before you send the file." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-pdf-without-acrobat/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
-    <meta property="og:title" content="Why the black box over your PDF does not delete the text" />
-    <meta property="og:description" content="A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real." />
+    <meta property="og:title" content="How to redact a PDF without Adobe Acrobat" />
+    <meta property="og:description" content="You don't need Acrobat to redact a PDF. Here is how to remove the text for real — not hide it behind a black box — in your browser, for free, and how to check the result before you send the file." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
-    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-pdf-without-acrobat/" />
     <meta property="og:locale" content="en_GB" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": "Why the black box over your PDF does not delete the text",
-      "description": "A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real.",
+      "headline": "How to redact a PDF without Adobe Acrobat",
+      "description": "You don't need Acrobat to redact a PDF. Here is how to remove the text for real — not hide it behind a black box — in your browser, for free, and how to check the result before you send the file.",
       "inLanguage": "en",
-      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/",
+      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-pdf-without-acrobat/",
       "author": {
         "@type": "Organization",
         "name": "TachadoPDF"
@@ -267,29 +267,38 @@
       </div>
     </header>
     <main>
-      <h1>Why the black box over your PDF does not delete the text</h1>
-      <p>It is the most common mistake made when preparing a document for release: covering the confidential part with a black rectangle. The data is still there, and whoever receives the file can recover it with no technical knowledge at all.</p>
-      <h2>Why the rectangle does nothing</h2>
-      <p>A PDF stores its text separately from what you see on screen. Drawing a black rectangle over a name, an account number or an address only adds a shape in front. The original text is still stored in the file, underneath. So:</p>
+      <h1>How to redact a PDF without Adobe Acrobat</h1>
+      <p>Adobe Acrobat Pro has a redaction tool, but it is a paid subscription, and most people who need to black out one address on one document do not have it. Redaction is a specific, well-defined operation, and you do not need Acrobat to do it. What you do need is to do it properly, because the routes that look easiest are the ones that leave the data sitting in the file.</p>
+      <h2>What redacting a PDF actually involves</h2>
+      <p>Removing a piece of information from a PDF is three separate jobs, and a tool that skips any one of them leaves data behind:</p>
       <ul>
-        <li>Select across the rectangle with the mouse, copy, and the hidden text appears.</li>
-        <li>Open the PDF in a different program, or convert it, and the data comes back.</li>
-        <li>Move or delete the rectangle and the data is simply on display again.</li>
+        <li>Delete the text itself from the page content, so it can no longer be selected, copied or extracted.</li>
+        <li>Clear the pixels where the information sits inside a scanned image: an image is not text, and deleting text does nothing to it.</li>
+        <li>Strip the metadata: the document title, the author field, and the separate XMP block often still carry a name, a file path or a case number.</li>
       </ul>
-      <p class="nota">Check it yourself: open a PDF where you covered something with a rectangle, select across it, and paste into a text editor. If the words come out, they were never deleted.</p>
-      <h2>This is not theoretical</h2>
-      <p>On 8 January 2019, lawyers for Paul Manafort filed a court document with passages blacked out. The text underneath was still live: reporters copied it straight out, it was being quoted in news reports the same day, and a corrected filing had to be entered on the public docket before the day was over. Regulators fine for the same class of mistake. In October 2024 the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet inside a spreadsheet released under freedom of information exposed the surnames, initials, ranks and roles of all 9,483 of its officers and staff.</p>
-      <h2>What to do instead</h2>
-      <p>For the data to be gone it has to be removed from the contents of the file, not covered. And if the data sits inside a scanned image, the pixels of that area have to be cleared — not patched over.</p>
-      <p>Doing that by hand with professional PDF software is possible but slow, and the step people skip is the one that matters: checking the finished file afterwards. A redaction you did not verify is a redaction you are only assuming worked.</p>
-      <h2>How TachadoPDF does it</h2>
-      <p>TachadoPDF removes the text from the file and clears the pixels of the areas you mark, strips the metadata, and then reopens the PDF it just produced and searches it again — including the metadata — for everything you redacted. If any of it comes back, the download is blocked and you are told which page. You also get a verification report with the SHA-256 fingerprint of the file you deliver. Everything runs in your browser; the document is never uploaded.</p>
+      <h2>The methods people try, and where each one falls short</h2>
+      <ul>
+        <li>A black rectangle over the text (in Preview, in a browser, or in a basic PDF editor): the rectangle is only a shape drawn on top. Select across it and the words copy straight out. Nothing was removed.</li>
+        <li>Flatten or print-to-PDF: this can help, but if the page keeps a searchable text layer, or the scan was made searchable, the words are still inside the file.</li>
+        <li>Free online redaction sites: these usually upload your document to someone else’s server, which is the opposite of what you want when the file is confidential.</li>
+        <li>Acrobat Pro: it does the job, but it is a monthly fee, the redaction is manual, and it does not reopen the finished file to show that nothing survived. That last step is the one people skip.</li>
+      </ul>
+      <h2>Redact the PDF in your browser instead</h2>
+      <p>TachadoPDF runs entirely in your browser, so the document is never uploaded to any server. You mark what to remove; it deletes the text from the file and clears the pixels of the areas you marked, strips the metadata, and then reopens the PDF it just produced and searches it again for everything you redacted. If any of it is still there, the download is blocked and you are told which page. You also get a verification report: a plain record of what was removed and that the finished file was re-read, which you can attach when you hand the document over.</p>
+      <p>Automatic detection currently covers email addresses and Spanish identifiers; anything else, such as a name, a foreign account number or a signature, you mark by hand, and the removal and the re-read are identical either way. The free tier handles a few documents a month; Pro is a one-time payment, not a subscription, for unlimited use and a report with no watermark.</p>
+      <h2>Check it before you send, whatever tool you used</h2>
+      <ol>
+        <li>Open the finished PDF.</li>
+        <li>Select the whole document, copy it, and paste into a plain text editor.</li>
+        <li>Search for what you removed. If it appears, it was never deleted: go back and remove it from the file, not with a box on top.</li>
+      </ol>
+      <p class="nota">General information, not legal advice. This describes how the file is handled, not a statement about your obligations.</p>
       <nav class="relacionadas" aria-label="Guides">
         <h2>Guides</h2>
         <ul>
+          <li><a href="../black-box-pdf-not-redacted/">Why the black box over your PDF does not delete the text</a></li>
           <li><a href="../check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
           <li><a href="../redact-pdf-without-uploading/">How to redact a PDF without uploading it</a></li>
-          <li><a href="../redact-pdf-without-acrobat/">Redact a PDF without Adobe Acrobat</a></li>
         </ul>
       </nav>
       <a class="cp-cta" href="../../checker/?utm_source=guia">Check your PDF for free — see what text is still extractable</a>

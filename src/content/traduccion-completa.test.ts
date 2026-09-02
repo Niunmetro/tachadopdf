@@ -101,6 +101,11 @@ describe('traducciones completas', () => {
         const original = base.get(h.ruta);
         if (original === undefined) return false;
         if (h.valor.trim() === '') return false;
+        // El discriminador de bloque de una guía (`cuerpo.N.t` = 'p'/'h2'/'ul'/'ol'/'nota') es
+        // ESTRUCTURAL, no texto traducible: solo tiene cinco valores, así que dos guías cualesquiera
+        // (que no son traducciones cruzadas) colisionan por casualidad sin que eso signifique nada.
+        // Se excluye para que ese choque no se lea como "cadena inglesa sin traducir".
+        if (h.ruta.endsWith('.t')) return false;
         if (IGUALDAD_PERMITIDA.has(h.valor.trim())) return false;
         return h.valor === original;
       })

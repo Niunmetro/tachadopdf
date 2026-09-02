@@ -42,6 +42,7 @@ describe('las guías inglesas están enlazadas y con títulos aptos para la SERP
         'guia-en-comprobar',
         'guia-en-dsar',
         'guia-en-nominas',
+        'guia-en-sin-acrobat',
         'guia-en-sin-subir',
         'guia-en-tribunales',
       ].sort(),
