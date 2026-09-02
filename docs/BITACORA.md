@@ -4,6 +4,26 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-08-29 · seo · Guía inglesa nueva «Redact a PDF without Adobe Acrobat» (desplegada y verificada)
+
+**Hecho:** primera página SEO nueva desde la pasada de calidad del 27-ago. Guía inglesa generada
+`guide/redact-pdf-without-acrobat` (id `guia-en-sin-acrobat`), distinta de las seis existentes:
+compara los métodos que la gente intenta (caja negra, flatten, webs que suben el fichero, Acrobat)
+y encamina al comprobador + la herramienta. Commit `b85c146` en master (empujado a origin),
+**desplegado a gh-pages y VERIFICADO en vivo**: `https://www.tachadopdf.com/en/guide/redact-pdf-without-acrobat/`
+responde con su título/H1 correctos, y `/en/` sigue intacto (dominio en pie, CNAME conservado).
+
+**Decisiones y porqués:** intención comercial «sin Adobe / gratis / en navegador», donde el gigante
+(Acrobat de pago) ES el status quo que atacamos y el cliente objetivo es quien NO paga Acrobat.
+Enlazada DESDE la guía de caja negra para que sea alcanzable. Vocabulario limpio (guard-en verde).
+Tres guardas de conteo actualizadas (estilo 16→17, cta-visible 24→25, lista EN de enlazado-interno);
+`traduccion-completa` deja de tratar el discriminador de bloque `.t` como texto traducible (solo tiene
+cinco valores y colisiona entre guías, que no son traducciones cruzadas). tsc 0 · tests 1453 verde · build 0.
+
+**Bloqueos / pendiente:** ninguno técnico. La indexación la decide Google (días/semanas).
+
+**Enlaces:** commit `b85c146`; verificado en `https://www.tachadopdf.com/en/guide/redact-pdf-without-acrobat/`
+
 ## 2026-08-27 · seo · Pulido on-page: títulos SERP, meta y enlazado interno de las guías EN + validación de schema
 
 **Hecho:** merge `--no-ff` `150cd34` (rama `seo/afinar-titulos-enlaces-schema`, commit `f52adcf`),
