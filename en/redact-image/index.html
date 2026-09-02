@@ -183,27 +183,27 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Check what personal data your PDF actually contains</title>
-    <meta name="description" content="Load a PDF and find out what personal data it contains before you share it. Free, entirely in your browser: the file never leaves your machine. This check does not redact anything." />
-    <link rel="canonical" href="https://www.tachadopdf.com/en/checker/" />
-    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/comprobador/" />
-    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/checker/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/comprobador/" />
+    <title>Redact an image or screenshot — remove the data, not cover it</title>
+    <meta name="description" content="Redact data from a photo or screenshot: it doesn't blur — it replaces the pixels of the area with solid black, and on export it drops the metadata (including location). 100% in your browser; the image is never uploaded to any server." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/redact-image/" />
+    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/imagen/" />
+    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/redact-image/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/imagen/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
-    <meta property="og:title" content="Check what personal data your PDF actually contains" />
-    <meta property="og:description" content="Find out what personal data your PDF contains before you share it. Free, entirely in your browser: the file never leaves your machine." />
+    <meta property="og:title" content="Redact an image or screenshot · TachadoPDF" />
+    <meta property="og:description" content="Remove data from an image or screenshot by replacing the pixels with solid black (not blur), and strip the metadata — 100% in your browser." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
-    <meta property="og:url" content="https://www.tachadopdf.com/en/checker/" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/redact-image/" />
     <meta property="og:locale" content="en_GB" />
     <meta property="og:locale:alternate" content="es_ES" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "TachadoPDF checker",
+      "name": "Redact images · TachadoPDF",
       "applicationCategory": "SecurityApplication",
-      "url": "https://www.tachadopdf.com/en/checker/",
+      "url": "https://www.tachadopdf.com/en/redact-image/",
       "inLanguage": "en",
       "offers": {
         "@type": "Offer",
@@ -232,10 +232,7 @@
         font-size: var(--t-400);
         color: var(--tinta-suave);
       }
-      /* La zona de soltar reutiliza la gramática del producto: HUECO/DISCONTINUO = pendiente de
-         decidir. Su borde llegó a estar a 1,72:1 sobre el fondo; ahora es el borde de control de la
-         casa, 3,37:1 sobre papel y 3,67 sobre blanco. */
-      #cp-dropzone {
+      #img-dropzone {
         border: 2px dashed var(--linea-fuerte);
         border-radius: var(--radio);
         padding: var(--e-8) var(--e-4);
@@ -244,7 +241,7 @@
         background: var(--superficie);
         max-width: var(--medida);
       }
-      #cp-dropzone label {
+      #img-dropzone label {
         display: inline-flex;
         align-items: center;
         min-height: 2.75rem;
@@ -252,36 +249,68 @@
         font-weight: var(--peso-fuerte);
         color: var(--acento);
       }
-      #cp-password-form {
-        margin-top: var(--e-4);
-        display: flex;
-        flex-direction: column;
-        gap: var(--e-2);
-        align-items: center;
+      #img-file {
+        display: block;
+        margin: var(--e-4) auto 0;
+        max-width: 100%;
       }
-      /* El marcador de posicion se cortaba a media frase y sin cerrar el parentesis —«Contraseña del
-         PDF (si tiene»— porque el campo era mas estrecho que su propio texto. Un campo que no cabe lo
-         que dice lee como pagina rota, y esta es la herramienta gratuita que hace de embudo. */
-      #cp-password {
-        width: 100%;
-        max-width: 21rem;
-        min-height: 2.75rem;
-        padding: var(--e-2) var(--e-3);
-        border-radius: var(--radio);
+      .img-formatos {
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+        margin: var(--e-2) 0 0;
+      }
+      #img-stage {
+        margin: var(--e-8) 0;
+      }
+      #img-instrucciones {
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+        margin-bottom: var(--e-3);
+      }
+      #img-canvas {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        touch-action: none;
+        cursor: crosshair;
         border: 1px solid var(--linea-fuerte);
+        border-radius: var(--radio);
         background: var(--superficie);
-        color: var(--tinta);
       }
-      /* La caja la pone ya #cp-dropzone: aqui el control solo aporta su boton, que es el mismo del
-         sistema que usa la herramienta de pago. Dos recuadros anidados serian dos zonas de carga. */
-      #cp-file {
+      #img-controles {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: var(--e-3);
-        justify-content: center;
-        width: 100%;
         margin-top: var(--e-4);
+      }
+      #img-count {
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+      }
+      .img-boton {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        padding: var(--e-3) var(--e-6);
+        font-weight: var(--peso-fuerte);
+        border-radius: var(--radio);
+        border: 1px solid var(--linea-fuerte);
+        background: var(--superficie);
+        color: var(--tinta);
+        cursor: pointer;
+      }
+      .img-boton--principal {
+        background: var(--acento);
+        color: var(--tinta-inversa);
+        border-color: var(--acento);
+      }
+      .img-boton--principal:hover {
+        background: var(--acento-fuerte);
+      }
+      .img-boton:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       .cp-aviso {
         font-size: var(--t-200);
@@ -291,7 +320,7 @@
         margin: var(--e-8) 0;
         max-width: var(--medida);
       }
-      #cp-error {
+      #img-error {
         color: var(--rojo);
       }
       .cp-cta {
@@ -311,34 +340,39 @@
       }
     </style>
     <script type="module" crossorigin src="/assets/index-D_3F4YyS.js"></script>
-    <script type="module" crossorigin src="/assets/patterns-Bud59EVY.js"></script>
-    <script type="module" crossorigin src="/assets/main-D3AGkuba.js"></script>
+    <script type="module" crossorigin src="/assets/main-laW73G6c.js"></script>
   </head>
   <body>
     <header class="cabecera">
       <div class="cabecera__interior">
         <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
         <nav class="idiomas" aria-label="Language">
-          <a class="idiomas__enlace" hreflang="es" lang="es" href="../../comprobador/">Español</a>
+          <a class="idiomas__enlace" hreflang="es" lang="es" href="../../imagen/">Español</a>
           <span class="idiomas__actual" lang="en">English</span>
         </nav>
       </div>
     </header>
     <main>
-      <h1>Check what personal data your PDF actually contains</h1>
-      <p class="cp-intro">This tool analyses your PDF and tells you what personal data it contains, using automatic pattern detection. It is a diagnosis: it does not redact or modify the file.</p>
-      <p>The PDF never leaves your machine: the whole analysis happens in your browser, verifiably. No document is sent to any server.</p>
-      <div id="cp-dropzone">
-        <label for="cp-file">Drag your PDF here, or click to select it</label>
-        <form id="cp-password-form">
-          <input type="file" id="cp-file" accept="application/pdf" />
-          <input type="password" id="cp-password" placeholder="PDF password (if it has one)" />
-        </form>
+      <h1>Redact an image or screenshot</h1>
+      <p class="cp-intro">Drag a box over anything you want gone — a face, an ID, an email, a balance — and download the image with those areas removed. We don't blur or pixelate: the pixels in the area are replaced with solid black, so there is nothing left underneath to reconstruct.</p>
+      <p>The image never leaves your device: everything runs in your browser. On download, the image is re-encoded from scratch, so any metadata it carried (including the GPS location of a photo) does not make it into the final file.</p>
+      <div id="img-dropzone">
+        <label for="img-file">Drag an image here, or click to select it</label>
+        <input type="file" id="img-file" accept="image/*" />
+        <p class="img-formatos">JPG, PNG or WebP</p>
       </div>
-      <div id="cp-resultado" data-cta-href="../?utm_source=comprobador"></div>
-      <div id="cp-error"></div>
-      <p class="cp-aviso">Scope: this check covers the extractable text of the PDF. Scanned pages (images with no text layer) are listed separately and need human review; this tool does not replace that review.</p>
-      <a class="cp-cta" href="../?utm_source=comprobador">Redact them now — free, 5 documents a month</a>
+      <div id="img-stage" hidden>
+        <p id="img-instrucciones">Drag across the image to mark each area to remove. Drag again to add more.</p>
+        <canvas id="img-canvas"></canvas>
+        <div id="img-controles">
+          <button type="button" id="img-download" class="img-boton img-boton--principal" disabled="">Download redacted image</button>
+          <button type="button" id="img-clear" class="img-boton">Clear all marks</button>
+          <span id="img-count"></span>
+        </div>
+      </div>
+      <div id="img-error"></div>
+      <p class="cp-aviso">What you download is a flat image: the marked areas are solid black with no hidden layer underneath, and the metadata was left out when it was re-exported. A blur can be reversed; a solid fill leaves nothing to reverse.</p>
+      <a class="cp-cta" href="../?utm_source=imagen">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
 </html>

@@ -1,27 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
-    <link rel="icon" href="../../favicon.ico" sizes="32x32" />
-    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
-    <link rel="preload" href="../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
+    <link rel="preload" href="../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <style>
     @font-face {
     font-family: "IBM Plex Sans";
     font-style: normal;
     font-weight: 100 700;
     font-display: optional;
-    src: url("../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    src: url("../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
     }
     @font-face {
     font-family: "IBM Plex Mono";
     font-style: normal;
     font-weight: 400;
     font-display: optional;
-    src: url("../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    src: url("../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
     }
     :root {
     --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
@@ -183,28 +183,28 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Check what personal data your PDF actually contains</title>
-    <meta name="description" content="Load a PDF and find out what personal data it contains before you share it. Free, entirely in your browser: the file never leaves your machine. This check does not redact anything." />
-    <link rel="canonical" href="https://www.tachadopdf.com/en/checker/" />
-    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/comprobador/" />
-    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/checker/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/comprobador/" />
+    <title>Tachar una imagen o captura: borra los datos, no los tapa</title>
+    <meta name="description" content="Tacha datos de una foto o captura de pantalla: no la difumina, sustituye los píxeles de la zona por negro sólido, y al exportar elimina los metadatos (incluida la ubicación). 100% en tu navegador; la imagen no se sube a ningún servidor." />
+    <link rel="canonical" href="https://www.tachadopdf.com/imagen/" />
+    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/imagen/" />
+    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/redact-image/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/imagen/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
-    <meta property="og:title" content="Check what personal data your PDF actually contains" />
-    <meta property="og:description" content="Find out what personal data your PDF contains before you share it. Free, entirely in your browser: the file never leaves your machine." />
-    <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
-    <meta property="og:url" content="https://www.tachadopdf.com/en/checker/" />
-    <meta property="og:locale" content="en_GB" />
-    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:title" content="Tachar una imagen o captura de pantalla · TachadoPDF" />
+    <meta property="og:description" content="Borra datos de una imagen o captura sustituyendo los píxeles por negro sólido (no difuminado) y quita los metadatos, 100% en tu navegador." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/imagen/" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_GB" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "TachadoPDF checker",
+      "name": "Tachar imágenes · TachadoPDF",
       "applicationCategory": "SecurityApplication",
-      "url": "https://www.tachadopdf.com/en/checker/",
-      "inLanguage": "en",
+      "url": "https://www.tachadopdf.com/imagen/",
+      "inLanguage": "es",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -232,10 +232,7 @@
         font-size: var(--t-400);
         color: var(--tinta-suave);
       }
-      /* La zona de soltar reutiliza la gramática del producto: HUECO/DISCONTINUO = pendiente de
-         decidir. Su borde llegó a estar a 1,72:1 sobre el fondo; ahora es el borde de control de la
-         casa, 3,37:1 sobre papel y 3,67 sobre blanco. */
-      #cp-dropzone {
+      #img-dropzone {
         border: 2px dashed var(--linea-fuerte);
         border-radius: var(--radio);
         padding: var(--e-8) var(--e-4);
@@ -244,7 +241,7 @@
         background: var(--superficie);
         max-width: var(--medida);
       }
-      #cp-dropzone label {
+      #img-dropzone label {
         display: inline-flex;
         align-items: center;
         min-height: 2.75rem;
@@ -252,36 +249,68 @@
         font-weight: var(--peso-fuerte);
         color: var(--acento);
       }
-      #cp-password-form {
-        margin-top: var(--e-4);
-        display: flex;
-        flex-direction: column;
-        gap: var(--e-2);
-        align-items: center;
+      #img-file {
+        display: block;
+        margin: var(--e-4) auto 0;
+        max-width: 100%;
       }
-      /* El marcador de posicion se cortaba a media frase y sin cerrar el parentesis —«Contraseña del
-         PDF (si tiene»— porque el campo era mas estrecho que su propio texto. Un campo que no cabe lo
-         que dice lee como pagina rota, y esta es la herramienta gratuita que hace de embudo. */
-      #cp-password {
-        width: 100%;
-        max-width: 21rem;
-        min-height: 2.75rem;
-        padding: var(--e-2) var(--e-3);
-        border-radius: var(--radio);
+      .img-formatos {
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+        margin: var(--e-2) 0 0;
+      }
+      #img-stage {
+        margin: var(--e-8) 0;
+      }
+      #img-instrucciones {
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+        margin-bottom: var(--e-3);
+      }
+      #img-canvas {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        touch-action: none;
+        cursor: crosshair;
         border: 1px solid var(--linea-fuerte);
+        border-radius: var(--radio);
         background: var(--superficie);
-        color: var(--tinta);
       }
-      /* La caja la pone ya #cp-dropzone: aqui el control solo aporta su boton, que es el mismo del
-         sistema que usa la herramienta de pago. Dos recuadros anidados serian dos zonas de carga. */
-      #cp-file {
+      #img-controles {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: var(--e-3);
-        justify-content: center;
-        width: 100%;
         margin-top: var(--e-4);
+      }
+      #img-count {
+        font-size: var(--t-200);
+        color: var(--tinta-suave);
+      }
+      .img-boton {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+        padding: var(--e-3) var(--e-6);
+        font-weight: var(--peso-fuerte);
+        border-radius: var(--radio);
+        border: 1px solid var(--linea-fuerte);
+        background: var(--superficie);
+        color: var(--tinta);
+        cursor: pointer;
+      }
+      .img-boton--principal {
+        background: var(--acento);
+        color: var(--tinta-inversa);
+        border-color: var(--acento);
+      }
+      .img-boton--principal:hover {
+        background: var(--acento-fuerte);
+      }
+      .img-boton:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       .cp-aviso {
         font-size: var(--t-200);
@@ -291,7 +320,7 @@
         margin: var(--e-8) 0;
         max-width: var(--medida);
       }
-      #cp-error {
+      #img-error {
         color: var(--rojo);
       }
       .cp-cta {
@@ -311,34 +340,39 @@
       }
     </style>
     <script type="module" crossorigin src="/assets/index-D_3F4YyS.js"></script>
-    <script type="module" crossorigin src="/assets/patterns-Bud59EVY.js"></script>
-    <script type="module" crossorigin src="/assets/main-D3AGkuba.js"></script>
+    <script type="module" crossorigin src="/assets/main-laW73G6c.js"></script>
   </head>
   <body>
     <header class="cabecera">
       <div class="cabecera__interior">
         <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
-        <nav class="idiomas" aria-label="Language">
-          <a class="idiomas__enlace" hreflang="es" lang="es" href="../../comprobador/">Español</a>
-          <span class="idiomas__actual" lang="en">English</span>
+        <nav class="idiomas" aria-label="Idioma">
+          <span class="idiomas__actual" lang="es">Español</span>
+          <a class="idiomas__enlace" hreflang="en" lang="en" href="../en/redact-image/">English</a>
         </nav>
       </div>
     </header>
     <main>
-      <h1>Check what personal data your PDF actually contains</h1>
-      <p class="cp-intro">This tool analyses your PDF and tells you what personal data it contains, using automatic pattern detection. It is a diagnosis: it does not redact or modify the file.</p>
-      <p>The PDF never leaves your machine: the whole analysis happens in your browser, verifiably. No document is sent to any server.</p>
-      <div id="cp-dropzone">
-        <label for="cp-file">Drag your PDF here, or click to select it</label>
-        <form id="cp-password-form">
-          <input type="file" id="cp-file" accept="application/pdf" />
-          <input type="password" id="cp-password" placeholder="PDF password (if it has one)" />
-        </form>
+      <h1>Tacha una imagen o captura de pantalla</h1>
+      <p class="cp-intro">Arrastra un recuadro sobre lo que quieras ocultar —una cara, un DNI, un correo, un saldo— y descarga la imagen con esas zonas borradas. No difuminamos ni pixelamos: los píxeles de la zona se sustituyen por negro sólido, así que debajo no queda nada que recomponer.</p>
+      <p>La imagen nunca sale de tu equipo: todo ocurre en tu navegador. Al descargar, la imagen se vuelve a codificar desde cero, así que los metadatos que llevara (incluida la ubicación GPS de una foto) no pasan al archivo final.</p>
+      <div id="img-dropzone">
+        <label for="img-file">Arrastra una imagen aquí o haz clic para seleccionarla</label>
+        <input type="file" id="img-file" accept="image/*" />
+        <p class="img-formatos">JPG, PNG o WebP</p>
       </div>
-      <div id="cp-resultado" data-cta-href="../?utm_source=comprobador"></div>
-      <div id="cp-error"></div>
-      <p class="cp-aviso">Scope: this check covers the extractable text of the PDF. Scanned pages (images with no text layer) are listed separately and need human review; this tool does not replace that review.</p>
-      <a class="cp-cta" href="../?utm_source=comprobador">Redact them now — free, 5 documents a month</a>
+      <div id="img-stage" hidden>
+        <p id="img-instrucciones">Arrastra sobre la imagen para marcar cada zona a borrar. Arrastra otra vez para añadir más.</p>
+        <canvas id="img-canvas"></canvas>
+        <div id="img-controles">
+          <button type="button" id="img-download" class="img-boton img-boton--principal" disabled="">Descargar imagen tachada</button>
+          <button type="button" id="img-clear" class="img-boton">Quitar todas las marcas</button>
+          <span id="img-count"></span>
+        </div>
+      </div>
+      <div id="img-error"></div>
+      <p class="cp-aviso">Lo que descargas es una imagen plana: las zonas marcadas son negro sólido, sin ninguna capa oculta debajo, y los metadatos se han quedado fuera al reexportar. Un difuminado se puede revertir; un relleno sólido no deja nada que revertir.</p>
+      <a class="cp-cta" href="../?utm_source=imagen">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>
   </body>
 </html>
