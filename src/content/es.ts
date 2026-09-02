@@ -736,6 +736,7 @@ export const es = {
     enlaceActas: 'Para administradores de fincas',
     enlaceNominas: 'Para gestorías y RRHH',
     enlaceComprobador: 'Comprueba gratis qué datos contiene tu PDF',
+    enlaceImagen: 'Tacha una imagen o captura de pantalla',
   },
 
   comprobador: {
@@ -756,6 +757,34 @@ export const es = {
     avisoAlcance:
       'Aviso de alcance: la comprobación se limita al texto extraíble del PDF. Las páginas escaneadas (imágenes sin capa de texto) se señalan aparte y requieren revisión humana; esta herramienta no sustituye esa revisión.',
     cta: COMPROBADOR_ES.cta,
+  },
+
+  imagen: {
+    metaTitulo: 'Tachar una imagen o captura: borra los datos, no los tapa',
+    metaDescripcion:
+      'Tacha datos de una foto o captura de pantalla: no la difumina, sustituye los píxeles de la zona por negro sólido, y al exportar elimina los metadatos (incluida la ubicación). 100% en tu navegador; la imagen no se sube a ningún servidor.',
+    ogTitulo: 'Tachar una imagen o captura de pantalla · TachadoPDF',
+    ogDescripcion:
+      'Borra datos de una imagen o captura sustituyendo los píxeles por negro sólido (no difuminado) y quita los metadatos, 100% en tu navegador.',
+    jsonLdNombre: 'Tachar imágenes · TachadoPDF',
+    titular: 'Tacha una imagen o captura de pantalla',
+    intro:
+      'Arrastra un recuadro sobre lo que quieras ocultar —una cara, un DNI, un correo, un saldo— y descarga la imagen con esas zonas borradas. No difuminamos ni pixelamos: los píxeles de la zona se sustituyen por negro sólido, así que debajo no queda nada que recomponer.',
+    introLocal:
+      'La imagen nunca sale de tu equipo: todo ocurre en tu navegador. Al descargar, la imagen se vuelve a codificar desde cero, así que los metadatos que llevara (incluida la ubicación GPS de una foto) no pasan al archivo final.',
+    dropzone: 'Arrastra una imagen aquí o haz clic para seleccionarla',
+    formatos: 'JPG, PNG o WebP',
+    instrucciones: 'Arrastra sobre la imagen para marcar cada zona a borrar. Arrastra otra vez para añadir más.',
+    contadorUna: 'zona marcada',
+    contadorVarias: 'zonas marcadas',
+    botonDescargar: 'Descargar imagen tachada',
+    botonLimpiar: 'Quitar todas las marcas',
+    sinRegiones: 'Marca al menos una zona antes de descargar.',
+    aviso:
+      'Lo que descargas es una imagen plana: las zonas marcadas son negro sólido, sin ninguna capa oculta debajo, y los metadatos se han quedado fuera al reexportar. Un difuminado se puede revertir; un relleno sólido no deja nada que revertir.',
+    noEsImagen: 'Eso no parece una imagen. Usa un archivo JPG, PNG o WebP.',
+    errorGenerico: 'No se pudo procesar la imagen.',
+    sufijoDescarga: '-tachada',
   },
 
   app: APP_ES,

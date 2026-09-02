@@ -679,6 +679,10 @@ ${sangrar(faq, 6)}
   if (hrefComprobador.length > 0) {
     enlacesSector.push(texto('a', { href: hrefComprobador }, c.legal.enlaceComprobador));
   }
+  const hrefImagen = enlace('redactor-imagen');
+  if (hrefImagen.length > 0) {
+    enlacesSector.push(texto('a', { href: hrefImagen }, c.legal.enlaceImagen));
+  }
   bloques.push(
     [
       `<footer class="legales" aria-label="${esc(c.secciones.legal)}">`,
@@ -966,6 +970,245 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
   );
 }
 
+// --- página del redactor de imágenes ---------------------------------------
+
+/** Estilo propio del redactor de imágenes. Va en línea (la CSP lo permite en style-src) y comparte
+ *  la gramática visual del comprobador —misma zona de soltar, mismos avisos— para que la segunda
+ *  herramienta gratuita se lea como parte del MISMO producto y no como otra web. El <canvas> lleva
+ *  `touch-action: none` porque el marcado es un arrastre: sin eso, en móvil el dedo haría scroll en
+ *  vez de dibujar el recuadro. */
+const CSS_IMAGEN = `  main {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: var(--e-12) var(--e-4) var(--e-16);
+  }
+  h1 {
+    font-size: var(--t-600);
+    line-height: var(--lh-titular);
+    font-weight: var(--peso-fuerte);
+    margin: 0 0 var(--e-2);
+  }
+  p {
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .cp-intro {
+    font-size: var(--t-400);
+    color: var(--tinta-suave);
+  }
+  #img-dropzone {
+    border: 2px dashed var(--linea-fuerte);
+    border-radius: var(--radio);
+    padding: var(--e-8) var(--e-4);
+    text-align: center;
+    margin: var(--e-8) 0;
+    background: var(--superficie);
+    max-width: var(--medida);
+  }
+  #img-dropzone label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    cursor: pointer;
+    font-weight: var(--peso-fuerte);
+    color: var(--acento);
+  }
+  #img-file {
+    display: block;
+    margin: var(--e-4) auto 0;
+    max-width: 100%;
+  }
+  .img-formatos {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    margin: var(--e-2) 0 0;
+  }
+  #img-stage {
+    margin: var(--e-8) 0;
+  }
+  #img-instrucciones {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    margin-bottom: var(--e-3);
+  }
+  #img-canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    cursor: crosshair;
+    border: 1px solid var(--linea-fuerte);
+    border-radius: var(--radio);
+    background: var(--superficie);
+  }
+  #img-controles {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--e-3);
+    margin-top: var(--e-4);
+  }
+  #img-count {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+  }
+  .img-boton {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: var(--e-3) var(--e-6);
+    font-weight: var(--peso-fuerte);
+    border-radius: var(--radio);
+    border: 1px solid var(--linea-fuerte);
+    background: var(--superficie);
+    color: var(--tinta);
+    cursor: pointer;
+  }
+  .img-boton--principal {
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    border-color: var(--acento);
+  }
+  .img-boton--principal:hover {
+    background: var(--acento-fuerte);
+  }
+  .img-boton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .cp-aviso {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    border-left: 3px solid var(--linea-fuerte);
+    padding-left: var(--e-4);
+    margin: var(--e-8) 0;
+    max-width: var(--medida);
+  }
+  #img-error {
+    color: var(--rojo);
+  }
+  .cp-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: var(--e-8);
+    padding: var(--e-3) var(--e-6);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+    border-radius: var(--radio);
+  }
+  .cp-cta:hover {
+    background: var(--acento-fuerte);
+  }`;
+
+function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
+  const c = CONTENIDOS[locale];
+  const canonical = urlCanonica(pagina, locale) ?? `${SITIO}/`;
+  const ruta = rutaDe(pagina, locale) ?? '';
+  const home = paginaPorId('home');
+  const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
+  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=imagen`;
+
+  const extra = [
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: c.imagen.jsonLdNombre,
+      applicationCategory: 'SecurityApplication',
+      url: canonical,
+      inLanguage: c.htmlLang,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+    }),
+    '',
+    `<style>\n${CSS_IMAGEN}\n</style>`,
+  ];
+
+  const cuerpo = [
+    texto('h1', {}, c.imagen.titular),
+    texto('p', { class: 'cp-intro' }, c.imagen.intro),
+    texto('p', {}, c.imagen.introLocal),
+    '',
+    '<div id="img-dropzone">',
+    sangrar(
+      [
+        texto('label', { for: 'img-file' }, c.imagen.dropzone),
+        '<input type="file" id="img-file" accept="image/*" />',
+        texto('p', { class: 'img-formatos' }, c.imagen.formatos),
+      ],
+      1,
+    ),
+    '</div>',
+    '',
+    '<div id="img-stage" hidden>',
+    sangrar(
+      [
+        texto('p', { id: 'img-instrucciones' }, c.imagen.instrucciones),
+        '<canvas id="img-canvas"></canvas>',
+        '<div id="img-controles">',
+        sangrar(
+          [
+            texto(
+              'button',
+              {
+                type: 'button',
+                id: 'img-download',
+                class: 'img-boton img-boton--principal',
+                disabled: '',
+              },
+              c.imagen.botonDescargar,
+            ),
+            texto(
+              'button',
+              { type: 'button', id: 'img-clear', class: 'img-boton' },
+              c.imagen.botonLimpiar,
+            ),
+            '<span id="img-count"></span>',
+          ],
+          1,
+        ),
+        '</div>',
+      ],
+      1,
+    ),
+    '</div>',
+    '',
+    '<div id="img-error"></div>',
+    '',
+    texto('p', { class: 'cp-aviso' }, c.imagen.aviso),
+    '',
+    texto('a', { class: 'cp-cta', href: ctaHref }, c.guiaCta),
+  ];
+
+  const main = [
+    sangrar([mancheta(pagina, locale)], 2),
+    '    <main>',
+    sangrar(cuerpo, 3),
+    '    </main>',
+    '    <script type="module" src="/src/imagen/main.ts"></script>',
+  ].join('\n');
+
+  return documento(
+    c.htmlLang,
+    cabecera({
+      lang: c.htmlLang,
+      titulo: c.imagen.metaTitulo,
+      descripcion: c.imagen.metaDescripcion,
+      canonical,
+      ogTitulo: c.imagen.ogTitulo,
+      ogDescripcion: c.imagen.ogDescripcion,
+      ogLocale: c.ogLocale,
+      ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
+      alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
+      extra,
+    }),
+    main,
+  );
+}
+
 // --- guías ------------------------------------------------------------------
 
 /** Estilo de artículo, el mismo para las guías escritas a mano y para las generadas. En línea,
@@ -1222,6 +1465,8 @@ export function generarPagina(pagina: PaginaRegistro, locale: Locale): string {
       return paginaHome(pagina, locale);
     case 'comprobador':
       return paginaComprobador(pagina, locale);
+    case 'imagen':
+      return paginaRedactorImagen(pagina, locale);
     case 'guia': {
       const guia = CONTENIDOS[locale].guias.find((g) => g.id === pagina.id);
       if (guia === undefined) {

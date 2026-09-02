@@ -352,6 +352,7 @@ export const en: Contenido = {
     enlaceActas: '',
     enlaceNominas: '',
     enlaceComprobador: 'Check for free what data your PDF contains',
+    enlaceImagen: 'Redact an image or screenshot',
   },
 
   comprobador: {
@@ -372,6 +373,34 @@ export const en: Contenido = {
     avisoAlcance:
       'Scope: this check covers the extractable text of the PDF. Scanned pages (images with no text layer) are listed separately and need human review; this tool does not replace that review.',
     cta: COMPROBADOR_EN.cta,
+  },
+
+  imagen: {
+    metaTitulo: 'Redact an image or screenshot — remove the data, not cover it',
+    metaDescripcion:
+      "Redact data from a photo or screenshot: it doesn't blur — it replaces the pixels of the area with solid black, and on export it drops the metadata (including location). 100% in your browser; the image is never uploaded to any server.",
+    ogTitulo: 'Redact an image or screenshot · TachadoPDF',
+    ogDescripcion:
+      'Remove data from an image or screenshot by replacing the pixels with solid black (not blur), and strip the metadata — 100% in your browser.',
+    jsonLdNombre: 'Redact images · TachadoPDF',
+    titular: 'Redact an image or screenshot',
+    intro:
+      "Drag a box over anything you want gone — a face, an ID, an email, a balance — and download the image with those areas removed. We don't blur or pixelate: the pixels in the area are replaced with solid black, so there is nothing left underneath to reconstruct.",
+    introLocal:
+      'The image never leaves your device: everything runs in your browser. On download, the image is re-encoded from scratch, so any metadata it carried (including the GPS location of a photo) does not make it into the final file.',
+    dropzone: 'Drag an image here, or click to select it',
+    formatos: 'JPG, PNG or WebP',
+    instrucciones: 'Drag across the image to mark each area to remove. Drag again to add more.',
+    contadorUna: 'area marked',
+    contadorVarias: 'areas marked',
+    botonDescargar: 'Download redacted image',
+    botonLimpiar: 'Clear all marks',
+    sinRegiones: 'Mark at least one area before downloading.',
+    aviso:
+      'What you download is a flat image: the marked areas are solid black with no hidden layer underneath, and the metadata was left out when it was re-exported. A blur can be reversed; a solid fill leaves nothing to reverse.',
+    noEsImagen: "That doesn't look like an image. Use a JPG, PNG or WebP file.",
+    errorGenerico: 'The image could not be processed.',
+    sufijoDescarga: '-redacted',
   },
 
   app: APP_EN,

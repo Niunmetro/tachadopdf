@@ -4,6 +4,40 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-02 · producto · Nueva herramienta gratuita: tachar IMÁGENES/capturas (ES+EN, desplegada y verificada)
+
+**Hecho:** segunda herramienta gratuita del sitio, después del comprobador. Tacha datos de una
+imagen o captura: se arrastra un recuadro sobre lo sensible y se descarga la imagen con esas zonas
+en NEGRO SÓLIDO —no difumina ni pixela, que son reversibles— y, al reexportar por `<canvas>`, los
+metadatos del original (incluida la ubicación GPS de una foto) no pasan al archivo final. 100% en el
+navegador, sin subir nada. Página propia en los DOS idiomas: `/imagen/` y `/en/redact-image/`
+(id `redactor-imagen`, `tipo:'imagen'`, `origen:'generado'`, `destino:'entrada'` — Vite le inyecta
+`src/imagen/main.ts`). Enlazada desde el pie del home (ES+EN) para no quedar huérfana, y en el sitemap
+con su par hreflang es↔en.
+
+**Arquitectura:** módulo nuevo `src/imagen/` = `redact.ts` (geometría PURA y testeable: normalizar el
+arrastre, recortar a los bordes de la imagen, escalar pantalla→imagen) + `main.ts` (canvas, punteros,
+export). El borrado es un `fillRect` negro sobre un lienzo a resolución NATURAL seguido de `toBlob`
+(PNG, o JPEG si la fuente era JPEG): no hay capa oculta, es un raster plano. Contenido tipado en
+`es.ts`/`en.ts` (bloque `imagen` + `legal.enlaceImagen`), generador `paginaRedactorImagen` + su CSS en
+`generar.ts`, y `case 'imagen'` en el switch. Vocabulario limpio (guard y guard-en en verde).
+
+**Verificación:** tsc 0 · **1541 tests en verde** (nuevos: `redact.test.ts`, 8 casos de geometría —
+incluye el fallo peligroso «un clic sin arrastrar NO añade zona»— e `imagen-page.test.ts`, estructura
+y vocabulario). build 0. Y **prueba de píxeles en navegador real** (dev server): imagen sintética con
+una banda roja y una caja sobre PARTE de ella → el PNG descargado da NEGRO `[0,0,0]` dentro de la caja,
+ROJO `[255,0,0]` intacto fuera de ella y BLANCO en el fondo: destruye solo lo marcado, sin exceso ni
+defecto. Dos guardas de conteo subidas (estilo 17→19, cta-visible 25→27).
+
+**Desplegado y verificado en vivo:** `https://www.tachadopdf.com/imagen/` y
+`https://www.tachadopdf.com/en/redact-image/` responden 200 con su contenido; `https://www.tachadopdf.com/`
+sigue 200 (dominio y CNAME intactos). Rama `feat/image-redactor` fusionada a master.
+
+**Bloqueos / pendiente:** ninguno técnico. Siguiente palanca de DISTRIBUCIÓN: guía(s) SEO que apunten
+a «redact image / blur screenshot / remove data from a photo» y enlacen a la herramienta. La
+indexación la decide Google (días/semanas).
+
+---
 ## 2026-08-29 · seo · Guía inglesa nueva «Redact a PDF without Adobe Acrobat» (desplegada y verificada)
 
 **Hecho:** primera página SEO nueva desde la pasada de calidad del 27-ago. Guía inglesa generada

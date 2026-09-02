@@ -22,7 +22,7 @@ export function prefijoDe(locale: Locale): string {
   return locale === LOCALE_POR_DEFECTO ? '' : `${locale}/`;
 }
 
-export type TipoPagina = 'app' | 'comprobador' | 'guia' | 'landing';
+export type TipoPagina = 'app' | 'comprobador' | 'imagen' | 'guia' | 'landing';
 
 /** 'entrada' = la procesa Vite (necesita que le inyecte el <script> del módulo) y por eso su
  *  HTML vive en la raíz del repo. 'public' = Vite la copia tal cual desde public/. */
@@ -50,6 +50,18 @@ export const PAGINAS: PaginaRegistro[] = [
     origen: 'generado',
     destino: 'entrada',
     slugs: { es: 'comprobador', en: 'checker' },
+  },
+  // Herramienta gratuita nº2 (2026-09-02): tachar IMÁGENES/capturas. Como el comprobador, es
+  // `origen:'generado'` + `destino:'entrada'` porque necesita que Vite le inyecte su módulo
+  // (src/imagen/main.ts). Existe en los DOS idiomas: la demanda de «redact/blur screenshot» es
+  // alta y diaria en inglés (ver docs/BITACORA.md y la investigación de pack premium). Extiende el
+  // motor de borrado de píxeles a un formato nuevo: no difumina, rellena de negro y reexporta.
+  {
+    id: 'redactor-imagen',
+    tipo: 'imagen',
+    origen: 'generado',
+    destino: 'entrada',
+    slugs: { es: 'imagen', en: 'redact-image' },
   },
   { id: 'actas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'actas' } },
   { id: 'nominas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'nominas' } },

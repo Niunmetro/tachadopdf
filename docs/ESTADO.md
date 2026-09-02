@@ -1,7 +1,15 @@
-# ESTADO — TachadoPDF (actualizado 2026-08-21)
+# ESTADO — TachadoPDF (actualizado 2026-09-02)
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
+- **✅ HERRAMIENTA GRATUITA nº2: TACHAR IMÁGENES/CAPTURAS** (2026-09-02, rama `feat/image-redactor`
+  → master, desplegada y verificada en vivo). `/imagen/` y `/en/redact-image/`: se marca un recuadro
+  sobre lo sensible y se descarga la imagen con esas zonas en NEGRO SÓLIDO (no difuminado, que es
+  reversible); el reexport por `<canvas>` deja fuera los metadatos (incluida la ubicación GPS). 100%
+  en el navegador. Módulo `src/imagen/` (geometría pura testeada + canvas), generador
+  `paginaRedactorImagen` en `generar.ts`, `tipo:'imagen'` en el registro. Enlazada desde el pie del
+  home (ES+EN) y en el sitemap con par hreflang. Verificada con prueba de píxeles en navegador real
+  (negro dentro de la caja, original intacto fuera). Suite **1541/1541**. Ver bitácora 2026-09-02.
 - **✅ SELECCIÓN POR DEFECTO DESMARCADA (2026-08-21, merge `967e5cb`, desplegado y verificado en
   vivo)**: al cargar un documento NO se pre-marca nada. Un botón por valor detectado ALTERNA (marca
   todas sus apariciones ↔ las quita todas), con rótulo y `aria-pressed` que reflejan el estado; los
@@ -23,7 +31,7 @@
   Manafort 8-ene-2019) + limitación propia declarada (el hueco de glifos nos afecta). Schema Article
   **y FAQPage** (para AEO). No es casi-duplicado: Jaccard ≤ 0,036 vs las 5, ≤ 0,029 vs las 6 guías.
   Juez y umbral (GSC, 2026-09-07) en `docs/SEO-EXPERIMENTO.md`. Ver la bitácora del 2026-08-12.
-- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **24 URLs (16 ES + 8 EN)**, un solo
+- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **27 URLs (17 ES + 10 EN)**, un solo
   sitemap con alternos `hreflang` recíprocos y `x-default` al español. Las dos landings de sector
   (`/actas/`, `/nominas/`) solo existen en español: ver PARADA 2.
 - **✅ CINCO landings de cola larga sectorial FUSIONADAS Y DESPLEGADAS** (2026-08-10, rama

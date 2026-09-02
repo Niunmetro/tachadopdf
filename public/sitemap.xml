@@ -24,6 +24,18 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/checker/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/comprobador/" />
   </url>
+  <url>
+    <loc>https://www.tachadopdf.com/imagen/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/imagen/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/redact-image/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/imagen/" />
+  </url>
+  <url>
+    <loc>https://www.tachadopdf.com/en/redact-image/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/imagen/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/redact-image/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/imagen/" />
+  </url>
   <url><loc>https://www.tachadopdf.com/actas/</loc></url>
   <url><loc>https://www.tachadopdf.com/nominas/</loc></url>
   <url><loc>https://www.tachadopdf.com/guia/tachar-dni-pdf/</loc></url>
