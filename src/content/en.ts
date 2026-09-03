@@ -401,6 +401,33 @@ export const en: Contenido = {
     noEsImagen: "That doesn't look like an image. Use a JPG, PNG or WebP file.",
     errorGenerico: 'The image could not be processed.',
     sufijoDescarga: '-redacted',
+    faqs: [
+      {
+        pregunta: 'Can a blurred or pixelated image be recovered?',
+        respuesta:
+          "Often, yes: blurring and pixelation are transformations that can frequently be reversed, especially over text. That is why we don't blur — we fill the area with solid black, and a solid fill leaves nothing underneath to reconstruct.",
+      },
+      {
+        pregunta: 'Does a photo or screenshot store my location?',
+        respuesta:
+          'Photos usually carry hidden metadata, including the GPS location where they were taken and sometimes the device model. On download, the image is re-encoded from scratch, so that metadata does not carry into the final file.',
+      },
+      {
+        pregunta: 'Is the data really deleted, or just covered?',
+        respuesta:
+          'It is deleted: the pixels in the marked area are replaced with solid black on the image itself, and what you download is a flat bitmap with no layer on top that could be removed. It is not an overlaid rectangle.',
+      },
+      {
+        pregunta: 'Is my image uploaded anywhere?',
+        respuesta:
+          'No. Everything happens inside your browser and the image is never transmitted. You can check it: disconnect from the internet and the tool still redacts and downloads.',
+      },
+      {
+        pregunta: 'Which image formats does it accept?',
+        respuesta:
+          'JPG, PNG and WebP, including screenshots. The download comes out as PNG, or as JPG if the original image was already a JPG.',
+      },
+    ],
   },
 
   app: APP_EN,

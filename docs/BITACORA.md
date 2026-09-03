@@ -37,6 +37,16 @@ sigue 200 (dominio y CNAME intactos). Rama `feat/image-redactor` fusionada a mas
 a «redact image / blur screenshot / remove data from a photo» y enlacen a la herramienta. La
 indexación la decide Google (días/semanas).
 
+**Actualización (mismo día) · AEO/SEO on-page:** la página de la herramienta lleva ahora un FAQ de
+cinco preguntas con datos estructurados **FAQPage** (ES+EN), apuntando a la intención de búsqueda de
+alta conversión que lleva al tool: «¿se puede recuperar una imagen difuminada o pixelada?», «¿mi
+foto/captura guarda mi ubicación (GPS)?», «¿se borra de verdad o solo se tapa?», «¿se sube a algún
+servidor?», «¿qué formatos acepta?». El MISMO `c.imagen.faqs` alimenta el schema y los `<details>`
+visibles, así que no pueden divergir. Suite **1543** verde. Desplegado y verificado en vivo (FAQPage
+presente en `/imagen/` y `/en/redact-image/`). Se eligió FAQ-en-la-herramienta y NO una guía aparte
+porque el framework de guías está acoplado al comprobador de PDF (`enlazado-interno-en` exige
+`enlaceComprobador` en cada guía EN), un desajuste para contenido de imágenes.
+
 ---
 ## 2026-08-29 · seo · Guía inglesa nueva «Redact a PDF without Adobe Acrobat» (desplegada y verificada)
 

@@ -212,6 +212,54 @@
       }
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Se puede recuperar una imagen difuminada o pixelada?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Una foto o una captura guarda mi ubicación?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Los datos se borran de verdad o solo se tapan?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿La imagen se sube a algún servidor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué formatos de imagen acepta?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG."
+          }
+        }
+      ]
+    }
+    </script>
     <style>
       main {
         max-width: var(--ancho);
@@ -312,6 +360,25 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
+      h2 {
+        font-size: var(--t-500);
+        line-height: var(--lh-corto);
+        font-weight: var(--peso-fuerte);
+        margin: var(--e-12) 0 var(--e-2);
+        max-width: var(--medida);
+      }
+      .faq__item {
+        max-width: var(--medida);
+        border-top: 1px solid var(--linea-fuerte);
+        padding: var(--e-3) 0;
+      }
+      .faq__item summary {
+        cursor: pointer;
+        font-weight: var(--peso-fuerte);
+      }
+      .faq__item p {
+        margin: var(--e-2) 0 0;
+      }
       .cp-aviso {
         font-size: var(--t-200);
         color: var(--tinta-suave);
@@ -370,6 +437,27 @@
       </div>
       <div id="img-error"></div>
       <p class="cp-aviso">Lo que descargas es una imagen plana: las zonas marcadas son negro sólido, sin ninguna capa oculta debajo, y los metadatos se han quedado fuera al reexportar. Un difuminado se puede revertir; un relleno sólido no deja nada que revertir.</p>
+      <h2>Preguntas frecuentes</h2>
+      <details class="faq__item">
+        <summary>¿Se puede recuperar una imagen difuminada o pixelada?</summary>
+        <p>A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Una foto o una captura guarda mi ubicación?</summary>
+        <p>Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Los datos se borran de verdad o solo se tapan?</summary>
+        <p>Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿La imagen se sube a algún servidor?</summary>
+        <p>No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Qué formatos de imagen acepta?</summary>
+        <p>JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG.</p>
+      </details>
       <a class="cp-cta" href="../?utm_source=imagen">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>
     <script type="module" src="/src/imagen/main.ts"></script>
