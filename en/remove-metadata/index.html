@@ -1,27 +1,27 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
-    <link rel="icon" href="../favicon.ico" sizes="32x32" />
-    <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="../apple-touch-icon.png" />
-    <link rel="preload" href="../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" href="../../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+    <link rel="preload" href="../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <style>
     @font-face {
     font-family: "IBM Plex Sans";
     font-style: normal;
     font-weight: 100 700;
     font-display: optional;
-    src: url("../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    src: url("../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
     }
     @font-face {
     font-family: "IBM Plex Mono";
     font-style: normal;
     font-weight: 400;
     font-display: optional;
-    src: url("../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    src: url("../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
     }
     :root {
     --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
@@ -183,28 +183,28 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Tachar una imagen o captura: borra los datos, no los tapa</title>
-    <meta name="description" content="Tacha datos de una foto o captura de pantalla: no la difumina, sustituye los píxeles de la zona por negro sólido, y al exportar elimina los metadatos (incluida la ubicación). 100% en tu navegador; la imagen no se sube a ningún servidor." />
-    <link rel="canonical" href="https://www.tachadopdf.com/imagen/" />
-    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/imagen/" />
-    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/redact-image/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/imagen/" />
+    <title>See and remove the hidden metadata in a photo (EXIF, GPS)</title>
+    <meta name="description" content="Find out what hidden data a photo carries — GPS location, camera model, date — and download a clean copy with no metadata. 100% in your browser; the image is never uploaded to any server." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/remove-metadata/" />
+    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/metadatos/" />
+    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/remove-metadata/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/metadatos/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
-    <meta property="og:title" content="Tachar una imagen o captura de pantalla · TachadoPDF" />
-    <meta property="og:description" content="Borra datos de una imagen o captura sustituyendo los píxeles por negro sólido (no difuminado) y quita los metadatos, 100% en tu navegador." />
-    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
-    <meta property="og:url" content="https://www.tachadopdf.com/imagen/" />
-    <meta property="og:locale" content="es_ES" />
-    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:title" content="See and remove the hidden metadata in a photo · TachadoPDF" />
+    <meta property="og:description" content="See what your photo hides (GPS location, camera, date) and download it clean, 100% in your browser." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/remove-metadata/" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale:alternate" content="es_ES" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Tachar imágenes · TachadoPDF",
+      "name": "Metadata cleaner · TachadoPDF",
       "applicationCategory": "SecurityApplication",
-      "url": "https://www.tachadopdf.com/imagen/",
-      "inLanguage": "es",
+      "url": "https://www.tachadopdf.com/en/remove-metadata/",
+      "inLanguage": "en",
       "offers": {
         "@type": "Offer",
         "price": "0",
@@ -219,42 +219,42 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "¿Se puede recuperar una imagen difuminada o pixelada?",
+          "name": "What is photo metadata?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir."
+            "text": "It is data the camera or phone stores INSIDE the file, alongside the image: the GPS location where it was taken, the device model, the exact date and time, the software... You don't see it when you open the photo, but it travels with it when you share it."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Una foto o una captura guarda mi ubicación?",
+          "name": "Can a photo reveal where I live?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final."
+            "text": "It can. If the phone had location on, the photo stores the GPS coordinates of where it was taken. A photo taken at home carries, inside the file, where your home is. This tool warns you if your image carries location and gives you a copy without it."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Los datos se borran de verdad o solo se tapan?",
+          "name": "Does cropping or passing the photo through another app remove the metadata?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto."
+            "text": "Not always. Many apps keep the metadata when editing, and some social networks strip it but others don't. The only reliable way is to re-encode the image without copying those fields, which is exactly what this tool does."
           }
         },
         {
           "@type": "Question",
-          "name": "¿La imagen se sube a algún servidor?",
+          "name": "Is the image uploaded anywhere?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando."
+            "text": "No. Everything happens inside your browser and the image is never transmitted. You can check it: disconnect from the internet and the tool still analyses and downloads."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Qué formatos de imagen acepta?",
+          "name": "Does cleaning the metadata lose quality?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG."
+            "text": "The copy is re-encoded: for PNG it is lossless (identical); for JPG it is saved at high quality. What is removed is the hidden data, not the visible content of the photo."
           }
         }
       ]
@@ -280,7 +280,7 @@
         font-size: var(--t-400);
         color: var(--tinta-suave);
       }
-      #img-dropzone {
+      #md-dropzone {
         border: 2px dashed var(--linea-fuerte);
         border-radius: var(--radio);
         padding: var(--e-8) var(--e-4);
@@ -289,7 +289,7 @@
         background: var(--superficie);
         max-width: var(--medida);
       }
-      #img-dropzone label {
+      #md-dropzone label {
         display: inline-flex;
         align-items: center;
         min-height: 2.75rem;
@@ -297,68 +297,61 @@
         font-weight: var(--peso-fuerte);
         color: var(--acento);
       }
-      #img-file {
+      #md-file {
         display: block;
         margin: var(--e-4) auto 0;
         max-width: 100%;
       }
-      .img-formatos {
+      .md-formatos {
         font-size: var(--t-200);
         color: var(--tinta-suave);
         margin: var(--e-2) 0 0;
       }
-      #img-stage {
+      #md-stage {
         margin: var(--e-8) 0;
+        max-width: var(--medida);
       }
-      #img-instrucciones {
-        font-size: var(--t-200);
-        color: var(--tinta-suave);
-        margin-bottom: var(--e-3);
+      #md-resultado {
+        margin-bottom: var(--e-4);
       }
-      #img-canvas {
-        display: block;
-        max-width: 100%;
-        height: auto;
-        touch-action: none;
-        cursor: crosshair;
-        border: 1px solid var(--linea-fuerte);
-        border-radius: var(--radio);
+      .md-titulo-lista {
+        font-weight: var(--peso-fuerte);
+        margin: 0 0 var(--e-2);
+      }
+      .md-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--e-4);
+        max-width: var(--medida);
+      }
+      .md-lista li {
+        padding: var(--e-2) var(--e-3);
+        border-left: 3px solid var(--linea-fuerte);
+        margin-bottom: var(--e-2);
         background: var(--superficie);
       }
-      #img-controles {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--e-3);
-        margin-top: var(--e-4);
+      .md-lista li.md-alerta {
+        border-left-color: var(--rojo);
+        color: var(--tinta);
+        font-weight: var(--peso-fuerte);
       }
-      #img-count {
-        font-size: var(--t-200);
+      .md-limpia {
         color: var(--tinta-suave);
       }
-      .img-boton {
+      .md-boton {
         display: inline-flex;
         align-items: center;
         min-height: 2.75rem;
         padding: var(--e-3) var(--e-6);
         font-weight: var(--peso-fuerte);
         border-radius: var(--radio);
-        border: 1px solid var(--linea-fuerte);
-        background: var(--superficie);
-        color: var(--tinta);
-        cursor: pointer;
-      }
-      .img-boton--principal {
+        border: 1px solid var(--acento);
         background: var(--acento);
         color: var(--tinta-inversa);
-        border-color: var(--acento);
+        cursor: pointer;
       }
-      .img-boton--principal:hover {
+      .md-boton:hover {
         background: var(--acento-fuerte);
-      }
-      .img-boton:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
       }
       h2 {
         font-size: var(--t-500);
@@ -387,7 +380,7 @@
         margin: var(--e-8) 0;
         max-width: var(--medida);
       }
-      #img-error {
+      #md-error {
         color: var(--rojo);
       }
       .cp-cta {
@@ -407,60 +400,55 @@
       }
     </style>
     <script type="module" crossorigin src="/assets/index-DpT0VpNU.js"></script>
-    <script type="module" crossorigin src="/assets/main-DFjNE9GW.js"></script>
+    <script type="module" crossorigin src="/assets/main-DEfr5JL_.js"></script>
   </head>
   <body>
     <header class="cabecera">
       <div class="cabecera__interior">
         <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
-        <nav class="idiomas" aria-label="Idioma">
-          <span class="idiomas__actual" lang="es">Español</span>
-          <a class="idiomas__enlace" hreflang="en" lang="en" href="../en/redact-image/">English</a>
+        <nav class="idiomas" aria-label="Language">
+          <a class="idiomas__enlace" hreflang="es" lang="es" href="../../metadatos/">Español</a>
+          <span class="idiomas__actual" lang="en">English</span>
         </nav>
       </div>
     </header>
     <main>
-      <h1>Tacha una imagen o captura de pantalla</h1>
-      <p class="cp-intro">Arrastra un recuadro sobre lo que quieras ocultar —una cara, un DNI, un correo, un saldo— y descarga la imagen con esas zonas borradas. No difuminamos ni pixelamos: los píxeles de la zona se sustituyen por negro sólido, así que debajo no queda nada que recomponer.</p>
-      <p>La imagen nunca sale de tu equipo: todo ocurre en tu navegador. Al descargar, la imagen se vuelve a codificar desde cero, así que los metadatos que llevara (incluida la ubicación GPS de una foto) no pasan al archivo final.</p>
-      <div id="img-dropzone">
-        <label for="img-file">Arrastra una imagen aquí o haz clic para seleccionarla</label>
-        <input type="file" id="img-file" accept="image/*" />
-        <p class="img-formatos">JPG, PNG o WebP</p>
+      <h1>See and remove the hidden metadata in a photo</h1>
+      <p class="cp-intro">A photo is not just the image: inside, it can carry where it was taken (GPS location), which camera or phone, the exact date, and the software that touched it. Drag an image in and I'll tell you what it carries; then download a copy with none of it.</p>
+      <p>The image never leaves your device: everything is analysed in your browser. The clean copy is made by re-encoding the image from scratch, so the metadata does not carry into the final file.</p>
+      <div id="md-dropzone">
+        <label for="md-file">Drag an image here, or click to select it</label>
+        <input type="file" id="md-file" accept="image/*" />
+        <p class="md-formatos">JPG or PNG</p>
       </div>
-      <div id="img-stage" hidden>
-        <p id="img-instrucciones">Arrastra sobre la imagen para marcar cada zona a borrar. Arrastra otra vez para añadir más.</p>
-        <canvas id="img-canvas"></canvas>
-        <div id="img-controles">
-          <button type="button" id="img-download" class="img-boton img-boton--principal" disabled="">Descargar imagen tachada</button>
-          <button type="button" id="img-clear" class="img-boton">Quitar todas las marcas</button>
-          <span id="img-count"></span>
-        </div>
+      <div id="md-stage" hidden>
+        <div id="md-resultado"></div>
+        <button type="button" id="md-download" class="md-boton">Download copy with no metadata</button>
       </div>
-      <div id="img-error"></div>
-      <p class="cp-aviso">Lo que descargas es una imagen plana: las zonas marcadas son negro sólido, sin ninguna capa oculta debajo, y los metadatos se han quedado fuera al reexportar. Un difuminado se puede revertir; un relleno sólido no deja nada que revertir.</p>
-      <h2>Preguntas frecuentes</h2>
+      <div id="md-error"></div>
+      <p class="cp-aviso">The copy you download has been re-encoded from scratch: it carries none of the original metadata. It is the image, without the trail of where, when and with what it was made.</p>
+      <h2>Frequently asked questions</h2>
       <details class="faq__item">
-        <summary>¿Se puede recuperar una imagen difuminada o pixelada?</summary>
-        <p>A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir.</p>
+        <summary>What is photo metadata?</summary>
+        <p>It is data the camera or phone stores INSIDE the file, alongside the image: the GPS location where it was taken, the device model, the exact date and time, the software... You don't see it when you open the photo, but it travels with it when you share it.</p>
       </details>
       <details class="faq__item">
-        <summary>¿Una foto o una captura guarda mi ubicación?</summary>
-        <p>Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final.</p>
+        <summary>Can a photo reveal where I live?</summary>
+        <p>It can. If the phone had location on, the photo stores the GPS coordinates of where it was taken. A photo taken at home carries, inside the file, where your home is. This tool warns you if your image carries location and gives you a copy without it.</p>
       </details>
       <details class="faq__item">
-        <summary>¿Los datos se borran de verdad o solo se tapan?</summary>
-        <p>Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto.</p>
+        <summary>Does cropping or passing the photo through another app remove the metadata?</summary>
+        <p>Not always. Many apps keep the metadata when editing, and some social networks strip it but others don't. The only reliable way is to re-encode the image without copying those fields, which is exactly what this tool does.</p>
       </details>
       <details class="faq__item">
-        <summary>¿La imagen se sube a algún servidor?</summary>
-        <p>No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando.</p>
+        <summary>Is the image uploaded anywhere?</summary>
+        <p>No. Everything happens inside your browser and the image is never transmitted. You can check it: disconnect from the internet and the tool still analyses and downloads.</p>
       </details>
       <details class="faq__item">
-        <summary>¿Qué formatos de imagen acepta?</summary>
-        <p>JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG.</p>
+        <summary>Does cleaning the metadata lose quality?</summary>
+        <p>The copy is re-encoded: for PNG it is lossless (identical); for JPG it is saved at high quality. What is removed is the hidden data, not the visible content of the photo.</p>
       </details>
-      <a class="cp-cta" href="../?utm_source=imagen">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
+      <a class="cp-cta" href="../?utm_source=metadatos">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
 </html>
