@@ -737,6 +737,7 @@ export const es = {
     enlaceNominas: 'Para gestorías y RRHH',
     enlaceComprobador: 'Comprueba gratis qué datos contiene tu PDF',
     enlaceImagen: 'Tacha una imagen o captura de pantalla',
+    enlaceMetadatos: 'Ve los metadatos ocultos de una foto',
   },
 
   comprobador: {
@@ -810,6 +811,68 @@ export const es = {
         pregunta: '¿Qué formatos de imagen acepta?',
         respuesta:
           'JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG.',
+      },
+    ],
+  },
+
+  metadatos: {
+    metaTitulo: 'Ver y borrar los metadatos ocultos de una foto (EXIF, GPS)',
+    metaDescripcion:
+      'Descubre qué datos ocultos lleva una foto —ubicación GPS, modelo de cámara, fecha— y descarga una copia limpia sin metadatos. 100% en tu navegador; la imagen no se sube a ningún servidor.',
+    ogTitulo: 'Ver y borrar los metadatos ocultos de una foto · TachadoPDF',
+    ogDescripcion:
+      'Mira qué lleva escondido tu foto (ubicación GPS, cámara, fecha) y descárgala limpia, 100% en tu navegador.',
+    jsonLdNombre: 'Limpiador de metadatos · TachadoPDF',
+    titular: 'Ve y borra los metadatos ocultos de una foto',
+    intro:
+      'Una foto no es solo la imagen: por dentro puede llevar dónde se tomó (ubicación GPS), con qué cámara o móvil, la fecha exacta y el software que la tocó. Arrastra una imagen y te digo qué lleva; después descargas una copia sin nada de eso.',
+    introLocal:
+      'La imagen nunca sale de tu equipo: todo se analiza en tu navegador. La copia limpia se genera recodificando la imagen desde cero, así que los metadatos no pasan al archivo final.',
+    dropzone: 'Arrastra una imagen aquí o haz clic para seleccionarla',
+    formatos: 'JPG o PNG',
+    analizando: 'Analizando…',
+    sinMetadatos:
+      'Esta imagen no lleva metadatos ocultos de los que buscamos. Aun así, la copia limpia se recodifica desde cero.',
+    conMetadatos: 'Esta imagen lleva escondido:',
+    etiquetas: {
+      ubicacion: 'Ubicación GPS (dónde se tomó)',
+      camara: 'Cámara o dispositivo',
+      fecha: 'Fecha y hora',
+      software: 'Software de edición',
+      autor: 'Autor o copyright',
+      otros: 'Otros metadatos EXIF',
+    },
+    botonDescargar: 'Descargar copia sin metadatos',
+    aviso:
+      'La copia que descargas se ha recodificado desde cero: no lleva los metadatos del original. Es la imagen, sin el rastro de dónde, cuándo y con qué se hizo.',
+    noEsImagen: 'Eso no parece una imagen. Usa un archivo JPG o PNG.',
+    errorGenerico: 'No se pudo procesar la imagen.',
+    sufijoDescarga: '-sin-metadatos',
+    faqs: [
+      {
+        pregunta: '¿Qué son los metadatos de una foto?',
+        respuesta:
+          'Son datos que la cámara o el móvil guardan DENTRO del archivo, además de la imagen: la ubicación GPS donde se tomó, el modelo del dispositivo, la fecha y hora exactas, el software... No se ven al abrir la foto, pero viajan con ella cuando la compartes.',
+      },
+      {
+        pregunta: '¿Una foto puede revelar dónde vivo?',
+        respuesta:
+          'Puede. Si el móvil tenía la ubicación activada, la foto guarda las coordenadas GPS del lugar donde se tomó. Una foto hecha en casa lleva, dentro del archivo, dónde está tu casa. Esta herramienta te avisa si tu imagen lleva ubicación y te da una copia sin ella.',
+      },
+      {
+        pregunta: '¿Al recortar o pasar la foto por otra app se borran los metadatos?',
+        respuesta:
+          'No siempre. Muchas apps conservan los metadatos al editar, y algunas redes sociales los quitan pero otras no. La única forma segura es recodificar la imagen sin copiar esos campos, que es justo lo que hace esta herramienta.',
+      },
+      {
+        pregunta: '¿La imagen se sube a algún servidor?',
+        respuesta:
+          'No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue analizando y descargando.',
+      },
+      {
+        pregunta: '¿Se pierde calidad al limpiar los metadatos?',
+        respuesta:
+          'La copia se recodifica: para PNG es sin pérdida (idéntica); para JPG se guarda a alta calidad. Lo que se quita son los datos ocultos, no el contenido visible de la foto.',
       },
     ],
   },

@@ -4,6 +4,38 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-03 · producto · Herramienta gratuita nº3: limpiador de METADATOS de imágenes (ES+EN, desplegada)
+
+**Hecho:** tercera herramienta gratuita, del plan de crecimiento (research del pack premium, opción #2).
+REVELA qué lleva escondido una foto —ubicación GPS, cámara/dispositivo, fecha, software, autor— leyendo su
+EXIF, y descarga una copia LIMPIA (recodificada sobre `<canvas>`, que no copia esos campos). 100% en el
+navegador, sin subir nada. Páginas `/metadatos/` (ES) y `/en/remove-metadata/` (EN); id `limpiador-metadatos`,
+`tipo:'metadatos'`, `origen:'generado'`, `destino:'entrada'`. Enlazada del pie del home (ES+EN), en el sitemap
+con par hreflang, con FAQ + FAQPage.
+
+**Arquitectura:** módulo `src/metadatos/` = `exif.ts` (detector PURO y testeable: recorre las cabeceras JPEG
+—segmento a segmento hasta el inicio de scan— y los chunks PNG, y detecta la PRESENCIA de GPS/cámara/fecha/
+software/autor por sus tags EXIF; sin librerías, la CSP las prohíbe) + `main.ts` (revela + recodifica por
+canvas). Diferenciador de UX: la «ubicación GPS» se resalta en ROJO, es el gancho («tu foto de casa lleva,
+dentro del archivo, dónde vives»).
+
+**Verificación:** tsc 0 · **1626 tests verde** (nuevos: `exif.test.ts` con bytes JPEG/PNG sintéticos —detecta
+GPS+cámara— y `metadatos-page.test.ts`). build 0. Y **prueba en navegador real**: (1) el revelado detecta GPS+
+cámara de una imagen con EXIF inyectado; (2) la copia descargada está recodificada y **NO lleva EXIF** (verificado
+recorriendo sus cabeceras JPEG; entrada con EXIF → salida sin él). ⚠ Ojo de método: la 1ª verificación dio un
+falso positivo porque el módulo llama `createObjectURL` DOS veces (original para `<img>` + blob recodificado) y
+la captura cogió el original; y un JPEG con EXIF ANTES del APP0 no lo carga Chrome (insertarlo DESPUÉS del APP0).
+Dos guardas de conteo subidas (estilo 19→21, cta-visible 27→29).
+
+**Desplegado y verificado en vivo:** `https://www.tachadopdf.com/metadatos/` y `.../en/remove-metadata/` responden
+200 con su contenido; `https://www.tachadopdf.com/` sigue 200 (dominio y CNAME intactos).
+
+**Bloqueos / pendiente:** ninguno técnico. Nota estratégica honesta (elección del owner conociéndola): como el
+redactor de imágenes, este tráfico top-of-funnel va DÉBILMENTE ligado a la venta de Pro (imágenes = gratis; la
+venta la trae el SEO PDF español + los Ads). Es una puerta SEO gratis más que amplía descubrimiento. La 1ª venta
+sigue gated en DESCUBRIMIENTO: decisión de dinero del owner (Ads) o tiempo de Google + envío del sitemap en GSC.
+
+---
 ## 2026-09-02 · producto · Nueva herramienta gratuita: tachar IMÁGENES/capturas (ES+EN, desplegada y verificada)
 
 **Hecho:** segunda herramienta gratuita del sitio, después del comprobador. Tacha datos de una
