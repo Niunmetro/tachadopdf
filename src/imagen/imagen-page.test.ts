@@ -35,6 +35,15 @@ describe('página /imagen/ (redactor de imágenes)', () => {
     expect(html).toContain('<script type="module" src="/src/imagen/main.ts"></script>');
   });
 
+  it('incluye datos estructurados FAQPage (AEO)', () => {
+    expect(html).toContain('"@type": "FAQPage"');
+  });
+
+  it('renderiza el FAQ visible con la pregunta clave del difuminado reversible', () => {
+    expect(html).toContain('¿Se puede recuperar una imagen difuminada o pixelada?');
+    expect(html).toMatch(/<details class="faq__item">/);
+  });
+
   it('trae los elementos que el módulo cablea por id', () => {
     for (const id of ['img-dropzone', 'img-file', 'img-stage', 'img-canvas', 'img-download', 'img-clear', 'img-count', 'img-error']) {
       expect(html).toContain(`id="${id}"`);

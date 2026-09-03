@@ -212,6 +212,54 @@
       }
     }
     </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a blurred or pixelated image be recovered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Often, yes: blurring and pixelation are transformations that can frequently be reversed, especially over text. That is why we don't blur — we fill the area with solid black, and a solid fill leaves nothing underneath to reconstruct."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a photo or screenshot store my location?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Photos usually carry hidden metadata, including the GPS location where they were taken and sometimes the device model. On download, the image is re-encoded from scratch, so that metadata does not carry into the final file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the data really deleted, or just covered?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It is deleted: the pixels in the marked area are replaced with solid black on the image itself, and what you download is a flat bitmap with no layer on top that could be removed. It is not an overlaid rectangle."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my image uploaded anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Everything happens inside your browser and the image is never transmitted. You can check it: disconnect from the internet and the tool still redacts and downloads."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which image formats does it accept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG, PNG and WebP, including screenshots. The download comes out as PNG, or as JPG if the original image was already a JPG."
+          }
+        }
+      ]
+    }
+    </script>
     <style>
       main {
         max-width: var(--ancho);
@@ -312,6 +360,25 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
+      h2 {
+        font-size: var(--t-500);
+        line-height: var(--lh-corto);
+        font-weight: var(--peso-fuerte);
+        margin: var(--e-12) 0 var(--e-2);
+        max-width: var(--medida);
+      }
+      .faq__item {
+        max-width: var(--medida);
+        border-top: 1px solid var(--linea-fuerte);
+        padding: var(--e-3) 0;
+      }
+      .faq__item summary {
+        cursor: pointer;
+        font-weight: var(--peso-fuerte);
+      }
+      .faq__item p {
+        margin: var(--e-2) 0 0;
+      }
       .cp-aviso {
         font-size: var(--t-200);
         color: var(--tinta-suave);
@@ -370,6 +437,27 @@
       </div>
       <div id="img-error"></div>
       <p class="cp-aviso">What you download is a flat image: the marked areas are solid black with no hidden layer underneath, and the metadata was left out when it was re-exported. A blur can be reversed; a solid fill leaves nothing to reverse.</p>
+      <h2>Frequently asked questions</h2>
+      <details class="faq__item">
+        <summary>Can a blurred or pixelated image be recovered?</summary>
+        <p>Often, yes: blurring and pixelation are transformations that can frequently be reversed, especially over text. That is why we don't blur — we fill the area with solid black, and a solid fill leaves nothing underneath to reconstruct.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Does a photo or screenshot store my location?</summary>
+        <p>Photos usually carry hidden metadata, including the GPS location where they were taken and sometimes the device model. On download, the image is re-encoded from scratch, so that metadata does not carry into the final file.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Is the data really deleted, or just covered?</summary>
+        <p>It is deleted: the pixels in the marked area are replaced with solid black on the image itself, and what you download is a flat bitmap with no layer on top that could be removed. It is not an overlaid rectangle.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Is my image uploaded anywhere?</summary>
+        <p>No. Everything happens inside your browser and the image is never transmitted. You can check it: disconnect from the internet and the tool still redacts and downloads.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Which image formats does it accept?</summary>
+        <p>JPG, PNG and WebP, including screenshots. The download comes out as PNG, or as JPG if the original image was already a JPG.</p>
+      </details>
       <a class="cp-cta" href="../?utm_source=imagen">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
     <script type="module" src="/src/imagen/main.ts"></script>

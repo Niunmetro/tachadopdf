@@ -1076,6 +1076,25 @@ const CSS_IMAGEN = `  main {
     opacity: 0.5;
     cursor: not-allowed;
   }
+  h2 {
+    font-size: var(--t-500);
+    line-height: var(--lh-corto);
+    font-weight: var(--peso-fuerte);
+    margin: var(--e-12) 0 var(--e-2);
+    max-width: var(--medida);
+  }
+  .faq__item {
+    max-width: var(--medida);
+    border-top: 1px solid var(--linea-fuerte);
+    padding: var(--e-3) 0;
+  }
+  .faq__item summary {
+    cursor: pointer;
+    font-weight: var(--peso-fuerte);
+  }
+  .faq__item p {
+    margin: var(--e-2) 0 0;
+  }
   .cp-aviso {
     font-size: var(--t-200);
     color: var(--tinta-suave);
@@ -1121,9 +1140,29 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
       inLanguage: c.htmlLang,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
     }),
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: c.imagen.faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.pregunta,
+        acceptedAnswer: { '@type': 'Answer', text: item.respuesta },
+      })),
+    }),
     '',
     `<style>\n${CSS_IMAGEN}\n</style>`,
   ];
+
+  // Las mismas preguntas del FAQPage, ahora VISIBLES: un motor generativo cita la respuesta solo si
+  // está también en la página, y salen del MISMO `c.imagen.faqs` que el schema, así que no divergen.
+  const faqVisible: string[] = [texto('h2', {}, c.secciones.faq)];
+  for (const item of c.imagen.faqs) {
+    faqVisible.push(
+      '<details class="faq__item">',
+      sangrar([texto('summary', {}, item.pregunta), texto('p', {}, item.respuesta)], 1),
+      '</details>',
+    );
+  }
 
   const cuerpo = [
     texto('h1', {}, c.imagen.titular),
@@ -1177,6 +1216,8 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="img-error"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.imagen.aviso),
+    '',
+    ...faqVisible,
     '',
     texto('a', { class: 'cp-cta', href: ctaHref }, c.guiaCta),
   ];

@@ -9,7 +9,8 @@
   en el navegador. Módulo `src/imagen/` (geometría pura testeada + canvas), generador
   `paginaRedactorImagen` en `generar.ts`, `tipo:'imagen'` en el registro. Enlazada desde el pie del
   home (ES+EN) y en el sitemap con par hreflang. Verificada con prueba de píxeles en navegador real
-  (negro dentro de la caja, original intacto fuera). Suite **1541/1541**. Ver bitácora 2026-09-02.
+  (negro dentro de la caja, original intacto fuera). La página lleva un FAQ de 5 preguntas con datos
+  estructurados **FAQPage** (AEO), ES+EN. Suite **1543/1543**. Ver bitácora 2026-09-02.
 - **✅ SELECCIÓN POR DEFECTO DESMARCADA (2026-08-21, merge `967e5cb`, desplegado y verificado en
   vivo)**: al cargar un documento NO se pre-marca nada. Un botón por valor detectado ALTERNA (marca
   todas sus apariciones ↔ las quita todas), con rótulo y `aria-pressed` que reflejan el estado; los

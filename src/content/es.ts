@@ -785,6 +785,33 @@ export const es = {
     noEsImagen: 'Eso no parece una imagen. Usa un archivo JPG, PNG o WebP.',
     errorGenerico: 'No se pudo procesar la imagen.',
     sufijoDescarga: '-tachada',
+    faqs: [
+      {
+        pregunta: '¿Se puede recuperar una imagen difuminada o pixelada?',
+        respuesta:
+          'A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir.',
+      },
+      {
+        pregunta: '¿Una foto o una captura guarda mi ubicación?',
+        respuesta:
+          'Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final.',
+      },
+      {
+        pregunta: '¿Los datos se borran de verdad o solo se tapan?',
+        respuesta:
+          'Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto.',
+      },
+      {
+        pregunta: '¿La imagen se sube a algún servidor?',
+        respuesta:
+          'No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando.',
+      },
+      {
+        pregunta: '¿Qué formatos de imagen acepta?',
+        respuesta:
+          'JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG.',
+      },
+    ],
   },
 
   app: APP_ES,
