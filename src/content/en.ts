@@ -353,6 +353,7 @@ export const en: Contenido = {
     enlaceNominas: '',
     enlaceComprobador: 'Check for free what data your PDF contains',
     enlaceImagen: 'Redact an image or screenshot',
+    enlaceMetadatos: 'See the hidden metadata in a photo',
   },
 
   comprobador: {
@@ -426,6 +427,68 @@ export const en: Contenido = {
         pregunta: 'Which image formats does it accept?',
         respuesta:
           'JPG, PNG and WebP, including screenshots. The download comes out as PNG, or as JPG if the original image was already a JPG.',
+      },
+    ],
+  },
+
+  metadatos: {
+    metaTitulo: 'See and remove the hidden metadata in a photo (EXIF, GPS)',
+    metaDescripcion:
+      'Find out what hidden data a photo carries — GPS location, camera model, date — and download a clean copy with no metadata. 100% in your browser; the image is never uploaded to any server.',
+    ogTitulo: 'See and remove the hidden metadata in a photo · TachadoPDF',
+    ogDescripcion:
+      'See what your photo hides (GPS location, camera, date) and download it clean, 100% in your browser.',
+    jsonLdNombre: 'Metadata cleaner · TachadoPDF',
+    titular: 'See and remove the hidden metadata in a photo',
+    intro:
+      "A photo is not just the image: inside, it can carry where it was taken (GPS location), which camera or phone, the exact date, and the software that touched it. Drag an image in and I'll tell you what it carries; then download a copy with none of it.",
+    introLocal:
+      'The image never leaves your device: everything is analysed in your browser. The clean copy is made by re-encoding the image from scratch, so the metadata does not carry into the final file.',
+    dropzone: 'Drag an image here, or click to select it',
+    formatos: 'JPG or PNG',
+    analizando: 'Analysing…',
+    sinMetadatos:
+      'This image carries none of the hidden metadata we look for. Even so, the clean copy is re-encoded from scratch.',
+    conMetadatos: 'This image is hiding:',
+    etiquetas: {
+      ubicacion: 'GPS location (where it was taken)',
+      camara: 'Camera or device',
+      fecha: 'Date and time',
+      software: 'Editing software',
+      autor: 'Author or copyright',
+      otros: 'Other EXIF metadata',
+    },
+    botonDescargar: 'Download copy with no metadata',
+    aviso:
+      'The copy you download has been re-encoded from scratch: it carries none of the original metadata. It is the image, without the trail of where, when and with what it was made.',
+    noEsImagen: "That doesn't look like an image. Use a JPG or PNG file.",
+    errorGenerico: 'The image could not be processed.',
+    sufijoDescarga: '-no-metadata',
+    faqs: [
+      {
+        pregunta: 'What is photo metadata?',
+        respuesta:
+          "It is data the camera or phone stores INSIDE the file, alongside the image: the GPS location where it was taken, the device model, the exact date and time, the software... You don't see it when you open the photo, but it travels with it when you share it.",
+      },
+      {
+        pregunta: 'Can a photo reveal where I live?',
+        respuesta:
+          'It can. If the phone had location on, the photo stores the GPS coordinates of where it was taken. A photo taken at home carries, inside the file, where your home is. This tool warns you if your image carries location and gives you a copy without it.',
+      },
+      {
+        pregunta: 'Does cropping or passing the photo through another app remove the metadata?',
+        respuesta:
+          "Not always. Many apps keep the metadata when editing, and some social networks strip it but others don't. The only reliable way is to re-encode the image without copying those fields, which is exactly what this tool does.",
+      },
+      {
+        pregunta: 'Is the image uploaded anywhere?',
+        respuesta:
+          'No. Everything happens inside your browser and the image is never transmitted. You can check it: disconnect from the internet and the tool still analyses and downloads.',
+      },
+      {
+        pregunta: 'Does cleaning the metadata lose quality?',
+        respuesta:
+          'The copy is re-encoded: for PNG it is lossless (identical); for JPG it is saved at high quality. What is removed is the hidden data, not the visible content of the photo.',
       },
     ],
   },

@@ -1,7 +1,14 @@
-# ESTADO — TachadoPDF (actualizado 2026-09-02)
+# ESTADO — TachadoPDF (actualizado 2026-09-03)
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
+- **✅ HERRAMIENTA GRATUITA nº3: LIMPIADOR DE METADATOS** (2026-09-03, rama `feat/metadata-cleaner` →
+  master, desplegada y verificada). `/metadatos/` y `/en/remove-metadata/`: REVELA qué lleva escondido
+  una foto (ubicación GPS en rojo, cámara, fecha, software, autor) leyendo el EXIF, y descarga una copia
+  recodificada sin metadatos. Módulo `src/metadatos/` (detector EXIF puro y testeado + strip por canvas),
+  `tipo:'metadatos'`. Enlazada del pie del home (ES+EN), sitemap con hreflang, FAQ+FAQPage. Verificada en
+  navegador real (revela GPS+cámara; la descarga no lleva EXIF). Suite **1626/1626**. Del plan de
+  crecimiento (research pack premium #2). Ver bitácora 2026-09-03.
 - **✅ HERRAMIENTA GRATUITA nº2: TACHAR IMÁGENES/CAPTURAS** (2026-09-02, rama `feat/image-redactor`
   → master, desplegada y verificada en vivo). `/imagen/` y `/en/redact-image/`: se marca un recuadro
   sobre lo sensible y se descarga la imagen con esas zonas en NEGRO SÓLIDO (no difuminado, que es
@@ -32,7 +39,7 @@
   Manafort 8-ene-2019) + limitación propia declarada (el hueco de glifos nos afecta). Schema Article
   **y FAQPage** (para AEO). No es casi-duplicado: Jaccard ≤ 0,036 vs las 5, ≤ 0,029 vs las 6 guías.
   Juez y umbral (GSC, 2026-09-07) en `docs/SEO-EXPERIMENTO.md`. Ver la bitácora del 2026-08-12.
-- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **27 URLs (17 ES + 10 EN)**, un solo
+- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **29 URLs (18 ES + 11 EN)**, un solo
   sitemap con alternos `hreflang` recíprocos y `x-default` al español. Las dos landings de sector
   (`/actas/`, `/nominas/`) solo existen en español: ver PARADA 2.
 - **✅ CINCO landings de cola larga sectorial FUSIONADAS Y DESPLEGADAS** (2026-08-10, rama

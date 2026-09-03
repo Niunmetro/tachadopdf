@@ -89,9 +89,10 @@ describe('G17: las paginas del sitio declaran UNA cara y ningun CTA se funde con
   // generadas, solo en espanol) y el sitio paso a veintitres; el 2026-08-12 la pieza de autoridad
   // AEO (generada, solo en espanol) lo dejo en veinticuatro; el 2026-08-29 una guia inglesa nueva
   // (redact-pdf-without-acrobat) lo dejo en veinticinco; el 2026-09-02 el redactor de imagenes
-  // (generado, ES+EN) sumo dos y lo dejo en veintisiete.
-  it('el barrido ve las veintisiete paginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(27);
+  // (generado, ES+EN) sumo dos y lo dejo en veintisiete; el 2026-09-03 el limpiador de metadatos
+  // (generado, ES+EN) sumo dos y lo dejo en veintinueve.
+  it('el barrido ve las veintinueve paginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(29);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s no declara ningun bloque de tema oscuro', (pagina) => {

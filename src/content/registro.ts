@@ -22,7 +22,7 @@ export function prefijoDe(locale: Locale): string {
   return locale === LOCALE_POR_DEFECTO ? '' : `${locale}/`;
 }
 
-export type TipoPagina = 'app' | 'comprobador' | 'imagen' | 'guia' | 'landing';
+export type TipoPagina = 'app' | 'comprobador' | 'imagen' | 'metadatos' | 'guia' | 'landing';
 
 /** 'entrada' = la procesa Vite (necesita que le inyecte el <script> del módulo) y por eso su
  *  HTML vive en la raíz del repo. 'public' = Vite la copia tal cual desde public/. */
@@ -62,6 +62,18 @@ export const PAGINAS: PaginaRegistro[] = [
     origen: 'generado',
     destino: 'entrada',
     slugs: { es: 'imagen', en: 'redact-image' },
+  },
+  // Herramienta gratuita nº3 (2026-09-03): LIMPIADOR DE METADATOS de imágenes. Del plan de
+  // crecimiento (research del pack premium, opción #2): REVELA qué lleva escondido una foto
+  // (ubicación GPS, cámara, fecha) y descarga una copia limpia. Como las otras dos, `origen:'generado'`
+  // + `destino:'entrada'` porque Vite le inyecta su módulo (src/metadatos/main.ts). Puerta SEO de alta
+  // demanda («remove exif», «quitar ubicación de una foto»); reutiliza la recodificación por canvas.
+  {
+    id: 'limpiador-metadatos',
+    tipo: 'metadatos',
+    origen: 'generado',
+    destino: 'entrada',
+    slugs: { es: 'metadatos', en: 'remove-metadata' },
   },
   { id: 'actas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'actas' } },
   { id: 'nominas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'nominas' } },

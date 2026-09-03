@@ -291,9 +291,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
   // CINCO landings de cola larga sectorial (generadas, solo en espanol), y pasaron a quince; el
   // 2026-08-12 se sumo la pieza de autoridad AEO (generada, solo en espanol) y pasaron a dieciseis;
   // el 2026-08-29 una guia inglesa nueva (redact-pdf-without-acrobat) las dejo en diecisiete; el
-  // 2026-09-02 el redactor de imagenes (generado, ES+EN) sumo dos y las dejo en diecinueve.
-  it('el barrido ve las diecinueve paginas generadas', () => {
-    expect(generadas.length).toBe(19);
+  // 2026-09-02 el redactor de imagenes (generado, ES+EN) sumo dos y las dejo en diecinueve; el
+  // 2026-09-03 el limpiador de metadatos (generado, ES+EN) sumo dos y las dejo en veintiuna.
+  it('el barrido ve las veintiuna paginas generadas', () => {
+    expect(generadas.length).toBe(21);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(

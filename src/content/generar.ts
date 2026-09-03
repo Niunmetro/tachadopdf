@@ -683,6 +683,10 @@ ${sangrar(faq, 6)}
   if (hrefImagen.length > 0) {
     enlacesSector.push(texto('a', { href: hrefImagen }, c.legal.enlaceImagen));
   }
+  const hrefMetadatos = enlace('limpiador-metadatos');
+  if (hrefMetadatos.length > 0) {
+    enlacesSector.push(texto('a', { href: hrefMetadatos }, c.legal.enlaceMetadatos));
+  }
   bloques.push(
     [
       `<footer class="legales" aria-label="${esc(c.secciones.legal)}">`,
@@ -1250,6 +1254,252 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
   );
 }
 
+// --- página del limpiador de metadatos -------------------------------------
+
+/** Estilo del limpiador de metadatos. En línea (CSP). Reutiliza la gramática de la zona de soltar y
+ *  los avisos del resto de herramientas; lo propio es la LISTA de revelado, donde la «ubicación GPS»
+ *  se marca en rojo (es el dato que de verdad asusta y el gancho de la herramienta). */
+const CSS_METADATOS = `  main {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: var(--e-12) var(--e-4) var(--e-16);
+  }
+  h1 {
+    font-size: var(--t-600);
+    line-height: var(--lh-titular);
+    font-weight: var(--peso-fuerte);
+    margin: 0 0 var(--e-2);
+  }
+  p {
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .cp-intro {
+    font-size: var(--t-400);
+    color: var(--tinta-suave);
+  }
+  #md-dropzone {
+    border: 2px dashed var(--linea-fuerte);
+    border-radius: var(--radio);
+    padding: var(--e-8) var(--e-4);
+    text-align: center;
+    margin: var(--e-8) 0;
+    background: var(--superficie);
+    max-width: var(--medida);
+  }
+  #md-dropzone label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    cursor: pointer;
+    font-weight: var(--peso-fuerte);
+    color: var(--acento);
+  }
+  #md-file {
+    display: block;
+    margin: var(--e-4) auto 0;
+    max-width: 100%;
+  }
+  .md-formatos {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    margin: var(--e-2) 0 0;
+  }
+  #md-stage {
+    margin: var(--e-8) 0;
+    max-width: var(--medida);
+  }
+  #md-resultado {
+    margin-bottom: var(--e-4);
+  }
+  .md-titulo-lista {
+    font-weight: var(--peso-fuerte);
+    margin: 0 0 var(--e-2);
+  }
+  .md-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .md-lista li {
+    padding: var(--e-2) var(--e-3);
+    border-left: 3px solid var(--linea-fuerte);
+    margin-bottom: var(--e-2);
+    background: var(--superficie);
+  }
+  .md-lista li.md-alerta {
+    border-left-color: var(--rojo);
+    color: var(--tinta);
+    font-weight: var(--peso-fuerte);
+  }
+  .md-limpia {
+    color: var(--tinta-suave);
+  }
+  .md-boton {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: var(--e-3) var(--e-6);
+    font-weight: var(--peso-fuerte);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    cursor: pointer;
+  }
+  .md-boton:hover {
+    background: var(--acento-fuerte);
+  }
+  h2 {
+    font-size: var(--t-500);
+    line-height: var(--lh-corto);
+    font-weight: var(--peso-fuerte);
+    margin: var(--e-12) 0 var(--e-2);
+    max-width: var(--medida);
+  }
+  .faq__item {
+    max-width: var(--medida);
+    border-top: 1px solid var(--linea-fuerte);
+    padding: var(--e-3) 0;
+  }
+  .faq__item summary {
+    cursor: pointer;
+    font-weight: var(--peso-fuerte);
+  }
+  .faq__item p {
+    margin: var(--e-2) 0 0;
+  }
+  .cp-aviso {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    border-left: 3px solid var(--linea-fuerte);
+    padding-left: var(--e-4);
+    margin: var(--e-8) 0;
+    max-width: var(--medida);
+  }
+  #md-error {
+    color: var(--rojo);
+  }
+  .cp-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: var(--e-8);
+    padding: var(--e-3) var(--e-6);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+    border-radius: var(--radio);
+  }
+  .cp-cta:hover {
+    background: var(--acento-fuerte);
+  }`;
+
+function paginaMetadatos(pagina: PaginaRegistro, locale: Locale): string {
+  const c = CONTENIDOS[locale];
+  const canonical = urlCanonica(pagina, locale) ?? `${SITIO}/`;
+  const ruta = rutaDe(pagina, locale) ?? '';
+  const home = paginaPorId('home');
+  const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
+  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=metadatos`;
+
+  const extra = [
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: c.metadatos.jsonLdNombre,
+      applicationCategory: 'SecurityApplication',
+      url: canonical,
+      inLanguage: c.htmlLang,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+    }),
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: c.metadatos.faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.pregunta,
+        acceptedAnswer: { '@type': 'Answer', text: item.respuesta },
+      })),
+    }),
+    '',
+    `<style>\n${CSS_METADATOS}\n</style>`,
+  ];
+
+  const faqVisible: string[] = [texto('h2', {}, c.secciones.faq)];
+  for (const item of c.metadatos.faqs) {
+    faqVisible.push(
+      '<details class="faq__item">',
+      sangrar([texto('summary', {}, item.pregunta), texto('p', {}, item.respuesta)], 1),
+      '</details>',
+    );
+  }
+
+  const cuerpo = [
+    texto('h1', {}, c.metadatos.titular),
+    texto('p', { class: 'cp-intro' }, c.metadatos.intro),
+    texto('p', {}, c.metadatos.introLocal),
+    '',
+    '<div id="md-dropzone">',
+    sangrar(
+      [
+        texto('label', { for: 'md-file' }, c.metadatos.dropzone),
+        '<input type="file" id="md-file" accept="image/*" />',
+        texto('p', { class: 'md-formatos' }, c.metadatos.formatos),
+      ],
+      1,
+    ),
+    '</div>',
+    '',
+    '<div id="md-stage" hidden>',
+    sangrar(
+      [
+        '<div id="md-resultado"></div>',
+        texto('button', { type: 'button', id: 'md-download', class: 'md-boton' }, c.metadatos.botonDescargar),
+      ],
+      1,
+    ),
+    '</div>',
+    '',
+    '<div id="md-error"></div>',
+    '',
+    texto('p', { class: 'cp-aviso' }, c.metadatos.aviso),
+    '',
+    ...faqVisible,
+    '',
+    texto('a', { class: 'cp-cta', href: ctaHref }, c.guiaCta),
+  ];
+
+  const main = [
+    sangrar([mancheta(pagina, locale)], 2),
+    '    <main>',
+    sangrar(cuerpo, 3),
+    '    </main>',
+    '    <script type="module" src="/src/metadatos/main.ts"></script>',
+  ].join('\n');
+
+  return documento(
+    c.htmlLang,
+    cabecera({
+      lang: c.htmlLang,
+      titulo: c.metadatos.metaTitulo,
+      descripcion: c.metadatos.metaDescripcion,
+      canonical,
+      ogTitulo: c.metadatos.ogTitulo,
+      ogDescripcion: c.metadatos.ogDescripcion,
+      ogLocale: c.ogLocale,
+      ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
+      alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
+      extra,
+    }),
+    main,
+  );
+}
+
 // --- guías ------------------------------------------------------------------
 
 /** Estilo de artículo, el mismo para las guías escritas a mano y para las generadas. En línea,
@@ -1508,6 +1758,8 @@ export function generarPagina(pagina: PaginaRegistro, locale: Locale): string {
       return paginaComprobador(pagina, locale);
     case 'imagen':
       return paginaRedactorImagen(pagina, locale);
+    case 'metadatos':
+      return paginaMetadatos(pagina, locale);
     case 'guia': {
       const guia = CONTENIDOS[locale].guias.find((g) => g.id === pagina.id);
       if (guia === undefined) {
