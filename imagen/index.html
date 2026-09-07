@@ -447,14 +447,14 @@
       </div>
       <div id="img-stage" hidden>
         <p id="img-instrucciones">Arrastra sobre la imagen para marcar cada zona a borrar. Arrastra otra vez para añadir más.</p>
-        <canvas id="img-canvas"></canvas>
+        <canvas id="img-canvas" aria-label="Arrastra sobre la imagen para marcar cada zona a borrar. Arrastra otra vez para añadir más."></canvas>
         <div id="img-controles">
           <button type="button" id="img-download" class="img-boton img-boton--principal" disabled="">Descargar imagen tachada</button>
           <button type="button" id="img-clear" class="img-boton">Quitar todas las marcas</button>
-          <span id="img-count"></span>
+          <span id="img-count" aria-live="polite"></span>
         </div>
       </div>
-      <div id="img-error"></div>
+      <div id="img-error" role="alert"></div>
       <p class="cp-aviso">Lo que descargas es una imagen plana: las zonas marcadas son negro sólido, sin ninguna capa oculta debajo, y los metadatos se han quedado fuera al reexportar. Un difuminado se puede revertir; un relleno sólido no deja nada que revertir.</p>
       <h2>Otras herramientas gratuitas</h2>
       <ul class="otras-herramientas">
