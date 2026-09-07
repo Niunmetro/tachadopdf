@@ -687,6 +687,10 @@ ${sangrar(faq, 6)}
   if (hrefMetadatos.length > 0) {
     enlacesSector.push(texto('a', { href: hrefMetadatos }, c.legal.enlaceMetadatos));
   }
+  const hrefMetadatosPdf = enlace('limpiador-metadatos-pdf');
+  if (hrefMetadatosPdf.length > 0) {
+    enlacesSector.push(texto('a', { href: hrefMetadatosPdf }, c.legal.enlaceMetadatosPdf));
+  }
   bloques.push(
     [
       `<footer class="legales" aria-label="${esc(c.secciones.legal)}">`,
@@ -1500,6 +1504,256 @@ function paginaMetadatos(pagina: PaginaRegistro, locale: Locale): string {
   );
 }
 
+// --- página del limpiador de metadatos de PDF ------------------------------
+
+/** Estilo del limpiador de metadatos de PDF. En línea (CSP). Igual gramática que el de imágenes; el
+ *  «Autor» y los adjuntos se resaltan en rojo (lo que más identifica al que envía el documento). */
+const CSS_METADATOS_PDF = `  main {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: var(--e-12) var(--e-4) var(--e-16);
+  }
+  h1 {
+    font-size: var(--t-600);
+    line-height: var(--lh-titular);
+    font-weight: var(--peso-fuerte);
+    margin: 0 0 var(--e-2);
+  }
+  p {
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .cp-intro {
+    font-size: var(--t-400);
+    color: var(--tinta-suave);
+  }
+  #mdp-dropzone {
+    border: 2px dashed var(--linea-fuerte);
+    border-radius: var(--radio);
+    padding: var(--e-8) var(--e-4);
+    text-align: center;
+    margin: var(--e-8) 0;
+    background: var(--superficie);
+    max-width: var(--medida);
+  }
+  #mdp-dropzone label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    cursor: pointer;
+    font-weight: var(--peso-fuerte);
+    color: var(--acento);
+  }
+  #mdp-file {
+    display: block;
+    margin: var(--e-4) auto 0;
+    max-width: 100%;
+  }
+  .mdp-formatos {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    margin: var(--e-2) 0 0;
+  }
+  #mdp-stage {
+    margin: var(--e-8) 0;
+    max-width: var(--medida);
+  }
+  #mdp-resultado {
+    margin-bottom: var(--e-4);
+  }
+  .mdp-titulo-lista {
+    font-weight: var(--peso-fuerte);
+    margin: 0 0 var(--e-2);
+  }
+  .mdp-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .mdp-lista li {
+    padding: var(--e-2) var(--e-3);
+    border-left: 3px solid var(--linea-fuerte);
+    margin-bottom: var(--e-2);
+    background: var(--superficie);
+    word-break: break-word;
+  }
+  .mdp-lista li.mdp-alerta {
+    border-left-color: var(--rojo);
+    color: var(--tinta);
+    font-weight: var(--peso-fuerte);
+  }
+  .mdp-limpia {
+    color: var(--tinta-suave);
+  }
+  .mdp-boton {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: var(--e-3) var(--e-6);
+    font-weight: var(--peso-fuerte);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    cursor: pointer;
+  }
+  .mdp-boton:hover {
+    background: var(--acento-fuerte);
+  }
+  .mdp-boton:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  h2 {
+    font-size: var(--t-500);
+    line-height: var(--lh-corto);
+    font-weight: var(--peso-fuerte);
+    margin: var(--e-12) 0 var(--e-2);
+    max-width: var(--medida);
+  }
+  .faq__item {
+    max-width: var(--medida);
+    border-top: 1px solid var(--linea-fuerte);
+    padding: var(--e-3) 0;
+  }
+  .faq__item summary {
+    cursor: pointer;
+    font-weight: var(--peso-fuerte);
+  }
+  .faq__item p {
+    margin: var(--e-2) 0 0;
+  }
+  .cp-aviso {
+    font-size: var(--t-200);
+    color: var(--tinta-suave);
+    border-left: 3px solid var(--linea-fuerte);
+    padding-left: var(--e-4);
+    margin: var(--e-8) 0;
+    max-width: var(--medida);
+  }
+  #mdp-error {
+    color: var(--rojo);
+  }
+  .cp-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-top: var(--e-8);
+    padding: var(--e-3) var(--e-6);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+    border-radius: var(--radio);
+  }
+  .cp-cta:hover {
+    background: var(--acento-fuerte);
+  }`;
+
+function paginaMetadatosPdf(pagina: PaginaRegistro, locale: Locale): string {
+  const c = CONTENIDOS[locale];
+  const canonical = urlCanonica(pagina, locale) ?? `${SITIO}/`;
+  const ruta = rutaDe(pagina, locale) ?? '';
+  const home = paginaPorId('home');
+  const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
+  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=metadatos-pdf`;
+
+  const extra = [
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      name: c.metadatosPdf.jsonLdNombre,
+      applicationCategory: 'SecurityApplication',
+      url: canonical,
+      inLanguage: c.htmlLang,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+    }),
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: c.metadatosPdf.faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.pregunta,
+        acceptedAnswer: { '@type': 'Answer', text: item.respuesta },
+      })),
+    }),
+    '',
+    `<style>\n${CSS_METADATOS_PDF}\n</style>`,
+  ];
+
+  const faqVisible: string[] = [texto('h2', {}, c.secciones.faq)];
+  for (const item of c.metadatosPdf.faqs) {
+    faqVisible.push(
+      '<details class="faq__item">',
+      sangrar([texto('summary', {}, item.pregunta), texto('p', {}, item.respuesta)], 1),
+      '</details>',
+    );
+  }
+
+  const cuerpo = [
+    texto('h1', {}, c.metadatosPdf.titular),
+    texto('p', { class: 'cp-intro' }, c.metadatosPdf.intro),
+    texto('p', {}, c.metadatosPdf.introLocal),
+    '',
+    '<div id="mdp-dropzone">',
+    sangrar(
+      [
+        texto('label', { for: 'mdp-file' }, c.metadatosPdf.dropzone),
+        '<input type="file" id="mdp-file" accept="application/pdf" />',
+        texto('p', { class: 'mdp-formatos' }, c.metadatosPdf.formatos),
+      ],
+      1,
+    ),
+    '</div>',
+    '',
+    '<div id="mdp-stage" hidden>',
+    sangrar(
+      [
+        '<div id="mdp-resultado"></div>',
+        texto('button', { type: 'button', id: 'mdp-download', class: 'mdp-boton' }, c.metadatosPdf.botonDescargar),
+      ],
+      1,
+    ),
+    '</div>',
+    '',
+    '<div id="mdp-error"></div>',
+    '',
+    texto('p', { class: 'cp-aviso' }, c.metadatosPdf.aviso),
+    '',
+    ...faqVisible,
+    '',
+    texto('a', { class: 'cp-cta', href: ctaHref }, c.guiaCta),
+  ];
+
+  const main = [
+    sangrar([mancheta(pagina, locale)], 2),
+    '    <main>',
+    sangrar(cuerpo, 3),
+    '    </main>',
+    '    <script type="module" src="/src/metadatos-pdf/main.ts"></script>',
+  ].join('\n');
+
+  return documento(
+    c.htmlLang,
+    cabecera({
+      lang: c.htmlLang,
+      titulo: c.metadatosPdf.metaTitulo,
+      descripcion: c.metadatosPdf.metaDescripcion,
+      canonical,
+      ogTitulo: c.metadatosPdf.ogTitulo,
+      ogDescripcion: c.metadatosPdf.ogDescripcion,
+      ogLocale: c.ogLocale,
+      ogLocalesAlternos: ogLocalesAlternos(pagina, locale),
+      ogImage: ogImage(locale),
+      alternates: alternatesDe(pagina),
+      prefijo: navHref(ruta, ''),
+      extra,
+    }),
+    main,
+  );
+}
+
 // --- guías ------------------------------------------------------------------
 
 /** Estilo de artículo, el mismo para las guías escritas a mano y para las generadas. En línea,
@@ -1760,6 +2014,8 @@ export function generarPagina(pagina: PaginaRegistro, locale: Locale): string {
       return paginaRedactorImagen(pagina, locale);
     case 'metadatos':
       return paginaMetadatos(pagina, locale);
+    case 'metadatos-pdf':
+      return paginaMetadatosPdf(pagina, locale);
     case 'guia': {
       const guia = CONTENIDOS[locale].guias.find((g) => g.id === pagina.id);
       if (guia === undefined) {
