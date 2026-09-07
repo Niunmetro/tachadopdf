@@ -747,6 +747,26 @@ function jsonLdHome(locale: Locale, canonical: string): string {
         acceptedAnswer: { '@type': 'Answer', text: item.respuesta },
       })),
     }),
+    // Entidad del sitio: hasta ahora `Organization` solo aparecía como autor/publisher DENTRO del
+    // schema de las guías; el sitio no se declaraba a sí mismo como una organización ni como un
+    // WebSite. Para consultas de cumplimiento (YMYL-adyacentes) el reconocimiento de entidad y las
+    // señales E-E-A-T pesan; declararlo es una señal de autoridad on-site, no más contenido. `url`
+    // es SIEMPRE el origen canónico del sitio (no la ruta del idioma): es la MISMA entidad en ES y EN.
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: c.marca,
+      url: SITIO,
+      logo: ogImage(locale),
+      description: c.home.jsonLdDescripcion,
+    }),
+    jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: c.marca,
+      url: SITIO,
+      inLanguage: c.htmlLang,
+    }),
   ].join('\n');
 }
 

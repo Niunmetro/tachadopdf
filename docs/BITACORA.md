@@ -4,6 +4,29 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-07 · seo · Veredicto GSC leído + datos estructurados de entidad (Organization/WebSite) en el home
+
+**Hecho:** por fin se leyó el veredicto de Search Console (la propiedad estaba verificada por la meta-tag
+del código pero NO aparecía en la cuenta `ccsshaft@gmail.com`; re-añadida la propiedad URL-prefix, auto-
+verificada). **Veredicto (7 semanas, 17-jul→7-sep): 122 impresiones, 4 clics, posición media 36,3.** El SEO
+funciona pero rankea en página ~4; la palanca es AUTORIDAD + TIEMPO, no más contenido. Dato accionable: las
+5 landings de cola larga sectorial tienen ~0 impresiones → ese experimento NO cuajó (antipatrón confirmado
+por datos, no producir más). El sitemap ya estaba enviado (16-jul, 29 pág). Detalle en la memoria
+`tachadopdf-marketing-seo`.
+
+Como ÚNICA palanca de autoridad on-site (no-contenido) que faltaba: añadido `Organization` + `WebSite` al
+home (ES+EN) — hasta ahora Organization solo salía como autor/publisher dentro de las guías; el sitio no se
+declaraba como entidad. `url` = origen canónico (misma entidad en los dos idiomas). Señal E-E-A-T, relevante
+en consultas de cumplimiento (YMYL-adyacentes).
+
+**Verificación:** tsc 0 · **1707 tests verde** · build 0. Los 4 bloques JSON-LD del home parsean. Desplegado.
+
+**Conclusión honesta:** el cuello de botella ya NO es producto/herramientas/contenido (todo hecho y
+verificado) — es autoridad (backlinks, off-site) + tiempo + Ads (dinero). Todo eso es owner-gated o lento.
+El trabajo autónomo y gratis de alto valor está agotado; la 1ª venta depende de una decisión del owner
+(reclamar 400 € de crédito y abrir Ads) o de que el SEO madure.
+
+---
 ## 2026-09-03 · a11y · Accesibilidad de las herramientas (aria-live en resultados, role=alert en errores)
 
 **Hecho:** las cuatro herramientas gratuitas inyectan resultados dinámicamente (el revelado de metadatos,
