@@ -11,6 +11,21 @@ ningún servidor.
 Pensado para quien entrega documentación con datos personales a terceros —administradores de
 fincas, gestorías y asesorías, y departamentos de RRHH— y necesita dejar constancia de diligencia.
 
+## Pruébalo en vivo
+
+En **[www.tachadopdf.com](https://www.tachadopdf.com)** — sin instalar nada, sin registro y sin
+subir archivos. Además del tachado de PDF, el sitio incluye cuatro herramientas gratuitas que
+corren 100 % en el navegador:
+
+- **[Comprobador de PDF](https://www.tachadopdf.com/comprobador/)** — descubre qué datos personales
+  contiene un PDF antes de compartirlo (diagnóstico, no modifica el archivo).
+- **[Tachar imágenes y capturas](https://www.tachadopdf.com/imagen/)** — borra zonas de una imagen
+  sustituyendo los píxeles por negro sólido; no difumina (el difuminado se puede revertir).
+- **[Metadatos de imagen](https://www.tachadopdf.com/metadatos/)** — revela y elimina los metadatos
+  ocultos de una foto (ubicación GPS, cámara, fecha).
+- **[Metadatos de PDF](https://www.tachadopdf.com/metadatos-pdf/)** — revela y elimina el autor, el
+  software y las fechas que un PDF guarda por dentro.
+
 ## Qué hace
 
 - **Detección automática por patrones** españoles con validación de dígito de control: DNI, NIE,
