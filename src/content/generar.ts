@@ -29,6 +29,7 @@ import {
   rutaDe,
   urlCanonica,
 } from './registro';
+import type { Contenido } from './es';
 import type { Bloque, ContenidoGuia } from './tipos';
 
 /** 'wasm-unsafe-eval' es OBLIGATORIO para instanciar mupdf-wasm; permite compilar WebAssembly
@@ -878,6 +879,30 @@ const CSS_COMPROBADOR = `  main {
     margin: var(--e-8) 0;
     max-width: var(--medida);
   }
+  h2 {
+    font-size: var(--t-500);
+    line-height: var(--lh-corto);
+    font-weight: var(--peso-fuerte);
+    margin: var(--e-12) 0 var(--e-2);
+    max-width: var(--medida);
+  }
+  .otras-herramientas {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .otras-herramientas li {
+    margin-bottom: var(--e-2);
+  }
+  .otras-herramientas a {
+    color: var(--acento);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+  }
+  .otras-herramientas a:hover {
+    text-decoration: underline;
+  }
   #cp-error {
     color: var(--rojo);
   }
@@ -896,6 +921,44 @@ const CSS_COMPROBADOR = `  main {
   .cp-cta:hover {
     background: var(--acento-fuerte);
   }`;
+
+/** Las cuatro herramientas gratuitas del sitio, con su etiqueta de enlace. Fuente única para el
+ *  bloque «Otras herramientas gratuitas» que cada una enseña apuntando a las demás. */
+const HERRAMIENTAS_GRATIS: { id: string; etiqueta: (c: Contenido) => string }[] = [
+  { id: 'comprobador', etiqueta: (c) => c.legal.enlaceComprobador },
+  { id: 'redactor-imagen', etiqueta: (c) => c.legal.enlaceImagen },
+  { id: 'limpiador-metadatos', etiqueta: (c) => c.legal.enlaceMetadatos },
+  { id: 'limpiador-metadatos-pdf', etiqueta: (c) => c.legal.enlaceMetadatosPdf },
+];
+
+/**
+ * Bloque «Otras herramientas gratuitas»: desde la página de una herramienta, enlaza a las OTRAS que
+ * existen en este idioma. Conecta el clúster para el buscador (enlazado interno) y hace circular al
+ * usuario por el embudo. Enlaces RELATIVOS al documento (como el resto), para que la base de
+ * emergencia siga funcionando. Devuelve [] si no hay ninguna otra en este idioma.
+ */
+function bloqueOtrasHerramientas(
+  idActual: string,
+  ruta: string,
+  locale: Locale,
+  c: Contenido,
+): string[] {
+  const enlaces: string[] = [];
+  for (const h of HERRAMIENTAS_GRATIS) {
+    if (h.id === idActual) continue;
+    const pagina = paginaPorId(h.id);
+    const destino = pagina === undefined ? null : rutaDe(pagina, locale);
+    if (destino === null) continue;
+    enlaces.push(`<li>${texto('a', { href: navHref(ruta, destino) }, h.etiqueta(c))}</li>`);
+  }
+  if (enlaces.length === 0) return [];
+  return [
+    texto('h2', {}, c.secciones.otrasHerramientas),
+    '<ul class="otras-herramientas">',
+    sangrar(enlaces, 1),
+    '</ul>',
+  ];
+}
 
 function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
   const c = CONTENIDOS[locale];
@@ -946,6 +1009,8 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="cp-error"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.comprobador.avisoAlcance),
+    '',
+    ...bloqueOtrasHerramientas(pagina.id, ruta, locale, c),
     '',
     texto('a', { class: 'cp-cta', href: ctaHref }, c.comprobador.cta),
   ];
@@ -1111,6 +1176,23 @@ const CSS_IMAGEN = `  main {
     margin: var(--e-8) 0;
     max-width: var(--medida);
   }
+  .otras-herramientas {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .otras-herramientas li {
+    margin-bottom: var(--e-2);
+  }
+  .otras-herramientas a {
+    color: var(--acento);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+  }
+  .otras-herramientas a:hover {
+    text-decoration: underline;
+  }
   #img-error {
     color: var(--rojo);
   }
@@ -1224,6 +1306,8 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="img-error"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.imagen.aviso),
+    '',
+    ...bloqueOtrasHerramientas(pagina.id, ruta, locale, c),
     '',
     ...faqVisible,
     '',
@@ -1382,6 +1466,23 @@ const CSS_METADATOS = `  main {
     margin: var(--e-8) 0;
     max-width: var(--medida);
   }
+  .otras-herramientas {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .otras-herramientas li {
+    margin-bottom: var(--e-2);
+  }
+  .otras-herramientas a {
+    color: var(--acento);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+  }
+  .otras-herramientas a:hover {
+    text-decoration: underline;
+  }
   #md-error {
     color: var(--rojo);
   }
@@ -1470,6 +1571,8 @@ function paginaMetadatos(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="md-error"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.metadatos.aviso),
+    '',
+    ...bloqueOtrasHerramientas(pagina.id, ruta, locale, c),
     '',
     ...faqVisible,
     '',
@@ -1632,6 +1735,23 @@ const CSS_METADATOS_PDF = `  main {
     margin: var(--e-8) 0;
     max-width: var(--medida);
   }
+  .otras-herramientas {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--e-4);
+    max-width: var(--medida);
+  }
+  .otras-herramientas li {
+    margin-bottom: var(--e-2);
+  }
+  .otras-herramientas a {
+    color: var(--acento);
+    font-weight: var(--peso-fuerte);
+    text-decoration: none;
+  }
+  .otras-herramientas a:hover {
+    text-decoration: underline;
+  }
   #mdp-error {
     color: var(--rojo);
   }
@@ -1720,6 +1840,8 @@ function paginaMetadatosPdf(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="mdp-error"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.metadatosPdf.aviso),
+    '',
+    ...bloqueOtrasHerramientas(pagina.id, ruta, locale, c),
     '',
     ...faqVisible,
     '',
