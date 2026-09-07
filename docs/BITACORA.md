@@ -4,6 +4,39 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-03 · producto · Herramienta gratuita nº4: limpiador de METADATOS de PDF (ES+EN, desplegada)
+
+**Hecho:** cuarta herramienta gratuita (mismo día que la nº3), más cerca del comprador: usuarios de PDF,
+no de fotos. REVELA qué guarda un PDF por dentro —autor, software con que se creó, fechas, marcadores,
+adjuntos, anotaciones— y descarga una copia LIMPIA. `/metadatos-pdf/` (ES) y `/en/pdf-metadata/` (EN);
+id `limpiador-metadatos-pdf`, `tipo:'metadatos-pdf'`, `origen:'generado'`, `destino:'entrada'`. Enlazada del
+pie del home (ES+EN), sitemap con par hreflang, FAQ + FAQPage.
+
+**Arquitectura (REUTILIZA el motor):** módulo `src/metadatos-pdf/main.ts` = `analizarPdf` (lectura NUEVA,
+aditiva y read-only en `src/pdf/metadata.ts`: lee el diccionario Info con etiquetas + presencia de XMP/
+adjuntos/marcadores/anotaciones) para el REVELADO + `stripMetadata` —el MISMO borrado verificado del
+producto, que relee el binario para confirmar (anti-falso-verde)— para la limpieza. NO se tocó la lógica
+sensible de `stripMetadata`; solo se añadió una función de lectura al lado. El «Autor» y los adjuntos se
+resaltan en rojo (lo que más identifica a quien envía el documento).
+
+**Verificación:** tsc 0 · **1707 tests verde** (nuevos: `analizar-pdf.test.ts` con PDF real —lee Author/
+Creator— y `metadatos-pdf-page.test.ts`). build 0. Y **prueba E2E sobre el BUILD** (`vite preview`, porque
+el wasm de mupdf NO carga en el dev server —MIME, artefacto del dev que afecta a TODO mupdf, incluido el
+comprobador—): cargué un PDF con Info → reveló «Autor: Juan Perez / Creado con: Microsoft Word / Generado
+por: TestSuite», y la copia descargada **NO contiene «Juan Perez» ni «Microsoft Word»**. Dos guardas de
+conteo subidas (estilo 21→23, cta-visible 29→31). ⚠ Nota de método: verificar mupdf SIEMPRE en el build
+(`vite preview`), no en el dev server.
+
+**Desplegado y verificado en vivo:** `https://www.tachadopdf.com/metadatos-pdf/` y `.../en/pdf-metadata/`
+responden 200; `https://www.tachadopdf.com/` sigue 200 (dominio y CNAME intactos).
+
+**Bloqueos / pendiente:** ninguno técnico. Con esto, las cuatro puertas SEO gratis (comprobador + tachar
+imágenes + metadatos de imagen + metadatos de PDF) están construidas; la nº4 es la MÁS cercana al comprador
+de Pro (usuarios de PDF). Del plan de crecimiento queda #3 (cifrar/proteger el PDF, add-on de Pro), que sí
+está ligado a la venta pero TOCA EL TIER DE PAGO → necesita OK del owner. La 1ª venta sigue gated en
+descubrimiento (Ads/dinero del owner o SEO + tiempo de Google).
+
+---
 ## 2026-09-03 · producto · Herramienta gratuita nº3: limpiador de METADATOS de imágenes (ES+EN, desplegada)
 
 **Hecho:** tercera herramienta gratuita, del plan de crecimiento (research del pack premium, opción #2).

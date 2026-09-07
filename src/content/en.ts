@@ -354,6 +354,7 @@ export const en: Contenido = {
     enlaceComprobador: 'Check for free what data your PDF contains',
     enlaceImagen: 'Redact an image or screenshot',
     enlaceMetadatos: 'See the hidden metadata in a photo',
+    enlaceMetadatosPdf: 'See the hidden metadata in a PDF',
   },
 
   comprobador: {
@@ -489,6 +490,74 @@ export const en: Contenido = {
         pregunta: 'Does cleaning the metadata lose quality?',
         respuesta:
           'The copy is re-encoded: for PNG it is lossless (identical); for JPG it is saved at high quality. What is removed is the hidden data, not the visible content of the photo.',
+      },
+    ],
+  },
+
+  metadatosPdf: {
+    metaTitulo: 'See and remove the hidden metadata in a PDF',
+    metaDescripcion:
+      'Find out what your PDF reveals — author, the software it was made with, dates, bookmarks, attachments — and download a clean copy. 100% in your browser; the file is never uploaded to any server.',
+    ogTitulo: 'See and remove the hidden metadata in a PDF · TachadoPDF',
+    ogDescripcion:
+      'See what your PDF reveals (author, software, dates) and download it clean, 100% in your browser.',
+    jsonLdNombre: 'PDF metadata cleaner · TachadoPDF',
+    titular: 'See and remove the hidden metadata in a PDF',
+    intro:
+      'A PDF stores more inside than it shows: your name as author, the program it was made with, when it was created and last changed, bookmarks, annotations, and even embedded attachments. Drag a PDF in and I’ll tell you what it reveals; then download a copy without that trail.',
+    introLocal:
+      'The PDF never leaves your device: everything is analysed and cleaned in your browser. The copy is re-serialised with those fields removed, and re-read to confirm they are gone.',
+    dropzone: 'Drag a PDF here, or click to select it',
+    formatos: 'PDF only',
+    conMetadatos: 'This PDF reveals:',
+    sinMetadatos:
+      'This PDF carries none of the metadata we look for. Even so, the copy is re-serialised clean.',
+    procesando: 'Cleaning…',
+    botonDescargar: 'Download PDF with no metadata',
+    etiquetas: {
+      Author: 'Author',
+      Creator: 'Created with',
+      Producer: 'Produced by',
+      Title: 'Title',
+      Subject: 'Subject',
+      Keywords: 'Keywords',
+      CreationDate: 'Creation date',
+      ModDate: 'Last modified',
+      xmp: 'XMP metadata (embedded data packet)',
+      adjuntos: 'Files embedded inside the PDF',
+      marcadores: 'Bookmarks, with their titles',
+      anotaciones: 'Annotations or comments',
+    },
+    aviso:
+      'The copy you download has been re-serialised without those metadata, and the tool re-reads it to confirm none remain. The visible content of the document is not touched; what goes is the trail of who, with what and when it was made.',
+    noEsPdf: 'That doesn’t look like a PDF. Use a .pdf file.',
+    errorGenerico: 'The PDF could not be processed.',
+    sufijoDescarga: '-no-metadata',
+    faqs: [
+      {
+        pregunta: 'What metadata does a PDF store?',
+        respuesta:
+          'Besides the text and images, a PDF stores an information dictionary: the author, the program it was created with (for example Word) and the one that converted it to PDF, the title, and the creation and modification dates. It can also carry bookmarks with their titles, annotations, an XMP metadata packet, and even embedded attachments.',
+      },
+      {
+        pregunta: 'Does a PDF reveal who made it?',
+        respuesta:
+          'Often, yes. Many programs put your user name as the document “author” without you noticing. This tool shows it to you before you share the file, and gives you a copy without that field.',
+      },
+      {
+        pregunta: 'Can you tell when and with what program a PDF was made?',
+        respuesta:
+          'Yes: the creation and modification dates and the software are recorded in the metadata. It is useful for you, but it also tells anyone who receives the file how and when you made it. The clean copy does not carry them.',
+      },
+      {
+        pregunta: 'Is the PDF uploaded anywhere?',
+        respuesta:
+          'No. Everything happens inside your browser and the file is never transmitted. You can check it: disconnect from the internet and the tool still analyses and cleans.',
+      },
+      {
+        pregunta: 'Does cleaning the metadata change the document content?',
+        respuesta:
+          'No. It removes the info fields, the XMP, the bookmarks, the annotations and the attachments, and re-serialises the file. The text and images on the pages are not touched. This tool cleans metadata: to remove data from the visible content, use the PDF redaction tool.',
       },
     ],
   },

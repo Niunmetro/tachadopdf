@@ -48,6 +48,18 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/remove-metadata/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/metadatos/" />
   </url>
+  <url>
+    <loc>https://www.tachadopdf.com/metadatos-pdf/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/metadatos-pdf/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/pdf-metadata/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/metadatos-pdf/" />
+  </url>
+  <url>
+    <loc>https://www.tachadopdf.com/en/pdf-metadata/</loc>
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/metadatos-pdf/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/pdf-metadata/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/metadatos-pdf/" />
+  </url>
   <url><loc>https://www.tachadopdf.com/actas/</loc></url>
   <url><loc>https://www.tachadopdf.com/nominas/</loc></url>
   <url><loc>https://www.tachadopdf.com/guia/tachar-dni-pdf/</loc></url>

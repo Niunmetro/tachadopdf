@@ -22,7 +22,14 @@ export function prefijoDe(locale: Locale): string {
   return locale === LOCALE_POR_DEFECTO ? '' : `${locale}/`;
 }
 
-export type TipoPagina = 'app' | 'comprobador' | 'imagen' | 'metadatos' | 'guia' | 'landing';
+export type TipoPagina =
+  | 'app'
+  | 'comprobador'
+  | 'imagen'
+  | 'metadatos'
+  | 'metadatos-pdf'
+  | 'guia'
+  | 'landing';
 
 /** 'entrada' = la procesa Vite (necesita que le inyecte el <script> del módulo) y por eso su
  *  HTML vive en la raíz del repo. 'public' = Vite la copia tal cual desde public/. */
@@ -74,6 +81,16 @@ export const PAGINAS: PaginaRegistro[] = [
     origen: 'generado',
     destino: 'entrada',
     slugs: { es: 'metadatos', en: 'remove-metadata' },
+  },
+  // Herramienta gratuita nº4 (2026-09-03): limpiador de metadatos de PDF. Más cerca del comprador
+  // (usuarios de PDF, no de fotos): REVELA autor/software/fechas/marcadores/adjuntos y descarga una
+  // copia limpia REUTILIZANDO el `stripMetadata` del motor (mismo borrado verificado del producto).
+  {
+    id: 'limpiador-metadatos-pdf',
+    tipo: 'metadatos-pdf',
+    origen: 'generado',
+    destino: 'entrada',
+    slugs: { es: 'metadatos-pdf', en: 'pdf-metadata' },
   },
   { id: 'actas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'actas' } },
   { id: 'nominas', tipo: 'landing', origen: 'estatico', destino: 'public', slugs: { es: 'nominas' } },

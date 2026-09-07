@@ -738,6 +738,7 @@ export const es = {
     enlaceComprobador: 'Comprueba gratis qué datos contiene tu PDF',
     enlaceImagen: 'Tacha una imagen o captura de pantalla',
     enlaceMetadatos: 'Ve los metadatos ocultos de una foto',
+    enlaceMetadatosPdf: 'Ve los metadatos ocultos de un PDF',
   },
 
   comprobador: {
@@ -873,6 +874,74 @@ export const es = {
         pregunta: '¿Se pierde calidad al limpiar los metadatos?',
         respuesta:
           'La copia se recodifica: para PNG es sin pérdida (idéntica); para JPG se guarda a alta calidad. Lo que se quita son los datos ocultos, no el contenido visible de la foto.',
+      },
+    ],
+  },
+
+  metadatosPdf: {
+    metaTitulo: 'Ver y borrar los metadatos ocultos de un PDF',
+    metaDescripcion:
+      'Descubre qué revela tu PDF —autor, software con que se creó, fechas, marcadores, adjuntos— y descarga una copia limpia. 100% en tu navegador; el archivo no se sube a ningún servidor.',
+    ogTitulo: 'Ver y borrar los metadatos ocultos de un PDF · TachadoPDF',
+    ogDescripcion:
+      'Mira qué revela tu PDF (autor, software, fechas) y descárgalo limpio, 100% en tu navegador.',
+    jsonLdNombre: 'Limpiador de metadatos de PDF · TachadoPDF',
+    titular: 'Ve y borra los metadatos ocultos de un PDF',
+    intro:
+      'Un PDF guarda por dentro más de lo que enseña: tu nombre como autor, el programa con que se hizo, cuándo se creó y se modificó, marcadores, anotaciones y hasta ficheros adjuntos. Arrastra un PDF y te digo qué revela; después descargas una copia sin ese rastro.',
+    introLocal:
+      'El PDF nunca sale de tu equipo: todo se analiza y se limpia en tu navegador. La copia se reserializa quitando esos campos, y se relee para comprobar que se fueron.',
+    dropzone: 'Arrastra un PDF aquí o haz clic para seleccionarlo',
+    formatos: 'Solo PDF',
+    conMetadatos: 'Este PDF revela:',
+    sinMetadatos:
+      'Este PDF no lleva metadatos de los que buscamos. Aun así, la copia se reserializa limpia.',
+    procesando: 'Limpiando…',
+    botonDescargar: 'Descargar PDF sin metadatos',
+    etiquetas: {
+      Author: 'Autor',
+      Creator: 'Creado con',
+      Producer: 'Generado por',
+      Title: 'Título',
+      Subject: 'Asunto',
+      Keywords: 'Palabras clave',
+      CreationDate: 'Fecha de creación',
+      ModDate: 'Última modificación',
+      xmp: 'Metadatos XMP (paquete de datos incrustado)',
+      adjuntos: 'Ficheros adjuntos dentro del PDF',
+      marcadores: 'Marcadores del índice, con sus títulos',
+      anotaciones: 'Anotaciones o comentarios',
+    },
+    aviso:
+      'La copia que descargas se ha reserializado sin esos metadatos, y la herramienta la relee para confirmar que no quedan. El contenido visible del documento no se toca; lo que se va es el rastro de quién, con qué y cuándo se hizo.',
+    noEsPdf: 'Eso no parece un PDF. Usa un archivo .pdf.',
+    errorGenerico: 'No se pudo procesar el PDF.',
+    sufijoDescarga: '-sin-metadatos',
+    faqs: [
+      {
+        pregunta: '¿Qué metadatos guarda un PDF?',
+        respuesta:
+          'Además del texto y las imágenes, un PDF guarda un diccionario de información: el autor, el programa con que se creó (por ejemplo Word) y el que lo convirtió a PDF, el título, y las fechas de creación y modificación. Puede llevar también marcadores con sus títulos, anotaciones, un paquete de metadatos XMP y hasta ficheros adjuntos incrustados.',
+      },
+      {
+        pregunta: '¿Un PDF revela quién lo hizo?',
+        respuesta:
+          'A menudo sí. Muchos programas ponen tu nombre de usuario como «autor» del documento sin que lo notes. Esta herramienta te lo enseña antes de compartir el archivo y te da una copia sin ese campo.',
+      },
+      {
+        pregunta: '¿Se puede saber cuándo y con qué programa se creó un PDF?',
+        respuesta:
+          'Sí: las fechas de creación y modificación y el software quedan grabados en los metadatos. Es útil para ti, pero también le dice a cualquiera que reciba el archivo cómo y cuándo lo hiciste. La copia limpia no los lleva.',
+      },
+      {
+        pregunta: '¿El PDF se sube a algún servidor?',
+        respuesta:
+          'No. Todo ocurre dentro de tu navegador y el archivo no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue analizando y limpiando.',
+      },
+      {
+        pregunta: '¿Se modifica el contenido del documento al limpiar los metadatos?',
+        respuesta:
+          'No. Se quitan los campos de información, el XMP, los marcadores, las anotaciones y los adjuntos, y el archivo se vuelve a serializar. El texto y las imágenes que se ven en las páginas no se tocan. Esta herramienta limpia metadatos: para eliminar datos del contenido visible, usa el tachado de PDF.',
       },
     ],
   },

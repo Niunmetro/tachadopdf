@@ -9,6 +9,13 @@
   `tipo:'metadatos'`. Enlazada del pie del home (ES+EN), sitemap con hreflang, FAQ+FAQPage. Verificada en
   navegador real (revela GPS+cámara; la descarga no lleva EXIF). Suite **1626/1626**. Del plan de
   crecimiento (research pack premium #2). Ver bitácora 2026-09-03.
+- **✅ HERRAMIENTA GRATUITA nº4: LIMPIADOR DE METADATOS DE PDF** (2026-09-03, rama
+  `feat/pdf-metadata-cleaner` → master, desplegada y verificada). `/metadatos-pdf/` y `/en/pdf-metadata/`:
+  REVELA autor/software/fechas/marcadores/adjuntos de un PDF (autor en rojo) y descarga una copia limpia
+  REUTILIZANDO `stripMetadata` del motor (mismo borrado verificado). Lectura nueva `analizarPdf` (read-only,
+  aditiva) en `src/pdf/metadata.ts`; módulo `src/metadatos-pdf/`. Es la puerta SEO más cercana al comprador
+  de Pro (usuarios de PDF). Verificada E2E en el BUILD (revela y limpia; ⚠ mupdf solo carga en build, no en
+  dev). Suite **1707/1707**. Ver bitácora 2026-09-03.
 - **✅ HERRAMIENTA GRATUITA nº2: TACHAR IMÁGENES/CAPTURAS** (2026-09-02, rama `feat/image-redactor`
   → master, desplegada y verificada en vivo). `/imagen/` y `/en/redact-image/`: se marca un recuadro
   sobre lo sensible y se descarga la imagen con esas zonas en NEGRO SÓLIDO (no difuminado, que es
@@ -39,7 +46,7 @@
   Manafort 8-ene-2019) + limitación propia declarada (el hueco de glifos nos afecta). Schema Article
   **y FAQPage** (para AEO). No es casi-duplicado: Jaccard ≤ 0,036 vs las 5, ≤ 0,029 vs las 6 guías.
   Juez y umbral (GSC, 2026-09-07) en `docs/SEO-EXPERIMENTO.md`. Ver la bitácora del 2026-08-12.
-- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **29 URLs (18 ES + 11 EN)**, un solo
+- **Sitio BILINGÜE**: español en la raíz, inglés en `/en/`. **31 URLs (19 ES + 12 EN)**, un solo
   sitemap con alternos `hreflang` recíprocos y `x-default` al español. Las dos landings de sector
   (`/actas/`, `/nominas/`) solo existen en español: ver PARADA 2.
 - **✅ CINCO landings de cola larga sectorial FUSIONADAS Y DESPLEGADAS** (2026-08-10, rama

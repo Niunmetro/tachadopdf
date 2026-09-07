@@ -571,3 +571,49 @@ export async function extractMetadataStrings(bytes: Uint8Array): Promise<string[
     doc.destroy();
   }
 }
+
+export interface CampoInfo {
+  clave: string;
+  valor: string;
+}
+
+export interface AnalisisPdf {
+  /** Campos del diccionario Info CON valor (Author, Creator, Producer, Title, dates, y las propias). */
+  info: CampoInfo[];
+  xmp: boolean;
+  adjuntos: boolean;
+  marcadores: boolean;
+  anotaciones: boolean;
+}
+
+/**
+ * Lectura de SOLO LECTURA para el revelado de la herramienta de metadatos de PDF: qué lleva el
+ * fichero (nombre del autor, software que lo creó, fechas, XMP, adjuntos, marcadores, anotaciones).
+ * NO modifica el documento —el borrado real es `stripMetadata`, que además reverifica—; esto solo
+ * mira, para poder enseñarle al usuario lo que hay antes de limpiarlo.
+ */
+export async function analizarPdf(bytes: Uint8Array): Promise<AnalisisPdf> {
+  const doc = new mupdf.PDFDocument(bytes.slice());
+  try {
+    const info: CampoInfo[] = [];
+    const infoObj = doc.getTrailer().get('Info');
+    if (!infoObj.isNull()) {
+      infoObj.forEach((valor, clave) => {
+        if (typeof clave === 'string' && valor.isString()) {
+          const v = valor.asString().trim();
+          if (v.length > 0) info.push({ clave, valor: v });
+        }
+      });
+    }
+    const root = doc.getTrailer().get('Root');
+    return {
+      info,
+      xmp: documentHasXmp(doc),
+      adjuntos: Object.keys(doc.getEmbeddedFiles()).length > 0,
+      marcadores: !root.get('Outlines').isNull(),
+      anotaciones: pagesOf(doc).some((page) => !page.get('Annots').isNull()),
+    };
+  } finally {
+    doc.destroy();
+  }
+}
