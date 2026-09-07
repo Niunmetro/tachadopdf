@@ -183,27 +183,27 @@
     font-family: var(--fuente-dato);
     }
     </style>
-    <title>Tachar una imagen o captura: borra los datos, no los tapa</title>
-    <meta name="description" content="Tacha datos de una foto o captura de pantalla: no la difumina, sustituye los píxeles de la zona por negro sólido, y al exportar elimina los metadatos (incluida la ubicación). 100% en tu navegador; la imagen no se sube a ningún servidor." />
-    <link rel="canonical" href="https://www.tachadopdf.com/imagen/" />
-    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/imagen/" />
-    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/redact-image/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/imagen/" />
+    <title>Ver y borrar los metadatos ocultos de un PDF</title>
+    <meta name="description" content="Descubre qué revela tu PDF —autor, software con que se creó, fechas, marcadores, adjuntos— y descarga una copia limpia. 100% en tu navegador; el archivo no se sube a ningún servidor." />
+    <link rel="canonical" href="https://www.tachadopdf.com/metadatos-pdf/" />
+    <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/metadatos-pdf/" />
+    <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/pdf-metadata/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.tachadopdf.com/metadatos-pdf/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
-    <meta property="og:title" content="Tachar una imagen o captura de pantalla · TachadoPDF" />
-    <meta property="og:description" content="Borra datos de una imagen o captura sustituyendo los píxeles por negro sólido (no difuminado) y quita los metadatos, 100% en tu navegador." />
+    <meta property="og:title" content="Ver y borrar los metadatos ocultos de un PDF · TachadoPDF" />
+    <meta property="og:description" content="Mira qué revela tu PDF (autor, software, fechas) y descárgalo limpio, 100% en tu navegador." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
-    <meta property="og:url" content="https://www.tachadopdf.com/imagen/" />
+    <meta property="og:url" content="https://www.tachadopdf.com/metadatos-pdf/" />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:locale:alternate" content="en_GB" />
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Tachar imágenes · TachadoPDF",
+      "name": "Limpiador de metadatos de PDF · TachadoPDF",
       "applicationCategory": "SecurityApplication",
-      "url": "https://www.tachadopdf.com/imagen/",
+      "url": "https://www.tachadopdf.com/metadatos-pdf/",
       "inLanguage": "es",
       "offers": {
         "@type": "Offer",
@@ -219,42 +219,42 @@
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "¿Se puede recuperar una imagen difuminada o pixelada?",
+          "name": "¿Qué metadatos guarda un PDF?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir."
+            "text": "Además del texto y las imágenes, un PDF guarda un diccionario de información: el autor, el programa con que se creó (por ejemplo Word) y el que lo convirtió a PDF, el título, y las fechas de creación y modificación. Puede llevar también marcadores con sus títulos, anotaciones, un paquete de metadatos XMP y hasta ficheros adjuntos incrustados."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Una foto o una captura guarda mi ubicación?",
+          "name": "¿Un PDF revela quién lo hizo?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final."
+            "text": "A menudo sí. Muchos programas ponen tu nombre de usuario como «autor» del documento sin que lo notes. Esta herramienta te lo enseña antes de compartir el archivo y te da una copia sin ese campo."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Los datos se borran de verdad o solo se tapan?",
+          "name": "¿Se puede saber cuándo y con qué programa se creó un PDF?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto."
+            "text": "Sí: las fechas de creación y modificación y el software quedan grabados en los metadatos. Es útil para ti, pero también le dice a cualquiera que reciba el archivo cómo y cuándo lo hiciste. La copia limpia no los lleva."
           }
         },
         {
           "@type": "Question",
-          "name": "¿La imagen se sube a algún servidor?",
+          "name": "¿El PDF se sube a algún servidor?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando."
+            "text": "No. Todo ocurre dentro de tu navegador y el archivo no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue analizando y limpiando."
           }
         },
         {
           "@type": "Question",
-          "name": "¿Qué formatos de imagen acepta?",
+          "name": "¿Se modifica el contenido del documento al limpiar los metadatos?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG."
+            "text": "No. Se quitan los campos de información, el XMP, los marcadores, las anotaciones y los adjuntos, y el archivo se vuelve a serializar. El texto y las imágenes que se ven en las páginas no se tocan. Esta herramienta limpia metadatos: para eliminar datos del contenido visible, usa el tachado de PDF."
           }
         }
       ]
@@ -280,7 +280,7 @@
         font-size: var(--t-400);
         color: var(--tinta-suave);
       }
-      #img-dropzone {
+      #mdp-dropzone {
         border: 2px dashed var(--linea-fuerte);
         border-radius: var(--radio);
         padding: var(--e-8) var(--e-4);
@@ -289,7 +289,7 @@
         background: var(--superficie);
         max-width: var(--medida);
       }
-      #img-dropzone label {
+      #mdp-dropzone label {
         display: inline-flex;
         align-items: center;
         min-height: 2.75rem;
@@ -297,68 +297,66 @@
         font-weight: var(--peso-fuerte);
         color: var(--acento);
       }
-      #img-file {
+      #mdp-file {
         display: block;
         margin: var(--e-4) auto 0;
         max-width: 100%;
       }
-      .img-formatos {
+      .mdp-formatos {
         font-size: var(--t-200);
         color: var(--tinta-suave);
         margin: var(--e-2) 0 0;
       }
-      #img-stage {
+      #mdp-stage {
         margin: var(--e-8) 0;
+        max-width: var(--medida);
       }
-      #img-instrucciones {
-        font-size: var(--t-200);
-        color: var(--tinta-suave);
-        margin-bottom: var(--e-3);
+      #mdp-resultado {
+        margin-bottom: var(--e-4);
       }
-      #img-canvas {
-        display: block;
-        max-width: 100%;
-        height: auto;
-        touch-action: none;
-        cursor: crosshair;
-        border: 1px solid var(--linea-fuerte);
-        border-radius: var(--radio);
+      .mdp-titulo-lista {
+        font-weight: var(--peso-fuerte);
+        margin: 0 0 var(--e-2);
+      }
+      .mdp-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--e-4);
+        max-width: var(--medida);
+      }
+      .mdp-lista li {
+        padding: var(--e-2) var(--e-3);
+        border-left: 3px solid var(--linea-fuerte);
+        margin-bottom: var(--e-2);
         background: var(--superficie);
+        word-break: break-word;
       }
-      #img-controles {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: var(--e-3);
-        margin-top: var(--e-4);
+      .mdp-lista li.mdp-alerta {
+        border-left-color: var(--rojo);
+        color: var(--tinta);
+        font-weight: var(--peso-fuerte);
       }
-      #img-count {
-        font-size: var(--t-200);
+      .mdp-limpia {
         color: var(--tinta-suave);
       }
-      .img-boton {
+      .mdp-boton {
         display: inline-flex;
         align-items: center;
         min-height: 2.75rem;
         padding: var(--e-3) var(--e-6);
         font-weight: var(--peso-fuerte);
         border-radius: var(--radio);
-        border: 1px solid var(--linea-fuerte);
-        background: var(--superficie);
-        color: var(--tinta);
-        cursor: pointer;
-      }
-      .img-boton--principal {
+        border: 1px solid var(--acento);
         background: var(--acento);
         color: var(--tinta-inversa);
-        border-color: var(--acento);
+        cursor: pointer;
       }
-      .img-boton--principal:hover {
+      .mdp-boton:hover {
         background: var(--acento-fuerte);
       }
-      .img-boton:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
+      .mdp-boton:disabled {
+        opacity: 0.6;
+        cursor: progress;
       }
       h2 {
         font-size: var(--t-500);
@@ -387,7 +385,7 @@
         margin: var(--e-8) 0;
         max-width: var(--medida);
       }
-      #img-error {
+      #mdp-error {
         color: var(--rojo);
       }
       .cp-cta {
@@ -407,7 +405,9 @@
       }
     </style>
     <script type="module" crossorigin src="/assets/index-BQa9jQjA.js"></script>
-    <script type="module" crossorigin src="/assets/main-IKL9nNOs.js"></script>
+    <script type="module" crossorigin src="/assets/mupdf-CDoJ_6dQ.js"></script>
+    <script type="module" crossorigin src="/assets/metadata-CuwfQ2qI.js"></script>
+    <script type="module" crossorigin src="/assets/main-Bzt3ic4f.js"></script>
   </head>
   <body>
     <header class="cabecera">
@@ -415,52 +415,47 @@
         <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
         <nav class="idiomas" aria-label="Idioma">
           <span class="idiomas__actual" lang="es">Español</span>
-          <a class="idiomas__enlace" hreflang="en" lang="en" href="../en/redact-image/">English</a>
+          <a class="idiomas__enlace" hreflang="en" lang="en" href="../en/pdf-metadata/">English</a>
         </nav>
       </div>
     </header>
     <main>
-      <h1>Tacha una imagen o captura de pantalla</h1>
-      <p class="cp-intro">Arrastra un recuadro sobre lo que quieras ocultar —una cara, un DNI, un correo, un saldo— y descarga la imagen con esas zonas borradas. No difuminamos ni pixelamos: los píxeles de la zona se sustituyen por negro sólido, así que debajo no queda nada que recomponer.</p>
-      <p>La imagen nunca sale de tu equipo: todo ocurre en tu navegador. Al descargar, la imagen se vuelve a codificar desde cero, así que los metadatos que llevara (incluida la ubicación GPS de una foto) no pasan al archivo final.</p>
-      <div id="img-dropzone">
-        <label for="img-file">Arrastra una imagen aquí o haz clic para seleccionarla</label>
-        <input type="file" id="img-file" accept="image/*" />
-        <p class="img-formatos">JPG, PNG o WebP</p>
+      <h1>Ve y borra los metadatos ocultos de un PDF</h1>
+      <p class="cp-intro">Un PDF guarda por dentro más de lo que enseña: tu nombre como autor, el programa con que se hizo, cuándo se creó y se modificó, marcadores, anotaciones y hasta ficheros adjuntos. Arrastra un PDF y te digo qué revela; después descargas una copia sin ese rastro.</p>
+      <p>El PDF nunca sale de tu equipo: todo se analiza y se limpia en tu navegador. La copia se reserializa quitando esos campos, y se relee para comprobar que se fueron.</p>
+      <div id="mdp-dropzone">
+        <label for="mdp-file">Arrastra un PDF aquí o haz clic para seleccionarlo</label>
+        <input type="file" id="mdp-file" accept="application/pdf" />
+        <p class="mdp-formatos">Solo PDF</p>
       </div>
-      <div id="img-stage" hidden>
-        <p id="img-instrucciones">Arrastra sobre la imagen para marcar cada zona a borrar. Arrastra otra vez para añadir más.</p>
-        <canvas id="img-canvas"></canvas>
-        <div id="img-controles">
-          <button type="button" id="img-download" class="img-boton img-boton--principal" disabled="">Descargar imagen tachada</button>
-          <button type="button" id="img-clear" class="img-boton">Quitar todas las marcas</button>
-          <span id="img-count"></span>
-        </div>
+      <div id="mdp-stage" hidden>
+        <div id="mdp-resultado"></div>
+        <button type="button" id="mdp-download" class="mdp-boton">Descargar PDF sin metadatos</button>
       </div>
-      <div id="img-error"></div>
-      <p class="cp-aviso">Lo que descargas es una imagen plana: las zonas marcadas son negro sólido, sin ninguna capa oculta debajo, y los metadatos se han quedado fuera al reexportar. Un difuminado se puede revertir; un relleno sólido no deja nada que revertir.</p>
+      <div id="mdp-error"></div>
+      <p class="cp-aviso">La copia que descargas se ha reserializado sin esos metadatos, y la herramienta la relee para confirmar que no quedan. El contenido visible del documento no se toca; lo que se va es el rastro de quién, con qué y cuándo se hizo.</p>
       <h2>Preguntas frecuentes</h2>
       <details class="faq__item">
-        <summary>¿Se puede recuperar una imagen difuminada o pixelada?</summary>
-        <p>A menudo sí: el difuminado y el pixelado son transformaciones que en muchos casos se pueden revertir, sobre todo sobre texto. Por eso aquí no difuminamos: rellenamos la zona con negro sólido, y un relleno sólido no deja nada debajo que reconstruir.</p>
+        <summary>¿Qué metadatos guarda un PDF?</summary>
+        <p>Además del texto y las imágenes, un PDF guarda un diccionario de información: el autor, el programa con que se creó (por ejemplo Word) y el que lo convirtió a PDF, el título, y las fechas de creación y modificación. Puede llevar también marcadores con sus títulos, anotaciones, un paquete de metadatos XMP y hasta ficheros adjuntos incrustados.</p>
       </details>
       <details class="faq__item">
-        <summary>¿Una foto o una captura guarda mi ubicación?</summary>
-        <p>Las fotos suelen llevar metadatos ocultos, incluida la ubicación GPS donde se tomaron y a veces el modelo del dispositivo. Al descargar, la imagen se vuelve a codificar desde cero, así que esos metadatos no pasan al archivo final.</p>
+        <summary>¿Un PDF revela quién lo hizo?</summary>
+        <p>A menudo sí. Muchos programas ponen tu nombre de usuario como «autor» del documento sin que lo notes. Esta herramienta te lo enseña antes de compartir el archivo y te da una copia sin ese campo.</p>
       </details>
       <details class="faq__item">
-        <summary>¿Los datos se borran de verdad o solo se tapan?</summary>
-        <p>Se borran: los píxeles de la zona marcada se sustituyen por negro sólido sobre la propia imagen, y lo que descargas es un mapa de bits plano, sin una capa por encima que se pueda quitar. No es un recuadro superpuesto.</p>
+        <summary>¿Se puede saber cuándo y con qué programa se creó un PDF?</summary>
+        <p>Sí: las fechas de creación y modificación y el software quedan grabados en los metadatos. Es útil para ti, pero también le dice a cualquiera que reciba el archivo cómo y cuándo lo hiciste. La copia limpia no los lleva.</p>
       </details>
       <details class="faq__item">
-        <summary>¿La imagen se sube a algún servidor?</summary>
-        <p>No. Todo ocurre dentro de tu navegador y la imagen no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue tachando y descargando.</p>
+        <summary>¿El PDF se sube a algún servidor?</summary>
+        <p>No. Todo ocurre dentro de tu navegador y el archivo no se transmite. Puedes comprobarlo: desconéctate de internet y la herramienta sigue analizando y limpiando.</p>
       </details>
       <details class="faq__item">
-        <summary>¿Qué formatos de imagen acepta?</summary>
-        <p>JPG, PNG y WebP, incluidas las capturas de pantalla. La descarga sale en PNG, o en JPG si la imagen original ya era JPG.</p>
+        <summary>¿Se modifica el contenido del documento al limpiar los metadatos?</summary>
+        <p>No. Se quitan los campos de información, el XMP, los marcadores, las anotaciones y los adjuntos, y el archivo se vuelve a serializar. El texto y las imágenes que se ven en las páginas no se tocan. Esta herramienta limpia metadatos: para eliminar datos del contenido visible, usa el tachado de PDF.</p>
       </details>
-      <a class="cp-cta" href="../?utm_source=imagen">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
+      <a class="cp-cta" href="../?utm_source=metadatos-pdf">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>
   </body>
 </html>
