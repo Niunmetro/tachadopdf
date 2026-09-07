@@ -4,6 +4,20 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-03 · a11y · Accesibilidad de las herramientas (aria-live en resultados, role=alert en errores)
+
+**Hecho:** las cuatro herramientas gratuitas inyectan resultados dinámicamente (el revelado de metadatos,
+el contador de zonas del redactor, el resultado del comprobador) pero un lector de pantalla no los
+anunciaba, y los errores tampoco. Añadido `aria-live="polite"` a los contenedores de resultado/contador,
+`role="alert"` a los de error, y `aria-label` al `<canvas>` del redactor de imágenes (reutilizando el texto
+de instrucciones). Mejora real para quien usa lector de pantalla; cero cambio visual. Verificado también
+que el sitio entero sigue sano (31 URLs = 200) y que el dibujo táctil del redactor funciona en móvil (375px).
+
+**Verificación:** tsc 0 · **1707 tests verde** · build 0. Desplegado. Sin páginas nuevas (guardas intactas).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-03 · seo · Enlazado cruzado del clúster de herramientas gratuitas
 
 **Hecho:** las cuatro herramientas gratuitas (comprobador, tachar imágenes, metadatos de imagen, metadatos de

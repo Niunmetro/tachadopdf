@@ -1005,8 +1005,8 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
     ),
     '</div>',
     '',
-    `<div id="cp-resultado" data-cta-href="${esc(ctaHref)}"></div>`,
-    '<div id="cp-error"></div>',
+    `<div id="cp-resultado" data-cta-href="${esc(ctaHref)}" aria-live="polite"></div>`,
+    '<div id="cp-error" role="alert"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.comprobador.avisoAlcance),
     '',
@@ -1274,7 +1274,7 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
     sangrar(
       [
         texto('p', { id: 'img-instrucciones' }, c.imagen.instrucciones),
-        '<canvas id="img-canvas"></canvas>',
+        `<canvas id="img-canvas" aria-label="${esc(c.imagen.instrucciones)}"></canvas>`,
         '<div id="img-controles">',
         sangrar(
           [
@@ -1293,7 +1293,7 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
               { type: 'button', id: 'img-clear', class: 'img-boton' },
               c.imagen.botonLimpiar,
             ),
-            '<span id="img-count"></span>',
+            '<span id="img-count" aria-live="polite"></span>',
           ],
           1,
         ),
@@ -1303,7 +1303,7 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
     ),
     '</div>',
     '',
-    '<div id="img-error"></div>',
+    '<div id="img-error" role="alert"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.imagen.aviso),
     '',
@@ -1561,14 +1561,14 @@ function paginaMetadatos(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="md-stage" hidden>',
     sangrar(
       [
-        '<div id="md-resultado"></div>',
+        '<div id="md-resultado" aria-live="polite"></div>',
         texto('button', { type: 'button', id: 'md-download', class: 'md-boton' }, c.metadatos.botonDescargar),
       ],
       1,
     ),
     '</div>',
     '',
-    '<div id="md-error"></div>',
+    '<div id="md-error" role="alert"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.metadatos.aviso),
     '',
@@ -1830,14 +1830,14 @@ function paginaMetadatosPdf(pagina: PaginaRegistro, locale: Locale): string {
     '<div id="mdp-stage" hidden>',
     sangrar(
       [
-        '<div id="mdp-resultado"></div>',
+        '<div id="mdp-resultado" aria-live="polite"></div>',
         texto('button', { type: 'button', id: 'mdp-download', class: 'mdp-boton' }, c.metadatosPdf.botonDescargar),
       ],
       1,
     ),
     '</div>',
     '',
-    '<div id="mdp-error"></div>',
+    '<div id="mdp-error" role="alert"></div>',
     '',
     texto('p', { class: 'cp-aviso' }, c.metadatosPdf.aviso),
     '',

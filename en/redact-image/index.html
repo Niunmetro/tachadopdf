@@ -445,14 +445,14 @@
       </div>
       <div id="img-stage" hidden>
         <p id="img-instrucciones">Drag across the image to mark each area to remove. Drag again to add more.</p>
-        <canvas id="img-canvas"></canvas>
+        <canvas id="img-canvas" aria-label="Drag across the image to mark each area to remove. Drag again to add more."></canvas>
         <div id="img-controles">
           <button type="button" id="img-download" class="img-boton img-boton--principal" disabled="">Download redacted image</button>
           <button type="button" id="img-clear" class="img-boton">Clear all marks</button>
-          <span id="img-count"></span>
+          <span id="img-count" aria-live="polite"></span>
         </div>
       </div>
-      <div id="img-error"></div>
+      <div id="img-error" role="alert"></div>
       <p class="cp-aviso">What you download is a flat image: the marked areas are solid black with no hidden layer underneath, and the metadata was left out when it was re-exported. A blur can be reversed; a solid fill leaves nothing to reverse.</p>
       <h2>Other free tools</h2>
       <ul class="otras-herramientas">
