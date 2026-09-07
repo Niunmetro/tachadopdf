@@ -291,6 +291,30 @@
         margin: var(--e-8) 0;
         max-width: var(--medida);
       }
+      h2 {
+        font-size: var(--t-500);
+        line-height: var(--lh-corto);
+        font-weight: var(--peso-fuerte);
+        margin: var(--e-12) 0 var(--e-2);
+        max-width: var(--medida);
+      }
+      .otras-herramientas {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--e-4);
+        max-width: var(--medida);
+      }
+      .otras-herramientas li {
+        margin-bottom: var(--e-2);
+      }
+      .otras-herramientas a {
+        color: var(--acento);
+        font-weight: var(--peso-fuerte);
+        text-decoration: none;
+      }
+      .otras-herramientas a:hover {
+        text-decoration: underline;
+      }
       #cp-error {
         color: var(--rojo);
       }
@@ -310,10 +334,10 @@
         background: var(--acento-fuerte);
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BQa9jQjA.js"></script>
+    <script type="module" crossorigin src="/assets/index-bcTMrWV4.js"></script>
     <script type="module" crossorigin src="/assets/mupdf-CDoJ_6dQ.js"></script>
     <script type="module" crossorigin src="/assets/patterns-hrtMaKbe.js"></script>
-    <script type="module" crossorigin src="/assets/main-CxyeWzag.js"></script>
+    <script type="module" crossorigin src="/assets/main-DEdYdQ4X.js"></script>
   </head>
   <body>
     <header class="cabecera">
@@ -339,6 +363,12 @@
       <div id="cp-resultado" data-cta-href="../?utm_source=comprobador"></div>
       <div id="cp-error"></div>
       <p class="cp-aviso">Aviso de alcance: la comprobación se limita al texto extraíble del PDF. Las páginas escaneadas (imágenes sin capa de texto) se señalan aparte y requieren revisión humana; esta herramienta no sustituye esa revisión.</p>
+      <h2>Otras herramientas gratuitas</h2>
+      <ul class="otras-herramientas">
+        <li><a href="../imagen/">Tacha una imagen o captura de pantalla</a></li>
+        <li><a href="../metadatos/">Ve los metadatos ocultos de una foto</a></li>
+        <li><a href="../metadatos-pdf/">Ve los metadatos ocultos de un PDF</a></li>
+      </ul>
       <a class="cp-cta" href="../?utm_source=comprobador">Táchalos ahora (gratis, 5 documentos al mes)</a>
     </main>
   </body>

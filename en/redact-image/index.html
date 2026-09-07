@@ -387,6 +387,23 @@
         margin: var(--e-8) 0;
         max-width: var(--medida);
       }
+      .otras-herramientas {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 var(--e-4);
+        max-width: var(--medida);
+      }
+      .otras-herramientas li {
+        margin-bottom: var(--e-2);
+      }
+      .otras-herramientas a {
+        color: var(--acento);
+        font-weight: var(--peso-fuerte);
+        text-decoration: none;
+      }
+      .otras-herramientas a:hover {
+        text-decoration: underline;
+      }
       #img-error {
         color: var(--rojo);
       }
@@ -406,8 +423,8 @@
         background: var(--acento-fuerte);
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BQa9jQjA.js"></script>
-    <script type="module" crossorigin src="/assets/main-IKL9nNOs.js"></script>
+    <script type="module" crossorigin src="/assets/index-bcTMrWV4.js"></script>
+    <script type="module" crossorigin src="/assets/main-U15SM9rd.js"></script>
   </head>
   <body>
     <header class="cabecera">
@@ -439,6 +456,12 @@
       </div>
       <div id="img-error"></div>
       <p class="cp-aviso">What you download is a flat image: the marked areas are solid black with no hidden layer underneath, and the metadata was left out when it was re-exported. A blur can be reversed; a solid fill leaves nothing to reverse.</p>
+      <h2>Other free tools</h2>
+      <ul class="otras-herramientas">
+        <li><a href="../checker/">Check for free what data your PDF contains</a></li>
+        <li><a href="../remove-metadata/">See the hidden metadata in a photo</a></li>
+        <li><a href="../pdf-metadata/">See the hidden metadata in a PDF</a></li>
+      </ul>
       <h2>Frequently asked questions</h2>
       <details class="faq__item">
         <summary>Can a blurred or pixelated image be recovered?</summary>
