@@ -4,6 +4,22 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-03 · seo · Enlazado cruzado del clúster de herramientas gratuitas
+
+**Hecho:** las cuatro herramientas gratuitas (comprobador, tachar imágenes, metadatos de imagen, metadatos de
+PDF) estaban sueltas —cada una solo enlazaba al home—. Ahora cada una muestra un bloque «Otras herramientas
+gratuitas» que enlaza a las OTRAS tres (enlaces RELATIVOS al documento). Helper único `bloqueOtrasHerramientas`
+en `generar.ts`, alimentado por `HERRAMIENTAS_GRATIS` (fuente única) y las etiquetas `legal.enlace*` que ya
+existían; rótulo nuevo `secciones.otrasHerramientas` (ES/EN) + CSS `.otras-herramientas` en los cuatro bloques.
+Mejora el enlazado interno (Google entiende el clúster y reparte autoridad entre las páginas) y hace circular
+al usuario por el embudo en vez de dejarlo en un callejón.
+
+**Verificación:** tsc 0 · **1707 tests verde** · build 0. Verificado en vivo (el comprobador enlaza a tachar
+imágenes, metadatos de imagen y metadatos de PDF). Sin páginas nuevas → las guardas de conteo no cambian.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-03 · producto · Herramienta gratuita nº4: limpiador de METADATOS de PDF (ES+EN, desplegada)
 
 **Hecho:** cuarta herramienta gratuita (mismo día que la nº3), más cerca del comprador: usuarios de PDF,

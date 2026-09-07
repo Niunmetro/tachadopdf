@@ -716,6 +716,7 @@ export const es = {
     guias: 'Guías',
     legal: 'Información legal',
     idiomas: 'Idioma',
+    otrasHerramientas: 'Otras herramientas gratuitas',
   },
 
   /** Llamada a la acción al pie de cada guía generada. */

@@ -325,6 +325,7 @@ export const en: Contenido = {
     guias: 'Guides',
     legal: 'Legal',
     idiomas: 'Language',
+    otrasHerramientas: 'Other free tools',
   },
 
   guiaCta: 'Redact your PDF now — free, and without uploading it to any server',
