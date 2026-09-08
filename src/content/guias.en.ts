@@ -458,4 +458,99 @@ export const GUIAS_EN: ContenidoGuia[] = [
     enlaceComprobador: 'Check your PDF for free — see what text is still extractable',
     relacionadas: ['guia-en-caja-negra', 'guia-en-comprobar', 'guia-en-sin-subir'],
   },
+
+  // Trust / "how it works" page (2026-09-08). English counterpart of the Spanish `guia/como-funciona`.
+  // Not a task guide: it explains the product's mechanism (in-browser processing, what does and does
+  // not go to the network, the anti-false-green re-read, open source, no accounts) to address the
+  // conversion barrier — trust IS the product for a privacy tool, and this market has a paid campaign.
+  {
+    id: 'guia-en-how-it-works',
+    titulo: 'How TachadoPDF works, and why your file never leaves your browser',
+    tituloEnlace: 'How TachadoPDF works',
+    descripcion:
+      'TachadoPDF processes your whole PDF inside your browser: the file is never uploaded to a server, there are no accounts and no tracking, and the redaction is checked before you get the document back. Here is exactly how it works — and how to verify it yourself.',
+    metaTitulo: 'How TachadoPDF works: nothing is uploaded · TachadoPDF',
+    enlaceComprobador: 'See for yourself: check a PDF for free, without uploading it',
+    relacionadas: ['guia-en-sin-subir', 'guia-en-comprobar', 'guia-en-caja-negra'],
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Handing a document full of personal data to an unfamiliar website is, most of the time, an act of faith: you upload it and then you have no idea what happens to it. TachadoPDF is built so that you do not have to take our word for it — so that you can check for yourself what happens to your file. This page explains how it works under the hood.',
+      },
+      { t: 'h2', texto: 'The PDF is processed on your own device' },
+      {
+        t: 'p',
+        texto:
+          'When you open a file, the program that reads it, edits it and writes it back runs inside the browser tab, on your own computer or phone. There is no upload: the file does not travel across the network to a machine of ours, because there is no processing machine of ours. The engine that works on the document is compiled to WebAssembly and arrives together with the page, like an image or a stylesheet.',
+      },
+      {
+        t: 'p',
+        texto:
+          'The simplest proof is one you can run yourself: open the page, turn off your Wi‑Fi or mobile data, and carry on redacting and downloading as normal. If the tool worked by sending your file away, it could do nothing at all offline.',
+      },
+      { t: 'h2', texto: 'What goes to the internet, and what does not' },
+      {
+        t: 'p',
+        texto:
+          'The rule is strict: not one byte of your document leaves. The only things the page asks the network for are what it needs to show itself — its own code and its typeface, served from this same site — and, if you use the paid version, a check of your licence key against the payments platform. Nothing else: not your PDF, not its text, not a summary, not a thumbnail.',
+      },
+      {
+        t: 'p',
+        texto:
+          'And so that this does not rest on our good intentions, the page declares a content security policy that the browser itself enforces: it forbids connecting to any destination other than that licence check. There are no ad networks, no remote fonts, and no third‑party libraries pulled in from another server.',
+      },
+      { t: 'h2', texto: 'No accounts, no tracking' },
+      {
+        t: 'p',
+        texto:
+          'We do not ask you to sign up, hand over an email, or install anything. We run no analytics either: there are no tracking cookies and no counters watching what you do. You use the tool and you leave, without leaving a trail behind that then has to be protected.',
+      },
+      { t: 'h2', texto: 'The redaction is checked before you get it' },
+      {
+        t: 'p',
+        texto:
+          'Redacting for real means removing the data from the contents of the file, not putting something on top of it. When you finish, TachadoPDF reopens the document it has just produced and searches again for what should have disappeared. If it finds any trace, it does not pass the job and it warns you: the worst possible outcome would be handing you back a file that looks clean and is not.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Pages that are a scanned image, with no readable text underneath, are flagged separately and in red: there, automatic pattern detection cannot read anything, so we ask you to check them with your own eyes. We would rather tell you what we cannot cover than pretend that we cover it.',
+      },
+      { t: 'h2', texto: 'The code is open source' },
+      {
+        t: 'p',
+        texto:
+          'All of TachadoPDF is public and released under the AGPL‑3.0 licence. Anyone — you, or someone you trust who can read code — can review exactly what the tool does with your file, without having to believe this page. A privacy promise you cannot inspect is worth little; this one you can.',
+      },
+      { t: 'h2', texto: 'Free, and a paid version with no subscription' },
+      {
+        t: 'p',
+        texto:
+          'You can redact documents for free every month, with a limit set for ordinary use. If you need more, there is a Pro version that is a one‑time payment — not a subscription — which lifts that limit. The charge and the receipts are handled by an external payments platform; all we do is check that your key is valid. Even paying, your document does not leave the browser.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: 'Is my document really not uploaded anywhere?',
+        respuesta:
+          'No. The PDF is processed inside your browser and does not travel to any machine of ours. You can prove it by disconnecting from the internet once the page has loaded: the tool keeps redacting and downloading, because all the work happens on your device.',
+      },
+      {
+        pregunta: 'How can I verify that this is true?',
+        respuesta:
+          'Three ways: use the tool offline and see that it still works; notice that it never asks for an account or an email; and, if you want to go further, read the code, which is open source (AGPL‑3.0) and anyone can inspect.',
+      },
+      {
+        pregunta: 'What is the only thing that does go to the internet?',
+        respuesta:
+          'Only two things, and neither is your document: the page itself with its code and typeface, served from this same site, and — if you use the Pro version — a check of your licence key. The browser blocks any other connection by security policy.',
+      },
+      {
+        pregunta: 'Do you keep anything I do, or usage analytics?',
+        respuesta:
+          'No. There are no accounts, no tracking cookies and no analytics. We do not record which files you open or what you redact: no record of your session is kept anywhere.',
+      },
+    ],
+  },
 ];

@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="icon" href="../../../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../../apple-touch-icon.png" />
+    <link rel="preload" href="../../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+    @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: optional;
+    src: url("../../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    }
+    @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("../../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    }
+    :root {
+    --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+    --t-100: 0.75rem;
+    --t-200: 0.875rem;
+    --t-300: 1rem;
+    --t-400: 1.125rem;
+    --t-500: 1.3125rem;
+    --t-600: 1.75rem;
+    --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
+    --lh-titular: 1.15;
+    --lh-corto: 1.35;
+    --lh-texto: 1.6;
+    --peso-normal: 400;
+    --peso-fuerte: 600;
+    --peso-veredicto: 700;
+    --ancho: 60rem;
+    --ancho-herramienta: 76rem;
+    --medida: 34em;
+    --e-1: 0.25rem;
+    --e-2: 0.5rem;
+    --e-3: 0.75rem;
+    --e-4: 1rem;
+    --e-6: 1.5rem;
+    --e-8: 2rem;
+    --e-12: 3rem;
+    --e-16: 4rem;
+    --e-24: 6rem;
+    --e-seccion: clamp(3rem, 7vw, 4rem);
+    --radio: 6px;
+    --radio-marca: 2px;
+    color-scheme: light;
+    --papel: #f6f5f3;
+    --superficie: #ffffff;
+    --tinta: #1b1a17;
+    --tinta-suave: #43403a;
+    --gris: #6a665e;
+    --linea: #dedad1;
+    --linea-fuerte: #8a857a;
+    --acento: #164a7e;
+    --acento-fuerte: #0e3159;
+    --acento-tenue: #dde7f3;
+    --tinta-inversa: #ffffff;
+    --rojo: #9b1c1c;
+    --rojo-fondo: #f9e6e4;
+    --ambar: #7c4a03;
+    --ambar-fondo: #fbefd2;
+    --verde: #0f6b41;
+    --verde-fondo: #dfeee4;
+    --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+    --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
+    }
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
+    body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: var(--t-300);
+    line-height: var(--lh-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    }
+    a {
+    color: var(--acento);
+    }
+    a:hover {
+    color: var(--acento-fuerte);
+    }
+    :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 2px;
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font: inherit;
+    }
+    input[type="file"] {
+    max-width: 100%;
+    cursor: pointer;
+    color: var(--tinta-suave);
+    }
+    input[type="file"]::file-selector-button {
+    font: inherit;
+    font-size: var(--t-300);
+    font-weight: var(--peso-fuerte);
+    cursor: pointer;
+    margin-right: var(--e-3);
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-4);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    }
+    input[type="file"]::file-selector-button:hover {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
+    }
+    .cabecera {
+    border-bottom: 1px solid var(--linea);
+    background: var(--superficie);
+    }
+    .cabecera__interior {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 var(--e-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    }
+    .cabecera__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
+    font-size: var(--t-200);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0;
+    }
+    .cabecera__simbolo {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    }
+    .idiomas {
+    display: flex;
+    gap: var(--e-3);
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: var(--t-200);
+    }
+    .idiomas > * {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    }
+    .idiomas__actual {
+    font-weight: var(--peso-fuerte);
+    color: var(--tinta);
+    }
+    .idiomas__enlace {
+    color: var(--acento);
+    text-decoration: none;
+    }
+    .idiomas__enlace:hover {
+    text-decoration: underline;
+    }
+    .dato {
+    font-family: var(--fuente-dato);
+    }
+    </style>
+    <title>How TachadoPDF works: nothing is uploaded · TachadoPDF</title>
+    <meta name="description" content="TachadoPDF processes your whole PDF inside your browser: the file is never uploaded to a server, there are no accounts and no tracking, and the redaction is checked before you get the document back. Here is exactly how it works — and how to verify it yourself." />
+    <link rel="canonical" href="https://www.tachadopdf.com/en/guide/how-it-works/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="How TachadoPDF works, and why your file never leaves your browser" />
+    <meta property="og:description" content="TachadoPDF processes your whole PDF inside your browser: the file is never uploaded to a server, there are no accounts and no tracking, and the redaction is checked before you get the document back. Here is exactly how it works — and how to verify it yourself." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/en/guide/how-it-works/" />
+    <meta property="og:locale" content="en_GB" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "How TachadoPDF works, and why your file never leaves your browser",
+      "description": "TachadoPDF processes your whole PDF inside your browser: the file is never uploaded to a server, there are no accounts and no tracking, and the redaction is checked before you get the document back. Here is exactly how it works — and how to verify it yourself.",
+      "inLanguage": "en",
+      "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/how-it-works/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my document really not uploaded anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The PDF is processed inside your browser and does not travel to any machine of ours. You can prove it by disconnecting from the internet once the page has loaded: the tool keeps redacting and downloading, because all the work happens on your device."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I verify that this is true?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Three ways: use the tool offline and see that it still works; notice that it never asks for an account or an email; and, if you want to go further, read the code, which is open source (AGPL‑3.0) and anyone can inspect."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the only thing that does go to the internet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only two things, and neither is your document: the page itself with its code and typeface, served from this same site, and — if you use the Pro version — a check of your licence key. The browser blocks any other connection by security policy."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you keep anything I do, or usage analytics?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. There are no accounts, no tracking cookies and no analytics. We do not record which files you open or what you redact: no record of your session is kept anywhere."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+      main, article, footer {
+        max-width: var(--ancho); margin: 0 auto; padding-left: var(--e-4); padding-right: var(--e-4);
+      }
+      main, article { padding-top: var(--e-12); padding-bottom: var(--e-16); }
+      /* El texto se capa a la MEDIDA, pero el bloque se alinea con la marca de la mancheta: una
+         columna centrada dentro de otra columna deja el articulo flotando a la deriva del titulo. */
+      h1, h2, p, li, .nota, .lede, .cp-cta, .cta { max-width: var(--medida); }
+      ul, ol { max-width: var(--medida); }
+      p, li { font-size: var(--t-400); }
+      h1 { font-size: var(--t-600); line-height: var(--lh-titular); font-weight: var(--peso-fuerte); margin: 0 0 var(--e-4); }
+      h2 { font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte); margin: var(--e-12) 0 var(--e-2); }
+      p { margin: 0 0 var(--e-4); }
+      ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
+      li { margin: 0 0 var(--e-2); }
+      .lede { color: var(--tinta-suave); }
+      /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
+         superado, y no se gasta en un aparte de una guia. */
+      .nota {
+        background: var(--ambar-fondo); border-left: 3px solid var(--ambar);
+        padding: var(--e-3) var(--e-4); border-radius: var(--radio-marca); color: var(--tinta);
+        font-size: var(--t-300); margin: 0 0 var(--e-4);
+      }
+      .cp-cta, .cta {
+        display: block; margin: var(--e-12) 0 0; padding: var(--e-4);
+        background: var(--acento); color: var(--tinta-inversa); border-radius: var(--radio);
+        text-decoration: none; font-weight: var(--peso-fuerte); font-size: var(--t-300);
+      }
+      .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
+      /* FAQ de la pieza de autoridad: <details> desnudo reestilado con los tokens del sistema. */
+      details.faq__item { max-width: var(--medida); border-top: 1px solid var(--linea); padding: var(--e-3) 0; }
+      details.faq__item summary { font-weight: var(--peso-fuerte); cursor: pointer; font-size: var(--t-400); }
+      details.faq__item p { margin: var(--e-2) 0 0; }
+      footer {
+        margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
+        font-size: var(--t-200); color: var(--tinta-suave);
+      }
+      @media (max-width: 640px) {
+        footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+      }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+    </style>
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
+        <nav class="idiomas" aria-label="Language">
+          <a class="idiomas__enlace" hreflang="es" lang="es" href="../../../">Español</a>
+          <span class="idiomas__actual" lang="en">English</span>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <h1>How TachadoPDF works, and why your file never leaves your browser</h1>
+      <p>Handing a document full of personal data to an unfamiliar website is, most of the time, an act of faith: you upload it and then you have no idea what happens to it. TachadoPDF is built so that you do not have to take our word for it — so that you can check for yourself what happens to your file. This page explains how it works under the hood.</p>
+      <h2>The PDF is processed on your own device</h2>
+      <p>When you open a file, the program that reads it, edits it and writes it back runs inside the browser tab, on your own computer or phone. There is no upload: the file does not travel across the network to a machine of ours, because there is no processing machine of ours. The engine that works on the document is compiled to WebAssembly and arrives together with the page, like an image or a stylesheet.</p>
+      <p>The simplest proof is one you can run yourself: open the page, turn off your Wi‑Fi or mobile data, and carry on redacting and downloading as normal. If the tool worked by sending your file away, it could do nothing at all offline.</p>
+      <h2>What goes to the internet, and what does not</h2>
+      <p>The rule is strict: not one byte of your document leaves. The only things the page asks the network for are what it needs to show itself — its own code and its typeface, served from this same site — and, if you use the paid version, a check of your licence key against the payments platform. Nothing else: not your PDF, not its text, not a summary, not a thumbnail.</p>
+      <p>And so that this does not rest on our good intentions, the page declares a content security policy that the browser itself enforces: it forbids connecting to any destination other than that licence check. There are no ad networks, no remote fonts, and no third‑party libraries pulled in from another server.</p>
+      <h2>No accounts, no tracking</h2>
+      <p>We do not ask you to sign up, hand over an email, or install anything. We run no analytics either: there are no tracking cookies and no counters watching what you do. You use the tool and you leave, without leaving a trail behind that then has to be protected.</p>
+      <h2>The redaction is checked before you get it</h2>
+      <p>Redacting for real means removing the data from the contents of the file, not putting something on top of it. When you finish, TachadoPDF reopens the document it has just produced and searches again for what should have disappeared. If it finds any trace, it does not pass the job and it warns you: the worst possible outcome would be handing you back a file that looks clean and is not.</p>
+      <p>Pages that are a scanned image, with no readable text underneath, are flagged separately and in red: there, automatic pattern detection cannot read anything, so we ask you to check them with your own eyes. We would rather tell you what we cannot cover than pretend that we cover it.</p>
+      <h2>The code is open source</h2>
+      <p>All of TachadoPDF is public and released under the AGPL‑3.0 licence. Anyone — you, or someone you trust who can read code — can review exactly what the tool does with your file, without having to believe this page. A privacy promise you cannot inspect is worth little; this one you can.</p>
+      <h2>Free, and a paid version with no subscription</h2>
+      <p>You can redact documents for free every month, with a limit set for ordinary use. If you need more, there is a Pro version that is a one‑time payment — not a subscription — which lifts that limit. The charge and the receipts are handled by an external payments platform; all we do is check that your key is valid. Even paying, your document does not leave the browser.</p>
+      <h2>Frequently asked questions</h2>
+      <details class="faq__item">
+        <summary>Is my document really not uploaded anywhere?</summary>
+        <p>No. The PDF is processed inside your browser and does not travel to any machine of ours. You can prove it by disconnecting from the internet once the page has loaded: the tool keeps redacting and downloading, because all the work happens on your device.</p>
+      </details>
+      <details class="faq__item">
+        <summary>How can I verify that this is true?</summary>
+        <p>Three ways: use the tool offline and see that it still works; notice that it never asks for an account or an email; and, if you want to go further, read the code, which is open source (AGPL‑3.0) and anyone can inspect.</p>
+      </details>
+      <details class="faq__item">
+        <summary>What is the only thing that does go to the internet?</summary>
+        <p>Only two things, and neither is your document: the page itself with its code and typeface, served from this same site, and — if you use the Pro version — a check of your licence key. The browser blocks any other connection by security policy.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Do you keep anything I do, or usage analytics?</summary>
+        <p>No. There are no accounts, no tracking cookies and no analytics. We do not record which files you open or what you redact: no record of your session is kept anywhere.</p>
+      </details>
+      <nav class="relacionadas" aria-label="Guides">
+        <h2>Guides</h2>
+        <ul>
+          <li><a href="../redact-pdf-without-uploading/">How to redact a PDF without uploading it</a></li>
+          <li><a href="../check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
+          <li><a href="../black-box-pdf-not-redacted/">Why the black box over your PDF does not delete the text</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../checker/?utm_source=guia">See for yourself: check a PDF for free, without uploading it</a>
+      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+    </main>
+  </body>
+</html>
