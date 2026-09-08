@@ -1310,7 +1310,12 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
             ),
             texto(
               'button',
-              { type: 'button', id: 'img-clear', class: 'img-boton' },
+              { type: 'button', id: 'img-undo', class: 'img-boton', disabled: '' },
+              c.imagen.botonDeshacer,
+            ),
+            texto(
+              'button',
+              { type: 'button', id: 'img-clear', class: 'img-boton', disabled: '' },
               c.imagen.botonLimpiar,
             ),
             '<span id="img-count" aria-live="polite"></span>',

@@ -14,6 +14,7 @@ interface Elementos {
   canvas: HTMLCanvasElement;
   count: HTMLElement;
   download: HTMLButtonElement;
+  undo: HTMLButtonElement;
   clear: HTMLButtonElement;
   error: HTMLElement;
 }
@@ -36,6 +37,7 @@ function localizar(): Elementos | null {
   const canvas = document.getElementById('img-canvas');
   const count = document.getElementById('img-count');
   const download = document.getElementById('img-download');
+  const undo = document.getElementById('img-undo');
   const clear = document.getElementById('img-clear');
   const error = document.getElementById('img-error');
   if (
@@ -45,12 +47,13 @@ function localizar(): Elementos | null {
     !(canvas instanceof HTMLCanvasElement) ||
     !(count instanceof HTMLElement) ||
     !(download instanceof HTMLButtonElement) ||
+    !(undo instanceof HTMLButtonElement) ||
     !(clear instanceof HTMLButtonElement) ||
     !(error instanceof HTMLElement)
   ) {
     return null;
   }
-  return { dropzone, file, stage, canvas, count, download, clear, error };
+  return { dropzone, file, stage, canvas, count, download, undo, clear, error };
 }
 
 /** Cuántos píxeles de IMAGEN por cada píxel de CANVAS de pantalla. */
@@ -84,6 +87,8 @@ function redibujar(el: Elementos): void {
   const n = regiones.length;
   el.count.textContent = n === 0 ? '' : `${n} ${n === 1 ? COPIA.contadorUna : COPIA.contadorVarias}`;
   el.download.disabled = n === 0;
+  el.undo.disabled = n === 0;
+  el.clear.disabled = n === 0;
 }
 
 function puntoCanvas(canvas: HTMLCanvasElement, ev: PointerEvent): { x: number; y: number } {
@@ -203,6 +208,11 @@ export function inicializar(): void {
   canvas.addEventListener('pointerup', soltar);
   canvas.addEventListener('pointercancel', soltar);
 
+  el.undo.addEventListener('click', () => {
+    regiones.pop();
+    previaCanvas = null;
+    redibujar(el);
+  });
   el.clear.addEventListener('click', () => {
     regiones.length = 0;
     previaCanvas = null;

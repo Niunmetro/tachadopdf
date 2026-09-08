@@ -397,6 +397,7 @@ export const en: Contenido = {
     contadorUna: 'area marked',
     contadorVarias: 'areas marked',
     botonDescargar: 'Download redacted image',
+    botonDeshacer: 'Undo last',
     botonLimpiar: 'Clear all marks',
     sinRegiones: 'Mark at least one area before downloading.',
     aviso:
