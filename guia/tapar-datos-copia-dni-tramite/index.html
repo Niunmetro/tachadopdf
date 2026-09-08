@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -282,6 +285,14 @@
       <p class="nota">Prueba antes de enviar: intenta seleccionar y copiar sobre lo tapado y, si es una foto del documento, sube el brillo. Si el dato vuelve a verse, no estaba borrado.</p>
       <h2>Cómo dejar la copia lista</h2>
       <p>TachadoPDF borra los datos del propio archivo y los píxeles de la zona en un escaneo, detecta de forma automática por patrones el DNI y el NIE, y tú marcas la firma y la foto arrastrando un recuadro. Después comprueba que no queda rastro y te entrega un informe. Todo se hace en tu navegador: la copia de tu DNI no se sube a ningún sitio.</p>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../tachar-dni-pdf/">Cómo tachar un DNI de un PDF sin que se pueda recuperar</a></li>
+          <li><a href="../ocultar-datos-personales-curriculum-pdf/">Ocultar datos personales de un currículum en PDF</a></li>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos lleva tu copia del DNI, sin subirla</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>

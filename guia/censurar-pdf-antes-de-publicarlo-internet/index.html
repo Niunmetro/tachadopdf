@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -280,6 +283,14 @@
       <p class="nota">Haz la prueba con el propio PDF ya publicado: descárgalo, selecciona sobre la zona tapada y pega en un editor de texto. Si sale el dato, hay que retirarlo y volver a subir el documento bien tachado.</p>
       <h2>Cómo prepararlo para publicar</h2>
       <p>TachadoPDF elimina el texto del archivo y borra los píxeles de las zonas que marcas, y además limpia los metadatos —autor, programa, fechas— que también viajan dentro del archivo que se publica. Detecta de forma automática por patrones los identificadores y los datos de contacto, tú marcas los nombres y lo que quede, y al terminar te da un informe de comprobación con la huella del fichero para tu expediente. Se ejecuta entero en tu navegador: el documento no se sube a ningún servidor intermedio antes de publicarlo.</p>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
+          <li><a href="../informacion-oculta-pdf/">¿Qué información oculta lleva un PDF?</a></li>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos quedarían expuestos al publicarlo</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>

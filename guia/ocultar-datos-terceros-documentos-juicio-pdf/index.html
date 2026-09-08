@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -280,6 +283,14 @@
       <p class="nota">Antes de presentar, abre el PDF que vas a aportar, intenta seleccionar y copiar sobre las zonas tapadas y, si es un escaneo, prueba a subir el brillo. Si el dato reaparece, no estaba borrado.</p>
       <h2>Cómo tacharlo sin que se pueda recuperar</h2>
       <p>Para el texto, hay que eliminarlo del contenido del archivo; para el escaneo, borrar los píxeles de la zona. TachadoPDF detecta de forma automática por patrones los identificadores españoles (DNI, NIE, IBAN, número de la Seguridad Social, referencia catastral) y los correos y teléfonos, y el resto lo marcas tú. Luego relee el archivo para confirmar que no queda rastro y entrega un informe con la huella del documento. Y como todo corre en tu navegador, el expediente de tu cliente no sale de tu equipo.</p>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+          <li><a href="../tachar-dni-pdf/">Cómo tachar un DNI de un PDF sin que se pueda recuperar</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos personales contiene el documento</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>
