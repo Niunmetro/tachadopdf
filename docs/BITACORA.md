@@ -4,6 +4,21 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-07 · conversión · CTA al comprobador en la guía de fincas (la #1 del ICP)
+
+**Hecho:** la guía `proteccion-datos-administradores-fincas` es la página que MÁS ve el comprador según el
+veredicto GSC (48 impresiones, la mayor del ICP), pero su único CTA iba al home (redactor). Añadido un CTA
+al **comprobador** (el diagnóstico gratis, sin subir el archivo) antes del de redactar — es el primer paso de
+menor fricción para un administrador con miedo a exponer datos («mira qué lleva tu acta antes de repartirla»),
+y replica el patrón de doble CTA (comprobador → redactor) de las guías generadas. Es una guía ESTÁTICA
+(HTML a mano), así que se editó el fichero directamente.
+
+**Verificación:** 1743 tests verde (cta-visible incluido: el nuevo CTA usa la clase `.cta` ya validada) ·
+build 0. Desplegado.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-07 · seo · Enlazado interno de las guías generadas (relacionadas)
 
 **Hecho:** ninguna guía española tenía `relacionadas` → el clúster de guías estaba SIN enlazado interno
