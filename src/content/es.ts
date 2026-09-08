@@ -870,6 +870,7 @@ export const es = {
     contadorUna: 'zona marcada',
     contadorVarias: 'zonas marcadas',
     botonDescargar: 'Descargar imagen tachada',
+    botonDeshacer: 'Deshacer la última',
     botonLimpiar: 'Quitar todas las marcas',
     sinRegiones: 'Marca al menos una zona antes de descargar.',
     aviso:

@@ -4,6 +4,23 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · producto · Deshacer la última marca en el redactor de imágenes
+
+**Hecho:** el redactor de imágenes solo tenía «Quitar todas las marcas»; si colocabas mal una caja, la
+única salida era borrarlas todas y volver a empezar. Añadido **«Deshacer la última»** (`img-undo`):
+hace `regiones.pop()` sobre la última zona marcada y redibuja. Los tres botones (descargar, deshacer,
+limpiar) se deshabilitan cuando no hay ninguna marca. Es el comportamiento que un usuario espera al
+marcar zonas a mano y reduce la fricción de corregir un error puntual sin perder el resto del trabajo.
+
+**Verificación:** tsc 0 · 1743 tests verde · build 0. Verificación funcional en el build (`vite preview`)
+con imagen real: dibujadas 3 cajas (contador 1→2→3, singular/plural correctos), deshacer las lleva a
+2→1 (pop correcto), y limpiar deja el contador vacío con los tres botones deshabilitados. El botón no
+toca el pipeline de borrado ni la verificación: solo gestiona las cajas pendientes antes de exportar, y
+lo que ves en el lienzo es exactamente lo que se quema en la descarga (fallo visible, nunca silencioso).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-07 · conversión · CTA al comprobador en la guía de fincas (la #1 del ICP)
 
 **Hecho:** la guía `proteccion-datos-administradores-fincas` es la página que MÁS ve el comprador según el
