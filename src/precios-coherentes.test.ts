@@ -74,14 +74,16 @@ describe('coherencia de cuota y precio en todas las páginas', () => {
   });
 
   // Art. 10 LSSI: una página que publica un precio tiene que dar acceso a la identificación del
-  // titular. Las dos landings viven fuera de `index.html`, así que enlazan a sus anclajes.
+  // titular. Las dos landings viven fuera de `index.html`, así que enlazan a sus anclajes del home.
+  // Los enlaces son RELATIVOS al documento (desde `/actas/` y `/nominas/`, `../#…`) para que la base
+  // de emergencia `/tachadopdf/` funcione; la destinación es la misma sección legal del home.
   it.each(['public/actas/index.html', 'public/nominas/index.html'])(
     '%s: publica precio, así que enlaza al Aviso Legal',
     (relativo) => {
       const html = readFileSync(resolve(RAIZ, relativo), 'utf-8');
-      expect(html).toContain('https://www.tachadopdf.com/#aviso-legal');
-      expect(html).toContain('https://www.tachadopdf.com/#terminos');
-      expect(html).toContain('https://www.tachadopdf.com/#privacidad');
+      expect(html).toContain('href="../#aviso-legal"');
+      expect(html).toContain('href="../#terminos"');
+      expect(html).toContain('href="../#privacidad"');
     },
   );
 

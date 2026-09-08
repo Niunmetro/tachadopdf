@@ -4,6 +4,28 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · deuda técnica · Las 8 páginas estáticas navegan con rutas relativas
+
+**Hecho:** las 6 guías estáticas + `/actas/` + `/nominas/` tenían sus enlaces de navegación en
+ABSOLUTO (`https://www.tachadopdf.com/…`) y, en las dos landings, algunos raíz‑absolutos
+(`/?utm_source=…`, `/comprobador/…`), aunque sus assets ya eran relativos. Un href raíz/dominio‑absoluto
+rompe la base de emergencia `/tachadopdf/` (el modo para cuando el dominio se cae, que ya ocurrió una
+vez): mandaría al usuario al dominio caído en vez del fallback. Convertidos 45 enlaces al propio dominio
+(script determinista que solo toca `<a>`, deja canonical/og absolutos) + 4 CTAs raíz‑absolutos a mano.
+Ahora TODO el sitio —generado y estático— navega relativo al documento, como ya hacían las generadas.
+
+**Guarda:** nuevo `src/legal/enlaces-estaticas-relativos.test.ts` (deriva las 8 estáticas del registro):
+ningún `<a>` de navegación puede ser raíz‑absoluto ni al propio dominio, y el canonical DEBE seguir
+absoluto (identidad). Cazó de hecho los 4 CTAs raíz‑absolutos que el script no cubría — la guarda hizo
+su trabajo antes de nacer. `precios-coherentes` (LSSI art. 10) actualizado a la forma relativa de los
+enlaces legales: misma sección del home, cumplimiento intacto.
+
+**Verificación:** tsc 0 · 1828 tests verde (+17 del guard) · build 0 · destinos convertidos sirven 200.
+Los relativos resuelven bien bajo cualquier base por construcción. Canonical/og intactos (48, absolutos).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · confianza · Versión inglesa de «Cómo funciona» (guide/how-it-works)
 
 **Hecho:** contraparte inglesa de `guia/como-funciona`: nueva página generada `guide/how-it-works`
