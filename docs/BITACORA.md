@@ -4,6 +4,25 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · precisión · El ámbito del comprobador contaba mal (siete→seis formatos)
+
+**Hecho:** el texto de ámbito del comprobador (ES+EN) decía «Busca **siete** formatos **españoles**
+(…) y direcciones de correo», pero `detect()` reconoce 6 formatos españoles (DNI, NIE, IBAN, nº SS,
+teléfono, referencia catastral) **+ email**, y el paréntesis solo listaba 6. El email no es «formato
+español» y solo hay 6: descuadre. Corregido a «**seis** formatos españoles (…6…) y direcciones de
+correo» / «**six** Spanish formats … and email». El texto del INFORME NO se toca: ya era correcto
+(«siete formatos: [7, incluido correo]. Salvo el correo, todos son españoles»), que es el conteo total
+bien explicado. Es una imprecisión pequeña pero en la puerta del embudo y en ruta sensible (ámbito):
+un comprador detallista (gestoría, administrador) nota que «siete» ≠ 6 listados y desconfía.
+
+**Verificación:** confirmado primero que comprobador y redactor comparten el MISMO `detect()` (sin
+deriva) y que los tipos son exactamente 6 ES + email. tsc 0 · 1828 tests verde (render usa la
+variable; G10 valida el informe, intacto) · build 0 · el bundle sirve «seis/six», sin residuos de
+«siete/seven», y el informe conserva «siete formatos».
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · deuda técnica · Las 8 páginas estáticas navegan con rutas relativas
 
 **Hecho:** las 6 guías estáticas + `/actas/` + `/nominas/` tenían sus enlaces de navegación en

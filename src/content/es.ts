@@ -208,7 +208,7 @@ const INFORME_ES: CopiaInforme = {
 const COMPROBADOR_ES: CopiaComprobador = {
   etiquetas: ETIQUETAS_PATRON,
   alcance:
-    'Este diagnóstico solo LEE el archivo: no tacha nada y no modifica tu documento. Busca siete formatos españoles (DNI, NIE, IBAN, número de la Seguridad Social, teléfono, referencia catastral) y direcciones de correo en el texto que se puede extraer. No reconoce nombres, direcciones postales, firmas ni fotografías, y no lee el contenido visual de las imágenes ni de las páginas sin capa de texto. No sustituye a la revisión humana.',
+    'Este diagnóstico solo LEE el archivo: no tacha nada y no modifica tu documento. Busca seis formatos españoles (DNI, NIE, IBAN, número de la Seguridad Social, teléfono, referencia catastral) y direcciones de correo en el texto que se puede extraer. No reconoce nombres, direcciones postales, firmas ni fotografías, y no lee el contenido visual de las imágenes ni de las páginas sin capa de texto. No sustituye a la revisión humana.',
   analizando: 'Analizando el PDF en tu navegador…',
   noEsPdf: 'El fichero no parece un PDF. Selecciona un archivo .pdf válido.',
   passwordRequerida:

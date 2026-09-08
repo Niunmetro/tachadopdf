@@ -263,7 +263,7 @@ const INFORME_EN: CopiaInforme = {
 const COMPROBADOR_EN: CopiaComprobador = {
   etiquetas: ETIQUETAS_PATRON,
   alcance:
-    'This diagnosis only READS the file: it redacts nothing and changes nothing in your document. It searches for seven Spanish formats (national ID, foreigner ID, IBAN, social security number, phone number, cadastral reference) and for email addresses in the text that can be extracted. It does not recognise names, postal addresses, signatures or photographs, and it does not read the visual content of images or of pages with no text layer. It does not replace human review.',
+    'This diagnosis only READS the file: it redacts nothing and changes nothing in your document. It searches for six Spanish formats (national ID, foreigner ID, IBAN, social security number, phone number, cadastral reference) and for email addresses in the text that can be extracted. It does not recognise names, postal addresses, signatures or photographs, and it does not read the visual content of images or of pages with no text layer. It does not replace human review.',
   analizando: 'Analysing the PDF in your browser…',
   noEsPdf: "That file doesn't look like a PDF. Please choose a valid .pdf file.",
   passwordRequerida:
