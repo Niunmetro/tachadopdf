@@ -16,6 +16,11 @@ y replica el patrón de doble CTA (comprobador → redactor) de las guías gener
 **Verificación:** 1743 tests verde (cta-visible incluido: el nuevo CTA usa la clase `.cta` ya validada) ·
 build 0. Desplegado.
 
+**Actualización (mismo día):** mismo CTA al comprobador añadido a la guía `sanciones-aepd-comunidades-propietarios`
+(la otra guía estática que rankea según GSC, 3 impr). Las 4 guías estáticas restantes tienen ~0 impresiones:
+añadirles CTA sería tocar páginas sin tráfico (se hará si empiezan a rankear). Las landings /nominas/ y /actas/
+y todas las guías GENERADAS ya funnelan al comprobador. Verde · desplegado.
+
 **Bloqueos:** ninguno.
 
 ---
