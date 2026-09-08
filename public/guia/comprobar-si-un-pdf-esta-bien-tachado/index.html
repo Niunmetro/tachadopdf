@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="icon" href="../../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+    <link rel="preload" href="../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+    @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    }
+    @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    }
+    :root {
+    --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+    --t-100: 0.75rem;
+    --t-200: 0.875rem;
+    --t-300: 1rem;
+    --t-400: 1.125rem;
+    --t-500: 1.3125rem;
+    --t-600: 1.75rem;
+    --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
+    --lh-titular: 1.15;
+    --lh-corto: 1.35;
+    --lh-texto: 1.6;
+    --peso-normal: 400;
+    --peso-fuerte: 600;
+    --peso-veredicto: 700;
+    --ancho: 60rem;
+    --ancho-herramienta: 76rem;
+    --medida: 34em;
+    --e-1: 0.25rem;
+    --e-2: 0.5rem;
+    --e-3: 0.75rem;
+    --e-4: 1rem;
+    --e-6: 1.5rem;
+    --e-8: 2rem;
+    --e-12: 3rem;
+    --e-16: 4rem;
+    --e-24: 6rem;
+    --e-seccion: clamp(3rem, 7vw, 4rem);
+    --radio: 6px;
+    --radio-marca: 2px;
+    color-scheme: light;
+    --papel: #f6f5f3;
+    --superficie: #ffffff;
+    --tinta: #1b1a17;
+    --tinta-suave: #43403a;
+    --gris: #6a665e;
+    --linea: #dedad1;
+    --linea-fuerte: #8a857a;
+    --acento: #164a7e;
+    --acento-fuerte: #0e3159;
+    --acento-tenue: #dde7f3;
+    --tinta-inversa: #ffffff;
+    --rojo: #9b1c1c;
+    --rojo-fondo: #f9e6e4;
+    --ambar: #7c4a03;
+    --ambar-fondo: #fbefd2;
+    --verde: #0f6b41;
+    --verde-fondo: #dfeee4;
+    --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+    --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
+    }
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
+    body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: var(--t-300);
+    line-height: var(--lh-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    }
+    a {
+    color: var(--acento);
+    }
+    a:hover {
+    color: var(--acento-fuerte);
+    }
+    :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 2px;
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font: inherit;
+    }
+    input[type="file"] {
+    max-width: 100%;
+    cursor: pointer;
+    color: var(--tinta-suave);
+    }
+    input[type="file"]::file-selector-button {
+    font: inherit;
+    font-size: var(--t-300);
+    font-weight: var(--peso-fuerte);
+    cursor: pointer;
+    margin-right: var(--e-3);
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-4);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    }
+    input[type="file"]::file-selector-button:hover {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
+    }
+    .cabecera {
+    border-bottom: 1px solid var(--linea);
+    background: var(--superficie);
+    }
+    .cabecera__interior {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 var(--e-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    }
+    .cabecera__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
+    font-size: var(--t-200);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0;
+    }
+    .cabecera__simbolo {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    }
+    .idiomas {
+    display: flex;
+    gap: var(--e-3);
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: var(--t-200);
+    }
+    .idiomas > * {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    }
+    .idiomas__actual {
+    font-weight: var(--peso-fuerte);
+    color: var(--tinta);
+    }
+    .idiomas__enlace {
+    color: var(--acento);
+    text-decoration: none;
+    }
+    .idiomas__enlace:hover {
+    text-decoration: underline;
+    }
+    .dato {
+    font-family: var(--fuente-dato);
+    }
+    </style>
+    <title>Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí · TachadoPDF</title>
+    <meta name="description" content="Te han enviado, o vas a enviar, un PDF con datos tachados y quieres asegurarte de que están de verdad borrados y no solo tapados. Cuatro comprobaciones rápidas para saber si un tachado aguanta —y cómo verlo gratis, sin subir el archivo a ningún sitio." />
+    <link rel="canonical" href="https://www.tachadopdf.com/guia/comprobar-si-un-pdf-esta-bien-tachado/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí" />
+    <meta property="og:description" content="Te han enviado, o vas a enviar, un PDF con datos tachados y quieres asegurarte de que están de verdad borrados y no solo tapados. Cuatro comprobaciones rápidas para saber si un tachado aguanta —y cómo verlo gratis, sin subir el archivo a ningún sitio." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/guia/comprobar-si-un-pdf-esta-bien-tachado/" />
+    <meta property="og:locale" content="es_ES" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí",
+      "description": "Te han enviado, o vas a enviar, un PDF con datos tachados y quieres asegurarte de que están de verdad borrados y no solo tapados. Cuatro comprobaciones rápidas para saber si un tachado aguanta —y cómo verlo gratis, sin subir el archivo a ningún sitio.",
+      "inLanguage": "es",
+      "mainEntityOfPage": "https://www.tachadopdf.com/guia/comprobar-si-un-pdf-esta-bien-tachado/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Cómo sé si un PDF que me han enviado está bien tachado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Selecciona sobre las zonas tachadas y pégalas en un bloc de notas: si sale texto, no estaban borradas. Para estar seguro, pásalo por el comprobador, que lee todo el texto extraíble del archivo y marca las páginas escaneadas, sin subir el documento a ningún sitio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Si no puedo seleccionar el texto tachado, ¿ya está seguro?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Casi siempre, para el texto de las páginas. Pero conviene revisar además los metadatos, los marcadores y los adjuntos —donde un dato puede sobrevivir— y, si el PDF es un escaneo, comprobar la imagen a ojo: ahí no hay texto que seleccionar y el dato puede seguir a la vista."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿El comprobador modifica mi archivo o lo sube a algún sitio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Ni lo uno ni lo otro. Solo LEE el archivo para decirte qué datos siguen siendo extraíbles, no lo cambia, y todo ocurre en tu navegador: el documento no sale de tu equipo. Puedes comprobarlo cortando la conexión una vez cargada la página."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Sirve para un PDF escaneado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "En parte. Un escaneo no tiene texto que leer, así que la comprobación automática no puede analizar su contenido; lo que hace el comprobador es marcarte esas páginas para que las revises visualmente, que es la única forma fiable de comprobar un tachado sobre una imagen."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+      main, article, footer {
+        max-width: var(--ancho); margin: 0 auto; padding-left: var(--e-4); padding-right: var(--e-4);
+      }
+      main, article { padding-top: var(--e-12); padding-bottom: var(--e-16); }
+      /* El texto se capa a la MEDIDA, pero el bloque se alinea con la marca de la mancheta: una
+         columna centrada dentro de otra columna deja el articulo flotando a la deriva del titulo. */
+      h1, h2, p, li, .nota, .lede, .cp-cta, .cta { max-width: var(--medida); }
+      ul, ol { max-width: var(--medida); }
+      p, li { font-size: var(--t-400); }
+      h1 { font-size: var(--t-600); line-height: var(--lh-titular); font-weight: var(--peso-fuerte); margin: 0 0 var(--e-4); }
+      h2 { font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte); margin: var(--e-12) 0 var(--e-2); }
+      p { margin: 0 0 var(--e-4); }
+      ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
+      li { margin: 0 0 var(--e-2); }
+      .lede { color: var(--tinta-suave); }
+      /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
+         superado, y no se gasta en un aparte de una guia. */
+      .nota {
+        background: var(--ambar-fondo); border-left: 3px solid var(--ambar);
+        padding: var(--e-3) var(--e-4); border-radius: var(--radio-marca); color: var(--tinta);
+        font-size: var(--t-300); margin: 0 0 var(--e-4);
+      }
+      .cp-cta, .cta {
+        display: block; margin: var(--e-12) 0 0; padding: var(--e-4);
+        background: var(--acento); color: var(--tinta-inversa); border-radius: var(--radio);
+        text-decoration: none; font-weight: var(--peso-fuerte); font-size: var(--t-300);
+      }
+      .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
+      /* FAQ de la pieza de autoridad: <details> desnudo reestilado con los tokens del sistema. */
+      details.faq__item { max-width: var(--medida); border-top: 1px solid var(--linea); padding: var(--e-3) 0; }
+      details.faq__item summary { font-weight: var(--peso-fuerte); cursor: pointer; font-size: var(--t-400); }
+      details.faq__item p { margin: var(--e-2) 0 0; }
+      footer {
+        margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
+        font-size: var(--t-200); color: var(--tinta-suave);
+      }
+      @media (max-width: 640px) {
+        footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+      }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+    </style>
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
+        <nav class="idiomas" aria-label="Idioma">
+          <span class="idiomas__actual" lang="es">Español</span>
+          <a class="idiomas__enlace" hreflang="en" lang="en" href="../../en/">English</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <h1>Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí</h1>
+      <p>El aspecto de un tachado no dice nada: una barra negra puede haber borrado el dato de verdad o solo taparlo, y a simple vista se ven igual. Si te han enviado un documento con partes tachadas —o estás a punto de enviar uno— conviene no fiarte de cómo se ve, sino ponerlo a prueba. Aquí tienes cuatro comprobaciones, de la más rápida a la más completa.</p>
+      <h2>1. La prueba de copiar y pegar</h2>
+      <p>Abre el PDF, pasa el ratón seleccionando justo por encima de la zona tachada y pega en un bloc de notas. Si aparece el texto que creías oculto, es que sigue dentro del archivo: la barra negra era solo una capa por delante. Es la prueba de treinta segundos y caza el error más frecuente. (Por qué ocurre esto lo cuenta la guía del recuadro negro que enlazamos al final.)</p>
+      <h2>2. Ábrelo con otro programa o conviértelo</h2>
+      <p>A veces el visor con el que miras el PDF no deja seleccionar, pero otro sí. Ábrelo en un lector distinto, o pásalo a Word o a texto plano con cualquier conversor: si el dato reaparece al cambiar de programa, no estaba borrado, estaba escondido para un visor concreto.</p>
+      <h2>3. Mira lo que no está en las páginas</h2>
+      <p>Aunque las páginas se vean limpias, un PDF guarda datos fuera de ellas: el nombre del autor, el software, las fechas, los títulos de los marcadores, las anotaciones y los ficheros adjuntos. Un dato personal puede sobrevivir ahí a un tachado impecable de las páginas. Revisa las propiedades del documento y, si tu lector lo permite, sus marcadores y adjuntos.</p>
+      <h2>4. Cuidado con las páginas escaneadas</h2>
+      <p>Si el PDF es un escaneo, no hay texto por debajo: la prueba de copiar y pegar no encuentra nada aunque el dato esté a la vista, y una barra negra sobre el escaneo es una imagen encima de otra imagen, que se puede quitar o realzar hasta que asome lo de debajo. Esas páginas hay que revisarlas con los ojos, una a una.</p>
+      <h2>Cómo comprobarlo todo de una vez, gratis</h2>
+      <p>El comprobador de TachadoPDF hace por ti las comprobaciones 1 y 3: lee todo el texto que se puede extraer del archivo —el de las páginas y el de sus campos internos— y busca formatos de datos personales; además marca las páginas escaneadas para que las revises a mano. Solo LEE el archivo, no lo modifica, y todo ocurre en tu navegador: el documento no se sube a ningún servidor. Es la forma rápida de saber, antes de enviar o de aceptar un PDF, si un tachado aguanta.</p>
+      <h2>Y si descubres que no está bien tachado</h2>
+      <p>No lo reenvíes. Un tachado de verdad elimina el dato del contenido del archivo, no lo tapa; y sobre un escaneo, borra los píxeles de esa zona. Con TachadoPDF puedes rehacerlo en el navegador y, al terminar, la herramienta vuelve a leer el archivo para confirmar que el dato ya no es extraíble antes de dártelo.</p>
+      <h2>Preguntas frecuentes</h2>
+      <details class="faq__item">
+        <summary>¿Cómo sé si un PDF que me han enviado está bien tachado?</summary>
+        <p>Selecciona sobre las zonas tachadas y pégalas en un bloc de notas: si sale texto, no estaban borradas. Para estar seguro, pásalo por el comprobador, que lee todo el texto extraíble del archivo y marca las páginas escaneadas, sin subir el documento a ningún sitio.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Si no puedo seleccionar el texto tachado, ¿ya está seguro?</summary>
+        <p>Casi siempre, para el texto de las páginas. Pero conviene revisar además los metadatos, los marcadores y los adjuntos —donde un dato puede sobrevivir— y, si el PDF es un escaneo, comprobar la imagen a ojo: ahí no hay texto que seleccionar y el dato puede seguir a la vista.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿El comprobador modifica mi archivo o lo sube a algún sitio?</summary>
+        <p>Ni lo uno ni lo otro. Solo LEE el archivo para decirte qué datos siguen siendo extraíbles, no lo cambia, y todo ocurre en tu navegador: el documento no sale de tu equipo. Puedes comprobarlo cortando la conexión una vez cargada la página.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Sirve para un PDF escaneado?</summary>
+        <p>En parte. Un escaneo no tiene texto que leer, así que la comprobación automática no puede analizar su contenido; lo que hace el comprobador es marcarte esas páginas para que las revises visualmente, que es la única forma fiable de comprobar un tachado sobre una imagen.</p>
+      </details>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+          <li><a href="../como-funciona/">Cómo funciona TachadoPDF</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba tu PDF gratis, sin subirlo: te dice qué datos siguen siendo extraíbles</a>
+      <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
+    </main>
+  </body>
+</html>
