@@ -4,6 +4,24 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-07 · seo · 2ª pieza de autoridad/AEO: «¿Qué información oculta lleva un PDF?» (data-driven)
+
+**Hecho:** guía generada `guia/informacion-oculta-pdf` (solo ES), del MISMO tipo que la de recuperar-tachado
+—la ÚNICA que sacó impresiones reales en el veredicto GSC del 7-sep (23 impr), mientras las 5 landings
+sectoriales dieron ~0—. Ángulo DISTINTO a propósito (información oculta: metadatos, autor, software, fechas,
+XMP, marcadores, adjuntos y la ubicación GPS de las fotos incrustadas) para no canibalizar el home ni fallar
+el dedup. Funnela al comprobador (enlaceComprobador) y menciona la herramienta de metadatos de PDF + el
+redactor. Article + FAQPage. **Decisión DATA-DRIVEN, no antipatrón:** producir del tipo que el dato dice que
+funciona (autoridad/AEO), NO más sectorial.
+
+**Verificación:** tsc 0 · **1743 tests verde** — el dedup Jaccard 3-gramas <0,30 PASA (genuinamente distinta
+de las 12 guías/landings existentes) · build 0. Guardas de conteo: estilo 23→24, cta-visible 31→32,
+landings-keyword +id. Desplegado.
+
+**Bloqueos:** ninguno. Sigue en pie que la palanca de fondo es autoridad (backlinks) + tiempo; esta pieza
+amplía la superficie del TIPO que funciona mientras el dominio madura.
+
+---
 ## 2026-09-07 · seo · Veredicto GSC leído + datos estructurados de entidad (Organization/WebSite) en el home
 
 **Hecho:** por fin se leyó el veredicto de Search Console (la propiedad estaba verificada por la meta-tag

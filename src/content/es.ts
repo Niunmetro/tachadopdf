@@ -656,6 +656,88 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+  {
+    id: 'guia-info-oculta-pdf',
+    titulo: '¿Qué información oculta lleva un PDF? Metadatos, autor y fechas',
+    tituloEnlace: '¿Qué información oculta lleva un PDF?',
+    descripcion:
+      'Un PDF guarda por dentro más de lo que enseña: tu nombre como autor, el programa con que se hizo, las fechas, los marcadores, los adjuntos y hasta la ubicación de las fotos que contiene. Repasamos qué lleva escondido un PDF, por qué importa al compartirlo y cómo verlo y quitarlo sin subir el archivo a ningún sitio.',
+    enlaceComprobador: 'Comprueba gratis, sin subir el archivo, qué datos contiene tu PDF',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Cuando abres un PDF ves el texto y las imágenes de sus páginas. Pero el archivo guarda, por dentro, bastante más: quién figura como autor, con qué programa se creó, cuándo se hizo y se modificó por última vez, los títulos de los marcadores, las anotaciones, los ficheros que lleve incrustados e incluso, si contiene fotos de un móvil, la ubicación donde se tomaron. Nada de eso se ve al abrirlo, pero todo viaja con el archivo cuando lo envías.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Esta página repasa qué información oculta lleva un PDF, por qué conviene mirarla antes de compartir un documento con terceros, y cómo verla y quitarla sin que el archivo salga de tu ordenador.',
+      },
+      { t: 'h2', texto: 'El diccionario de información: tu nombre y tu programa, grabados en el archivo' },
+      {
+        t: 'p',
+        texto:
+          'Todo PDF puede llevar un pequeño diccionario de «información del documento»: el título, el autor, el asunto, las palabras clave, el programa que creó el documento original y el que lo convirtió a PDF, y las fechas de creación y de última modificación. Muchos programas rellenan el «autor» con tu nombre de usuario del sistema sin avisarte, así que un documento profesional puede acabar diciéndole a cualquiera que lo reciba quién lo redactó y con qué herramienta.',
+      },
+      { t: 'h2', texto: 'Los metadatos XMP y los rincones que ningún lector enseña' },
+      {
+        t: 'p',
+        texto:
+          'Además de ese diccionario, un PDF puede llevar un paquete de metadatos XMP (otra copia estructurada de esa información, y a veces más), los títulos de los marcadores del índice lateral, anotaciones y comentarios, las miniaturas que el archivo guarda de cada página, y ficheros adjuntos incrustados dentro del propio PDF. Un lector normal no enseña casi nada de esto, pero está ahí y se puede extraer con herramientas corrientes.',
+      },
+      { t: 'h2', texto: 'Las fotos dentro de un PDF llevan su propia ubicación' },
+      {
+        t: 'p',
+        texto:
+          'Si el PDF incluye fotografías hechas con un móvil, cada una puede arrastrar sus metadatos EXIF: el modelo del dispositivo, la fecha exacta y, si la ubicación estaba activada, las coordenadas del lugar donde se tomó. Un informe con la foto de un desperfecto hecha en un domicilio puede llevar, dentro del archivo, la dirección de ese domicilio, sin que aparezca escrita en ninguna parte.',
+      },
+      { t: 'h2', texto: '¿Por qué importa al compartir un documento?' },
+      {
+        t: 'p',
+        texto:
+          'Porque cuando entregas un PDF a un tercero —un cliente, la administración, otra empresa— le entregas también todo ese rastro. En el mejor caso revela quién y con qué lo hiciste; en el peor, filtra datos que creías que no estaban: la ubicación de una foto, el nombre de un fichero adjunto, un comentario que olvidaste borrar o el título de un marcador con un dato dentro. Para quien maneja documentación con datos personales, ese rastro es parte de lo que hay que revisar antes de enviar, no un detalle técnico.',
+      },
+      { t: 'h2', texto: '¿Cómo veo y quito lo que lleva escondido mi PDF?' },
+      {
+        t: 'p',
+        texto:
+          'Lo primero es verlo. El comprobador de TachadoPDF abre el PDF en tu propio navegador —no se sube a ningún servidor— y te dice qué datos de los patrones que reconoce contiene y en qué páginas. Y para los metadatos en concreto, la herramienta de metadatos de PDF te enseña el autor, el software y las fechas que lleva dentro, y te descarga una copia limpia.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Y cuando tachas un documento con TachadoPDF, la limpieza va incluida: al borrar los datos del texto, el motor elimina también el diccionario de información, el XMP, los marcadores, las anotaciones y los adjuntos, y después relee el archivo entregado para comprobar que no queda rastro. Lo que se ve en las páginas no se toca; lo que se va es el rastro de quién, con qué y cuándo se hizo.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Qué información oculta lleva un PDF?',
+        respuesta:
+          'Además del texto y las imágenes visibles, un PDF puede guardar el autor, el programa con que se creó y el que lo convirtió a PDF, el título y las fechas de creación y modificación, un paquete de metadatos XMP, los títulos de los marcadores, anotaciones, miniaturas de las páginas y ficheros adjuntos. Si lleva fotos de un móvil, cada una puede arrastrar su ubicación.',
+      },
+      {
+        pregunta: '¿Un PDF revela quién lo hizo?',
+        respuesta:
+          'A menudo sí. Muchos programas ponen tu nombre de usuario del sistema como «autor» del documento sin que lo notes, y graban también el software y las fechas. Cualquiera que reciba el archivo puede leer esos campos, aunque no aparezcan en la página.',
+      },
+      {
+        pregunta: '¿Las fotos dentro de un PDF llevan su ubicación?',
+        respuesta:
+          'Pueden. Una foto hecha con el móvil, con la ubicación activada, guarda las coordenadas del lugar donde se tomó en sus metadatos EXIF, y esos metadatos pueden viajar dentro del PDF que la incluye. Una foto hecha en un domicilio puede llevar, así, la dirección de ese domicilio.',
+      },
+      {
+        pregunta: '¿Se ven los metadatos al abrir el PDF?',
+        respuesta:
+          'No. El autor, el software, las fechas, el XMP, los adjuntos y los títulos de los marcadores no aparecen en las páginas: un lector normal no los enseña. Pero están dentro del archivo y se extraen con herramientas corrientes, así que viajan con el documento cuando lo compartes.',
+      },
+      {
+        pregunta: '¿Cómo quito los metadatos de un PDF?',
+        respuesta:
+          'Con la herramienta de metadatos de PDF de TachadoPDF, que te enseña lo que lleva dentro y descarga una copia sin ello, en tu propio navegador. Al tachar un documento con TachadoPDF la limpieza va incluida: se elimina el diccionario de información, el XMP, los marcadores, las anotaciones y los adjuntos, y se relee el archivo para confirmar que no queda rastro.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
