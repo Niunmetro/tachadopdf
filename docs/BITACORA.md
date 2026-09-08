@@ -4,6 +4,22 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-07 · seo · Enlazado interno de las guías generadas (relacionadas)
+
+**Hecho:** ninguna guía española tenía `relacionadas` → el clúster de guías estaba SIN enlazado interno
+entre sí (solo enlazaban a comprobador + home). Añadidas relacionadas a las **7 guías GENERADAS**
+(curriculum, prueba-juicio, publicar-internet, alumnos, copia-dni, recuperar-tachado, info-oculta-pdf; las
+estáticas son HTML a mano y su `relacionadas` en GUIAS_ES no renderiza). Apuntan a las páginas que rankean
+en el veredicto GSC —fincas (48 impr) y recuperar-tachado (23)— y a guías afines, para DISTRIBUIR autoridad
+interna hacia las páginas que importan (la palanca que el dato señala). Renderiza el bloque «Related guides»
+al pie + su CSS. El dedup (Jaccard) aguanta pese al texto extra de los enlaces.
+
+**Verificación:** tsc 0 · **1743 tests verde** · build 0. Sin páginas nuevas (guardas de conteo intactas).
+Desplegado.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-07 · seo · 2ª pieza de autoridad/AEO: «¿Qué información oculta lleva un PDF?» (data-driven)
 
 **Hecho:** guía generada `guia/informacion-oculta-pdf` (solo ES), del MISMO tipo que la de recuperar-tachado

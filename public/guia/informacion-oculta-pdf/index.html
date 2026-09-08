@@ -299,6 +299,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -347,6 +350,14 @@
         <summary>¿Cómo quito los metadatos de un PDF?</summary>
         <p>Con la herramienta de metadatos de PDF de TachadoPDF, que te enseña lo que lleva dentro y descarga una copia sin ello, en tu propio navegador. Al tachar un documento con TachadoPDF la limpieza va incluida: se elimina el diccionario de información, el XMP, los marcadores, las anotaciones y los adjuntos, y se relee el archivo para confirmar que no queda rastro.</p>
       </details>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
+          <li><a href="../proteccion-datos-administradores-fincas/">Datos personales en actas y documentos de comunidades</a></li>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis, sin subir el archivo, qué datos contiene tu PDF</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>

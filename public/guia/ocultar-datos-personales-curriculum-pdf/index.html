@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -282,6 +285,14 @@
       <h2>Cómo quitar esos datos de verdad</h2>
       <p>Para que un dato desaparezca hay que eliminarlo del contenido del archivo, no taparlo; y si está sobre una imagen escaneada, hay que borrar los píxeles de esa zona. TachadoPDF hace las dos cosas: detecta de forma automática por patrones el correo, el teléfono, el DNI, el NIE o el IBAN, y lo demás —tu nombre, la foto, la dirección— lo marcas tú arrastrando un recuadro. Después vuelve a abrir el PDF y lo busca otra vez para confirmar que el dato ya no está, y te entrega un informe de comprobación. Todo ocurre en tu navegador: el currículum no se sube a ningún servidor.</p>
       <p>La regla, al final, es sencilla: envía solo lo imprescindible para que te llamen, y deja el resto fuera del archivo.</p>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../tachar-dni-pdf/">Cómo tachar un DNI de un PDF sin que se pueda recuperar</a></li>
+          <li><a href="../tapar-datos-copia-dni-tramite/">Qué tapar en una copia del DNI antes de enviarla</a></li>
+          <li><a href="../recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos lleva tu currículum, sin subirlo</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>
