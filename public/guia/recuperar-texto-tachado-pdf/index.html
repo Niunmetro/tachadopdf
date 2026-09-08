@@ -299,6 +299,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -360,6 +363,14 @@
         <summary>¿Un recuadro negro sobre un documento escaneado es seguro?</summary>
         <p>No. Sobre un escaneo, el recuadro negro es una imagen encima de otra imagen: se puede quitar o realzar el contraste hasta que asome lo de debajo. Además, como el escaneo no tiene capa de texto, una revisión que solo lea texto no detecta el dato. Para borrarlo hay que eliminar los píxeles de esa zona de la imagen.</p>
       </details>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+          <li><a href="../informacion-oculta-pdf/">¿Qué información oculta lleva un PDF?</a></li>
+          <li><a href="../proteccion-datos-administradores-fincas/">Datos personales en actas y documentos de comunidades</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis, sin subir el archivo, si tu tachado deja rastro</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>

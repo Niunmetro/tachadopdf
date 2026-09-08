@@ -277,6 +277,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   // datos» y «detección automática por patrones», nunca las palabras vetadas por el comité.
   {
     id: 'guia-curriculum',
+    relacionadas: ['guia-tachar-dni', 'guia-copia-dni', 'guia-recuperar-tachado'],
     titulo: 'Cómo ocultar los datos personales de un currículum en PDF antes de enviarlo',
     tituloEnlace: 'Ocultar datos personales de un currículum en PDF',
     descripcion:
@@ -331,6 +332,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   },
   {
     id: 'guia-prueba-juicio',
+    relacionadas: ['guia-recuperar-tachado', 'guia-rectangulo-negro', 'guia-tachar-dni'],
     titulo: 'Cómo ocultar los datos de terceros al aportar documentos como prueba en un PDF',
     tituloEnlace: 'Ocultar datos de terceros en la prueba documental',
     descripcion:
@@ -379,6 +381,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   },
   {
     id: 'guia-publicar-internet',
+    relacionadas: ['guia-recuperar-tachado', 'guia-info-oculta-pdf', 'guia-rectangulo-negro'],
     titulo: 'Cómo censurar un PDF antes de publicarlo en internet sin exponer datos de terceros',
     tituloEnlace: 'Censurar un PDF antes de publicarlo en internet',
     descripcion:
@@ -427,6 +430,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   },
   {
     id: 'guia-alumnos',
+    relacionadas: ['guia-tachar-dni', 'guia-sanciones', 'guia-rectangulo-negro'],
     titulo: 'Cómo ocultar los datos de alumnos en un PDF antes de compartirlo',
     tituloEnlace: 'Ocultar los datos de alumnos en un PDF',
     descripcion:
@@ -476,6 +480,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   },
   {
     id: 'guia-copia-dni',
+    relacionadas: ['guia-tachar-dni', 'guia-curriculum', 'guia-rectangulo-negro'],
     titulo: 'Qué tapar en una copia del DNI antes de enviarla para un trámite',
     tituloEnlace: 'Qué tapar en una copia del DNI antes de enviarla',
     descripcion:
@@ -539,6 +544,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   // honestidad es el argumento. Ver docs/SEO-EXPERIMENTO.md para su medición.
   {
     id: 'guia-recuperar-tachado',
+    relacionadas: ['guia-rectangulo-negro', 'guia-info-oculta-pdf', 'guia-fincas'],
     titulo:
       '¿Se puede recuperar el texto tachado de un PDF? Por qué muchos tachados se pueden deshacer',
     tituloEnlace: '¿Se puede recuperar un texto tachado de un PDF?',
@@ -658,6 +664,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   },
   {
     id: 'guia-info-oculta-pdf',
+    relacionadas: ['guia-recuperar-tachado', 'guia-fincas', 'guia-rectangulo-negro'],
     titulo: '¿Qué información oculta lleva un PDF? Metadatos, autor y fechas',
     tituloEnlace: '¿Qué información oculta lleva un PDF?',
     descripcion:

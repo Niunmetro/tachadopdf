@@ -251,6 +251,9 @@
       @media (max-width: 640px) {
         footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
       }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
     </style>
   </head>
   <body>
@@ -281,6 +284,14 @@
       <p class="nota">Antes de compartir, abre el PDF, selecciona sobre lo tapado y pega; y en las imágenes, prueba a subir el brillo. Si el dato asoma, todavía está dentro.</p>
       <h2>Cómo hacerlo bien</h2>
       <p>TachadoPDF borra de verdad el texto del archivo y los píxeles de la zona marcada —la cara de una orla, el DNI de un escaneo—, detecta de forma automática por patrones el DNI, el NIE, los teléfonos y los correos, y tú marcas los nombres y las notas. Al terminar comprueba que no queda rastro y entrega un informe. Y como el documento no se sube a ningún servidor, los datos de los menores no salen del equipo del centro.</p>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../tachar-dni-pdf/">Cómo tachar un DNI de un PDF sin que se pueda recuperar</a></li>
+          <li><a href="../sanciones-aepd-comunidades-propietarios/">Sanciones de la AEPD a comunidades de propietarios</a></li>
+          <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+        </ul>
+      </nav>
       <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos de alumnos contiene el PDF</a>
       <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
     </main>
