@@ -4,6 +4,26 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · anti-falso-verde · La verificación de metadatos ahora mira sin saltos de línea
+
+**Hecho:** auditoría READ-ONLY de `verifyRedaction` (el núcleo de «el peor fallo es un falso verde»).
+El texto de PÁGINA ya se comprobaba también `textoSinSaltos` (un dato partido por un salto —celda
+estrecha— escapa a `detect` línea a línea), pero los METADATOS no. Y los metadatos incluyen paquetes
+**XMP (XML, con saltos)** y «toda cadena de todo objeto» (`readStream().asString()`): un dato personal
+partido por un salto dentro de un XMP salía extraíble con el informe en VERDE. Extendida la guarda de
+saltos a los metadatos, espejo exacto de la lógica de página (mismo filtro `PATRONES_ROBUSTOS_AL_SALTO`
+—solo dígito de control + correo— para no FABRICAR un residuo sin salida al juntar líneas).
+
+**Por qué es seguro:** el cambio es monótonamente MÁS ESTRICTO — solo puede AÑADIR bloqueos, nunca
+quitarlos, así que no puede introducir un falso verde, solo cerrarle una puerta. Ruta sensible: revisado
+con el listón alto (gap verificado reachable, fix = patrón ya probado en páginas, dos tests nuevos).
+
+**Verificación:** tsc 0 · 1866 tests verde (+2: un DNI partido en un XMP bloquea; un teléfono partido
+NO se reconstruye —sin dígito de control— para no fabricar residuo). build 0.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · SEO/autoridad · Guía «cómo comprobar si un PDF está bien tachado»
 
 **Hecho:** nueva guía generada `guia/comprobar-si-un-pdf-esta-bien-tachado` (solo ES). Cubre la

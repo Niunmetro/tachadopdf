@@ -108,12 +108,34 @@ export function verifyRedaction(
   for (const texto of metadataTexts) {
     // Los metadatos se limpian solos: el usuario no elige por objeto, así que un dato que sobrevive
     // en una clave interna NUNCA es una decisión suya. Siempre bloquea.
-    for (const hit of detect(texto)) {
+    const directos = detect(texto);
+    for (const hit of directos) {
       residues.push({ kind: hit.kind, value: hit.value, page: null });
+    }
+    // Un paquete XMP —y cualquier cadena de objeto que se lee aquí— es XML y viene con saltos de
+    // línea, así que un dato puede quedar PARTIDO igual que en una celda estrecha de una página. El
+    // texto de página ya se mira sin saltos (arriba); los metadatos también tienen que hacerlo, o un
+    // dato partido en un XMP sale por la puerta como falso verde. Mismo filtro que arriba: solo
+    // patrones con dígito de control + correo, para que juntar dos líneas no FABRIQUE un residuo.
+    const unido = textoSinSaltos(texto);
+    if (unido !== texto) {
+      const yaVistos = new Set(directos.map((hit) => `${hit.kind}:${hit.value}`));
+      for (const hit of detect(unido)) {
+        if (!PATRONES_ROBUSTOS_AL_SALTO.has(hit.kind)) continue;
+        if (yaVistos.has(`${hit.kind}:${hit.value}`)) continue;
+        residues.push({ kind: hit.kind, value: hit.value, page: null });
+      }
     }
     for (const manual of manualStrings) {
       if (manual.trim() === '') continue;
       if (texto.includes(manual)) {
+        residues.push({ kind: 'manual', value: manual, page: null });
+        continue;
+      }
+      // Mismo punto ciego que en las páginas: una caja manual capturada sin saltos puede reaparecer
+      // repartida en dos líneas de un metadato. `includes` directo no la ve; la versión unida sí.
+      const manualUnido = textoSinSaltos(manual);
+      if (manualUnido !== '' && unido.includes(manualUnido)) {
         residues.push({ kind: 'manual', value: manual, page: null });
       }
     }
