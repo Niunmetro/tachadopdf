@@ -61,6 +61,23 @@ describe('verifyRedaction (tercer parámetro: metadataTexts)', () => {
     expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: null });
   });
 
+  it('un DNI PARTIDO por un salto de línea en un metadato (XMP) bloquea: no puede escapar sin saltos', () => {
+    // Un paquete XMP es XML y viene con saltos; `detect` línea a línea no ve '1234\n5678Z', igual que
+    // en una celda estrecha de página. La guarda de saltos, que ya cubría las páginas, ahora cubre
+    // también los metadatos: si no, el dato salía extraíble con el informe en verde (falso verde).
+    const resultado = verifyRedaction([], [], ['<dc:identifier>1234\n5678Z</dc:identifier>']);
+    expect(resultado.clean).toBe(false);
+    expect(resultado.residues).toContainEqual({ kind: 'dni', value: '12345678Z', page: null });
+  });
+
+  it('un teléfono partido en un metadato NO se reconstruye (no fabrica un residuo sin salida)', () => {
+    // El teléfono no lleva dígito de control: juntar dos líneas de un metadato podría FABRICAR un
+    // número de nueve cifras inexistente. Igual que en las páginas, el barrido de saltos se limita a
+    // los patrones con control + correo, así que un teléfono partido no cuenta como residuo.
+    const resultado = verifyRedaction([], [], ['<x>6001\n23456</x>']);
+    expect(resultado.residues.some((r) => r.kind === 'telefono')).toBe(false);
+  });
+
   it('sin residuos en ninguna fuente da clean=true', () => {
     const resultado = verifyRedaction(['texto limpio'], [], []);
     expect(resultado.clean).toBe(true);
