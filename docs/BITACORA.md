@@ -8,15 +8,25 @@ Formato fijo. Sin secretos, sin datos de clientes.
 
 **Hecho:** auditoría READ-ONLY de `verifyRedaction` (el núcleo de «el peor fallo es un falso verde»).
 El texto de PÁGINA ya se comprobaba también `textoSinSaltos` (un dato partido por un salto —celda
-estrecha— escapa a `detect` línea a línea), pero los METADATOS no. Y los metadatos incluyen paquetes
-**XMP (XML, con saltos)** y «toda cadena de todo objeto» (`readStream().asString()`): un dato personal
-partido por un salto dentro de un XMP salía extraíble con el informe en VERDE. Extendida la guarda de
-saltos a los metadatos, espejo exacto de la lógica de página (mismo filtro `PATRONES_ROBUSTOS_AL_SALTO`
-—solo dígito de control + correo— para no FABRICAR un residuo sin salida al juntar líneas).
+estrecha— escapa a `detect` línea a línea), pero los METADATOS no. `metadataTexts` puede incluir paquetes
+**XMP (XML, con saltos)**: un dato partido por un salto ahí escapaba a `detect` línea a línea. Extendida la
+guarda de saltos a `metadataTexts`, espejo exacto de la lógica de página (mismo filtro
+`PATRONES_ROBUSTOS_AL_SALTO` —solo dígito de control + correo— para no FABRICAR un residuo al juntar líneas).
+
+**Alcance honesto (defensa en profundidad, NO el flujo común):** la vía primaria no es esta —
+`stripMetadata` ELIMINA por completo el XMP, las anotaciones (`/Annots`) y el AcroForm, y lo verifica y
+testea (metadata.test.ts). Así que un XMP con un dato partido normalmente ya no existe cuando corre
+`verify`. Esta guarda es la RED para el caso en que el strip FALLE y deje un objeto con metadatos. Cierra
+ese hueco del safety-net; no es un falso verde del flujo normal. (Corregido respecto a la primera
+redacción de esta entrada, que lo daba como camino común — el propio ethos de precisión aplica a la bitácora.)
 
 **Por qué es seguro:** el cambio es monótonamente MÁS ESTRICTO — solo puede AÑADIR bloqueos, nunca
 quitarlos, así que no puede introducir un falso verde, solo cerrarle una puerta. Ruta sensible: revisado
-con el listón alto (gap verificado reachable, fix = patrón ya probado en páginas, dos tests nuevos).
+con el listón alto (fix = patrón ya probado en páginas, dos tests nuevos).
+
+**Verificado de paso (sin tocar):** anotaciones y formularios NO son un hueco — se borran enteros en el
+strip, no solo se verifican. Segunda falsa alarma de la sesión que confirma que el núcleo está bien
+defendido (la primera fue la tarjeta social). Señal de rendimientos decrecientes en la auditoría.
 
 **Verificación:** tsc 0 · 1866 tests verde (+2: un DNI partido en un XMP bloquea; un teléfono partido
 NO se reconstruye —sin dígito de control— para no fabricar residuo). build 0.
