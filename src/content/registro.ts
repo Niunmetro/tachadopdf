@@ -216,6 +216,16 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/como-funciona' },
   },
+  // Pieza de AUTORIDAD/AEO del ángulo VERIFICACIÓN (2026-09-08). Consulta «cómo comprobar si un PDF
+  // está bien tachado» (en inglés ya existe check-pdf-redaction; en español faltaba). Funnela al
+  // comprobador. Del tipo que el veredicto GSC demostró que saca impresiones. Generada, solo español.
+  {
+    id: 'guia-comprobar-tachado',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/comprobar-si-un-pdf-esta-bien-tachado' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen

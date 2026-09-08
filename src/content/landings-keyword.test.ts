@@ -90,6 +90,7 @@ describe('las cinco landings de cola larga sectorial existen y están integradas
       [
         'guia-alumnos',
         'guia-como-funciona',
+        'guia-comprobar-tachado',
         'guia-copia-dni',
         'guia-curriculum',
         'guia-info-oculta-pdf',

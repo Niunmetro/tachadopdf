@@ -841,6 +841,88 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // Pieza de AUTORIDAD/AEO del ángulo VERIFICACIÓN (2026-09-08). Cubre la consulta de intención alta
+  // «cómo comprobar si un PDF está bien tachado» —que en inglés ya tiene su guía (check-pdf-redaction)
+  // y en español faltaba— y funnela al COMPROBADOR (el tool gratis ES esa comprobación). Ataca el
+  // cuello real (descubrimiento) por el único canal autónomo (SEO), en el tipo que el veredicto GSC
+  // demostró que saca impresiones. Carril propio (el PROCEDIMIENTO de comprobar, el doc RECIBIDO), no
+  // el «por qué se recupera» de recuperar-tachado ni el «por qué falla el recuadro» de rectangulo-negro
+  // (se enlazan, no se reexplican) para no rozar el dedup. Generada, solo español.
+  {
+    id: 'guia-comprobar-tachado',
+    relacionadas: ['guia-recuperar-tachado', 'guia-rectangulo-negro', 'guia-como-funciona'],
+    titulo: 'Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí',
+    tituloEnlace: 'Cómo comprobar si un PDF está bien tachado',
+    descripcion:
+      'Te han enviado, o vas a enviar, un PDF con datos tachados y quieres asegurarte de que están de verdad borrados y no solo tapados. Cuatro comprobaciones rápidas para saber si un tachado aguanta —y cómo verlo gratis, sin subir el archivo a ningún sitio.',
+    enlaceComprobador: 'Comprueba tu PDF gratis, sin subirlo: te dice qué datos siguen siendo extraíbles',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'El aspecto de un tachado no dice nada: una barra negra puede haber borrado el dato de verdad o solo taparlo, y a simple vista se ven igual. Si te han enviado un documento con partes tachadas —o estás a punto de enviar uno— conviene no fiarte de cómo se ve, sino ponerlo a prueba. Aquí tienes cuatro comprobaciones, de la más rápida a la más completa.',
+      },
+      { t: 'h2', texto: '1. La prueba de copiar y pegar' },
+      {
+        t: 'p',
+        texto:
+          'Abre el PDF, pasa el ratón seleccionando justo por encima de la zona tachada y pega en un bloc de notas. Si aparece el texto que creías oculto, es que sigue dentro del archivo: la barra negra era solo una capa por delante. Es la prueba de treinta segundos y caza el error más frecuente. (Por qué ocurre esto lo cuenta la guía del recuadro negro que enlazamos al final.)',
+      },
+      { t: 'h2', texto: '2. Ábrelo con otro programa o conviértelo' },
+      {
+        t: 'p',
+        texto:
+          'A veces el visor con el que miras el PDF no deja seleccionar, pero otro sí. Ábrelo en un lector distinto, o pásalo a Word o a texto plano con cualquier conversor: si el dato reaparece al cambiar de programa, no estaba borrado, estaba escondido para un visor concreto.',
+      },
+      { t: 'h2', texto: '3. Mira lo que no está en las páginas' },
+      {
+        t: 'p',
+        texto:
+          'Aunque las páginas se vean limpias, un PDF guarda datos fuera de ellas: el nombre del autor, el software, las fechas, los títulos de los marcadores, las anotaciones y los ficheros adjuntos. Un dato personal puede sobrevivir ahí a un tachado impecable de las páginas. Revisa las propiedades del documento y, si tu lector lo permite, sus marcadores y adjuntos.',
+      },
+      { t: 'h2', texto: '4. Cuidado con las páginas escaneadas' },
+      {
+        t: 'p',
+        texto:
+          'Si el PDF es un escaneo, no hay texto por debajo: la prueba de copiar y pegar no encuentra nada aunque el dato esté a la vista, y una barra negra sobre el escaneo es una imagen encima de otra imagen, que se puede quitar o realzar hasta que asome lo de debajo. Esas páginas hay que revisarlas con los ojos, una a una.',
+      },
+      { t: 'h2', texto: 'Cómo comprobarlo todo de una vez, gratis' },
+      {
+        t: 'p',
+        texto:
+          'El comprobador de TachadoPDF hace por ti las comprobaciones 1 y 3: lee todo el texto que se puede extraer del archivo —el de las páginas y el de sus campos internos— y busca formatos de datos personales; además marca las páginas escaneadas para que las revises a mano. Solo LEE el archivo, no lo modifica, y todo ocurre en tu navegador: el documento no se sube a ningún servidor. Es la forma rápida de saber, antes de enviar o de aceptar un PDF, si un tachado aguanta.',
+      },
+      { t: 'h2', texto: 'Y si descubres que no está bien tachado' },
+      {
+        t: 'p',
+        texto:
+          'No lo reenvíes. Un tachado de verdad elimina el dato del contenido del archivo, no lo tapa; y sobre un escaneo, borra los píxeles de esa zona. Con TachadoPDF puedes rehacerlo en el navegador y, al terminar, la herramienta vuelve a leer el archivo para confirmar que el dato ya no es extraíble antes de dártelo.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Cómo sé si un PDF que me han enviado está bien tachado?',
+        respuesta:
+          'Selecciona sobre las zonas tachadas y pégalas en un bloc de notas: si sale texto, no estaban borradas. Para estar seguro, pásalo por el comprobador, que lee todo el texto extraíble del archivo y marca las páginas escaneadas, sin subir el documento a ningún sitio.',
+      },
+      {
+        pregunta: 'Si no puedo seleccionar el texto tachado, ¿ya está seguro?',
+        respuesta:
+          'Casi siempre, para el texto de las páginas. Pero conviene revisar además los metadatos, los marcadores y los adjuntos —donde un dato puede sobrevivir— y, si el PDF es un escaneo, comprobar la imagen a ojo: ahí no hay texto que seleccionar y el dato puede seguir a la vista.',
+      },
+      {
+        pregunta: '¿El comprobador modifica mi archivo o lo sube a algún sitio?',
+        respuesta:
+          'Ni lo uno ni lo otro. Solo LEE el archivo para decirte qué datos siguen siendo extraíbles, no lo cambia, y todo ocurre en tu navegador: el documento no sale de tu equipo. Puedes comprobarlo cortando la conexión una vez cargada la página.',
+      },
+      {
+        pregunta: '¿Sirve para un PDF escaneado?',
+        respuesta:
+          'En parte. Un escaneo no tiene texto que leer, así que la comprobación automática no puede analizar su contenido; lo que hace el comprobador es marcarte esas páginas para que las revises visualmente, que es la única forma fiable de comprobar un tachado sobre una imagen.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));

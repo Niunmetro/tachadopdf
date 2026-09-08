@@ -4,6 +4,27 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · SEO/autoridad · Guía «cómo comprobar si un PDF está bien tachado»
+
+**Hecho:** nueva guía generada `guia/comprobar-si-un-pdf-esta-bien-tachado` (solo ES). Cubre la
+consulta de intención alta «cómo comprobar si un PDF está bien tachado» —que en inglés ya tenía su
+guía (check-pdf-redaction) y en español faltaba— con el ángulo VERIFICACIÓN: las 4 comprobaciones
+(copiar/pegar, abrir con otro programa, metadatos/marcadores/adjuntos, páginas escaneadas) y el
+comprobador como la forma automática de hacerlas. 801 palabras, 4 FAQ, doble CTA (comprobador + home),
+enlazado a recuperar-tachado / rectangulo-negro / como-funciona.
+
+**Por qué:** el cuello es DISTRIBUCIÓN y el único canal autónomo es SEO; el veredicto GSC mostró que el
+tipo autoridad/AEO SÍ saca impresiones (a diferencia de las landings sectoriales). Esta consulta tiene
+intención alta y funnela directo al comprobador (el tool gratis ES esa comprobación). No es «una guía
+más»: llena un hueco real ES↔EN y ataca el cuello por el canal que puedo mover solo.
+
+**Verificación:** tsc 0 · 1864 tests verde (+36 derivados) · build 0. Dedup medido: **máx 0,0512** vs
+rectangulo-negro (umbral 0,30, ~6× de margen) — carril propio (procedimiento de comprobar, no «por qué
+se recupera»). Cero vocabulario prohibido. Guards subidos (estilo 26→27, cta-visible 34→35, lista +1).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · precisión · El ámbito del comprobador contaba mal (siete→seis formatos)
 
 **Hecho:** el texto de ámbito del comprobador (ES+EN) decía «Busca **siete** formatos **españoles**
