@@ -192,6 +192,18 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/recuperar-texto-tachado-pdf' },
   },
+  // Segunda pieza de AUTORIDAD/AEO (2026-09-07), del MISMO tipo que la de recuperar-tachado — que es
+  // la única que sacó impresiones reales en el veredicto GSC del 7-sep (23 impr), mientras las 5
+  // landings sectoriales dieron ~0. Ángulo DISTINTO (información oculta: metadatos, autor, GPS de
+  // fotos) para no canibalizar ni fallar el dedup. Funnela al comprobador y a la herramienta de
+  // metadatos de PDF. Solo en español.
+  {
+    id: 'guia-info-oculta-pdf',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/informacion-oculta-pdf' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen
