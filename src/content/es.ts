@@ -745,6 +745,102 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // Página de CONFIANZA / cómo funciona (2026-09-08). No es una guía de tarea ni una landing
+  // sectorial: explica el mecanismo del producto (procesamiento en el navegador, qué sale y qué no
+  // a la red, verificación anti-falso-verde, código abierto, sin cuentas) para atacar la barrera de
+  // conversión de una herramienta sin marca que pide dinero — la confianza ES el producto en una
+  // app de privacidad. Vocabulario en su propio carril (WebAssembly, CSP, AGPL, licencia) para no
+  // canibalizar ni rozar el dedup de las guías de tachado. `origen: 'generado'`, solo español.
+  {
+    id: 'guia-como-funciona',
+    relacionadas: ['guia-sin-subir', 'guia-recuperar-tachado', 'guia-info-oculta-pdf'],
+    titulo: 'Cómo funciona TachadoPDF y por qué tus datos no salen del navegador',
+    tituloEnlace: 'Cómo funciona TachadoPDF',
+    descripcion:
+      'TachadoPDF procesa el PDF entero dentro de tu navegador: el documento no se sube a ningún servidor, no hay cuentas ni rastreo, y el borrado se comprueba antes de darte el archivo. Explicamos exactamente cómo funciona por dentro y cómo puedes verificarlo tú mismo.',
+    enlaceComprobador: 'Compruébalo tú mismo: analiza un PDF gratis, sin subirlo',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Confiar un documento con datos personales a una web desconocida es, casi siempre, un acto de fe: la subes y ya no sabes qué se hace con ella después. TachadoPDF está pensado para que no tengas que fiarte de nuestra palabra, sino para que puedas comprobar por ti mismo qué le pasa a tu archivo. Esta página cuenta cómo funciona por dentro.',
+      },
+      { t: 'h2', texto: 'El PDF se procesa en tu propio equipo' },
+      {
+        t: 'p',
+        texto:
+          'Cuando abres un archivo, el programa que lo lee, lo edita y lo vuelve a guardar se ejecuta dentro de la pestaña del navegador, en tu ordenador o en tu móvil. No hay ninguna subida: el archivo no viaja por la red hacia una máquina nuestra, porque no existe tal máquina de procesamiento. El motor que trabaja el documento está compilado a WebAssembly y llega junto con la página, como una imagen o una hoja de estilo más.',
+      },
+      {
+        t: 'p',
+        texto:
+          'La prueba más sencilla puedes hacerla tú: abre la página, corta el WiFi o los datos móviles, y sigue tachando y descargando con normalidad. Si la herramienta trabajara enviando el archivo, sin conexión no podría hacer absolutamente nada.',
+      },
+      { t: 'h2', texto: 'Qué sale a internet y qué no' },
+      {
+        t: 'p',
+        texto:
+          'La regla es estricta: de tu documento no sale ni un byte. Lo único que la página pide a la red es lo imprescindible para mostrarse —su propio código y su tipografía, servidos desde este mismo sitio— y, si usas la versión de pago, una comprobación de tu clave de licencia contra la plataforma de pagos. Nada más: ni tu PDF, ni su texto, ni un resumen, ni una miniatura.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Y para que eso no dependa de nuestra buena voluntad, la página declara una política de seguridad de contenido que hace cumplir el propio navegador: le prohíbe conectarse a cualquier destino que no sea esa verificación de licencia. No hay redes de publicidad, ni tipografías traídas de fuera, ni librerías de terceros cargadas desde otro servidor.',
+      },
+      { t: 'h2', texto: 'No hay cuentas ni rastreo' },
+      {
+        t: 'p',
+        texto:
+          'No te pedimos registrarte, ni un correo, ni instalar nada. Tampoco llevamos analítica: no hay cookies de seguimiento ni contadores que vigilen lo que haces. Usas la herramienta y te vas, sin dejar detrás un rastro que luego haya que proteger.',
+      },
+      { t: 'h2', texto: 'El borrado se comprueba antes de entregártelo' },
+      {
+        t: 'p',
+        texto:
+          'Tachar de verdad es quitar el dato del contenido del archivo, no ponerle algo por encima. Cuando terminas, TachadoPDF vuelve a abrir el documento que acaba de generar y busca otra vez lo que debía haber desaparecido. Si encontrara cualquier resto, no da el trabajo por bueno y te avisa: el peor resultado imaginable sería devolverte un archivo que parece limpio y no lo está.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Las páginas que son una imagen escaneada, sin texto legible por debajo, se señalan aparte y en rojo: ahí la detección automática por patrones no puede leer nada, así que te pedimos que las revises con tus propios ojos. Preferimos avisarte de lo que no podemos cubrir antes que fingir que lo cubrimos.',
+      },
+      { t: 'h2', texto: 'El código es abierto' },
+      {
+        t: 'p',
+        texto:
+          'Todo el código de TachadoPDF es público y se publica bajo licencia AGPL-3.0. Cualquiera —tú, o alguien de tu confianza que sepa leerlo— puede revisar exactamente qué hace la herramienta con tu archivo, sin tener que creerse esta página. Una promesa de privacidad que no se puede inspeccionar vale poco; esta se puede.',
+      },
+      { t: 'h2', texto: 'Gratis, y una versión de pago sin suscripción' },
+      {
+        t: 'p',
+        texto:
+          'Puedes tachar documentos gratis cada mes, con un límite pensado para un uso normal. Si necesitas más, hay una versión Pro de pago único —no es una suscripción— que amplía ese límite. El cobro y los recibos los gestiona una plataforma de pagos externa; nosotros solo comprobamos que tu clave es válida. Ni siquiera para pagar sale tu documento del navegador.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿De verdad no se sube mi documento a ningún sitio?',
+        respuesta:
+          'No. El PDF se procesa dentro de tu navegador y no viaja a ninguna máquina nuestra. Puedes comprobarlo cortando la conexión a internet una vez cargada la página: la herramienta sigue tachando y descargando, porque todo el trabajo ocurre en tu equipo.',
+      },
+      {
+        pregunta: '¿Cómo puedo verificar que es cierto?',
+        respuesta:
+          'De tres maneras: usa la herramienta sin conexión y verás que funciona igual; fíjate en que no te pide ninguna cuenta ni correo; y, si quieres ir más lejos, revisa el código, que es abierto (AGPL-3.0) y cualquiera puede inspeccionar.',
+      },
+      {
+        pregunta: '¿Qué es lo único que sí sale a internet?',
+        respuesta:
+          'Solo dos cosas, y ninguna es tu documento: la propia página con su código y su tipografía, servidos desde este mismo sitio, y —si usas la versión Pro— una comprobación de tu clave de licencia. El navegador impide, por política de seguridad, cualquier otra conexión.',
+      },
+      {
+        pregunta: '¿Guardáis algo de lo que hago, o analítica de uso?',
+        respuesta:
+          'No. No hay cuentas, ni cookies de seguimiento, ni analítica. No registramos qué archivos abres ni qué tachas: no queda constancia de tu sesión en ningún sitio.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));

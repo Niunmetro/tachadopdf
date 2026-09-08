@@ -92,9 +92,10 @@ describe('G17: las paginas del sitio declaran UNA cara y ningun CTA se funde con
   // (generado, ES+EN) sumo dos y lo dejo en veintisiete; el 2026-09-03 el limpiador de metadatos
   // (generado, ES+EN) sumo dos y lo dejo en veintinueve; ese mismo dia el limpiador de metadatos de
   // PDF (generado, ES+EN) sumo dos y lo dejo en treinta y uno; el 2026-09-07 una 2a pieza de
-  // autoridad/AEO (guia-info-oculta-pdf, generada, solo ES) lo dejo en treinta y dos.
-  it('el barrido ve las treinta y dos paginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(32);
+  // autoridad/AEO (guia-info-oculta-pdf, generada, solo ES) lo dejo en treinta y dos; el 2026-09-08 la
+  // pagina de confianza «como funciona» (guia-como-funciona, generada, solo ES) lo dejo en treinta y tres.
+  it('el barrido ve las treinta y tres paginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(33);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s no declara ningun bloque de tema oscuro', (pagina) => {

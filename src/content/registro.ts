@@ -204,6 +204,18 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/informacion-oculta-pdf' },
   },
+  // Página de CONFIANZA / «cómo funciona» (2026-09-08). No persigue una keyword de tarea: explica
+  // el mecanismo del producto (procesamiento en el navegador, CSP, verificación anti-falso-verde,
+  // AGPL, sin cuentas) para atacar la barrera de conversión —la confianza es el producto en una app
+  // de privacidad—. Generada y solo en español, como las piezas de autoridad; su vocabulario va en
+  // su propio carril para no rozar el dedup de landings-keyword.
+  {
+    id: 'guia-como-funciona',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/como-funciona' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen

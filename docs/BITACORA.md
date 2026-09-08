@@ -4,6 +4,30 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · confianza · Página «Cómo funciona» (por qué el documento no sale del navegador)
+
+**Hecho:** nueva página generada `guia/como-funciona` (solo ES, `origen:'generado'`) que explica el
+MECANISMO del producto en lugar de una tarea: procesamiento en el navegador (WebAssembly, sin subida,
+funciona sin conexión), qué sale y qué no a la red (solo la propia página y la verificación de licencia;
+CSP que lo hace cumplir), sin cuentas ni analítica, la verificación anti‑falso‑verde que relee el archivo
+antes de entregarlo, código abierto AGPL‑3.0, y el modelo gratis + Pro de pago único. 882 palabras, 4 FAQ
+(FAQPage + `<details>` visibles), enlazado interno a 3 guías y doble CTA (comprobador + home).
+
+**Por qué:** el veredicto de Search Console dice que la palanca on‑site es autoridad/confianza, no más
+landings sectoriales (esas dieron ~0 impresiones). La venta está bloqueada por descubrimiento, y cuando
+llega un desconocido a una herramienta sin marca que pide dinero, la barrera es la confianza — que ES el
+producto en una app de privacidad. Esta página deja auditar la promesa («no te fíes, compruébalo»: corta el
+WiFi, mira que no pide cuenta, lee el código). NO es fabricar otro commodity: es CRO + E‑E‑A‑T sobre el
+producto que ya existe. Vocabulario en su propio carril (WebAssembly/CSP/AGPL) para no rozar el dedup.
+
+**Verificación:** tsc 0 · 1779 tests verde (+36 derivados: dedup Jaccard <0,30 confirmado, doble CTA,
+canonical, FAQ estructurada = visible, sitemap) · build 0. Render servido comprobado de extremo a extremo
+(H1, 6 secciones, 4 FAQ, relacionadas, ambos CTA). Cero vocabulario prohibido. Guards de conteo subidos
+(estilo 24→25, cta‑visible 32→33, lista de landings +1).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · producto · Deshacer la última marca en el redactor de imágenes
 
 **Hecho:** el redactor de imágenes solo tenía «Quitar todas las marcas»; si colocabas mal una caja, la
