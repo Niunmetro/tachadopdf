@@ -16,10 +16,11 @@ y replica el patrón de doble CTA (comprobador → redactor) de las guías gener
 **Verificación:** 1743 tests verde (cta-visible incluido: el nuevo CTA usa la clase `.cta` ya validada) ·
 build 0. Desplegado.
 
-**Actualización (mismo día):** mismo CTA al comprobador añadido a la guía `sanciones-aepd-comunidades-propietarios`
-(la otra guía estática que rankea según GSC, 3 impr). Las 4 guías estáticas restantes tienen ~0 impresiones:
-añadirles CTA sería tocar páginas sin tráfico (se hará si empiezan a rankear). Las landings /nominas/ y /actas/
-y todas las guías GENERADAS ya funnelan al comprobador. Verde · desplegado.
+**Actualización (mismo día):** mismo CTA al comprobador añadido a `sanciones-aepd-comunidades-propietarios`
+(la otra guía estática que rankea, 3 impr) y luego a las 4 restantes (tachar-dni, rectangulo-negro, sin-subir,
+enviar-nominas), cada una con un texto adaptado a su tema. Ahora **las 6 guías estáticas + las 7 generadas +
+las landings /nominas/ y /actas/ funnelan todas al comprobador**: el diagnóstico gratis es la puerta de menor
+fricción en todo el contenido, lista para cuando el SEO madure y llegue tráfico. Verde · desplegado.
 
 **Bloqueos:** ninguno.
 
