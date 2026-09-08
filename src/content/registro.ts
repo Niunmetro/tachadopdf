@@ -270,6 +270,16 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/redact-pdf-without-acrobat' },
   },
+  // Página de confianza / «cómo funciona», versión inglesa (2026-09-08). Contraparte de
+  // guia-como-funciona: explica el mecanismo del producto para la barrera de conversión del mercado
+  // EN (que tiene campaña de pago). Generada, solo en inglés.
+  {
+    id: 'guia-en-how-it-works',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/how-it-works' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {

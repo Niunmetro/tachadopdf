@@ -4,6 +4,23 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-08 · confianza · Versión inglesa de «Cómo funciona» (guide/how-it-works)
+
+**Hecho:** contraparte inglesa de `guia/como-funciona`: nueva página generada `guide/how-it-works`
+(solo EN), inglés natural (no traducción literal). Mismo mecanismo explicado (procesamiento en el
+navegador, CSP, verificación anti‑falso‑verde, AGPL, sin cuentas, gratis + Pro pago único), 922
+palabras, 4 FAQ, enlazado interno a 3 guías inglesas y CTA al comprobador `/en/checker/` + home.
+Cierra la paridad ES/EN de la página de confianza y apoya el embudo del mercado inglés (el que tiene
+campaña de pago).
+
+**Verificación:** tsc 0 · 1811 tests verde · build 0. Pasa las guardas EN de `enlazado-interno-en`
+(metaTitulo ≤60 con keyword al frente = `<title>`, CTA a `/en/checker/` con UTM, «Related guides»
+2‑4 relativas, cero href raíz‑absoluto). Sin vocabulario prohibido (EN). Guards de conteo subidos
+(estilo 25→26, cta‑visible 33→34). El `metaTitulo` largo (70) lo cazó la propia guarda; acortado a 54.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · confianza · Página «Cómo funciona» (por qué el documento no sale del navegador)
 
 **Hecho:** nueva página generada `guia/como-funciona` (solo ES, `origen:'generado'`) que explica el

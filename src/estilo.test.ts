@@ -295,9 +295,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
   // 2026-09-03 el limpiador de metadatos (generado, ES+EN) sumo dos y las dejo en veintiuna; ese
   // mismo dia el limpiador de metadatos de PDF (generado, ES+EN) sumo dos y las dejo en veintitres; el
   // 2026-09-07 una 2a pieza de autoridad/AEO (guia-info-oculta-pdf, generada, solo ES) las dejo en veinticuatro;
-  // el 2026-09-08 la pagina de confianza «como funciona» (guia-como-funciona, generada, solo ES) las dejo en veinticinco.
-  it('el barrido ve las veinticinco paginas generadas', () => {
-    expect(generadas.length).toBe(25);
+  // el 2026-09-08 la pagina de confianza «como funciona» (guia-como-funciona, generada, solo ES) las dejo en veinticinco;
+  // ese mismo dia su version inglesa (guia-en-how-it-works, generada, solo EN) las dejo en veintiseis.
+  it('el barrido ve las veintiseis paginas generadas', () => {
+    expect(generadas.length).toBe(26);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(
