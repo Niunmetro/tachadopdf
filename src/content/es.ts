@@ -1154,6 +1154,88 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO alta intención, carril DISTINTO (2026-09-12): salud, para no chocar con el clúster financiero/
+  // profesional (dedup). «Tachar datos de un informe médico» que se comparte con la empresa (baja), un
+  // seguro, un juzgado o la familia. Dato de categoría especial → cuidado extra con los claims: la
+  // herramienta detecta DNI/formatos; el DIAGNÓSTICO lo marca el usuario a mano; nada de garantías.
+  // Funnela al comprobador. Generada, solo ES.
+  {
+    id: 'guia-informe-medico',
+    relacionadas: ['guia-como-funciona', 'guia-comprobar-tachado', 'guia-recuperar-tachado'],
+    titulo: 'Cómo tachar los datos de un informe médico en PDF antes de compartirlo',
+    tituloEnlace: 'Cómo tachar un informe médico en PDF',
+    descripcion:
+      'Un informe médico lleva mucho más de lo que casi nadie necesita ver: el diagnóstico, tu historial, el DNI. Cómo tachar de verdad lo que sobra antes de mandarlo a la empresa, a un seguro o a quien sea, en tu navegador y sin subir el archivo a ningún servidor.',
+    enlaceComprobador: 'Comprueba gratis qué datos lleva tu informe antes de compartirlo',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Los datos de salud son de los más sensibles que existen, y un informe médico los lleva casi todos: el diagnóstico, los antecedentes, las pruebas, además de tu nombre y tu DNI. Pero cuando te piden uno —la empresa para justificar una baja, un seguro, un juzgado, una beca— muchas veces solo necesitan una parte pequeña. No tienes por qué entregar tu historia clínica entera para demostrar una cosa concreta.',
+      },
+      { t: 'h2', texto: 'Qué suele sobrar, según a quién se lo des' },
+      {
+        t: 'p',
+        texto:
+          'Depende de para qué te lo pidan, y conviene pensarlo antes de enviarlo. Para justificar una ausencia en el trabajo, por ejemplo, a la empresa le suele bastar con las fechas y el hecho de que hay una baja, no el diagnóstico concreto. Para un trámite administrativo puede sobrar tu historial anterior. En general, lo que no justifique exactamente lo que te piden es un dato de más que estás regalando.',
+      },
+      {
+        t: 'ul',
+        items: [
+          'El diagnóstico y el detalle clínico, cuando quien lo recibe solo necesita saber que existe un parte o unas fechas.',
+          'Los antecedentes y el historial previo, que rara vez vienen al caso del trámite concreto.',
+          'El DNI, el número de la Seguridad Social y otros identificadores completos.',
+          'Datos de terceros que aparezcan (un familiar, un acompañante).',
+        ],
+      },
+      {
+        t: 'nota',
+        texto:
+          'Esto es orientativo, no asesoramiento: qué puedes reservarte y qué tienes que aportar depende del trámite y de quién te lo pida. Ante la duda, pregunta antes de enviar.',
+      },
+      { t: 'h2', texto: 'Por qué el recuadro negro es aún peor con datos de salud' },
+      {
+        t: 'p',
+        texto:
+          'Tapar el diagnóstico con un rectángulo negro en el visor de PDF no lo borra: el texto sigue dentro del archivo y quien lo recibe lo recupera seleccionándolo. Con un dato de salud eso es especialmente grave, porque es justo la información que más querías reservarte la que queda a un clic de aparecer. Cómo pasa lo explica la guía del recuadro negro que enlazamos al final.',
+      },
+      { t: 'h2', texto: 'Cómo tacharlo de verdad, en tu navegador' },
+      {
+        t: 'p',
+        texto:
+          'Con TachadoPDF el informe se procesa dentro de tu navegador: no se sube a ningún servidor, lo que con un dato de salud importa el doble. La herramienta detecta sola los identificadores con formato (DNI, NIE, número de la Seguridad Social, teléfono, correo); el diagnóstico y el texto clínico los marcas tú arrastrando el ratón sobre esas líneas, porque eso solo lo decides tú. Al aplicar el tachado, el texto se elimina del contenido del archivo (no se tapa) y la herramienta vuelve a leerlo para confirmar que ya no es extraíble.',
+      },
+      { t: 'h2', texto: 'Ojo con los informes escaneados' },
+      {
+        t: 'p',
+        texto:
+          'Muchos informes médicos son un escaneo o una foto del papel. En ese caso no hay texto que analizar: hay que borrar los píxeles de la zona tachada, no ponerle un recuadro encima (que se quita). TachadoPDF lo hace, pero como una comprobación automática no puede leer una imagen, revisa esas páginas con tus propios ojos antes de compartir el informe.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Puedo tachar el diagnóstico y dejar solo las fechas de la baja?',
+        respuesta:
+          'Sí: marcas a mano la parte del diagnóstico y del detalle clínico y dejas lo que necesites aportar, como las fechas. El texto marcado se elimina del archivo, no se tapa, así que la empresa o quien lo reciba no puede recuperarlo. Qué debes aportar en tu caso concreto es una decisión tuya o de quien te asesore.',
+      },
+      {
+        pregunta: '¿Mi informe médico se sube a algún servidor?',
+        respuesta:
+          'No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio; con un dato de salud eso es lo más importante. Puedes comprobarlo cortando la conexión a internet una vez cargada la página: la herramienta sigue tachando y descargando el informe.',
+      },
+      {
+        pregunta: '¿La herramienta detecta sola el diagnóstico?',
+        respuesta:
+          'No, y a propósito: detecta identificadores con formato (DNI, número de la Seguridad Social, etc.), pero el diagnóstico y el texto clínico los marcas tú, porque qué es sensible en tu informe solo lo sabes tú. No interpreta el contenido médico; se limita a borrar lo que le marcas y a confirmar que ya no está.',
+      },
+      {
+        pregunta: '¿Y si el informe es una foto o un escaneo?',
+        respuesta:
+          'Sobre una imagen hay que borrar los píxeles de la zona, no taparlos con un recuadro. TachadoPDF lo hace, pero como no puede leer el contenido de una imagen, esas páginas las revisas tú a ojo antes de enviar el informe para asegurarte de que no queda nada visible.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));

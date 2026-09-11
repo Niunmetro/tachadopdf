@@ -256,6 +256,17 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/proteccion-datos-inmobiliaria-inquilinos' },
   },
+  // SEO alta intención, carril de SALUD (2026-09-12): «tachar datos de un informe médico» (baja para
+  // la empresa, seguro, juzgado). Distinto del clúster financiero/profesional para no rozar el dedup.
+  // Dato de categoría especial → claims con cuidado (la herramienta no interpreta el diagnóstico; lo
+  // marca el usuario). Funnela al comprobador. Generada, solo ES.
+  {
+    id: 'guia-informe-medico',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/tachar-informe-medico-pdf' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen
