@@ -226,6 +226,16 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/comprobar-si-un-pdf-esta-bien-tachado' },
   },
+  // SEO de intención alta (2026-09-12): «tachar datos de un extracto bancario» (alquiler, préstamo,
+  // ayuda, gestor). Alto volumen y carril propio (financiero: movimientos, IBAN, saldo). Funnela al
+  // comprobador; el tool detecta el IBAN solo. Generada, solo español.
+  {
+    id: 'guia-extracto-bancario',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/tachar-extracto-bancario-pdf' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen

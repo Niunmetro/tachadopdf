@@ -923,6 +923,83 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO de intención alta (2026-09-12): consulta de ALTO VOLUMEN «tachar/ocultar datos de un extracto
+  // bancario», que la gente pide para un alquiler, un préstamo, una ayuda o el gestor. Carril propio
+  // (financiero: extracto, movimientos, IBAN, saldo, solvencia) para no rozar el dedup de las otras
+  // guías. El tool encaja perfecto (detecta el IBAN solo). Funnela al comprobador. Generada, solo ES.
+  {
+    id: 'guia-extracto-bancario',
+    relacionadas: ['guia-nominas', 'guia-comprobar-tachado', 'guia-como-funciona'],
+    titulo: 'Cómo tachar los datos de un extracto bancario en PDF antes de enviarlo',
+    tituloEnlace: 'Cómo tachar un extracto bancario en PDF',
+    descripcion:
+      'Para un alquiler, un préstamo, una ayuda o el gestor te piden el extracto bancario, pero no hace falta enseñar todos tus movimientos ni el número de cuenta completo. Cómo tachar de verdad lo que sobra de un extracto en PDF, gratis y sin subir el archivo a ningún sitio.',
+    enlaceComprobador: 'Comprueba gratis qué datos lleva tu extracto, sin subir el archivo',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Cuando alquilas un piso, pides un préstamo, solicitas una ayuda o se lo mandas a tu gestor, te piden el extracto bancario para demostrar unos ingresos o unos movimientos concretos. Pero un extracto lleva mucho más de lo que hace falta enseñar: cada compra, cada cargo y cada ingreso de meses enteros, además del número de cuenta completo. Entregarlo tal cual es dar una foto de tu vida privada a alguien que solo necesitaba ver una cosa.',
+      },
+      { t: 'h2', texto: 'Qué sobra en un extracto bancario' },
+      {
+        t: 'ul',
+        items: [
+          'El IBAN o número de cuenta completo, cuando muchas veces basta con los últimos dígitos.',
+          'Los movimientos que no vienen al caso: si te piden ver tu nómina o el pago del alquiler, el resto de compras no es asunto de nadie.',
+          'Gastos que revelan datos sensibles: una farmacia, una clínica, una casa de apuestas o la cuota de un sindicato o un partido dicen de ti cosas que quien lo recibe no tiene por qué saber.',
+          'Los otros titulares de una cuenta compartida.',
+          'El saldo, si lo que te piden es justificar un ingreso concreto y no tu patrimonio.',
+        ],
+      },
+      {
+        t: 'p',
+        texto:
+          'La regla es sencilla: enseña solo lo que justifica lo que te piden, y deja el resto fuera del archivo.',
+      },
+      { t: 'h2', texto: 'Tapar con un recuadro no lo borra' },
+      {
+        t: 'p',
+        texto:
+          'Dibujar un rectángulo negro encima de un movimiento en el visor de PDF no elimina el dato: el texto sigue dentro del archivo y se recupera. En un extracto eso es especialmente delicado, porque quien lo recibe —una inmobiliaria, un casero particular— puede recomponer tus movimientos sin ningún conocimiento técnico. Por qué pasa lo cuenta la guía del recuadro negro que enlazamos al final; aquí vamos a lo práctico: quitarlo de verdad.',
+      },
+      { t: 'h2', texto: 'Cómo tacharlo de verdad, gratis y sin subir el archivo' },
+      {
+        t: 'p',
+        texto:
+          'Con TachadoPDF el extracto se procesa dentro de tu navegador —no se sube a ningún servidor—. La herramienta detecta sola el IBAN y otros datos con formato; los movimientos, los importes, los nombres y el saldo los marcas tú arrastrando el ratón sobre cada zona. Al aplicar el tachado, el texto de esas zonas se ELIMINA del contenido del archivo (no se tapa), y después la herramienta vuelve a abrir el PDF para confirmar que el dato ya no es extraíble antes de dártelo, con un informe de comprobación.',
+      },
+      { t: 'h2', texto: 'Antes de enviarlo, compruébalo' },
+      {
+        t: 'p',
+        texto:
+          'Un extracto pasa a manos ajenas, así que conviene no fiarse de cómo se ve. Pásalo por el comprobador —solo lee el archivo, sin subirlo— y te dirá qué datos siguen siendo extraíbles. Y si tu extracto es una foto o un PDF escaneado, revisa esas páginas con tus propios ojos: sobre una imagen no hay texto que analizar y hay que borrar los píxeles de la zona, no ponerles un parche encima.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Puedo tachar unos movimientos del extracto y dejar otros?',
+        respuesta:
+          'Sí. Marcas a mano las líneas que sobran y el resto queda intacto. Y el dato marcado se borra del contenido del archivo, no se tapa: quien reciba el extracto no puede seleccionarlo ni recomponerlo.',
+      },
+      {
+        pregunta: 'Me piden el extracto para un alquiler, ¿qué dejo y qué quito?',
+        respuesta:
+          'Suele bastar con demostrar ingresos (la nómina o la pensión que entra) y, si acaso, el pago puntual del alquiler; el resto de movimientos y el saldo puedes tacharlos. Esto es orientativo, no asesoramiento: decide según lo que exactamente te hayan pedido.',
+      },
+      {
+        pregunta: '¿Se sube mi extracto a algún servidor?',
+        respuesta:
+          'No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo cortando la conexión a internet una vez cargada la página: la herramienta sigue tachando y descargando.',
+      },
+      {
+        pregunta: '¿Y si el extracto es una foto o un escaneo?',
+        respuesta:
+          'Sobre una imagen hay que borrar los píxeles de la zona, no taparlos con un recuadro (que se puede quitar). TachadoPDF lo hace, pero como una comprobación automática no puede leer el contenido de una imagen, revisa esas páginas a ojo antes de enviar el extracto.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
