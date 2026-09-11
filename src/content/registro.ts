@@ -349,6 +349,15 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/redact-utility-bill' },
   },
+  // SEO alta intención EN (2026-09-12): «redact a passport / ID» — consulta KYC de mayor volumen/ansiedad
+  // (robo de identidad). Casi siempre IMAGEN → promociona el redactor de imágenes. Canal EN. Solo inglés.
+  {
+    id: 'guia-en-passport',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-passport' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {
