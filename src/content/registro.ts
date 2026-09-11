@@ -236,6 +236,16 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/tachar-extracto-bancario-pdf' },
   },
+  // SEO orientado a CONVERSIÓN (2026-09-12): apunta al COMPRADOR de Pro (gestoría/asesoría, que tacha
+  // PDF de clientes a volumen y agota el límite gratis). Carril propio (encargo del tratamiento,
+  // cesión indebida, volumen, informe como diligencia). Funnela al comprobador. Generada, solo ES.
+  {
+    id: 'guia-gestoria',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/proteccion-datos-gestoria-pdf-clientes' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen

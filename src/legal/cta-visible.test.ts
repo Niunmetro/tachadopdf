@@ -96,9 +96,10 @@ describe('G17: las paginas del sitio declaran UNA cara y ningun CTA se funde con
   // pagina de confianza «como funciona» (guia-como-funciona, generada, solo ES) lo dejo en treinta y tres;
   // ese mismo dia su version inglesa (guia-en-how-it-works, generada, solo EN) lo dejo en treinta y cuatro;
   // y la guia de verificacion (guia-comprobar-tachado, generada, solo ES) lo dejo en treinta y cinco; el
-  // 2026-09-12 la guia de extracto bancario (guia-extracto-bancario, generada, solo ES) lo dejo en treinta y seis.
-  it('el barrido ve las treinta y seis paginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(36);
+  // 2026-09-12 la guia de extracto bancario (guia-extracto-bancario, generada, solo ES) lo dejo en treinta y seis;
+  // ese mismo dia la guia de gestoria (guia-gestoria, generada, solo ES) lo dejo en treinta y siete.
+  it('el barrido ve las treinta y siete paginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(37);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s no declara ningun bloque de tema oscuro', (pagina) => {

@@ -4,6 +4,22 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO conversión · Guía para gestorías (apunta al COMPRADOR de Pro)
+
+**Hecho:** nueva guía generada `guia/proteccion-datos-gestoria-pdf-clientes` (solo ES). A diferencia de
+las guías de consulta individual (extracto, currículum), esta apunta al **comprador de Pro**: la
+gestoría/asesoría que mueve muchos PDF de clientes al día (nóminas, contratos, modelos, DNIs), agota el
+límite gratis y responde de una cesión indebida. Carril propio (encargo del tratamiento, cesión, volumen,
+el informe como constancia de diligencia). El pitch de Pro (pago único, sin límite) sale natural del
+volumen, sin prometer nada. 4 FAQ, doble CTA, enlazado a nóminas / fincas / sanciones.
+
+**Verificación:** tsc 0 · 1938 tests verde · build 0. Dedup **máx 0,086** vs extracto (0,03 vs las otras
+profesionales; umbral 0,30). El guard de vocabulario cazó «certificado» (prohibido incluso en la negación
+«no es un certificado»); reescrito a «dictamen legal». Guards de conteo (estilo 28→29, cta-visible 36→37).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO + hallazgo Inmomargen · Guía de extracto bancario; el backlink de Inmomargen NO sirve (noindex)
 
 **Hallazgo importante (corrige un error repetido):** llevaba sesiones diciendo que «la palanca de
