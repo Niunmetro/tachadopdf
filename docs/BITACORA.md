@@ -4,6 +4,21 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO inglés · Guía «redact a bank statement» (canal distinto, sin techo de dedup)
+
+**Hecho:** primera guía nueva EN en semanas, `guide/redact-bank-statement` (solo inglés). Consulta muy
+buscada en UK/US (extracto que se pide para alquileres, hipotecas, affordability checks). Se eligió el
+inglés a propósito: el molde de guía‑tarea ES está saturando el dedup (informe‑médico llegó a 0,148), y
+el barrido Jaccard es SOLO español → el contenido EN no tiene ese techo y ataca un mercado poco tocado.
+Inglés natural, 4 FAQ, CTA al comprobador `/en/checker/`, enlazado a 3 guías EN.
+
+**Verificación:** tsc 0 · 2042 tests verde · build 0 · cero vocabulario prohibido EN. Pasa
+`enlazado-interno-en` (metaTitulo 47≤60, CTA `/en/checker/`, related 2‑4 relativas, sin href
+raíz‑absoluto). Guards de conteo (estilo 31→32, cta‑visible 39→40, lista EN 8→9).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO salud · Guía de informe médico (carril distinto) + techo de dedup cerca
 
 **Hecho:** nueva guía generada `guia/tachar-informe-medico-pdf` (solo ES). Carril de SALUD, distinto del

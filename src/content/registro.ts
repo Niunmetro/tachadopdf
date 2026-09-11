@@ -331,6 +331,15 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/how-it-works' },
   },
+  // SEO alta intención EN (2026-09-12): «redact a bank statement» (UK/US: alquileres, hipotecas). Canal
+  // distinto del ES (sin techo de dedup, que es solo español). Funnela al comprobador. Solo inglés.
+  {
+    id: 'guia-en-bank-statement',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-bank-statement' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {
