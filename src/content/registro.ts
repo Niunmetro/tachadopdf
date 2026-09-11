@@ -246,6 +246,16 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { es: 'guia/proteccion-datos-gestoria-pdf-clientes' },
   },
+  // SEO conversión (2026-09-12): otro comprador de Pro, la inmobiliaria, que acumula expedientes de
+  // solvencia (DNI+nómina+extracto) de cada candidato a un alquiler. Carril propio (expediente del
+  // inquilino, sobre-compartir al propietario, datos de descartados). Funnela al comprobador. Solo ES.
+  {
+    id: 'guia-inmobiliaria',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/proteccion-datos-inmobiliaria-inquilinos' },
+  },
 
   // Guías inglesas. NO son la traducción de las españolas y por eso NO forman pareja hreflang
   // con ellas: dos de las españolas (sanciones de la AEPD, administradores de fincas) no tienen
