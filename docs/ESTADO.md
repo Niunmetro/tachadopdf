@@ -1,7 +1,30 @@
-# ESTADO — TachadoPDF (actualizado 2026-09-03)
+# ESTADO — TachadoPDF (actualizado 2026-09-12)
 
 ## Producto
 - VIVO en https://www.tachadopdf.com (GitHub Pages + CNAME; verificar dominio real tras cada deploy).
+- **✅ CONFIANZA + EMBUDO + FIX ANTI-FALSO-VERDE (2026-09-07/08, en master, desplegado y verificado en
+  vivo)**. Tanda tras el veredicto GSC (la palanca on-site es autoridad/confianza, no más landings
+  sectoriales, que dieron ~0 impresiones):
+  - **Embudo al comprobador completo**: las 6 guías estáticas + las 7 generadas + las landings /nominas/ y
+    /actas/ funnelan todas al comprobador (diagnóstico gratis, menor fricción), y las guías se enlazan entre
+    sí (`relacionadas`).
+  - **Página «Cómo funciona»** ES (`/guia/como-funciona`) y EN (`/en/guide/how-it-works`): explican el
+    mecanismo (procesamiento en navegador, CSP, verificación anti-falso-verde, AGPL, sin cuentas) para atacar
+    la barrera de confianza. Tipo autoridad/AEO.
+  - **Guía de verificación** `/guia/comprobar-si-un-pdf-esta-bien-tachado` (ES): consulta de intención alta,
+    funnel al comprobador; llena el hueco ES↔EN (EN ya tenía check-pdf-redaction). Dedup medido 0,05.
+  - **Deshacer la última marca** en el redactor de imágenes (ES+EN).
+  - **Precisión/robustez**: el ámbito del comprobador contaba mal (siete→**seis** formatos ES + email); la
+    verificación anti-falso-verde ahora mira los metadatos **sin saltos de línea** (un dato partido en un XMP
+    superviviente ya no escapa — defensa en profundidad, monótonamente más estricto, +2 tests); las 8 páginas
+    estáticas navegan con **rutas relativas** (base de emergencia) + guard nuevo.
+  - Suite **1866/1866**, dominio en pie tras cada deploy. Ver bitácora 2026-09-07/08.
+- **⏳ RECORDAR LA CLAVE PRO (2026-09-12, rama `feat/recordar-licencia-pro`, CÓDIGO listo, SIN mergear)**:
+  persistencia de la clave de licencia (`localStorage`) + auto-verificación al arrancar → un cliente que pagó
+  no la reteclea en cada visita. `verifyLicense` intacto (fail-closed); módulo `src/license/persistencia.ts`.
+  Suite **1870/1870**, verificado E2E en el build (auto-restaura al recargar; guarda al verificar). BLOQUEO:
+  el texto de privacidad INGLÉS debe declarar el nuevo dato almacenado → requiere `APROBADO-ANGEL` (el ES no
+  cambia: solo habla de transmisión). Ver bitácora 2026-09-12.
 - **✅ HERRAMIENTA GRATUITA nº3: LIMPIADOR DE METADATOS** (2026-09-03, rama `feat/metadata-cleaner` →
   master, desplegada y verificada). `/metadatos/` y `/en/remove-metadata/`: REVELA qué lleva escondido
   una foto (ubicación GPS en rojo, cámara, fecha, software, autor) leyendo el EXIF, y descarga una copia
