@@ -4,6 +4,25 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO salud · Guía de informe médico (carril distinto) + techo de dedup cerca
+
+**Hecho:** nueva guía generada `guia/tachar-informe-medico-pdf` (solo ES). Carril de SALUD, distinto del
+clúster financiero/profesional, para consulta de alta intención (compartir una baja con la empresa, un
+seguro, un juzgado). Dato de categoría especial → claims con cuidado: la herramienta NO interpreta el
+diagnóstico (lo marca el usuario a mano); solo detecta identificadores con formato. Nota «orientativo,
+no asesoramiento». 4 FAQ, doble CTA, enlazado a como-funciona / comprobar-tachado / recuperar-tachado.
+
+**Verificación:** tsc 0 · 2010 tests verde · build 0 · cero vocabulario prohibido (ni «garantiza»).
+Dedup **máx 0,148** vs extracto (umbral 0,30). Guards (estilo 30→31, cta-visible 38→39, lista +1).
+
+**⚠ Señal:** el dedup SUBE con cada guía nueva (extracto 0,06 → gestoría 0,09 → inmobiliaria 0,13 →
+informe-médico 0,15) porque comparten la estructura de la casa (intro → qué sobra → recuadro negro →
+cómo → escaneado → FAQ → funnel). El molde se satura: más guías de este tipo se acercan al 0,30. Próximo
+contenido: cambiar de MOLDE (pieza de autoridad/AEO u otro formato), no otra guía-tarea.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO conversión · Guía para inmobiliarias (expedientes de solvencia de inquilinos)
 
 **Hecho:** nueva guía generada `guia/proteccion-datos-inmobiliaria-inquilinos` (solo ES). Otro segmento
