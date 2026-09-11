@@ -702,4 +702,80 @@ export const GUIAS_EN: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO alta intención EN (2026-09-12): «redact a passport / ID» — la consulta KYC de mayor volumen y
+  // ansiedad (robo de identidad: alquileres, empleo, exchanges). Casi siempre es una IMAGEN, así que
+  // promociona el REDACTOR DE IMÁGENES (/en/redact-image/, poco tráfico). Canal EN sin techo de dedup.
+  {
+    id: 'guia-en-passport',
+    titulo: 'How to redact a passport or ID before you send a copy',
+    tituloEnlace: 'How to redact a passport or ID',
+    descripcion:
+      'When you are asked to send a copy of your passport or ID for verification, a full copy is a goldmine for identity theft. How to hide the document number and the machine-readable lines while still proving who you are — on the image or the PDF, in your browser, without uploading it.',
+    metaTitulo: 'How to redact a passport or ID copy · TachadoPDF',
+    enlaceComprobador: 'Check a PDF for free — see what personal data is still extractable',
+    relacionadas: ['guia-en-caja-negra', 'guia-en-sin-subir', 'guia-en-comprobar'],
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'A rental, a new job, a crypto exchange or an online sign-up asks you to send a copy of your passport or ID card. A full, clean copy is exactly what an identity thief wants: the document number, your date of birth, and the two dense lines of characters at the bottom — the machine-readable zone — which encode most of the document in one place. You can usually prove what the check needs without handing all of that over.',
+      },
+      { t: 'h2', texto: 'What to hide, and what to leave' },
+      {
+        t: 'p',
+        texto:
+          'It depends on why they need it, so decide before you send. Many checks only need to see your name, your photo and the expiry date; the document number and the machine-readable zone can go. A common, sensible extra is to write across the copy what it is for and the date (for example, "copy for [X] only") so it cannot be reused elsewhere.',
+      },
+      {
+        t: 'ul',
+        items: [
+          'The passport or document number.',
+          'The machine-readable zone — the two lines of letters, numbers and chevrons at the bottom, which encode the number, your name and your date of birth.',
+          'Your signature.',
+          'Your date of birth and place of birth, if the check does not need them.',
+        ],
+      },
+      { t: 'h2', texto: 'It is usually an image, so a black box is doubly useless' },
+      {
+        t: 'p',
+        texto:
+          'A passport copy is almost always a photo or a scan — an image. A black rectangle drawn over it in an image editor can sometimes be lifted off as a separate layer, and if it is inside a PDF the text beneath a box copies straight out. On an image the only safe way is to delete the pixels of that area, so there is nothing underneath to recover.',
+      },
+      { t: 'h2', texto: 'How to remove it for real, in your browser' },
+      {
+        t: 'p',
+        texto:
+          'For a photo of your passport, use the image tool: you drag a box over the number and the machine-readable zone, and it replaces those pixels with solid black on the real image and re-exports it — which also drops the photo’s hidden metadata, including where it was taken. For a passport inside a PDF, the redaction removes the marked area the same way. Everything happens inside your browser; the copy is never uploaded to a server.',
+      },
+      { t: 'h2', texto: 'Before you send it' },
+      {
+        t: 'p',
+        texto:
+          'Because a passport copy is an image, an automatic check cannot read it — so look at the result yourself, zoomed in. Make sure the number and the machine-readable lines are solid black with nothing showing through, and that they cannot be made out even when enlarged. If anything is still legible, redo that area before you send the copy.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: 'Do I need to hide the machine-readable zone, not just the number?',
+        respuesta:
+          'Yes. The two lines at the bottom encode the document number, your name and your date of birth, so blacking out the printed number alone still leaves all of that readable. Cover the machine-readable zone as well.',
+      },
+      {
+        pregunta: 'Is a black box in Preview or Paint safe?',
+        respuesta:
+          'Not always. On an image editor the box can be a separate layer that lifts off, or the original may survive underneath. The reliable way is to clear the pixels of that area and re-export the image, and then check the result by eye.',
+      },
+      {
+        pregunta: 'Is my passport copy uploaded anywhere?',
+        respuesta:
+          'No. Everything happens inside your browser and the file is not transmitted anywhere. You can prove it by disconnecting from the internet once the page has loaded: the tool keeps working and lets you download the redacted copy.',
+      },
+      {
+        pregunta: 'Can I add "for [purpose] only" across the copy?',
+        respuesta:
+          'Yes, and it is a good idea: a note across the copy saying what it is for and the date makes it harder to reuse elsewhere. It does not replace removing the number and the machine-readable zone, though — do both.',
+      },
+    ],
+  },
 ];

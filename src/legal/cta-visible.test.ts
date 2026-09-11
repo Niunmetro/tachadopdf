@@ -101,9 +101,10 @@ describe('G17: las paginas del sitio declaran UNA cara y ningun CTA se funde con
   // guia de inmobiliaria (guia-inmobiliaria, generada, solo ES) lo dejo en treinta y ocho; y la guia de
   // informe medico (guia-informe-medico, generada, solo ES) lo dejo en treinta y nueve; y la guia inglesa
   // de extracto bancario (guia-en-bank-statement, generada, solo EN) lo dejo en cuarenta; y la guia
-  // inglesa de factura de suministros (guia-en-utility-bill, generada, solo EN) lo dejo en cuarenta y uno.
-  it('el barrido ve las cuarenta y una paginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(41);
+  // inglesa de factura de suministros (guia-en-utility-bill, generada, solo EN) lo dejo en cuarenta y uno;
+  // y la guia inglesa de pasaporte (guia-en-passport, generada, solo EN) lo dejo en cuarenta y dos.
+  it('el barrido ve las cuarenta y dos paginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(42);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s no declara ningun bloque de tema oscuro', (pagina) => {

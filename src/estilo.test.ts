@@ -303,9 +303,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
   // guia de inmobiliaria (guia-inmobiliaria, generada, solo ES) las dejo en treinta; y la guia de
   // informe medico (guia-informe-medico, generada, solo ES) las dejo en treinta y una; y la guia inglesa
   // de extracto bancario (guia-en-bank-statement, generada, solo EN) las dejo en treinta y dos; y la guia
-  // inglesa de factura de suministros (guia-en-utility-bill, generada, solo EN) las dejo en treinta y tres.
-  it('el barrido ve las treinta y tres paginas generadas', () => {
-    expect(generadas.length).toBe(33);
+  // inglesa de factura de suministros (guia-en-utility-bill, generada, solo EN) las dejo en treinta y tres;
+  // y la guia inglesa de pasaporte (guia-en-passport, generada, solo EN) las dejo en treinta y cuatro.
+  it('el barrido ve las treinta y cuatro paginas generadas', () => {
+    expect(generadas.length).toBe(34);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(

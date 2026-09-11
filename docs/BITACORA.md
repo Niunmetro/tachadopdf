@@ -4,6 +4,21 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO inglés · Guía «redact a passport / ID» (cierra el trío KYC EN)
+
+**Hecho:** tercera guía EN del día, `guide/redact-passport` (solo inglés). La consulta KYC de mayor
+volumen y ansiedad (robo de identidad: alquileres, empleo, exchanges). Ángulo propio: la zona de lectura
+mecánica (MRZ) que codifica el número aunque tapes los dígitos, y que un pasaporte casi siempre es una
+IMAGEN → promociona el **redactor de imágenes** (que apenas recibe tráfico) con instrucciones de píxeles
+y revisión visual. Cierra el trío KYC inglés (extracto + factura + pasaporte). 4 FAQ, CTA al comprobador.
+
+**Verificación:** tsc 0 · 2106 tests verde · build 0 · cero vocabulario prohibido EN. Pasa
+`enlazado-interno-en` (metaTitulo 48≤60, CTA `/en/checker/`, related relativas). Guards de conteo
+(estilo 33→34, cta‑visible 41→42, lista EN 10→11).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO inglés · Guía «redact a utility bill» (proof of address / KYC)
 
 **Hecho:** segunda guía EN del día, `guide/redact-utility-bill` (solo inglés). Consulta enorme en UK/US
