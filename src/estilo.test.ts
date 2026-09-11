@@ -298,9 +298,10 @@ describe('todas las paginas generadas reciben el sistema, con SU ruta', () => {
   // el 2026-09-08 la pagina de confianza «como funciona» (guia-como-funciona, generada, solo ES) las dejo en veinticinco;
   // ese mismo dia su version inglesa (guia-en-how-it-works, generada, solo EN) las dejo en veintiseis;
   // y la guia de verificacion (guia-comprobar-tachado, generada, solo ES) las dejo en veintisiete; el
-  // 2026-09-12 la guia de extracto bancario (guia-extracto-bancario, generada, solo ES) las dejo en veintiocho.
-  it('el barrido ve las veintiocho paginas generadas', () => {
-    expect(generadas.length).toBe(28);
+  // 2026-09-12 la guia de extracto bancario (guia-extracto-bancario, generada, solo ES) las dejo en veintiocho;
+  // ese mismo dia la guia de gestoria (guia-gestoria, generada, solo ES) las dejo en veintinueve.
+  it('el barrido ve las veintinueve paginas generadas', () => {
+    expect(generadas.length).toBe(29);
   });
 
   it.each(generadas.map((g) => [`${g.ruta || '/'} (${g.locale})`, g] as const))(

@@ -1000,6 +1000,83 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO orientado a CONVERSIÓN (2026-09-12): apunta al COMPRADOR de Pro —la gestoría/asesoría— que
+  // maneja muchos PDF de clientes al día y agota el límite gratis. Carril propio (el ENCARGO del
+  // tratamiento, la cesión indebida, el volumen, el informe como diligencia). El pitch de Pro (pago
+  // único, sin límite) sale natural del volumen, sin prometer nada. Funnel al comprobador. Solo ES.
+  {
+    id: 'guia-gestoria',
+    relacionadas: ['guia-nominas', 'guia-fincas', 'guia-sanciones'],
+    titulo: 'Protección de datos en una gestoría: cómo tachar los PDF de tus clientes',
+    tituloEnlace: 'Protección de datos en una gestoría',
+    descripcion:
+      'Una gestoría mueve al día decenas de PDF con datos de clientes —nóminas, contratos, modelos, DNIs— que reenvía y archiva. Cómo tachar de verdad lo que no toca antes de compartirlos, en tu navegador y sin subir nada, para no responder de una cesión indebida.',
+    enlaceComprobador: 'Comprueba gratis qué datos lleva un PDF de cliente antes de reenviarlo',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Una gestoría o una asesoría maneja datos de otras personas todo el día: nóminas de los empleados de sus clientes, contratos, modelos fiscales, escrituras, copias de DNI. Cada vez que reenvías uno de esos PDF —a la Administración, a otro cliente, a un tercero— eres tú quien responde de los datos que van dentro. Y muchas veces van más de los que hacían falta.',
+      },
+      { t: 'h2', texto: 'Tu riesgo específico: la cesión indebida' },
+      {
+        t: 'p',
+        texto:
+          'En un despacho eres encargado del tratamiento de los datos de tus clientes, y a menudo de los datos de terceros que aparecen en sus documentos (empleados, proveedores, contrapartes). Dejar a la vista el DNI, el número de la Seguridad Social o el IBAN de alguien que no tenía por qué salir en ese envío es una cesión de datos que no deberías hacer, y la responsabilidad es del despacho, no del cliente. No es un descuido menor: es justo el tipo de fallo que acaba en una reclamación.',
+      },
+      { t: 'h2', texto: 'Los PDF que pasan por tus manos con datos de más' },
+      {
+        t: 'ul',
+        items: [
+          'Nóminas y finiquitos con el DNI y el número de la Seguridad Social del trabajador.',
+          'Contratos y modelos fiscales con datos de terceros que no vienen al caso del destinatario.',
+          'Copias de DNI para un trámite, donde casi siempre sobra la mitad del documento.',
+          'Escrituras y extractos con IBAN, importes y otros intervinientes.',
+        ],
+      },
+      { t: 'h2', texto: 'Por qué el recuadro negro te expone a ti' },
+      {
+        t: 'p',
+        texto:
+          'Tapar el dato con un rectángulo negro en el visor de PDF no lo borra: el texto sigue dentro del archivo y quien lo recibe lo recupera seleccionándolo. En un despacho eso es doblemente peligroso, porque el fallo lleva tu firma profesional. Por qué pasa lo cuenta la guía del recuadro negro que enlazamos al final; lo que importa aquí es quitarlo de verdad, y hacerlo rápido cuando son muchos documentos.',
+      },
+      { t: 'h2', texto: 'Cómo tacharlo a volumen y sin subir nada' },
+      {
+        t: 'p',
+        texto:
+          'Con TachadoPDF el documento se procesa dentro de tu navegador: no se sube a ningún servidor. Para un despacho eso importa el doble, porque significa que NO metes un intermediario más en la cadena de datos de tus clientes. La herramienta detecta sola el DNI, el NIE, el IBAN, el número de la Seguridad Social, el teléfono y el correo; lo demás lo marcas tú. Al aplicar el tachado, el dato se elimina del contenido del archivo (no se tapa) y la herramienta vuelve a leer el PDF para confirmar que ya no es extraíble.',
+      },
+      { t: 'h2', texto: 'El informe de comprobación: constancia de lo que hiciste' },
+      {
+        t: 'p',
+        texto:
+          'Cada documento tachado sale con un informe que documenta qué formatos se buscaron y qué se quitó. No sustituye a un dictamen legal, pero sí deja constancia técnica de que revisaste el archivo antes de entregarlo — útil en un despacho que necesita poder enseñar diligencia. La versión gratuita cubre unos pocos documentos al mes; si tachas a volumen, la versión Pro es un pago único (no una suscripción) que quita ese límite y el distintivo de la versión gratuita del informe.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Reenviar un PDF con el DNI de un tercero es una cesión de datos?',
+        respuesta:
+          'Si esa persona no tenía por qué aparecer en ese envío, sí: estás comunicando sus datos a alguien sin base para ello, y como despacho respondes tú. Por eso conviene tachar de verdad lo que no viene al caso antes de reenviar, no solo taparlo.',
+      },
+      {
+        pregunta: '¿El documento de mi cliente se sube a algún servidor?',
+        respuesta:
+          'No. Todo ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio; para un despacho eso significa que no añades otro encargado del tratamiento a la cadena. Puedes comprobarlo cortando la conexión una vez cargada la página: la herramienta sigue funcionando.',
+      },
+      {
+        pregunta: '¿El informe sirve como prueba legal?',
+        respuesta:
+          'Es una comprobación técnica, no un dictamen legal. Documenta qué se buscó y qué se quitó, y que el archivo se releyó para confirmar que el dato ya no es extraíble; sirve para dejar constancia interna de tu diligencia, no para sustituir el criterio de un profesional.',
+      },
+      {
+        pregunta: '¿Cuántos documentos puedo tachar gratis?',
+        respuesta:
+          'La versión gratuita cubre unos pocos documentos al mes. Un despacho que tacha a diario agota ese límite enseguida; para ese uso está la versión Pro, un pago único (no una suscripción) que quita el límite. Ni siquiera para verificar la licencia sale tu documento del navegador.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
