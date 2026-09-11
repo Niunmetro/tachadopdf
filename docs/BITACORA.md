@@ -4,6 +4,29 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO + hallazgo Inmomargen · Guía de extracto bancario; el backlink de Inmomargen NO sirve (noindex)
+
+**Hallazgo importante (corrige un error repetido):** llevaba sesiones diciendo que «la palanca de
+mayor impacto es un backlink desde Inmomargen». FALSO: `www.inmomargen.com` está **deliberadamente en
+`noindex`** durante la beta (cabecera `X-Robots-Tag: noindex` en vercel.json; el propio robots.txt lo
+documenta). Un backlink desde un sitio noindex pasa **~0 autoridad SEO** — Google no lo indexa. Es
+decir, «ponlo en Inmomargen» nunca habría movido la aguja. Verificado leyendo el repo de Inmomargen y
+la página servida; NO se tocó nada de ese producto. Lección: verificar que la fuente del backlink es
+indexable ANTES de tratarla como palanca. → El canal autónomo real sigue siendo el SEO propio.
+
+**Hecho:** nueva guía generada `guia/tachar-extracto-bancario-pdf` (solo ES). Ataca la consulta de ALTO
+volumen «tachar/ocultar datos de un extracto bancario», que la gente pide para un alquiler, un préstamo,
+una ayuda o el gestor. Carril propio (financiero: movimientos, IBAN, saldo, solvencia), funnel al
+comprobador, el tool detecta el IBAN solo. 730 palabras, 4 FAQ, doble CTA, enlazado a nóminas /
+comprobar-tachado / como-funciona.
+
+**Verificación:** tsc 0 · 1902 tests verde (+36 derivados) · build 0. Dedup medido **máx 0,0639** vs
+comprobar-tachado (umbral 0,30, ~4,7× margen). Cero vocabulario prohibido. Guards (estilo 27→28,
+cta-visible 35→36, lista landings +1).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-08 · anti-falso-verde · La verificación de metadatos ahora mira sin saltos de línea
 
 **Hecho:** auditoría READ-ONLY de `verifyRedaction` (el núcleo de «el peor fallo es un falso verde»).

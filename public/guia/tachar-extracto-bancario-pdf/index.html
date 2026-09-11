@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+    <link rel="icon" href="../../favicon.ico" sizes="32x32" />
+    <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
+    <link rel="preload" href="../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+    @font-face {
+    font-family: "IBM Plex Sans";
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-sans/ibm-plex-sans-latin-wght-normal.woff2") format("woff2");
+    }
+    @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    font-display: optional;
+    src: url("../../fuentes/ibm-plex-mono/ibm-plex-mono-latin-400-normal.woff2") format("woff2");
+    }
+    :root {
+    --fuente: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --fuente-dato: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, monospace;
+    --t-100: 0.75rem;
+    --t-200: 0.875rem;
+    --t-300: 1rem;
+    --t-400: 1.125rem;
+    --t-500: 1.3125rem;
+    --t-600: 1.75rem;
+    --t-700: clamp(1.75rem, 0.95rem + 3.6vw, 3rem);
+    --lh-titular: 1.15;
+    --lh-corto: 1.35;
+    --lh-texto: 1.6;
+    --peso-normal: 400;
+    --peso-fuerte: 600;
+    --peso-veredicto: 700;
+    --ancho: 60rem;
+    --ancho-herramienta: 76rem;
+    --medida: 34em;
+    --e-1: 0.25rem;
+    --e-2: 0.5rem;
+    --e-3: 0.75rem;
+    --e-4: 1rem;
+    --e-6: 1.5rem;
+    --e-8: 2rem;
+    --e-12: 3rem;
+    --e-16: 4rem;
+    --e-24: 6rem;
+    --e-seccion: clamp(3rem, 7vw, 4rem);
+    --radio: 6px;
+    --radio-marca: 2px;
+    color-scheme: light;
+    --papel: #f6f5f3;
+    --superficie: #ffffff;
+    --tinta: #1b1a17;
+    --tinta-suave: #43403a;
+    --gris: #6a665e;
+    --linea: #dedad1;
+    --linea-fuerte: #8a857a;
+    --acento: #164a7e;
+    --acento-fuerte: #0e3159;
+    --acento-tenue: #dde7f3;
+    --tinta-inversa: #ffffff;
+    --rojo: #9b1c1c;
+    --rojo-fondo: #f9e6e4;
+    --ambar: #7c4a03;
+    --ambar-fondo: #fbefd2;
+    --verde: #0f6b41;
+    --verde-fondo: #dfeee4;
+    --sombra-hoja: 0 1px 0 var(--linea), 0 26px 50px -34px rgba(27, 26, 23, 0.5);
+    --sombra-mesa: 0 2px 0 rgba(27, 26, 23, 0.06), 0 40px 80px -52px rgba(27, 26, 23, 0.62);
+    }
+    *,
+    *::before,
+    *::after {
+    box-sizing: border-box;
+    }
+    body {
+    margin: 0;
+    font-family: var(--fuente);
+    font-size: var(--t-300);
+    line-height: var(--lh-texto);
+    color: var(--tinta);
+    background: var(--papel);
+    }
+    a {
+    color: var(--acento);
+    }
+    a:hover {
+    color: var(--acento-fuerte);
+    }
+    :focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 2px;
+    }
+    button,
+    input,
+    select,
+    textarea {
+    font: inherit;
+    }
+    input[type="file"] {
+    max-width: 100%;
+    cursor: pointer;
+    color: var(--tinta-suave);
+    }
+    input[type="file"]::file-selector-button {
+    font: inherit;
+    font-size: var(--t-300);
+    font-weight: var(--peso-fuerte);
+    cursor: pointer;
+    margin-right: var(--e-3);
+    min-height: 2.75rem;
+    padding: var(--e-2) var(--e-4);
+    border-radius: var(--radio);
+    border: 1px solid var(--acento);
+    background: var(--acento);
+    color: var(--tinta-inversa);
+    }
+    input[type="file"]::file-selector-button:hover {
+    background: var(--acento-fuerte);
+    border-color: var(--acento-fuerte);
+    }
+    .cabecera {
+    border-bottom: 1px solid var(--linea);
+    background: var(--superficie);
+    }
+    .cabecera__interior {
+    max-width: var(--ancho);
+    margin: 0 auto;
+    padding: 0 var(--e-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--e-4);
+    }
+    .cabecera__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--e-2);
+    font-size: var(--t-200);
+    font-weight: var(--peso-fuerte);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tinta);
+    margin: 0;
+    }
+    .cabecera__simbolo {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    }
+    .idiomas {
+    display: flex;
+    gap: var(--e-3);
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    font-size: var(--t-200);
+    }
+    .idiomas > * {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    }
+    .idiomas__actual {
+    font-weight: var(--peso-fuerte);
+    color: var(--tinta);
+    }
+    .idiomas__enlace {
+    color: var(--acento);
+    text-decoration: none;
+    }
+    .idiomas__enlace:hover {
+    text-decoration: underline;
+    }
+    .dato {
+    font-family: var(--fuente-dato);
+    }
+    </style>
+    <title>Cómo tachar los datos de un extracto bancario en PDF antes de enviarlo · TachadoPDF</title>
+    <meta name="description" content="Para un alquiler, un préstamo, una ayuda o el gestor te piden el extracto bancario, pero no hace falta enseñar todos tus movimientos ni el número de cuenta completo. Cómo tachar de verdad lo que sobra de un extracto en PDF, gratis y sin subir el archivo a ningún sitio." />
+    <link rel="canonical" href="https://www.tachadopdf.com/guia/tachar-extracto-bancario-pdf/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TachadoPDF" />
+    <meta property="og:title" content="Cómo tachar los datos de un extracto bancario en PDF antes de enviarlo" />
+    <meta property="og:description" content="Para un alquiler, un préstamo, una ayuda o el gestor te piden el extracto bancario, pero no hace falta enseñar todos tus movimientos ni el número de cuenta completo. Cómo tachar de verdad lo que sobra de un extracto en PDF, gratis y sin subir el archivo a ningún sitio." />
+    <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
+    <meta property="og:url" content="https://www.tachadopdf.com/guia/tachar-extracto-bancario-pdf/" />
+    <meta property="og:locale" content="es_ES" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Cómo tachar los datos de un extracto bancario en PDF antes de enviarlo",
+      "description": "Para un alquiler, un préstamo, una ayuda o el gestor te piden el extracto bancario, pero no hace falta enseñar todos tus movimientos ni el número de cuenta completo. Cómo tachar de verdad lo que sobra de un extracto en PDF, gratis y sin subir el archivo a ningún sitio.",
+      "inLanguage": "es",
+      "mainEntityOfPage": "https://www.tachadopdf.com/guia/tachar-extracto-bancario-pdf/",
+      "author": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "TachadoPDF"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Puedo tachar unos movimientos del extracto y dejar otros?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. Marcas a mano las líneas que sobran y el resto queda intacto. Y el dato marcado se borra del contenido del archivo, no se tapa: quien reciba el extracto no puede seleccionarlo ni recomponerlo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Me piden el extracto para un alquiler, ¿qué dejo y qué quito?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Suele bastar con demostrar ingresos (la nómina o la pensión que entra) y, si acaso, el pago puntual del alquiler; el resto de movimientos y el saldo puedes tacharlos. Esto es orientativo, no asesoramiento: decide según lo que exactamente te hayan pedido."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Se sube mi extracto a algún servidor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo cortando la conexión a internet una vez cargada la página: la herramienta sigue tachando y descargando."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Y si el extracto es una foto o un escaneo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sobre una imagen hay que borrar los píxeles de la zona, no taparlos con un recuadro (que se puede quitar). TachadoPDF lo hace, pero como una comprobación automática no puede leer el contenido de una imagen, revisa esas páginas a ojo antes de enviar el extracto."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+      main, article, footer {
+        max-width: var(--ancho); margin: 0 auto; padding-left: var(--e-4); padding-right: var(--e-4);
+      }
+      main, article { padding-top: var(--e-12); padding-bottom: var(--e-16); }
+      /* El texto se capa a la MEDIDA, pero el bloque se alinea con la marca de la mancheta: una
+         columna centrada dentro de otra columna deja el articulo flotando a la deriva del titulo. */
+      h1, h2, p, li, .nota, .lede, .cp-cta, .cta { max-width: var(--medida); }
+      ul, ol { max-width: var(--medida); }
+      p, li { font-size: var(--t-400); }
+      h1 { font-size: var(--t-600); line-height: var(--lh-titular); font-weight: var(--peso-fuerte); margin: 0 0 var(--e-4); }
+      h2 { font-size: var(--t-500); line-height: var(--lh-corto); font-weight: var(--peso-fuerte); margin: var(--e-12) 0 var(--e-2); }
+      p { margin: 0 0 var(--e-4); }
+      ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
+      li { margin: 0 0 var(--e-2); }
+      .lede { color: var(--tinta-suave); }
+      /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
+         superado, y no se gasta en un aparte de una guia. */
+      .nota {
+        background: var(--ambar-fondo); border-left: 3px solid var(--ambar);
+        padding: var(--e-3) var(--e-4); border-radius: var(--radio-marca); color: var(--tinta);
+        font-size: var(--t-300); margin: 0 0 var(--e-4);
+      }
+      .cp-cta, .cta {
+        display: block; margin: var(--e-12) 0 0; padding: var(--e-4);
+        background: var(--acento); color: var(--tinta-inversa); border-radius: var(--radio);
+        text-decoration: none; font-weight: var(--peso-fuerte); font-size: var(--t-300);
+      }
+      .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
+      /* FAQ de la pieza de autoridad: <details> desnudo reestilado con los tokens del sistema. */
+      details.faq__item { max-width: var(--medida); border-top: 1px solid var(--linea); padding: var(--e-3) 0; }
+      details.faq__item summary { font-weight: var(--peso-fuerte); cursor: pointer; font-size: var(--t-400); }
+      details.faq__item p { margin: var(--e-2) 0 0; }
+      footer {
+        margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
+        font-size: var(--t-200); color: var(--tinta-suave);
+      }
+      @media (max-width: 640px) {
+        footer a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+      }
+      .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+      .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+    </style>
+  </head>
+  <body>
+    <header class="cabecera">
+      <div class="cabecera__interior">
+        <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
+        <nav class="idiomas" aria-label="Idioma">
+          <span class="idiomas__actual" lang="es">Español</span>
+          <a class="idiomas__enlace" hreflang="en" lang="en" href="../../en/">English</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <h1>Cómo tachar los datos de un extracto bancario en PDF antes de enviarlo</h1>
+      <p>Cuando alquilas un piso, pides un préstamo, solicitas una ayuda o se lo mandas a tu gestor, te piden el extracto bancario para demostrar unos ingresos o unos movimientos concretos. Pero un extracto lleva mucho más de lo que hace falta enseñar: cada compra, cada cargo y cada ingreso de meses enteros, además del número de cuenta completo. Entregarlo tal cual es dar una foto de tu vida privada a alguien que solo necesitaba ver una cosa.</p>
+      <h2>Qué sobra en un extracto bancario</h2>
+      <ul>
+        <li>El IBAN o número de cuenta completo, cuando muchas veces basta con los últimos dígitos.</li>
+        <li>Los movimientos que no vienen al caso: si te piden ver tu nómina o el pago del alquiler, el resto de compras no es asunto de nadie.</li>
+        <li>Gastos que revelan datos sensibles: una farmacia, una clínica, una casa de apuestas o la cuota de un sindicato o un partido dicen de ti cosas que quien lo recibe no tiene por qué saber.</li>
+        <li>Los otros titulares de una cuenta compartida.</li>
+        <li>El saldo, si lo que te piden es justificar un ingreso concreto y no tu patrimonio.</li>
+      </ul>
+      <p>La regla es sencilla: enseña solo lo que justifica lo que te piden, y deja el resto fuera del archivo.</p>
+      <h2>Tapar con un recuadro no lo borra</h2>
+      <p>Dibujar un rectángulo negro encima de un movimiento en el visor de PDF no elimina el dato: el texto sigue dentro del archivo y se recupera. En un extracto eso es especialmente delicado, porque quien lo recibe —una inmobiliaria, un casero particular— puede recomponer tus movimientos sin ningún conocimiento técnico. Por qué pasa lo cuenta la guía del recuadro negro que enlazamos al final; aquí vamos a lo práctico: quitarlo de verdad.</p>
+      <h2>Cómo tacharlo de verdad, gratis y sin subir el archivo</h2>
+      <p>Con TachadoPDF el extracto se procesa dentro de tu navegador —no se sube a ningún servidor—. La herramienta detecta sola el IBAN y otros datos con formato; los movimientos, los importes, los nombres y el saldo los marcas tú arrastrando el ratón sobre cada zona. Al aplicar el tachado, el texto de esas zonas se ELIMINA del contenido del archivo (no se tapa), y después la herramienta vuelve a abrir el PDF para confirmar que el dato ya no es extraíble antes de dártelo, con un informe de comprobación.</p>
+      <h2>Antes de enviarlo, compruébalo</h2>
+      <p>Un extracto pasa a manos ajenas, así que conviene no fiarse de cómo se ve. Pásalo por el comprobador —solo lee el archivo, sin subirlo— y te dirá qué datos siguen siendo extraíbles. Y si tu extracto es una foto o un PDF escaneado, revisa esas páginas con tus propios ojos: sobre una imagen no hay texto que analizar y hay que borrar los píxeles de la zona, no ponerles un parche encima.</p>
+      <h2>Preguntas frecuentes</h2>
+      <details class="faq__item">
+        <summary>¿Puedo tachar unos movimientos del extracto y dejar otros?</summary>
+        <p>Sí. Marcas a mano las líneas que sobran y el resto queda intacto. Y el dato marcado se borra del contenido del archivo, no se tapa: quien reciba el extracto no puede seleccionarlo ni recomponerlo.</p>
+      </details>
+      <details class="faq__item">
+        <summary>Me piden el extracto para un alquiler, ¿qué dejo y qué quito?</summary>
+        <p>Suele bastar con demostrar ingresos (la nómina o la pensión que entra) y, si acaso, el pago puntual del alquiler; el resto de movimientos y el saldo puedes tacharlos. Esto es orientativo, no asesoramiento: decide según lo que exactamente te hayan pedido.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Se sube mi extracto a algún servidor?</summary>
+        <p>No. Todo el proceso ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio. Puedes comprobarlo cortando la conexión a internet una vez cargada la página: la herramienta sigue tachando y descargando.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Y si el extracto es una foto o un escaneo?</summary>
+        <p>Sobre una imagen hay que borrar los píxeles de la zona, no taparlos con un recuadro (que se puede quitar). TachadoPDF lo hace, pero como una comprobación automática no puede leer el contenido de una imagen, revisa esas páginas a ojo antes de enviar el extracto.</p>
+      </details>
+      <nav class="relacionadas" aria-label="Guías">
+        <h2>Guías</h2>
+        <ul>
+          <li><a href="../enviar-nominas-pdf-datos-personales/">Enviar nóminas en PDF sin exponer datos personales</a></li>
+          <li><a href="../comprobar-si-un-pdf-esta-bien-tachado/">Cómo comprobar si un PDF está bien tachado</a></li>
+          <li><a href="../como-funciona/">Cómo funciona TachadoPDF</a></li>
+        </ul>
+      </nav>
+      <a class="cp-cta" href="../../comprobador/?utm_source=guia">Comprueba gratis qué datos lleva tu extracto, sin subir el archivo</a>
+      <a class="cp-cta" href="../../?utm_source=guia">Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor</a>
+    </main>
+  </body>
+</html>
