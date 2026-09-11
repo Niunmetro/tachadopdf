@@ -553,4 +553,76 @@ export const GUIAS_EN: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO alta intención EN (2026-09-12): «redact a bank statement» — consulta muy buscada en UK/US
+  // (alquileres, hipotecas, préstamos: se pide el extracto para probar ingresos). Canal DISTINTO del
+  // ES, sin techo de dedup (el barrido Jaccard es solo español). Funnela al comprobador. Solo EN.
+  {
+    id: 'guia-en-bank-statement',
+    titulo: 'How to redact a bank statement PDF before you share it',
+    tituloEnlace: 'How to redact a bank statement',
+    descripcion:
+      'A landlord, letting agent or lender asks for your bank statement, but they do not need to see every transaction, your balance or your full account number. How to remove what they do not need from a bank statement PDF — for real, in your browser, without uploading the file.',
+    metaTitulo: 'How to redact a bank statement PDF · TachadoPDF',
+    enlaceComprobador: 'Check your statement for free — see what is still extractable',
+    relacionadas: ['guia-en-sin-subir', 'guia-en-comprobar', 'guia-en-caja-negra'],
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'To rent a flat, apply for a loan or pass an affordability check, you are often asked for a recent bank statement. But a statement shows far more than the person asking actually needs: every purchase you made, your running balance, your full account number and sort code. You can prove what they need — that the rent or the repayment is affordable — without handing over a map of your whole financial life.',
+      },
+      { t: 'h2', texto: 'What usually does not need to be on there' },
+      {
+        t: 'ul',
+        items: [
+          'Transactions that have nothing to do with what you are proving.',
+          'Your full account number and sort code, when the last few digits are enough.',
+          'The running balance, if you are only proving a specific payment or your income.',
+          'Any other account holder on a joint account.',
+          'Spending that reveals private things — a pharmacy, a clinic, a betting site — that are nobody else’s business.',
+        ],
+      },
+      { t: 'h2', texto: 'Why a black box does not remove it' },
+      {
+        t: 'p',
+        texto:
+          'Drawing a black rectangle over a line in a PDF viewer does not delete it: the text stays inside the file and whoever you send it to can select it and copy it straight back out. With a bank statement that is serious, because the recipient — a letting agency, a private landlord — can rebuild your transactions with no technical skill at all. The guide on the black box linked at the end explains why; here we go straight to removing it for real.',
+      },
+      { t: 'h2', texto: 'How to remove it for real, without uploading anything' },
+      {
+        t: 'p',
+        texto:
+          'With TachadoPDF the statement is processed inside your browser: it is never uploaded to a server. The tool finds account numbers and IBANs on its own; the transactions, the balance and anything else you mark by dragging over it. When you apply the redaction, the text is removed from the contents of the file (not covered), and the tool re-reads the PDF to confirm the data can no longer be extracted before it hands it to you.',
+      },
+      { t: 'h2', texto: 'Check it before you send it' },
+      {
+        t: 'p',
+        texto:
+          'A statement goes to strangers, so do not trust how it looks — test it. The free checker reads the file (without uploading it) and tells you what personal data is still extractable. And if your statement is a photo or a scan rather than a real PDF, there is no text to analyse: those pages have to be checked by eye, because a black box over an image is just an image over an image and can be lifted off.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: 'Can I redact some transactions and keep others?',
+        respuesta:
+          'Yes. You mark the lines you want gone by hand and leave the rest — for example, the salary or income entries. The marked text is removed from the file, not covered, so the recipient cannot select it or recover it.',
+      },
+      {
+        pregunta: 'What should I leave in for a rental or affordability check?',
+        respuesta:
+          'Usually it is enough to show the income coming in and that the rent or repayment is affordable; you can redact the rest of the transactions and the full account number. What exactly you must provide depends on who is asking, so treat this as general information, not advice.',
+      },
+      {
+        pregunta: 'Is my bank statement uploaded anywhere?',
+        respuesta:
+          'No. Everything happens inside your browser and the file is not transmitted anywhere. You can prove it by disconnecting from the internet once the page has loaded: the tool keeps redacting and downloading the statement.',
+      },
+      {
+        pregunta: 'What if my statement is a photo or a scan?',
+        respuesta:
+          'On an image the pixels of the area have to be cleared, not covered with a box that can be removed. TachadoPDF does that, but since an automatic check cannot read the content of an image, review those pages by eye before you send the statement.',
+      },
+    ],
+  },
 ];
