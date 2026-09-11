@@ -340,6 +340,15 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/redact-bank-statement' },
   },
+  // SEO alta intención EN (2026-09-12): «redact a utility bill» (proof of address: bancos, exchanges,
+  // alquileres, KYC). Distinta de bank statement. Canal EN sin techo de dedup. Solo inglés.
+  {
+    id: 'guia-en-utility-bill',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/redact-utility-bill' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {

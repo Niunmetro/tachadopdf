@@ -625,4 +625,81 @@ export const GUIAS_EN: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO alta intención EN (2026-09-12): «redact a utility bill» — proof of address para bancos,
+  // exchanges cripto, alquileres, KYC. Consulta enorme en UK/US, distinta de bank statement. Canal EN
+  // (sin techo de dedup ES). Buen encaje (PDF con texto). Funnela al comprobador. Solo inglés.
+  {
+    id: 'guia-en-utility-bill',
+    titulo: 'How to redact a utility bill before you send it for verification',
+    tituloEnlace: 'How to redact a utility bill',
+    descripcion:
+      'You are asked for a utility bill as proof of address — for a bank, a crypto exchange, a landlord or an ID check — but it shows your account number and more than the check needs. How to remove what they do not need from a utility bill PDF, in your browser, without uploading the file.',
+    metaTitulo: 'How to redact a utility bill PDF · TachadoPDF',
+    enlaceComprobador: 'Check your bill for free — see what is still extractable',
+    relacionadas: ['guia-en-bank-statement', 'guia-en-sin-subir', 'guia-en-comprobar'],
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'A bank, a crypto exchange, a letting agent or an online sign-up asks you for a recent utility bill as proof of address. The trouble is that a utility bill proves a lot more than where you live: it carries your account number with the supplier, a customer reference, sometimes your consumption and your payment details. All the recipient actually needs is your name, your address and a recent date — the rest is yours to keep.',
+      },
+      { t: 'h2', texto: 'What a proof-of-address check actually needs' },
+      {
+        t: 'p',
+        texto:
+          'Almost always: your name, your address, and a date recent enough to count. Everything else on the bill is extra that the person on the other end did not ask for and does not need to hold.',
+      },
+      {
+        t: 'ul',
+        items: [
+          'Your utility account number and customer reference.',
+          'Bank or card details and any direct-debit information.',
+          'Your consumption or usage figures.',
+          'Anyone else named on the bill.',
+          'A barcode or QR code, which often encodes the account number even after you black out the digits.',
+        ],
+      },
+      { t: 'h2', texto: 'Why a black box does not remove it' },
+      {
+        t: 'p',
+        texto:
+          'Drawing a black rectangle over the account number in a PDF viewer does not delete it: the text stays inside the file and whoever receives it can select it and copy it straight out. The barcode is worse — the number is still encoded in the bars even if you cover the printed digits. The guide on the black box linked at the end explains why; here we go straight to removing it for real.',
+      },
+      { t: 'h2', texto: 'How to remove it for real, without uploading anything' },
+      {
+        t: 'p',
+        texto:
+          'With TachadoPDF the bill is processed inside your browser and is never uploaded to a server. You mark the account number, the reference, the barcode and anything else that is not your name, address or the date; the tool removes that text from the contents of the file — not a box on top — and then re-reads the PDF to confirm it can no longer be extracted before handing it back. If your bill is a photo or a scan, the pixels of the marked area are cleared, not covered.',
+      },
+      { t: 'h2', texto: 'Check it before you send it' },
+      {
+        t: 'p',
+        texto:
+          'Proof of address goes to strangers and often gets stored, so do not trust how it looks — test it. The free checker reads the file, without uploading it, and tells you what is still extractable. On a scanned or photographed bill there is no text to analyse, so review those pages by eye: a black box over an image is just an image over an image, and it can be lifted off.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: 'Can I hide the account number and keep just my name and address?',
+        respuesta:
+          'Yes. You mark the account number, the customer reference and anything else that is not needed, and leave your name, address and the date. The marked text is removed from the file, not covered, so the recipient cannot select it or recover it.',
+      },
+      {
+        pregunta: 'The digits are covered but there is a barcode — is that a problem?',
+        respuesta:
+          'It can be. A barcode or QR code often encodes the same account number, so blacking out the printed digits is not enough on its own. Mark and remove the barcode too, or check the finished file to make sure nothing is still readable.',
+      },
+      {
+        pregunta: 'Is my utility bill uploaded anywhere?',
+        respuesta:
+          'No. Everything happens inside your browser and the file is not transmitted anywhere. You can prove it by disconnecting from the internet once the page has loaded: the tool keeps redacting and downloading the bill.',
+      },
+      {
+        pregunta: 'What if my bill is a photo or a scan?',
+        respuesta:
+          'On an image the pixels of the area have to be cleared, not covered with a box that can be lifted off. TachadoPDF does that, but since an automatic check cannot read the content of an image, review those pages by eye before you send the bill.',
+      },
+    ],
+  },
 ];

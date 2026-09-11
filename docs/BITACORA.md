@@ -4,6 +4,21 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO inglés · Guía «redact a utility bill» (proof of address / KYC)
+
+**Hecho:** segunda guía EN del día, `guide/redact-utility-bill` (solo inglés). Consulta enorme en UK/US
+(proof of address para bancos, exchanges cripto, alquileres, KYC), distinta de bank statement. Ángulo
+propio: el número de cuenta del suministro, la referencia, y el detalle del **código de barras** (que
+sigue codificando el número aunque tapes los dígitos). Buen encaje (PDF con texto). 4 FAQ, CTA al
+comprobador, enlazado a 3 guías EN.
+
+**Verificación:** tsc 0 · 2074 tests verde · build 0 · cero vocabulario prohibido EN. Pasa
+`enlazado-interno-en` (metaTitulo 45≤60, CTA `/en/checker/`, related relativas). Guards de conteo
+(estilo 32→33, cta‑visible 40→41, lista EN 9→10). El canal EN se consolida como filón sin techo de dedup.
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO inglés · Guía «redact a bank statement» (canal distinto, sin techo de dedup)
 
 **Hecho:** primera guía nueva EN en semanas, `guide/redact-bank-statement` (solo inglés). Consulta muy
