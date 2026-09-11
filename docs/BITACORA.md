@@ -4,6 +4,21 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · SEO conversión · Guía para inmobiliarias (expedientes de solvencia de inquilinos)
+
+**Hecho:** nueva guía generada `guia/proteccion-datos-inmobiliaria-inquilinos` (solo ES). Otro segmento
+de COMPRADOR de Pro: la inmobiliaria que recibe el expediente de solvencia (DNI + nómina + extracto) de
+cada candidato a un alquiler. Carril propio (el expediente del inquilino, el sobre-compartir al
+propietario, qué hacer con los datos de los descartados) para no repetir el de gestoría. Enlaza con
+extracto / nóminas / gestoría; funnel al comprobador. Pitch de Pro por volumen, sin prometer.
+
+**Verificación:** tsc 0 · 1974 tests verde · build 0. Dedup **máx 0,128** vs extracto/gestoría (0,02 vs
+fincas/nóminas; umbral 0,30) — el más alto hasta ahora por el tema afín, pero claramente original. Cero
+vocabulario prohibido. Guards de conteo (estilo 29→30, cta-visible 37→38, lista landings +1).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO conversión · Guía para gestorías (apunta al COMPRADOR de Pro)
 
 **Hecho:** nueva guía generada `guia/proteccion-datos-gestoria-pdf-clientes` (solo ES). A diferencia de

@@ -1077,6 +1077,83 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO orientado a CONVERSIÓN (2026-09-12): otro COMPRADOR de Pro, la inmobiliaria, que acumula
+  // expedientes de solvencia (DNI + nómina + extracto) de CADA candidato a un alquiler. Carril propio
+  // (el expediente del inquilino, el sobre-compartir al propietario, los datos de quien NO se queda el
+  // piso) para no rozar el dedup de gestoría/extracto. Funnela al comprobador. Generada, solo ES.
+  {
+    id: 'guia-inmobiliaria',
+    relacionadas: ['guia-extracto-bancario', 'guia-nominas', 'guia-gestoria'],
+    titulo: 'Protección de datos en una inmobiliaria: los expedientes de solvencia de inquilinos',
+    tituloEnlace: 'Protección de datos en una inmobiliaria',
+    descripcion:
+      'Una inmobiliaria recibe de cada candidato a un alquiler su DNI, sus nóminas y su extracto bancario. Cómo tachar de verdad lo que no toca antes de pasar un expediente al propietario —y qué hacer con los datos de quien no se queda el piso—, en tu navegador y sin subir nada.',
+    enlaceComprobador: 'Comprueba gratis qué datos lleva un expediente antes de pasarlo al propietario',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Para alquilar un solo piso, una inmobiliaria puede recibir el expediente de solvencia de diez candidatos: el DNI, las últimas nóminas, el contrato de trabajo y el extracto bancario de cada uno. Es una montaña de datos muy sensibles de mucha gente, y la mayoría son de personas que al final no van a ser tus clientes. Gestionar eso sin cuidado es uno de los riesgos de protección de datos más habituales del sector.',
+      },
+      { t: 'h2', texto: 'Dos momentos en los que te la juegas' },
+      {
+        t: 'p',
+        texto:
+          'El primero es cuando pasas el expediente del candidato elegido al propietario: casi siempre le mandas de más. El dueño necesita saber que el inquilino es solvente, no ver todos sus movimientos bancarios ni el número de cuenta completo. El segundo es qué haces con los expedientes de los candidatos que NO se quedan el piso: guardarlos «por si acaso» es conservar datos personales sin ninguna base para hacerlo.',
+      },
+      { t: 'h2', texto: 'Qué tachar antes de pasar un expediente al propietario' },
+      {
+        t: 'ul',
+        items: [
+          'Del extracto bancario: los movimientos que no demuestran solvencia y el número de cuenta completo; basta con dejar la entrada de la nómina.',
+          'De la nómina: el número de la Seguridad Social y otros datos que no vienen al caso del alquiler.',
+          'El DNI, salvo lo imprescindible para identificar al futuro inquilino.',
+          'Cualquier dato de terceros (una cuenta compartida, un avalista) que el propietario no necesite.',
+        ],
+      },
+      { t: 'h2', texto: 'Por qué el recuadro negro no te cubre' },
+      {
+        t: 'p',
+        texto:
+          'Tapar un movimiento o un número con un rectángulo negro en el visor de PDF no lo borra: el texto sigue dentro del archivo y el propietario —o cualquiera a quien él se lo reenvíe— lo recupera seleccionándolo. Como el expediente lleva tu marca de agencia, ese fallo es tuyo. Por qué pasa lo explica la guía del recuadro negro que enlazamos al final; aquí vamos a quitarlo de verdad.',
+      },
+      { t: 'h2', texto: 'Cómo hacerlo a volumen y sin subir nada' },
+      {
+        t: 'p',
+        texto:
+          'Con TachadoPDF cada documento se procesa dentro de tu navegador: no se sube a ningún servidor, así que no metes un intermediario más en la cadena de datos del candidato. La herramienta detecta sola el DNI, el IBAN, el número de la Seguridad Social y el resto de formatos; los movimientos y lo demás lo marcas tú. El dato se elimina del contenido del archivo (no se tapa) y la herramienta vuelve a leerlo para confirmar que ya no es extraíble. La versión gratuita cubre unos pocos documentos al mes; una agencia que prepara expedientes a diario tiene la versión Pro, de pago único, para quitar ese límite.',
+      },
+      { t: 'h2', texto: 'Y con los expedientes de quien no se queda el piso' },
+      {
+        t: 'p',
+        texto:
+          'Lo más limpio es no guardarlos: cuando el proceso termina, los expedientes de los candidatos descartados no tienen por qué seguir en tu correo ni en tu ordenador. Si por lo que sea necesitas conservar algo un tiempo, consérvalo ya tachado, con solo lo que justifique tu decisión. Menos datos guardados es menos que proteger y menos que explicar si alguien pregunta.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Puedo pasarle al propietario el extracto bancario entero del inquilino?',
+        respuesta:
+          'No hace falta y es mejor no hacerlo. El propietario necesita comprobar la solvencia, no conocer cada gasto de la persona. Deja a la vista la entrada de la nómina o el ingreso recurrente y tacha el resto de movimientos y el número de cuenta completo antes de enviárselo.',
+      },
+      {
+        pregunta: '¿Qué hago con los expedientes de los candidatos que no se quedan el piso?',
+        respuesta:
+          'Lo más seguro es no conservarlos una vez cerrado el alquiler: son datos sensibles de personas que no van a ser tus clientes. Si necesitas guardar algo puntualmente, guárdalo ya tachado, con lo mínimo. Esto es orientativo; para tus plazos y obligaciones concretas, consulta con quien lleve tu protección de datos.',
+      },
+      {
+        pregunta: '¿El expediente del inquilino se sube a algún servidor?',
+        respuesta:
+          'No. Todo ocurre dentro de tu navegador y el archivo no se transmite a ningún sitio, así que no añades otro tratamiento a los datos del candidato. Puedes comprobarlo cortando la conexión una vez cargada la página: la herramienta sigue tachando y descargando.',
+      },
+      {
+        pregunta: '¿Sirve si el candidato me manda una foto o un escaneo de la nómina?',
+        respuesta:
+          'Sí, pero sobre una imagen hay que borrar los píxeles de la zona, no taparlos con un recuadro (que se puede quitar). TachadoPDF lo hace; como una comprobación automática no puede leer el contenido de una imagen, revisa esas páginas a ojo antes de pasar el expediente.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
