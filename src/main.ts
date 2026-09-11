@@ -12,6 +12,7 @@ import { PRO_URL } from './config';
 import { contenidoDe, localeDelDocumento, type Contenido } from './content/index';
 import { FREE_MAX_PAGES, getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
+import { guardarClaveLicencia, leerClaveLicencia } from './license/persistencia';
 import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
 import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
 import type { BoxRect, PageMark, ReportData, VerifyResult } from './types';
@@ -411,16 +412,23 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     refreshDownloadButton();
   });
 
+  // Verifica una clave y refresca la UI. Con `recordar`, guarda la clave SI resulta válida, para que
+  // en la próxima visita se restaure Pro sola (ver la auto-verificación de arranque, más abajo). Solo
+  // se recuerda una clave que verifica, así una tecleada mal no se persiste. La auto-verificación de
+  // arranque pasa `recordar:false`: esa clave ya venía de disco, no hay nada nuevo que guardar.
+  async function verificarLicencia(clave: string, recordar: boolean): Promise<void> {
+    state.license = await verifyLicense(clave);
+    licenseStatus.textContent =
+      state.license.reason === 'valid'
+        ? copia.licenciaValida
+        : copia.licenciaNoActiva(state.license.reason);
+    if (recordar && state.license.pro) guardarClaveLicencia(clave);
+    refreshQuotaAndBatchUI();
+    refreshDownloadButton();
+  }
+
   licenseButton.addEventListener('click', () => {
-    void (async () => {
-      state.license = await verifyLicense(licenseInput.value.trim());
-      licenseStatus.textContent =
-        state.license.reason === 'valid'
-          ? copia.licenciaValida
-          : copia.licenciaNoActiva(state.license.reason);
-      refreshQuotaAndBatchUI();
-      refreshDownloadButton();
-    })();
+    void verificarLicencia(licenseInput.value.trim(), true);
   });
 
   /** Carga uno o varios PDF en el visor. Lo comparten la subida del usuario y el documento de
@@ -602,6 +610,13 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     state.quota = await getQuota();
     refreshQuotaAndBatchUI();
     refreshDownloadButton();
+    // Restaurar Pro de una visita anterior: si hay una clave recordada, precargarla en el campo y
+    // verificarla sola, para que un cliente que pagó no tenga que reintroducirla en cada sesión.
+    const claveGuardada = leerClaveLicencia();
+    if (claveGuardada) {
+      licenseInput.value = claveGuardada;
+      await verificarLicencia(claveGuardada, false);
+    }
   })();
 }
 

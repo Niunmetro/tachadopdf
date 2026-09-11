@@ -4,6 +4,29 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-09-12 · ruta del dinero · Recordar la clave Pro (código listo, merge esperando APROBADO-ANGEL)
+
+**Hecho:** implementada la persistencia de la clave de licencia Pro. Antes, un cliente que pagó tenía
+que reintroducir su clave EN CADA VISITA (`main.ts` verificaba al pulsar y no guardaba nada). Ahora:
+al verificar una clave VÁLIDA se recuerda en el navegador (`localStorage`), y al arrancar la app, si
+hay una clave recordada, se precarga en el campo y se auto-verifica sola → Pro restaurado sin reteclear.
+Nuevo módulo testeable `src/license/persistencia.ts` (leer/guardar con try/catch: si `localStorage`
+falla —modo privado— se degrada en silencio). `verifyLicense` NO se toca: su lógica fail-closed queda
+intacta; esto solo añade persistencia alrededor.
+
+**Verificación:** tsc 0 · 1870 tests verde (+4 del módulo: round-trip + resiliencia a fallo del almacén)
+· build 0. Prueba funcional en el build (`vite preview`): (1) con clave sembrada, al recargar el campo
+se rellena y se auto-verifica sola; (2) simulando respuesta válida de Gumroad, al verificar la clave
+queda guardada. `verifyLicense` sin cambios (fail-closed).
+
+**EN CURSO / BLOQUEO (APROBADO-ANGEL):** rama `feat/recordar-licencia-pro` con el CÓDIGO, SIN mergear.
+Guardar la clave en local añade un dato almacenado que, por honestidad, debe declararse en el texto de
+privacidad INGLÉS (`textos.en.ts`, línea «Stored on your device», que hoy solo enumera el contador de
+cuota). El ES no necesita cambio (solo habla de lo que se TRANSMITE, no de lo que se guarda). Texto
+legal = ruta sensible que requiere el OK de Ángel; la línea EN propuesta está en el chat. Merge + deploy
+en cuanto la apruebe.
+
+---
 ## 2026-09-08 · anti-falso-verde · La verificación de metadatos ahora mira sin saltos de línea
 
 **Hecho:** auditoría READ-ONLY de `verifyRedaction` (el núcleo de «el peor fallo es un falso verde»).
