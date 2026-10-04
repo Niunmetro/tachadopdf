@@ -4,6 +4,28 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-04 · ingeniero · Crédito «Web hecha por Fachada» en el pie de la portada
+
+**Hecho:** al final del pie legal de la portada ES y EN, un enlace discreto al estudio que hace la web:
+«Web hecha por Fachada» / «Website by Fachada» → `https://www.fachadaweb.es/`. `<a>` normal, pestaña
+nueva con `rel="noopener"`, sin nofollow (igual que en Facturea y Rentómetro). A petición del owner,
+llegada desde el chat de Fachada. Copia en `legal.credito` (`es.ts`/`en.ts`); la URL es la constante
+`URL_CREDITO` de `generar.ts`.
+
+**Decisiones y porqués:** (1) Solo la portada: es donde vive el pie legal del sitio; las 8 páginas
+escritas a mano con `<footer>` y las 32 generadas sin pie no cambian («que no cambie nada más»).
+(2) Va FUERA de los textos legales: aviso legal, términos y privacidad quedan intactos, y la promesa de
+privacidad sigue siendo exacta: un enlace es navegación que decide el usuario, no egress de la
+aplicación; no hay petición al cargar y la CSP no cambia. (3) Color de enlace del sistema (uno solo) y
+diana de 44 px como el resto del pie; `.credito a` entra en la guarda de pulsables de `estilo.test.ts`
+(mutante sin `min-height` → rojo, comprobado).
+
+**Verificación:** tsc 0 · vitest 83 ficheros / 2106 tests en verde · build 0. Solo cambian dos páginas
+generadas (`index.html`, `en/index.html`). Auditor interno: LISTO PARA PR. Codex: pendiente (sin cupo).
+
+**Bloqueos:** ninguno.
+
+---
 ## 2026-09-12 · SEO inglés · Guía «redact a passport / ID» (cierra el trío KYC EN)
 
 **Hecho:** tercera guía EN del día, `guide/redact-passport` (solo inglés). La consulta KYC de mayor

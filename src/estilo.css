@@ -204,6 +204,12 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
 .enlaces-sector { display: grid; gap: var(--e-2); margin: var(--e-4) 0 0; }
 .enlaces-sector a { display: inline-flex; align-items: center; min-height: 2.75rem; }
 
+/* Crédito del estudio, al final del pie: discreto por el tamaño del `.pie`; el color es el único
+   de enlace del sistema. Lleva la misma diana de 44 px que el resto de enlaces del pie, porque va
+   solo en su línea. */
+.credito { margin-top: var(--e-4); }
+.credito a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+
 @media (max-width: 640px) {
   /* LA PRIMERA PANTALLA, TAMBIÉN EN EL HERO-FIRST. El rediseño premium pone un hero con espécimen
      ANTES de la herramienta; en el móvil ese espécimen (decorativo) y la microcopia empujarían la
