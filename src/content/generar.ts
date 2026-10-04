@@ -14,7 +14,7 @@
 import { CONTENIDOS } from './index';
 import { PRECIO_PRO } from '../config';
 import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
-import { esc, escTexto, jsonLd, sangrar, texto } from './html';
+import { esc, escTexto, etiqueta, jsonLd, sangrar, texto } from './html';
 import {
   LOCALES,
   LOCALE_POR_DEFECTO,
@@ -45,6 +45,9 @@ const VERIFICACIONES_GOOGLE = [
   '0y8mSNb6_j9BfT2wCfVhPP4XowuUkIjkg5jz9M7EBdU',
   'wAB_9e6EFyixB6e1jITVlH5DFp1q5scYBpxHaxlFx9g',
 ];
+
+/** Web del estudio que hace el sitio: destino del crédito al final del pie de la portada. */
+export const URL_CREDITO = 'https://www.fachadaweb.es/';
 
 /**
  * LA TARJETA SOCIAL, POR IDIOMA. La anterior mostraba un sello VERDE mientras el resultado normal
@@ -701,6 +704,13 @@ ${sangrar(faq, 6)}
           ...legales,
           texto('p', { class: 'pie' }, c.legal.pie),
           `<p class="enlaces-sector">\n${sangrar(enlacesSector, 1)}\n</p>`,
+          // Crédito del estudio: enlace normal (sin nofollow) en pestaña nueva. Es navegación, no
+          // un recurso: no genera ninguna petición al cargar la página y la CSP no cambia.
+          etiqueta(
+            'p',
+            { class: 'pie credito' },
+            texto('a', { href: URL_CREDITO, target: '_blank', rel: 'noopener' }, c.legal.credito),
+          ),
         ],
         1,
       ),

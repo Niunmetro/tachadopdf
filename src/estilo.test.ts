@@ -399,6 +399,7 @@ describe('la primera pantalla de la portada: primero la herramienta', () => {
       '\\.idiomas > \\*',
       '\\.guias a',
       '\\.enlaces-sector a',
+      '\\.credito a',
       'input\\[type="file"\\]::file-selector-button',
     ];
     const hojas = reglas(`${cssContent}\n${sistemaFuente()}`);

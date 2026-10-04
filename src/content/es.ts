@@ -1320,6 +1320,10 @@ export const es = {
     enlaceImagen: 'Tacha una imagen o captura de pantalla',
     enlaceMetadatos: 'Ve los metadatos ocultos de una foto',
     enlaceMetadatosPdf: 'Ve los metadatos ocultos de un PDF',
+    // Crédito del estudio que hace la web (2026-10-04, a petición del owner; igual que en Facturea
+    // y Rentómetro). Va al final del pie de la portada, fuera de los textos
+    // legales: no es aviso legal, términos ni privacidad.
+    credito: 'Web hecha por Fachada',
   },
 
   comprobador: {

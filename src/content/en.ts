@@ -356,6 +356,7 @@ export const en: Contenido = {
     enlaceImagen: 'Redact an image or screenshot',
     enlaceMetadatos: 'See the hidden metadata in a photo',
     enlaceMetadatosPdf: 'See the hidden metadata in a PDF',
+    credito: 'Website by Fachada',
   },
 
   comprobador: {
