@@ -5,7 +5,8 @@
 // `actualizado` = día del último commit que cambió el TEXTO VISIBLE de la página (o HOY si el texto
 // visible en disco difiere del de HEAD). Retocar la meta descripción, el JSON-LD, el CSS o un href
 // no es una actualización para el lector y no mueve la fecha: inflar la frescura es justo lo que hace
-// que un buscador deje de fiarse del `lastmod`. Nada se inventa: si git no conoce el fichero, se para.
+// que un buscador deje de fiarse del `lastmod`. Nada se inventa: una página que git aún no conoce es
+// nueva y se publica hoy.
 //
 // Uso, ANTES de commitear un cambio de páginas: `npm run fechas` (genera, fecha y vuelve a generar,
 // porque la fecha nueva sale en el propio HTML).
@@ -47,10 +48,12 @@ export function textoVisible(html: string): string {
     .trim();
 }
 
+const hoy = new Date().toISOString().slice(0, 10);
+
 function ultimoCambioVisible(ruta: string, publicado: string): string {
   const disco = textoVisible(readFileSync(resolve(RAIZ, ruta), 'utf-8'));
   const head = enRevision('HEAD', ruta);
-  if (head === null || textoVisible(head) !== disco) return new Date().toISOString().slice(0, 10);
+  if (head === null || textoVisible(head) !== disco) return hoy;
   const commits = git(['log', '--no-merges', '--format=%H %cs', '--', ruta]).split('\n').filter(Boolean);
   for (const linea of commits) {
     const [hash = '', dia = ''] = linea.split(' ');
@@ -68,8 +71,8 @@ for (const pagina of PAGINAS) {
     const ruta = ficheroDe(pagina, locale);
     if (ruta === null) continue;
     const altas = git(['log', '--diff-filter=A', '--format=%cs', '--', ruta]).split('\n').filter(Boolean);
-    const publicado = altas.at(-1);
-    if (publicado === undefined) throw new Error(`git no conoce ${ruta}: no se inventa una fecha`);
+    // Una página que git aún no conoce es una página NUEVA que se publica hoy: esa es su fecha real.
+    const publicado = altas.at(-1) ?? hoy;
     const actualizado = ultimoCambioVisible(ruta, publicado);
     lineas.push(`  '${ruta}': { publicado: '${publicado}', actualizado: '${actualizado}' },`);
 
