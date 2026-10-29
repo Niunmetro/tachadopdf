@@ -61,6 +61,7 @@ Stated limits: scanned pages (no text layer) are flagged in red and need checkin
 - [How to redact a bank statement](https://www.tachadopdf.com/en/guide/redact-bank-statement/): A landlord or lender needs your bank statement, not every transaction or your full account number. Redact the statement PDF in your browser, no upload.
 - [How to redact a utility bill](https://www.tachadopdf.com/en/guide/redact-utility-bill/): Proof of address usually needs only your name, address and date. How to remove the account number, barcode and payment details from a utility bill PDF.
 - [How to redact a passport or ID](https://www.tachadopdf.com/en/guide/redact-passport/): Asked for a copy of your passport or ID? Hide the document number and the machine-readable lines and still prove who you are. In your browser, no upload.
+- [Can redacted text in a PDF be recovered?](https://www.tachadopdf.com/en/guide/recover-redacted-text-pdf/): Often, yes: if the redaction is only a black box, the text is still in the file and copies out. Where covered text survives, and how to check your own PDF.
 
 ## Optional
 

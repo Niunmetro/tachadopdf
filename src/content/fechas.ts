@@ -42,7 +42,7 @@ export const FECHAS: Record<string, FechasPagina> = {
   'public/guia/proteccion-datos-inmobiliaria-inquilinos/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
   'public/guia/tachar-informe-medico-pdf/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
   'public/en/guide/black-box-pdf-not-redacted/index.html': { publicado: '2026-08-08', actualizado: '2026-10-29' },
-  'public/en/guide/check-pdf-redaction/index.html': { publicado: '2026-08-08', actualizado: '2026-08-27' },
+  'public/en/guide/check-pdf-redaction/index.html': { publicado: '2026-08-08', actualizado: '2026-10-29' },
   'public/en/guide/redact-court-filing/index.html': { publicado: '2026-08-08', actualizado: '2026-10-29' },
   'public/en/guide/redact-subject-access-request/index.html': { publicado: '2026-08-08', actualizado: '2026-10-29' },
   'public/en/guide/redact-pdf-without-uploading/index.html': { publicado: '2026-08-08', actualizado: '2026-08-27' },
@@ -52,4 +52,5 @@ export const FECHAS: Record<string, FechasPagina> = {
   'public/en/guide/redact-bank-statement/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
   'public/en/guide/redact-utility-bill/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
   'public/en/guide/redact-passport/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
+  'public/en/guide/recover-redacted-text-pdf/index.html': { publicado: '2026-10-29', actualizado: '2026-10-29' },
 };
