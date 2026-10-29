@@ -8,7 +8,7 @@
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="../../apple-touch-icon.png" />
 <title>Un rectángulo negro en un PDF no borra el dato: qué hacer</title>
-<meta name="description" content="El recuadro negro sobre un PDF solo tapa el dato: el texto sigue debajo y se copia. Cómo comprobarlo y eliminarlo de verdad del archivo, gratis." />
+<meta name="description" content="Cómo saber si un recuadro negro en un PDF tapa o borra el dato: cinco pruebas rápidas y qué hacer si ya lo enviaste o lo publicaste." />
 <link rel="canonical" href="https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="El rectángulo negro en un PDF NO borra el dato" />
@@ -19,11 +19,11 @@
   "@context": "https://schema.org",
   "@type": "Article",
   "headline": "Poner un rectángulo negro en un PDF no borra el dato",
-  "description": "El recuadro negro sobre un PDF solo tapa el dato: el texto sigue debajo y se copia. Cómo comprobarlo y eliminarlo de verdad del archivo, gratis.",
+  "description": "Cómo saber si un recuadro negro en un PDF tapa o borra el dato: cinco pruebas rápidas y qué hacer si ya lo enviaste o lo publicaste.",
   "inLanguage": "es",
   "mainEntityOfPage": "https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/",
   "datePublished": "2026-07-17",
-  "dateModified": "2026-09-08",
+  "dateModified": "2026-10-29",
   "author": {
     "@type": "Organization",
     "@id": "https://www.tachadopdf.com/#organization",
@@ -36,6 +36,38 @@
     "name": "TachadoPDF",
     "url": "https://www.tachadopdf.com/"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Aplanar el PDF o imprimirlo a PDF borra lo que hay debajo del recuadro?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No necesariamente. Aplanar fusiona las anotaciones con la página, pero el texto que había debajo sigue siendo texto salvo que el proceso convierta la página en imagen. Haz siempre las pruebas de copiar y buscar sobre el archivo final, no sobre el original."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué hago si ya envié un PDF con recuadros negros?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Retira o sustituye el archivo donde puedas, reenvía una versión bien tachada si hace falta y anota los hechos: qué datos, de quién, a quién llegaron y qué hiciste. Después valora con tu delegado de protección de datos o con asesoramiento jurídico si procede notificar la violación de seguridad."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Tengo que notificar a la autoridad de protección de datos si envié un PDF mal tachado?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Depende del riesgo. El artículo 33 del RGPD obliga al responsable a notificar la violación de seguridad sin dilación indebida y, de ser posible, en un máximo de 72 horas desde que tiene constancia de ella, a menos que sea improbable que suponga un riesgo para los derechos y libertades de las personas. Si es probable un alto riesgo, el artículo 34 exige comunicarlo también a los afectados."
+      }
+    }
+  ]
 }
 </script>
 <meta property="og:url" content="https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/" />
@@ -209,6 +241,14 @@ font-family: var(--fuente-dato);
   }
   .cp-cta:hover, .cta:hover { background: var(--acento-fuerte); }
   .cta strong { color: var(--tinta-inversa); }
+  details.faq__item { max-width: var(--medida); border-top: 1px solid var(--linea); padding: var(--e-3) 0; }
+  details.faq__item summary { font-weight: var(--peso-fuerte); cursor: pointer; font-size: var(--t-400); }
+  details.faq__item p { margin: var(--e-2) 0 0; }
+  .fuentes, .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
+  .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+  .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+  .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
+  .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
   footer {
     margin-top: var(--e-16); padding-top: var(--e-6); border-top: 1px solid var(--linea);
     font-size: var(--t-200); color: var(--tinta-suave);
@@ -232,30 +272,80 @@ font-family: var(--fuente-dato);
 </header>
 <article>
 <h1>Poner un rectángulo negro en un PDF no borra el dato</h1>
-<p class="lede">Es el error más frecuente al preparar un documento para entregarlo: tapar lo confidencial con un recuadro negro. El dato sigue ahí, y quien lo reciba puede recuperarlo sin ningún conocimiento técnico.</p>
+<p class="lede">Es el error más frecuente al preparar un documento para entregarlo: tapar lo confidencial con un recuadro negro. Esta guía te dice cómo comprobar en cinco pasos si el dato sigue dentro y qué hacer si el archivo ya salió.</p>
 
-<h2>Por qué el recuadro no sirve</h2>
-<p>Un PDF guarda el texto y las imágenes por separado de lo que ves en pantalla. Cuando dibujas un rectángulo negro encima de un DNI, un IBAN o un nombre, solo estás añadiendo una figura por delante. El texto original sigue almacenado en el archivo, debajo. Por eso:</p>
+<h2>Por qué el recuadro no borra nada</h2>
+<p>Un PDF guarda el texto y las imágenes por separado de lo que ves en pantalla. Cuando dibujas un rectángulo negro encima de un DNI, un IBAN o un nombre, solo añades una figura por delante. El texto original sigue almacenado en el archivo, debajo. Por eso:</p>
 <ul>
   <li>Si seleccionas con el ratón sobre el recuadro y copias, aparece el texto oculto.</li>
   <li>Si abres el PDF con otro programa o lo conviertes, el dato reaparece.</li>
   <li>Si mueves o borras el recuadro, queda el dato a la vista.</li>
 </ul>
-
-<div class="nota"><strong>Compruébalo tú mismo:</strong> abre un PDF donde hayas tapado algo con un recuadro, pasa el ratón por encima seleccionando, y pega en un bloc de notas. Si sale el texto, no estaba borrado.</div>
-
-<h2>Qué hay que hacer en su lugar</h2>
-<p>Para que el dato desaparezca de verdad hay que <strong>eliminarlo del contenido del archivo</strong>, no taparlo. Y si el dato está dentro de una imagen escaneada, hay que borrar los píxeles de esa zona, no ponerles un parche encima.</p>
-<p>Hacerlo a mano con herramientas profesionales de PDF es posible pero laborioso y caro. La alternativa rápida y gratuita:</p>
+<h2>Qué tipo de recuadro tienes</h2>
+<p>El efecto visual es el mismo, pero el recuadro puede estar guardado de tres maneras y cada una se comporta distinto.</p>
+<ul>
+  <li>Una anotación: el programa la guarda como un objeto aparte, colocado encima de la página. Se puede seleccionar, mover o borrar con el mismo editor, y debajo el texto sigue intacto.</li>
+  <li>Un dibujo en el contenido de la página: el texto y el rectángulo son dos instrucciones distintas de la misma página, y ninguna borra a la otra.</li>
+  <li>Un escaneo o una captura: el dato son píxeles. Un recuadro añadido encima con un editor es otro objeto sobre la imagen, y solo borra el dato si los píxeles de debajo se han sustituido de verdad.</li>
+</ul>
+<p>Lo mismo pasa cuando el texto se resalta o se sombrea en negro en un procesador de textos antes de exportar: el PDF resultante conserva el texto como texto.</p>
+<h2>Cinco pruebas para saber si el dato sigue ahí</h2>
+<ol>
+  <li>Seleccionar y copiar. Arrastra el ratón sobre el recuadro, copia y pega en el bloc de notas. Si aparece el texto, estaba tapado y no borrado.</li>
+  <li>Buscar. Usa el buscador del visor (Ctrl+F) con una palabra o un número que debería estar tapado. Si encuentra una coincidencia en la zona del recuadro, el texto está en el archivo.</li>
+  <li>Seleccionar todo (Ctrl+A). En la mayoría de los visores el texto seleccionable se marca; si ves bloques marcados bajo el recuadro negro, hay texto debajo.</li>
+  <li>Probar otro programa. Abre el PDF en otro visor o editor e intenta mover el recuadro. Si se desplaza, era un objeto aparte y el dato está intacto debajo.</li>
+  <li>Mirar la imagen. Si el documento es un escaneo, sube el brillo y el contraste de la zona o abre la imagen en un editor para ver si el recuadro es un parche sobre el dato.</li>
+</ol>
+<p class="nota">Estas pruebas detectan lo más habitual, pero no miran los marcadores, los adjuntos ni los metadatos del PDF. Para esos rincones está la herramienta de metadatos de PDF de TachadoPDF, que muestra el autor, los marcadores y los adjuntos.</p>
+<p>El comprobador gratuito de TachadoPDF hace por ti las pruebas de copiar y buscar sobre todo el documento: lee el texto de las páginas y señala qué DNI, NIE, IBAN, números de la Seguridad Social, teléfonos, referencias catastrales y correos siguen ahí y en qué página. No reconoce nombres ni lee el contenido de las imágenes.</p>
+<h2>Si ya enviaste o publicaste el PDF con recuadros</h2>
+<p>Pasa más a menudo de lo que parece y conviene actuar con orden.</p>
+<ol>
+  <li>Retira o sustituye el archivo donde puedas controlarlo: una web, una plataforma, una carpeta compartida. Si lo mandaste por correo, puedes pedir al destinatario que lo borre, pero no tienes manera de comprobarlo.</li>
+  <li>Prepara una versión bien tachada y reenvíala si el destinatario necesita el documento.</li>
+  <li>Anota qué pasó: qué datos, de quién, a quién llegó, cuándo lo descubriste y qué hiciste. Si tratas esos datos como responsable, el RGPD exige documentar cualquier violación de la seguridad de los datos personales, con los hechos, sus efectos y las medidas correctivas (artículo 33.5).</li>
+  <li>Valora si hay que notificarla. El RGPD entiende por violación de la seguridad la que ocasione, entre otras cosas, la comunicación o el acceso no autorizados a datos personales (artículo 4.12). El responsable debe notificarla a la autoridad de control sin dilación indebida y, de ser posible, a más tardar 72 horas después de tener constancia de ella, a menos que sea improbable que constituya un riesgo para los derechos y libertades de las personas (artículo 33.1). Si es probable un alto riesgo, hay que comunicarla también a los afectados (artículo 34.1).</li>
+</ol>
+<p>Que el riesgo sea improbable o no depende de qué datos se expusieron y a quién llegaron. Lo decide quien responde del tratamiento, con su delegado de protección de datos si lo tiene o con asesoramiento jurídico. Esta guía no sustituye ese análisis.</p>
+<h2>Cómo lo hace TachadoPDF</h2>
+<p>TachadoPDF detecta automáticamente por patrones DNI, NIE, IBAN, número de la Seguridad Social, teléfonos y correos; los nombres y lo que quede los marcas tú. Borra el texto del archivo y los píxeles de las zonas marcadas, limpia los metadatos y genera un informe de comprobación técnica. Después vuelve a leer el archivo resultante para confirmar que el dato ya no es extraíble: si queda cualquier resto, te avisa. Todo ocurre en tu navegador y el documento no se transmite a ningún sitio.</p>
 
 <a class="cta" href="../../comprobador/">Comprueba gratis si tu tachado deja el dato recuperable → <strong>sin subir el archivo</strong>.</a>
 
-<a class="cta" href="../../">Elimina los datos de tu PDF de verdad → <strong>gratis y en tu navegador</strong>, sin subir el documento a ningún servidor.</a>
+<a class="cta" href="../../">Elimina los datos de tu PDF de verdad → <strong>gratis y en tu navegador, sin subir el documento a ningún servidor</strong>.</a>
 
-<h2>Cómo lo hace TachadoPDF</h2>
-<p><a href="../../">TachadoPDF</a> detecta automáticamente DNI, NIE, IBAN, número de la Seguridad Social, teléfonos y correos, borra el texto del archivo y los píxeles de las zonas marcadas, limpia los metadatos, y genera un informe de comprobación técnica. Después vuelve a leer el archivo resultante para confirmar que el dato ya no es extraíble: si quedara cualquier resto, te avisa. Todo ocurre en tu navegador; el documento no se transmite a ningún sitio.</p>
+<h2>Preguntas frecuentes</h2>
+<details class="faq__item">
+  <summary>¿Aplanar el PDF o imprimirlo a PDF borra lo que hay debajo del recuadro?</summary>
+  <p>No necesariamente. Aplanar fusiona las anotaciones con la página, pero el texto que había debajo sigue siendo texto salvo que el proceso convierta la página en imagen. Haz siempre las pruebas de copiar y buscar sobre el archivo final, no sobre el original.</p>
+</details>
+<details class="faq__item">
+  <summary>¿Qué hago si ya envié un PDF con recuadros negros?</summary>
+  <p>Retira o sustituye el archivo donde puedas, reenvía una versión bien tachada si hace falta y anota los hechos: qué datos, de quién, a quién llegaron y qué hiciste. Después valora con tu delegado de protección de datos o con asesoramiento jurídico si procede notificar la violación de seguridad.</p>
+</details>
+<details class="faq__item">
+  <summary>¿Tengo que notificar a la autoridad de protección de datos si envié un PDF mal tachado?</summary>
+  <p>Depende del riesgo. El artículo 33 del RGPD obliga al responsable a notificar la violación de seguridad sin dilación indebida y, de ser posible, en un máximo de 72 horas desde que tiene constancia de ella, a menos que sea improbable que suponga un riesgo para los derechos y libertades de las personas. Si es probable un alto riesgo, el artículo 34 exige comunicarlo también a los afectados.</p>
+</details>
 
-<p>Guías relacionadas: <a href="../../guia/sanciones-aepd-comunidades-propietarios/">sanciones de la AEPD a comunidades</a> · <a href="../../guia/enviar-nominas-pdf-datos-personales/">enviar nóminas y expedientes sin exponer datos</a>.</p>
+<section class="fuentes">
+<h2>Fuentes</h2>
+<ul>
+  <li><a href="https://www.boe.es/doue/2016/119/L00001-00088.pdf">Reglamento (UE) 2016/679 (RGPD), texto del Diario Oficial de la UE publicado en el BOE: artículos 4.12, 33 y 34</a></li>
+</ul>
+</section>
+
+<nav class="relacionadas" aria-label="Guías">
+<h2>Guías</h2>
+<ul>
+  <li><a href="../../guia/recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
+  <li><a href="../../guia/informacion-oculta-pdf/">¿Qué información oculta lleva un PDF?</a></li>
+  <li><a href="../../guia/comprobar-si-un-pdf-esta-bien-tachado/">Cómo comprobar si un PDF está bien tachado</a></li>
+  <li><a href="../../guia/sanciones-aepd-comunidades-propietarios/">Sanciones de la AEPD a comunidades de propietarios</a></li>
+  <li><a href="../../guia/enviar-nominas-pdf-datos-personales/">Enviar nóminas en PDF sin exponer datos personales</a></li>
+</ul>
+</nav>
 
 <footer>
 Guía de <a href="../../">TachadoPDF</a>. Contenido informativo, no es asesoramiento legal.
