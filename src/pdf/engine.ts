@@ -1,12 +1,10 @@
 import * as mupdf from 'mupdf';
 import type { BoxRect, PageMark } from '../types';
+import { PdfPasswordError } from './errores';
 
-export class PdfPasswordError extends Error {
-  constructor(message = 'Contraseña de PDF incorrecta o ausente') {
-    super(message);
-    this.name = 'PdfPasswordError';
-  }
-}
+// La clase vive en `errores.ts` (sin mupdf) para que la interfaz pueda reconocerla sin cargar este
+// módulo; se reexporta aquí para que los imports existentes sigan valiendo (misma clase).
+export { PdfPasswordError };
 
 function quadToBoxRect(quad: mupdf.Quad): BoxRect {
   const xs = [quad[0], quad[2], quad[4], quad[6]];

@@ -1,6 +1,7 @@
 import { contenidoDe, localeDelDocumento } from '../content/index';
 import type { CopiaComprobador } from '../content/tipos';
-import { PdfPasswordError } from '../pdf/engine';
+import { PdfPasswordError } from '../pdf/errores';
+import { precargarEngine } from '../pdf/perezoso';
 import { FicheroNoPdfError, analizarPdf } from './analyze';
 import { renderResumen } from './render';
 
@@ -60,6 +61,12 @@ export async function procesarFichero(fichero: File, elementos: ElementosComprob
 export function inicializarComprobador(): void {
   const elementos = localizarElementos();
   if (!elementos) return;
+
+  // mupdf NO se baja al abrir la página sino al analizar un PDF. Mientras el visitante elige el
+  // fichero (abre el selector, arrastra uno sobre la zona) ya se va bajando, para que al soltarlo
+  // la espera sea menor. Es solo adelantar la descarga: si falla, el error lo muestra el análisis.
+  elementos.fichero.addEventListener('click', precargarEngine);
+  elementos.dropzone.addEventListener('dragenter', precargarEngine);
 
   elementos.fichero.addEventListener('change', () => {
     const fichero = elementos.fichero.files?.[0];
