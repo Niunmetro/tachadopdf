@@ -19,6 +19,12 @@ export type Bloque =
   | { t: 'ol'; items: string[] }
   | { t: 'nota'; texto: string };
 
+/** Una fuente primaria citada por una guía: rótulo visible y URL externa comprobada. */
+export interface Fuente {
+  etiqueta: string;
+  url: string;
+}
+
 export interface EntradaFaq {
   pregunta: string;
   respuesta: string;
@@ -73,6 +79,13 @@ export interface ContenidoGuia {
    * cada enlace es el `tituloEnlace` de la guía destino, el mismo que usa el índice de la home.
    */
   relacionadas?: string[];
+  /**
+   * FUENTES PRIMARIAS de lo que afirma la guía (estudio, resolución, expediente, código). OPCIONAL:
+   * cuando está, el generador emite al final una sección «Fuentes» con enlaces externos. Un motor
+   * de respuestas confía más en una cifra con su fuente al lado, y el lector puede comprobarla.
+   * Cada URL se comprueba a mano antes de añadirla (estado 200 y que diga lo que se cita).
+   */
+  fuentes?: Fuente[];
 }
 
 /** Textos del informe de comprobación. El informe ES el producto: aquí no entra ni una promesa. */

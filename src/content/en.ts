@@ -284,6 +284,8 @@ const COMPROBADOR_EN: CopiaComprobador = {
 
 export const en: Contenido = {
   htmlLang: 'en',
+  /** Date format for visible dates (Intl): «29 October 2026». */
+  localeFecha: 'en-GB',
   // en_GB, no en_US: el dolor traducible es el RGPD británico, Irlanda y las empresas de la UE
   // que operan en inglés. Una sola página inglesa sirve a todas las regiones; el día que haya
   // precio en dólares se añade en-US y el esquema aguanta.
@@ -326,6 +328,8 @@ export const en: Contenido = {
     legal: 'Legal',
     idiomas: 'Language',
     otrasHerramientas: 'Other free tools',
+    fuentes: 'Sources',
+    actualizada: 'Updated',
   },
 
   guiaCta: 'Redact your PDF now — free, and without uploading it to any server',
@@ -357,6 +361,7 @@ export const en: Contenido = {
     enlaceMetadatos: 'See the hidden metadata in a photo',
     enlaceMetadatosPdf: 'See the hidden metadata in a PDF',
     credito: 'Website by Fachada',
+    codigoFuente: 'Source code on GitHub (AGPL-3.0)',
   },
 
   comprobador: {

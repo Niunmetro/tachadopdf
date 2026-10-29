@@ -13,3 +13,7 @@ export const VERSION_APP: string = '0.1.0';
 // Enlace de compra que se muestra en la app.
 export const PRO_URL: string = 'https://shafted6.gumroad.com/l/tachadopdf';
 export const PRECIO_PRO: string = '59 €';
+
+/** Repositorio público del código (AGPL-3.0). Hace comprobable el «código abierto» que la web
+ *  promete y cumple la oferta de código fuente de la AGPL a quien usa la herramienta por red. */
+export const URL_REPO: string = 'https://github.com/Niunmetro/tachadopdf';

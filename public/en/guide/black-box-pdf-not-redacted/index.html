@@ -201,13 +201,19 @@
       "description": "A black box over PDF text only covers it: the words stay in the file and copy straight out. Test it in 3 seconds, then remove the text for real.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       }
     }
     </script>
@@ -227,6 +233,7 @@
       ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
       li { margin: 0 0 var(--e-2); }
       .lede { color: var(--tinta-suave); }
+      .guia-fecha { color: var(--tinta-suave); font-size: var(--t-200); margin: 0 0 var(--e-6); }
       /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
          superado, y no se gasta en un aparte de una guia. */
       .nota {
@@ -268,6 +275,7 @@
     </header>
     <main>
       <h1>Why the black box over your PDF does not delete the text</h1>
+      <p class="guia-fecha">Updated <time datetime="2026-10-29">29 October 2026</time></p>
       <p>A black box over text in a PDF is not redaction: it is a shape drawn on top, and the text underneath can usually still be selected, copied and searched. To check, select across the box and paste into a text editor. It is the most common mistake made when preparing a document for release: covering the confidential part with a black rectangle. The data is still there, and whoever receives the file can recover it with no technical knowledge at all.</p>
       <h2>Why the rectangle does nothing</h2>
       <p>A PDF stores its text separately from what you see on screen. Drawing a black rectangle over a name, an account number or an address only adds a shape in front. The original text is still stored in the file, underneath. So:</p>

@@ -400,6 +400,7 @@ describe('la primera pantalla de la portada: primero la herramienta', () => {
       '\\.guias a',
       '\\.enlaces-sector a',
       '\\.credito a',
+      '\\.codigo-fuente a',
       'input\\[type="file"\\]::file-selector-button',
     ];
     const hojas = reglas(`${cssContent}\n${sistemaFuente()}`);

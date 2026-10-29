@@ -7,7 +7,7 @@
 // APROBADO-ANGEL): aquí se importan, no se copian.
 
 import { CHECKBOX_LABEL } from '../app';
-import { PRECIO_PRO } from '../config';
+import { PRECIO_PRO, URL_REPO } from '../config';
 import { FREE_MAX_PAGES, FREE_MONTHLY_LIMIT } from '../freemium/quota';
 import {
   AVISO_PRINCIPAL,
@@ -762,6 +762,7 @@ const GUIAS_ES: ContenidoGuia[] = [
   {
     id: 'guia-como-funciona',
     relacionadas: ['guia-sin-subir', 'guia-recuperar-tachado', 'guia-info-oculta-pdf'],
+    fuentes: [{ etiqueta: 'Código fuente de TachadoPDF en GitHub (licencia AGPL-3.0)', url: URL_REPO }],
     titulo: 'Cómo funciona TachadoPDF y por qué tus datos no salen del navegador',
     tituloEnlace: 'Cómo funciona TachadoPDF',
     metaTitulo: 'Cómo funciona TachadoPDF: tus datos no salen del navegador',
@@ -1255,6 +1256,8 @@ const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
 
 export const es = {
   htmlLang: 'es',
+  /** Formato de las fechas visibles (Intl): «29 de octubre de 2026». */
+  localeFecha: 'es-ES',
   ogLocale: 'es_ES',
   /** Rótulo del idioma en el selector, escrito SIEMPRE en su propio idioma (nunca banderas:
    *  una bandera es un país, no un idioma). */
@@ -1309,6 +1312,8 @@ export const es = {
     legal: 'Información legal',
     idiomas: 'Idioma',
     otrasHerramientas: 'Otras herramientas gratuitas',
+    fuentes: 'Fuentes',
+    actualizada: 'Actualizada el',
   },
 
   /** Llamada a la acción al pie de cada guía generada. */
@@ -1336,6 +1341,7 @@ export const es = {
     // y Rentómetro). Va al final del pie de la portada, fuera de los textos
     // legales: no es aviso legal, términos ni privacidad.
     credito: 'Web hecha por Fachada',
+    codigoFuente: 'Código fuente en GitHub (AGPL-3.0)',
   },
 
   comprobador: {

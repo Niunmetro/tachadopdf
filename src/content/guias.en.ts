@@ -5,6 +5,7 @@
 //
 // Todo el contenido son DATOS tipados: el generador escapa cada cadena.
 
+import { URL_REPO } from '../config';
 import type { ContenidoGuia } from './tipos';
 
 export const GUIAS_EN: ContenidoGuia[] = [
@@ -482,6 +483,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
   // conversion barrier — trust IS the product for a privacy tool, and this market has a paid campaign.
   {
     id: 'guia-en-how-it-works',
+    fuentes: [{ etiqueta: 'TachadoPDF source code on GitHub (AGPL-3.0 licence)', url: URL_REPO }],
     titulo: 'How TachadoPDF works, and why your file never leaves your browser',
     tituloEnlace: 'How TachadoPDF works',
     descripcion:

@@ -201,13 +201,19 @@
       "description": "TachadoPDF processes your whole PDF inside your browser: the file is never uploaded to a server, there are no accounts and no tracking, and the redaction is checked before you get the document back. Here is exactly how it works — and how to verify it yourself.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/how-it-works/",
+      "datePublished": "2026-09-08",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       }
     }
     </script>
@@ -267,6 +273,7 @@
       ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
       li { margin: 0 0 var(--e-2); }
       .lede { color: var(--tinta-suave); }
+      .guia-fecha { color: var(--tinta-suave); font-size: var(--t-200); margin: 0 0 var(--e-6); }
       /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
          superado, y no se gasta en un aparte de una guia. */
       .nota {
@@ -294,6 +301,9 @@
       .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
       .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
       .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+      .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+      .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
     </style>
   </head>
   <body>
@@ -308,6 +318,7 @@
     </header>
     <main>
       <h1>How TachadoPDF works, and why your file never leaves your browser</h1>
+      <p class="guia-fecha">Updated <time datetime="2026-10-29">29 October 2026</time></p>
       <p>Handing a document full of personal data to an unfamiliar website is, most of the time, an act of faith: you upload it and then you have no idea what happens to it. TachadoPDF is built so that you do not have to take our word for it — so that you can check for yourself what happens to your file. This page explains how it works under the hood.</p>
       <h2>The PDF is processed on your own device</h2>
       <p>When you open a file, the program that reads it, edits it and writes it back runs inside the browser tab, on your own computer or phone. There is no upload: the file does not travel across the network to a machine of ours, because there is no processing machine of ours. The engine that works on the document is compiled to WebAssembly and arrives together with the page, like an image or a stylesheet.</p>
@@ -341,6 +352,12 @@
         <summary>Do you keep anything I do, or usage analytics?</summary>
         <p>No. There are no accounts, no tracking cookies and no analytics. We do not record which files you open or what you redact: no record of your session is kept anywhere.</p>
       </details>
+      <section class="fuentes">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://github.com/Niunmetro/tachadopdf">TachadoPDF source code on GitHub (AGPL-3.0 licence)</a></li>
+        </ul>
+      </section>
       <nav class="relacionadas" aria-label="Guides">
         <h2>Guides</h2>
         <ul>
