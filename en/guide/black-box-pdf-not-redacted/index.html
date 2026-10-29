@@ -201,13 +201,19 @@
       "description": "A black box over PDF text only covers it: the words stay in the file and copy straight out. Test it in 3 seconds, then remove the text for real.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       }
     }
     </script>
@@ -227,6 +233,7 @@
       ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
       li { margin: 0 0 var(--e-2); }
       .lede { color: var(--tinta-suave); }
+      .guia-fecha { color: var(--tinta-suave); font-size: var(--t-200); margin: 0 0 var(--e-6); }
       /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
          superado, y no se gasta en un aparte de una guia. */
       .nota {
@@ -254,6 +261,9 @@
       .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
       .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
       .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+      .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+      .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
     </style>
   </head>
   <body>
@@ -268,6 +278,7 @@
     </header>
     <main>
       <h1>Why the black box over your PDF does not delete the text</h1>
+      <p class="guia-fecha">Updated <time datetime="2026-10-29">29 October 2026</time></p>
       <p>A black box over text in a PDF is not redaction: it is a shape drawn on top, and the text underneath can usually still be selected, copied and searched. To check, select across the box and paste into a text editor. It is the most common mistake made when preparing a document for release: covering the confidential part with a black rectangle. The data is still there, and whoever receives the file can recover it with no technical knowledge at all.</p>
       <h2>Why the rectangle does nothing</h2>
       <p>A PDF stores its text separately from what you see on screen. Drawing a black rectangle over a name, an account number or an address only adds a shape in front. The original text is still stored in the file, underneath. So:</p>
@@ -284,6 +295,15 @@
       <p>Doing that by hand with professional PDF software is possible but slow, and the step people skip is the one that matters: checking the finished file afterwards. A redaction you did not verify is a redaction you are only assuming worked.</p>
       <h2>How TachadoPDF does it</h2>
       <p>TachadoPDF removes the text from the file and clears the pixels of the areas you mark, strips the metadata, and then reopens the PDF it just produced and searches it again — including the metadata — for everything you redacted. If any of it comes back, the download is blocked and you are told which page. You also get a verification report with the SHA-256 fingerprint of the file you deliver. Everything runs in your browser; the document is never uploaded.</p>
+      <section class="fuentes">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://www.courtlistener.com/docket/6183591/united-states-v-manafort/">United States v. Manafort docket: the redacted and corrected filings of 8 January 2019 (CourtListener)</a></li>
+          <li><a href="https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/">Mother Jones, 8 January 2019: Paul Manafort's lawyers tried and failed to redact a filing</a></li>
+          <li><a href="https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/">ICO: £750,000 monetary penalty to the Police Service of Northern Ireland (3 October 2024)</a></li>
+          <li><a href="https://ico.org.uk/media2/migrated/4031177/psni-penalty-notice.pdf">ICO penalty notice to the PSNI (PDF, 76 pages)</a></li>
+        </ul>
+      </section>
       <nav class="relacionadas" aria-label="Guides">
         <h2>Guides</h2>
         <ul>
@@ -292,8 +312,8 @@
           <li><a href="../redact-pdf-without-acrobat/">Redact a PDF without Adobe Acrobat</a></li>
         </ul>
       </nav>
-      <a class="cp-cta" href="../../checker/?utm_source=guia">Check your PDF for free — see what text is still extractable</a>
-      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+      <a class="cp-cta" href="../../checker/">Check your PDF for free — see what text is still extractable</a>
+      <a class="cp-cta" href="../../">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
 </html>
