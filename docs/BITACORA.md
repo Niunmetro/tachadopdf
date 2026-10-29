@@ -4,6 +4,52 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · SEO · Guía inglesa «Can redacted text in a PDF be recovered?» (punto 16 del plan)
+
+**Hecho:** cierra el punto 16 del plan de la auditoría (`.seo-audit/ACTION-PLAN.md`, local y fuera de
+git). Search Console enseñaba consultas inglesas sin página buena («how to see redacted text in pdf»,
+«how to view/read redacted text on a pdf», «can a redacted pdf be unredacted») y la mejor página del
+sitio, la española `guia-recuperar-tachado` (231 impresiones, posición 6,4), no tenía equivalente.
+- Nueva `guia-en-recuperar` → `/en/guide/recover-redacted-text-pdf/` (generada, solo inglés, sin
+  pareja hreflang: está escrita para la consulta inglesa, no es traducción literal). `<title>` «Can
+  redacted text in a PDF be recovered? Often, yes» (51 caracteres), descripción de 155, H1 «Can redacted
+  text in a PDF be recovered? Why many redactions can be undone», ~1.475 palabras de cuerpo, 4 FAQ de
+  52-60 palabras (con FAQPage), sección «Sources» con las 4 URL que ya usan las guías (estudio arXiv +
+  DOI, expediente Manafort + Mother Jones), enlace al comprobador y 3 guías relacionadas. Enlazada desde
+  `guia-en-caja-negra` y `guia-en-comprobar` (4.ª relacionada) y desde la rejilla de la portada inglesa.
+- Hechos del estudio y de Manafort tal como los dejó verificados `.seo-audit/findings/fuentes.md`: once
+  herramientas, dos dejaban el texto, nueve lo quitaban conservando rastro de posición; los autores
+  acotaron nombres descartando candidatos (no «recuperaron el texto de cientos de documentos»); Manafort,
+  8-ene-2019, sin «en minutos». No se nombran PDFescape/PDFzorro (PDFzorro tiene un flujo «lock» que
+  rasteriza). Los escondites son solo los que ya describe el sitio; NO se habla de guardados
+  incrementales porque ninguna página del sitio los describe.
+- Honestidad sobre el comprobador: solo lee el texto de las páginas y busca sus patrones
+  (`comprobador/analyze.ts`), así que la guía NO le atribuye marcadores, adjuntos ni metadatos (esos los
+  enseña la herramienta de metadatos de PDF).
+- Tests: contadores +1 y nada más (`titulos-serp` y `cta-visible` 42→43, `estilo` 34→35, lista de
+  guías inglesas de `enlazado-interno-en` 11→12). Las `fuentes` van en orden de aparición (Manafort
+  primero): `traduccion-completa` compara las hojas de ES y EN por POSICIÓN y la guía española
+  equivalente cita las mismas 4 URL; con el estudio primero caían en la misma posición y el test las leía
+  como «cadena sin traducir».
+- `npm run fechas` falla en su primer paso con una página nueva (`generar.ts` exige la fecha antes de
+  que exista el HTML): se añadió a mano UNA línea provisional a `fechas.ts` y el propio script la
+  reescribió. Pendiente menor: que `gen-pages` tolere una página sin fecha.
+- La fecha de `check-pdf-redaction` pasa a 2026-10-29: su texto visible cambió (nuevo enlace relacionado).
+
+**Promesa falsa corregida (la detectó el agente al escribir esta guía):** la FAQ «¿Cómo compruebo si mi
+tachado se puede deshacer?» de la guía española de recuperar decía que el comprobador «revisa» los
+marcadores, adjuntos, metadatos y capas ocultas. Falso: `src/comprobador/analyze.ts` solo extrae el texto
+de las páginas. Ahora dice que el comprobador lee el texto de las páginas y que la herramienta de
+metadatos de PDF enseña el autor, los marcadores y los adjuntos.
+**Verificado:** tsc 0 · vitest 86 ficheros / 2349 tests en verde (2 skipped) · `npm run build` 0 y la
+página sale en `dist/`.
+**Pendiente:** publicar (no se ha desplegado ni hecho push) y pedir indexación en Search Console. Dos
+avisos que no se tocaron aquí: (1) la FAQ española «¿Cómo compruebo si mi tachado se puede deshacer?»
+dice que el comprobador revisa marcadores, adjuntos, metadatos y capas ocultas, pero el código solo lee
+el texto de las páginas; (2) el DOI del estudio redirige a petsymposium.org, que no resolvía desde esta
+máquina (`fuentes.md` §6).
+
+---
 ## 2026-10-29 · SEO (tanda 2) · Fechas, fuentes, descripciones, llms.txt, 404 y fuera los utm
 
 **Hecho:** segunda tanda del plan de la auditoría del mismo día (`.seo-audit/ACTION-PLAN.md`, local y

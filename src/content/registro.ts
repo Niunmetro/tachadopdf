@@ -358,6 +358,19 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/redact-passport' },
   },
+  // SEO EN, pieza de AUTORIDAD / AEO (2026-10-29, punto 16 del plan SEO): «can redacted text in a PDF
+  // be recovered?». Search Console mostraba consultas inglesas («how to see redacted text in pdf», «can a
+  // redacted pdf be unredacted») sin página buena, mientras la pieza española equivalente
+  // (guia-recuperar-tachado) es la mejor del sitio. Mismo tipo y misma honestidad (declara el hueco de
+  // glifos que también nos afecta), pero escrita para la consulta inglesa: NO forma pareja hreflang con la
+  // española (ver la nota de arriba). Generada, solo inglés; funnela al comprobador.
+  {
+    id: 'guia-en-recuperar',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { en: 'guide/recover-redacted-text-pdf' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {

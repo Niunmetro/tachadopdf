@@ -91,7 +91,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
       },
     ],
     enlaceComprobador: 'Check your PDF for free — see what text is still extractable',
-    relacionadas: ['guia-en-comprobar', 'guia-en-sin-subir', 'guia-en-sin-acrobat'],
+    relacionadas: ['guia-en-comprobar', 'guia-en-recuperar', 'guia-en-sin-subir', 'guia-en-sin-acrobat'],
   },
   {
     id: 'guia-en-comprobar',
@@ -154,7 +154,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
       },
     ],
     enlaceComprobador: 'Run the free check on your own PDF now',
-    relacionadas: ['guia-en-caja-negra', 'guia-en-sin-subir', 'guia-en-dsar'],
+    relacionadas: ['guia-en-caja-negra', 'guia-en-recuperar', 'guia-en-sin-subir', 'guia-en-dsar'],
   },
   {
     id: 'guia-en-tribunales',
@@ -832,6 +832,173 @@ export const GUIAS_EN: ContenidoGuia[] = [
         pregunta: 'Can I add "for [purpose] only" across the copy?',
         respuesta:
           'Yes, and it is a good idea: a note across the copy saying what it is for and the date makes it harder to reuse elsewhere. It does not replace removing the number and the machine-readable zone, though — do both.',
+      },
+    ],
+  },
+
+  // SEO EN, pieza de AUTORIDAD / AEO (2026-10-29), punto 16 del plan SEO (.seo-audit/ACTION-PLAN.md).
+  // Search Console mostraba consultas inglesas sin página buena («how to see redacted text in pdf»,
+  // «can a redacted pdf be unredacted») mientras la pieza española equivalente (guia-recuperar-tachado)
+  // es la mejor del sitio. NO es una traducción literal: mismo esqueleto, lista de escondites SOLO con
+  // los que ya describen el sitio (la pieza española, check-pdf-redaction, el limpiador de metadatos),
+  // y la sección de comprobación honesta sobre lo que el comprobador SÍ lee (texto de página + patrones).
+  // Hechos del estudio, de Manafort: .seo-audit/findings/fuentes.md (comprobado contra las fuentes).
+  // ⚠ Lo que dice del estudio: once herramientas; dos dejaban el texto; las otras nueve lo quitaban
+  // pero conservaban rastro de posición (como mínimo la anchura del hueco, en varias el desplazamiento
+  // de las letras vecinas); los autores ACOTARON nombres descartando candidatos de una lista, no
+  // «recuperaron el texto de cientos de documentos». No nombra PDFescape/PDFzorro (PDFzorro tiene un
+  // flujo «lock» que rasteriza). Manafort: 8-ene-2019, sin «en minutos». No hay "guardados
+  // incrementales" porque ninguna página del sitio los describe todavía.
+  {
+    id: 'guia-en-recuperar',
+    fuentes: [
+      // Orden = el de aparición en el texto (Manafort, luego el estudio). Importa un detalle más: el test
+      // traduccion-completa compara las hojas de ES y EN POR POSICIÓN, y la guía española equivalente
+      // (guia-recuperar-tachado) cita las mismas cuatro URL; con el estudio primero, las URL idénticas
+      // caerían en la misma posición y el test las leería como «cadena sin traducir».
+      {
+        etiqueta: 'United States v. Manafort docket: the redacted and corrected filings of 8 January 2019 (CourtListener)',
+        url: 'https://www.courtlistener.com/docket/6183591/united-states-v-manafort/',
+      },
+      {
+        etiqueta: "Mother Jones, 8 January 2019: Paul Manafort's lawyers tried and failed to redact a filing",
+        url: 'https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/',
+      },
+      {
+        etiqueta: 'Bland, Iyer and Levchenko: "Story Beyond the Eye: Glyph Positions Break PDF Text Redaction" (arXiv 2206.02285)',
+        url: 'https://arxiv.org/abs/2206.02285',
+      },
+      {
+        etiqueta: 'The same study in Proceedings on Privacy Enhancing Technologies, 2023 (DOI)',
+        url: 'https://doi.org/10.56553/popets-2023-0069',
+      },
+    ],
+    titulo: 'Can redacted text in a PDF be recovered? Why many redactions can be undone',
+    tituloEnlace: 'Can redacted text in a PDF be recovered?',
+    descripcion:
+      'Often, yes: if the redaction is only a black box, the text is still in the file and copies out. Where covered text survives, and how to check your own PDF.',
+    metaTitulo: 'Can redacted text in a PDF be recovered? Often, yes',
+    enlaceComprobador: 'Check your own PDF for free, without uploading it, to see what is still recoverable',
+    relacionadas: ['guia-en-caja-negra', 'guia-en-comprobar', 'guia-en-sin-subir'],
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Often, yes. If a PDF was "redacted" by drawing a black box over the text, the words are still in the file, and anyone can select them, copy them and paste them somewhere else. Whether redacted text can be recovered depends on the method used to cover it, not on how the page looks. The useful question is not "can I see it?" but "is the data still inside the file?"',
+      },
+      {
+        t: 'p',
+        texto:
+          'This page goes through which redactions can be undone and which cannot, with real cases and figures from our own tests. It also covers a limit that applies even to a redaction done properly: it can leave a trace of where the text was, and ours does too. Read it as a way to check your own documents before you send them.',
+      },
+      { t: 'h2', texto: 'Why a black box does not remove anything' },
+      {
+        t: 'p',
+        texto:
+          'Because the box is a shape drawn in front of the page, not an eraser. The text lives in the content of the PDF and the rectangle sits on top of it, like an opaque sticker on a written sheet. Peel the sticker off, or copy through it, and the sentence is still there in full. Most PDF editors let you draw that rectangle in two clicks, which is why it is the most common mistake.',
+      },
+      {
+        t: 'p',
+        texto:
+          'The best-known case involved the lawyers of Paul Manafort. On 8 January 2019 they filed a response in a US federal court with passages blacked out. Reporters copied the text from underneath the black boxes, and a corrected version of the filing was entered on the court docket the same day. The redaction was only a layer on top. It was not a rare technical glitch: it is what happens to any PDF covered with a rectangle.',
+      },
+      { t: 'h2', texto: 'Five places where data survives a redaction that looks finished' },
+      {
+        t: 'p',
+        texto:
+          'A PDF has many more corners than the part you see. We keep a set of test documents with invented data, one for each hiding place, and each one measures whether the data can still be recovered after redaction. These are the kinds of leak that come up again and again, apart from the gap described in the next section:',
+      },
+      {
+        t: 'ol',
+        items: [
+          'A box laid over live text: the black is a shape or annotation drawn on top, while the text stays in the page content and copies out. This is the Manafort case and the most common one.',
+          'A scanned page: a black box on an image is one image laid over another, so it can often be lifted off, or the contrast raised until what lies beneath shows through. A plain scan has no text layer at all, so a check that reads only text passes over it in silence. And if the scan was made searchable, there may be invisible text under the picture even though you cannot see it.',
+          'A bookmark: data typed into the title of a bookmark in the document outline does not show on the page and survives the redaction, and a check of the page text does not look there.',
+          'Attachments and metadata: an embedded file, the thumbnail the PDF keeps of each page (which can be a picture of the page without the redaction), the alternative text of an image, annotations, the title, author, subject and keywords fields (which often carry a file name, a client name or a case number) and the separate XMP block can all keep the data even when the page looks clean.',
+          'A switched-off layer: data drawn inside an optional layer that the document declares hidden does not appear when the file opens, but it is in the page content and one click in the layers panel brings it back.',
+        ],
+      },
+      {
+        t: 'p',
+        texto:
+          'The lesson is not "this tool fails and that one works". It is that covering and deleting are different things, and that a file can look clean on screen while carrying the data in several of these places at once.',
+      },
+      { t: 'h2', texto: 'If the text is really deleted, is it safe?' },
+      {
+        t: 'p',
+        texto:
+          'Almost, but not entirely. When text is genuinely removed, the gap it occupied stays. The word that followed does not move to fill the space, so a blank remains whose width is exactly that of the deleted text, and that width carries information. In our own tests, the test ID number 12345678Z with a space on each side, set in 11-point Helvetica, leaves a gap of 61.765 points, and twenty common Spanish first names in the same font and size come out at twenty different widths. With a short list of candidates, measuring the gap can be enough to work out which word was removed.',
+      },
+      {
+        t: 'p',
+        texto:
+          'This is not only our observation. A study, "Story Beyond the Eye: Glyph Positions Break PDF Text Redaction", by Maxwell Bland, Anushya Iyer and Kirill Levchenko (University of Illinois Urbana-Champaign), circulated as an arXiv preprint in 2022 and published in 2023 in Proceedings on Privacy Enhancing Technologies. It examined eleven PDF redaction tools, Adobe Acrobat among them. Two left the text marked for redaction inside the file; the other nine removed it but kept traces of its position: at least the width of the gap and, in several, the displacement of the neighbouring letters. Using that, the authors narrowed down the redacted names in hundreds of real redactions in official reports and freedom-of-information responses from the United States. They did not recover the text outright: they ruled out candidates from a list, and in only a few cases was a single possible name left.',
+      },
+      {
+        t: 'p',
+        texto:
+          'The same study also measured the cruder failure at scale. It reports more than 6,000 redacted names, in more than 700 publicly accessible court documents, where the redaction had not removed the text at all, so the names could be read by copying and pasting.',
+      },
+      {
+        t: 'nota',
+        texto:
+          'This applies to us too, and we say so because it is true. TachadoPDF removes the text from the file but does not close up the line, so the gap stays. The report says so in plain words and, if it matters for a particular document, tells you to convert it to an image before you send it. The study found that turning the page into an image appears to be an effective defence, although some of the tools that did so still leaked the approximate width of the text.',
+      },
+      { t: 'h2', texto: 'How can I check whether my own redaction can be undone?' },
+      {
+        t: 'p',
+        texto: 'Run the copy-and-paste test on the finished file, the one you are about to send:',
+      },
+      {
+        t: 'ol',
+        items: [
+          'Open the redacted PDF.',
+          'Select across the black box, or select the whole document with Ctrl+A (Cmd+A on a Mac), and copy.',
+          'Paste into a plain text editor and search for what you meant to remove.',
+        ],
+      },
+      {
+        t: 'p',
+        texto:
+          'If the words appear, they were covered, not deleted. If the document is a scan or a photo, also raise the brightness and contrast over the black area and see whether anything shows through. This quick test catches the most common failure, the box laid over live text. It cannot see the others: the gap, a bookmark, an attachment, the metadata or a switched-off layer do not show up by eye.',
+      },
+      {
+        t: 'p',
+        texto:
+          'For a more thorough read of the page text, use the free checker on this site. It opens the PDF in your own browser, so the file is never uploaded, and lists which of the data formats it recognises are still extractable and on which pages. It looks for email addresses and Spanish identifiers, not for names, and it names the pages that have no text layer, which it cannot read and which need checking by eye. For the metadata, bookmarks and attachments, the free PDF metadata tool shows what the file carries and offers a clean copy.',
+      },
+      { t: 'h2', texto: 'What does it take for data to disappear for real?' },
+      {
+        t: 'p',
+        texto:
+          'The data has to be removed from the contents of the file, not covered. If it sits on a scanned image, the pixels of that area have to be cleared. And then someone has to reopen the finished file and search again to confirm it is gone. That last step is what separates a reliable redaction from an assumption.',
+      },
+      {
+        t: 'p',
+        texto:
+          'TachadoPDF removes the text and clears the pixels of the areas you mark, then reopens the file it produced and re-reads the text of its pages, its metadata and the other text strings it keeps inside. Automatic detection covers email addresses and Spanish identifiers; anything else you mark by hand. If something comes back, the download is blocked and you are told which page. If something cannot be checked, such as a scanned page, the report says so instead of marking it clean. And where the method itself has a limit, the gap, the report states it rather than leaving it out. The rule in the end is simple: do not trust that data "does not show"; check that it is no longer inside the file.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: 'Can a redacted PDF be unredacted?',
+        respuesta:
+          'Sometimes, depending on how it was redacted. If the redaction is only a black box over live text, the text is still in the file and copies straight out. If the text was truly removed, the words are gone, but the gap they occupied can still help narrow down what they said.',
+      },
+      {
+        pregunta: 'How do I see the text under a black box in a PDF?',
+        respuesta:
+          'Select across the black box, copy, and paste into a plain text editor: if the box only covered the text, the words appear. That is a check for your own documents. On a scanned page, raise brightness and contrast over the box. Use it on files you are about to send, to find out whether the redaction would hold.',
+      },
+      {
+        pregunta: 'Does real redaction leave any trace?',
+        respuesta:
+          'Yes, it can leave the gap. When text is truly removed, the words that followed do not move, so a gap of the exact width remains, and that width can help rule out candidates from a short list. A study found position traces in all nine tools that removed the text. TachadoPDF does too, and its report says so.',
+      },
+      {
+        pregunta: 'Is a black box over a scanned document safe?',
+        respuesta:
+          'Not on its own. On a scan, a box added in a PDF editor is one image laid over another, so it can often be lifted off, or the contrast raised until what lies beneath shows through. If the scan was made searchable, invisible text may also sit under the picture. The pixels of that area have to be cleared.',
       },
     ],
   },
