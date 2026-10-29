@@ -4,6 +4,23 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · legal + ruta del dinero · correo único y «recordar la clave Pro» en producción
+
+**Decisión:** Ángel dio permiso explícito en el chat («tienes permiso para hacer lo que recomiendes»),
+que cubre los dos cambios legales que esperaban APROBADO-ANGEL.
+
+**Hecho:**
+- Aviso legal ES/EN: el correo de contacto pasa del gmail personal a `admin@tachadopdf.com` (el mismo
+  que ya daba la FAQ de compra; el dominio tiene MX de IONOS). Un solo correo en todo el sitio.
+- Fusionada `feat/recordar-licencia-pro` (3a36371): al verificar una clave Pro válida se recuerda en
+  `localStorage` y se re-verifica sola al volver. Conflicto con la carga diferida de mupdf resuelto
+  (se conservan los `import()` perezosos y se añade el import de `persistencia`).
+- Privacidad ES y EN declaran ahora lo que se guarda en el dispositivo (contador de cuota y, con Pro,
+  la clave) y que la clave recordada se vuelve a verificar con Gumroad al abrir la app. El único
+  egress sigue siendo Gumroad.
+
+**Verificación:** tsc 0 · 87 ficheros / 2355 tests en verde · build 0.
+---
 ## 2026-10-29 · SEO · Guía inglesa «Can redacted text in a PDF be recovered?» (punto 16 del plan)
 
 **Hecho:** cierra el punto 16 del plan de la auditoría (`.seo-audit/ACTION-PLAN.md`, local y fuera de
