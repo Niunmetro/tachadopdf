@@ -18,6 +18,7 @@
 
 type Engine = typeof import('./engine');
 type Pipeline = typeof import('./pipeline');
+type Metadatos = typeof import('./metadata');
 
 /** Exportada solo para probar la política de reintento (ver `perezoso.test.ts`). */
 export function memorizar<T>(cargar: () => Promise<T>): () => Promise<T> {
@@ -36,6 +37,9 @@ export const cargarEngine: () => Promise<Engine> = memorizar(() => import('./eng
 
 /** `detectAutomaticBoxes` y `processDocument` (arrastra el motor y el generador del informe). */
 export const cargarPipeline: () => Promise<Pipeline> = memorizar(() => import('./pipeline'));
+
+/** `analizarPdf` y `stripMetadata` del limpiador de metadatos de PDF (también tiran de mupdf). */
+export const cargarMetadatos: () => Promise<Metadatos> = memorizar(() => import('./metadata'));
 
 /**
  * Empieza a bajar el motor SIN esperar y sin hacer ruido: se llama cuando el visitante muestra

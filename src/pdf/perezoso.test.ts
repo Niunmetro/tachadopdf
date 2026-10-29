@@ -26,6 +26,7 @@ const ENTRADAS = [
   'comprobador/main.ts', // comprobador (ES y EN)
   'imagen/main.ts', // redactor de imágenes (no abre PDF)
   'metadatos/main.ts', // limpiador de metadatos de foto (no abre PDF)
+  'metadatos-pdf/main.ts', // limpiador de metadatos de PDF (carga mupdf al abrir el PDF)
 ];
 
 /** Módulos que arrastran mupdf: lo importan ellos mismos o por un import estático. */
