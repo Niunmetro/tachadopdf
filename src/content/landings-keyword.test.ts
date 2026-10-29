@@ -142,8 +142,9 @@ describe('las cinco landings de cola larga sectorial existen y están integradas
 
       it('da acceso al comprobador gratuito Y a la herramienta (los dos CTA)', () => {
         expect(guia?.enlaceComprobador).toBeDefined();
-        expect(html).toContain('../../comprobador/?utm_source=guia');
-        expect(html).toContain('../../?utm_source=guia');
+        expect(html).toContain('href="../../comprobador/"');
+        expect(html).toContain('href="../../"');
+        expect(html).not.toContain('utm_');
       });
 
       it('está en el sitemap', () => {

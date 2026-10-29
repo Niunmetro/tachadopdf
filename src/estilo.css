@@ -209,6 +209,8 @@ button[disabled] { opacity: .45; cursor: not-allowed; }
    solo en su línea. */
 .credito { margin-top: var(--e-4); }
 .credito a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+.codigo-fuente { margin-top: var(--e-4); }
+.codigo-fuente a { display: inline-flex; align-items: center; min-height: 2.75rem; }
 
 @media (max-width: 640px) {
   /* LA PRIMERA PANTALLA, TAMBIÉN EN EL HERO-FIRST. El rediseño premium pone un hero con espécimen

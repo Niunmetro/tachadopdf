@@ -43,9 +43,9 @@ describe('página /metadatos/ (limpiador de metadatos)', () => {
     expect(html).toMatch(/<div id="md-stage" hidden>/);
   });
 
-  it('el input acepta imágenes y el CTA lleva utm_source=metadatos', () => {
+  it('el input acepta imágenes y el CTA no lleva parámetros de campaña', () => {
     expect(html).toContain('accept="image/*"');
-    expect(html).toContain('utm_source=metadatos');
+    expect(html).not.toContain('utm_');
   });
 
   it('tiene el <title> exacto orientado a búsqueda', () => {

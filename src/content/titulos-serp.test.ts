@@ -65,6 +65,34 @@ function tituloServido(ruta: string): string {
     .replace(/&quot;/g, '"');
 }
 
+/**
+ * Y la descripción: por encima de ~155 caracteres Google la corta con puntos suspensivos y el
+ * resultado pierde la segunda mitad, que suele ser la promesa (gratis, sin subir nada). Auditoría
+ * del 2026-10-29: 27 de las 42 páginas pasaban de 155, hasta 316.
+ */
+const TOPE_DESCRIPCION = 155;
+
+function descripcionServida(ruta: string): string {
+  const html = readFileSync(resolve(RAIZ, ruta), 'utf-8');
+  const cruda = /<meta name="description" content="([^"]*)"/.exec(html)?.[1] ?? '';
+  return cruda
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+}
+
+describe('la descripción servida de cada página cabe en la SERP', () => {
+  it.each(PAGINAS_DEL_SITIO)('%s', (ruta) => {
+    const descripcion = descripcionServida(ruta);
+    expect(descripcion.length, `descripción de ${ruta}: «${descripcion}»`).toBeGreaterThan(70);
+    expect(descripcion.length, `descripción de ${ruta}: «${descripcion}»`).toBeLessThanOrEqual(
+      TOPE_DESCRIPCION,
+    );
+  });
+});
+
 describe('el <title> servido de cada página cabe en la SERP', () => {
   it('el barrido ve las cuarenta y dos páginas del sitio', () => {
     expect(PAGINAS_DEL_SITIO.length).toBe(42);

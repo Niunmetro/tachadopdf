@@ -43,9 +43,9 @@ describe('página /metadatos-pdf/ (limpiador de metadatos de PDF)', () => {
     expect(html).toMatch(/<div id="mdp-stage" hidden>/);
   });
 
-  it('el input acepta PDF y el CTA lleva utm_source=metadatos-pdf', () => {
+  it('el input acepta PDF y el CTA no lleva parámetros de campaña', () => {
     expect(html).toContain('accept="application/pdf"');
-    expect(html).toContain('utm_source=metadatos-pdf');
+    expect(html).not.toContain('utm_');
   });
 
   it('tiene el <title> exacto orientado a búsqueda', () => {

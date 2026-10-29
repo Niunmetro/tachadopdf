@@ -3,7 +3,9 @@
 // LIMPIA con `stripMetadata` —el mismo borrado verificado del producto, que relee el binario para
 // confirmar que los campos se fueron—. El PDF no sale del navegador.
 import { contenidoDe, localeDelDocumento } from '../content/index';
-import { analizarPdf, type AnalisisPdf, stripMetadata } from '../pdf/metadata';
+// mupdf (wasm) NO se importa de forma estática: se pide al abrir un PDF (ver src/pdf/perezoso.ts).
+import type { AnalisisPdf } from '../pdf/metadata';
+import { MotorNoCargadoError, cargarMetadatos, precargarMetadatos } from '../pdf/perezoso';
 
 const COPIA = contenidoDe(localeDelDocumento(document)).metadatosPdf;
 
@@ -100,12 +102,13 @@ async function analizar(f: File, el: Elementos): Promise<void> {
   fichero = f;
   try {
     const bytes = new Uint8Array(await f.arrayBuffer());
+    const { analizarPdf } = await cargarMetadatos();
     const analisis = await analizarPdf(bytes);
     pintarRevelado(el, analisis);
     el.dropzone.hidden = true;
     el.stage.hidden = false;
-  } catch {
-    el.error.textContent = COPIA.errorGenerico;
+  } catch (causa) {
+    el.error.textContent = causa instanceof MotorNoCargadoError ? COPIA.errorMotor : COPIA.errorGenerico;
   }
 }
 
@@ -118,6 +121,7 @@ async function descargar(el: Elementos): Promise<void> {
   el.download.textContent = COPIA.procesando;
   try {
     const bytes = new Uint8Array(await f.arrayBuffer());
+    const { stripMetadata } = await cargarMetadatos();
     const { bytes: limpio } = await stripMetadata(bytes);
     const nombre = f.name.replace(/\.[^.]+$/, '') || 'documento';
     const blob = new Blob([limpio as BlobPart], { type: 'application/pdf' });
@@ -129,8 +133,8 @@ async function descargar(el: Elementos): Promise<void> {
     enlace.click();
     enlace.remove();
     window.setTimeout(() => URL.revokeObjectURL(href), 1000);
-  } catch {
-    el.error.textContent = COPIA.errorGenerico;
+  } catch (causa) {
+    el.error.textContent = causa instanceof MotorNoCargadoError ? COPIA.errorMotor : COPIA.errorGenerico;
   } finally {
     el.download.disabled = false;
     el.download.textContent = etiquetaPrevia;
@@ -140,6 +144,9 @@ async function descargar(el: Elementos): Promise<void> {
 export function inicializar(): void {
   const el = localizar();
   if (el === null) return;
+  // mupdf en segundo plano desde ya (ver src/pdf/perezoso.ts): los controles no esperan por él y,
+  // una vez cargada la página, funciona aunque se corte la conexión.
+  precargarMetadatos();
   el.file.addEventListener('change', () => {
     const f = el.file.files?.[0];
     if (f) void analizar(f, el);

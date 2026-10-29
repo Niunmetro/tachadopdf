@@ -184,7 +184,7 @@
     }
     </style>
     <title>Redact a PDF and verify it worked — TachadoPDF</title>
-    <meta name="description" content="A black box doesn't delete text — it stays in the PDF and copies out. TachadoPDF removes it for real, re-checks the file, and gives you an attachable verification report." />
+    <meta name="description" content="A black box doesn't delete PDF text: it copies straight out. Remove it for real in your browser, re-check the file, and get a verification report." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/" />
     <link rel="alternate" hreflang="es" href="https://www.tachadopdf.com/" />
     <link rel="alternate" hreflang="en" href="https://www.tachadopdf.com/en/" />
@@ -311,8 +311,12 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
+      "@id": "https://www.tachadopdf.com/#organization",
       "name": "TachadoPDF",
       "url": "https://www.tachadopdf.com",
+      "sameAs": [
+        "https://github.com/Niunmetro/tachadopdf"
+      ],
       "logo": "https://www.tachadopdf.com/og-image-en.png",
       "description": "Redacts personal data from a PDF by deleting it from the file, entirely in the browser, with a technical verification report."
     }
@@ -447,8 +451,8 @@
               <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
                 <p class="hero__dolor" style="margin: 0; font-size: var(--t-400); line-height: var(--lh-texto); color: rgba(255,255,255,0.88); max-width: var(--medida);">A black rectangle over a PDF doesn't remove anything. The words stay in the file and copy straight back out — that is how reporters read the passages Paul Manafort's lawyers had blacked out in a court filing on 8 January 2019, and why a corrected version was on the public docket the same day. It isn't a rare accident either: the UK's Information Commissioner's Office fined the Police Service of Northern Ireland £750,000 after a hidden worksheet in a spreadsheet released under freedom of information exposed all 9,483 of its officers and staff. The failure is silent. Nothing looks wrong until someone checks.</p>
                 <aside style="border: 1px solid rgba(255,255,255,0.28); border-radius: var(--radio); padding: var(--e-6); align-self: start;">
-                  <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">15.000&nbsp;€</p>
-                  <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">AEPD · Expediente PS/00378/2019</p>
+                  <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">£750,000</p>
+                  <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">ICO · Penalty to the PSNI, October 2024</p>
                 </aside>
               </div>
             </section>
@@ -659,6 +663,7 @@ Contact. For any question about this policy, write to the contact email in the l
           <a href="remove-metadata/">See the hidden metadata in a photo</a>
           <a href="pdf-metadata/">See the hidden metadata in a PDF</a>
         </p>
+        <p class="pie codigo-fuente"><a href="https://github.com/Niunmetro/tachadopdf" target="_blank" rel="noopener">Source code on GitHub (AGPL-3.0)</a></p>
         <p class="pie credito"><a href="https://www.fachadaweb.es/" target="_blank" rel="noopener">Website by Fachada</a></p>
       </footer>
     </div>

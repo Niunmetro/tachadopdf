@@ -78,7 +78,7 @@ describe('las guías inglesas están enlazadas y con títulos aptos para la SERP
 
       it('enlaza a la herramienta gratuita (el comprobador /en/checker/) con su UTM', () => {
         expect(guia?.enlaceComprobador).toBeDefined();
-        expect(html).toContain('href="../../checker/?utm_source=guia"');
+        expect(html).toContain('href="../../checker/"');
       });
 
       it('lleva un bloque «Related guides» con 2-4 enlaces a OTRAS guías inglesas', () => {
@@ -92,7 +92,9 @@ describe('las guías inglesas están enlazadas y con títulos aptos para la SERP
         }
         expect(html).toContain('<nav class="relacionadas"');
         // Los enlaces relacionados apuntan a hermanas por ruta relativa (../slug/).
-        const enlacesNav = [...html.matchAll(/<li><a href="([^"]+)">/g)].map((m) => m[1] ?? '');
+        // Solo los del <nav>: la sección «Sources» de algunas guías enlaza fuera a propósito.
+        const nav = /<nav class="relacionadas"[\s\S]*?<\/nav>/.exec(html)?.[0] ?? '';
+        const enlacesNav = [...nav.matchAll(/<li><a href="([^"]+)">/g)].map((m) => m[1] ?? '');
         expect(enlacesNav.length).toBeGreaterThanOrEqual(2);
         for (const href of enlacesNav) {
           expect(href.startsWith('../'), `enlace relacionado no relativo: ${href}`).toBe(true);

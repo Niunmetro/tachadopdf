@@ -27,8 +27,8 @@ describe('página /comprobador/', () => {
     expect(json.offers.price).toBe('0');
   });
 
-  it('el CTA lleva utm_source=comprobador', () => {
-    expect(html).toContain('utm_source=comprobador');
+  it('el CTA no lleva parámetros de campaña (sin analítica, solo duplicaban la URL)', () => {
+    expect(html).not.toContain('utm_');
   });
 
   it('tiene el <title> exacto orientado a búsqueda', () => {

@@ -58,8 +58,8 @@ describe('página /imagen/ (redactor de imágenes)', () => {
     expect(html).toContain('accept="image/*"');
   });
 
-  it('el CTA lleva utm_source=imagen', () => {
-    expect(html).toContain('utm_source=imagen');
+  it('el CTA no lleva parámetros de campaña', () => {
+    expect(html).not.toContain('utm_');
   });
 
   it('tiene el <title> exacto orientado a búsqueda', () => {

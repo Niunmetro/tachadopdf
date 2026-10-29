@@ -184,12 +184,12 @@
     }
     </style>
     <title>Redact a subject access request (DSAR) safely · TachadoPDF</title>
-    <meta name="description" content="Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow that fits the one-month clock." />
+    <meta name="description" content="Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow for the one-month clock." />
     <link rel="canonical" href="https://www.tachadopdf.com/en/guide/redact-subject-access-request/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="Redacting a subject access request response without exposing third parties" />
-    <meta property="og:description" content="Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow that fits the one-month clock." />
+    <meta property="og:description" content="Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow for the one-month clock." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image-en.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/en/guide/redact-subject-access-request/" />
     <meta property="og:locale" content="en_GB" />
@@ -198,16 +198,22 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Redacting a subject access request response without exposing third parties",
-      "description": "Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow that fits the one-month clock.",
+      "description": "Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow for the one-month clock.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-subject-access-request/",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       }
     }
     </script>
@@ -227,6 +233,7 @@
       ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
       li { margin: 0 0 var(--e-2); }
       .lede { color: var(--tinta-suave); }
+      .guia-fecha { color: var(--tinta-suave); font-size: var(--t-200); margin: 0 0 var(--e-6); }
       /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
          superado, y no se gasta en un aparte de una guia. */
       .nota {
@@ -254,6 +261,9 @@
       .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
       .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
       .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+      .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+      .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
     </style>
   </head>
   <body>
@@ -268,6 +278,7 @@
     </header>
     <main>
       <h1>Redacting a subject access request response without exposing third parties</h1>
+      <p class="guia-fecha">Updated <time datetime="2026-10-29">29 October 2026</time></p>
       <p>A subject access request is the one disclosure where the reader will examine every line, has a statutory right to complain, and already suspects you of something. It also has a clock: normally one month.</p>
       <h2>Why the risk is concentrated here</h2>
       <p>A DSAR bundle is assembled quickly, from mailboxes and shared drives, by whoever is available. Third-party personal data has to come out, and the material that has to come out is scattered through email threads, attachments and spreadsheets rather than sitting in one tidy field.</p>
@@ -290,6 +301,13 @@
         <li>Keep the verification record with the response, so that if the requester complains you can show what you checked and when.</li>
       </ol>
       <p class="nota">General information, not legal advice. TachadoPDF removes and verifies; deciding what a data subject is entitled to receive is a judgement it cannot make for you.</p>
+      <section class="fuentes">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/">ICO: £750,000 monetary penalty to the Police Service of Northern Ireland (3 October 2024)</a></li>
+          <li><a href="https://ico.org.uk/media2/migrated/4031177/psni-penalty-notice.pdf">ICO penalty notice to the PSNI (PDF, 76 pages)</a></li>
+        </ul>
+      </section>
       <nav class="relacionadas" aria-label="Guides">
         <h2>Guides</h2>
         <ul>
@@ -298,8 +316,8 @@
           <li><a href="../redact-payslips-hr-documents/">Sending payslips and HR documents as PDFs</a></li>
         </ul>
       </nav>
-      <a class="cp-cta" href="../../checker/?utm_source=guia">Check a DSAR bundle for hidden data — free</a>
-      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+      <a class="cp-cta" href="../../checker/">Check a DSAR bundle for hidden data — free</a>
+      <a class="cp-cta" href="../../">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
 </html>

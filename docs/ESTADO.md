@@ -86,6 +86,12 @@
   sale de tu equipo», documento de ejemplo, aviso de alcance— y esas dos frases son texto
   INDEXABLE. Con un solo hueco al final, los controles caían detrás de los párrafos y el orden se
   invertía.
+- **Fechas de las páginas (2026-10-29):** `src/content/fechas.ts` lo genera `npm run fechas` desde git y
+  alimenta el `<lastmod>` del sitemap y el Article de las guías. Al cambiar páginas: `npm run fechas`
+  antes de commitear (genera, fecha por cambio de TEXTO VISIBLE y copia las fechas al Article escrito a
+  mano de las estáticas); `fechas.test.ts` exige que todo coincida. También se generan `public/llms.txt` y el sitemap.
+- **El motor PDF (mupdf) se carga con `import()` en segundo plano** (`src/pdf/perezoso.ts`): la página
+  no espera por él y, una vez cargada, funciona sin conexión (promesa pública); `perezoso.test.ts` falla si alguien vuelve a importarlo de forma estática en una entrada.
 - Añadir un idioma = añadir datos a `src/content/registro.ts` + un fichero de contenido.
   `Contenido = typeof es` hace que `tsc --noEmit` sea el linter de i18n: una clave sin traducir
   NO compila.

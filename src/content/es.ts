@@ -7,7 +7,7 @@
 // APROBADO-ANGEL): aquí se importan, no se copian.
 
 import { CHECKBOX_LABEL } from '../app';
-import { PRECIO_PRO } from '../config';
+import { PRECIO_PRO, URL_REPO } from '../config';
 import { FREE_MAX_PAGES, FREE_MONTHLY_LIMIT } from '../freemium/quota';
 import {
   AVISO_PRINCIPAL,
@@ -72,6 +72,7 @@ const APP_ES: CopiaApp = {
     `No se pudo abrir "${fichero}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`,
   passwordPrompt: 'Contraseña del PDF',
   errorRender: 'No se pudo renderizar la página',
+  cargandoMotor: 'Preparando el motor de tachado en tu navegador…',
   errorProcesado: (detalle) =>
     `Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; si persiste, el archivo puede no ser compatible. (Detalle técnico: ${detalle})`,
   residuosEnLote:
@@ -215,6 +216,8 @@ const COMPROBADOR_ES: CopiaComprobador = {
     'Este PDF está protegido con contraseña. Escríbela en el campo de contraseña y vuelve a seleccionar el archivo.',
   errorGenerico:
     'No se ha podido analizar el PDF. Comprueba que el archivo no esté dañado e inténtalo de nuevo.',
+  errorMotor:
+    'No se pudo cargar el motor de PDF (¿sin conexión?). Recarga la página con conexión y vuelve a intentarlo.',
   avisoEscaneadas:
     'Esta página no contiene texto extraíble (probablemente escaneada). La detección automática no puede leerla: revísala visualmente.',
   pagina: (numero) => `Página ${numero}`,
@@ -282,7 +285,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Ocultar datos personales de un currículum en PDF',
     metaTitulo: 'Cómo ocultar datos personales de un currículum en PDF',
     descripcion:
-      'Antes de subir tu CV a un portal de empleo o mandárselo a una empresa, conviene dejar fuera el DNI, la dirección y hasta la foto. Por qué el recuadro negro no basta y cómo quitar esos datos del archivo, en tu navegador y sin subirlo.',
+      'Antes de mandar tu CV a una empresa o a un portal de empleo, quita el DNI, la dirección y hasta la foto. Cómo borrarlos del PDF, no taparlos, sin subirlo.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu currículum, sin subirlo',
     cuerpo: [
       {
@@ -338,7 +341,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Ocultar datos de terceros en la prueba documental',
     metaTitulo: 'Ocultar datos de terceros en documentos PDF para un juicio',
     descripcion:
-      'Aportar un documento a un procedimiento no autoriza a exponer de paso los datos de terceros ajenos al asunto. Qué conviene tachar, por qué el recuadro negro falla en un documento escaneado y cómo borrarlo sin que se pueda recuperar.',
+      'Aportar un documento a un juicio no autoriza a exponer datos de terceros ajenos al asunto. Qué tachar y cómo borrarlo del PDF sin que se pueda recuperar.',
     enlaceComprobador: 'Comprueba gratis qué datos personales contiene el documento',
     cuerpo: [
       {
@@ -388,7 +391,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Censurar un PDF antes de publicarlo en internet',
     metaTitulo: 'Cómo censurar un PDF antes de publicarlo en internet',
     descripcion:
-      'Publicar un documento en una web, un tablón digital o un boletín lo deja expuesto a todo internet y a los buscadores, y de forma indefinida. Qué borrar antes de colgar un PDF y cómo hacerlo para que el dato no se pueda recuperar ni copiar.',
+      'Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere.',
     enlaceComprobador: 'Comprueba gratis qué datos quedarían expuestos al publicarlo',
     cuerpo: [
       {
@@ -438,7 +441,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Ocultar los datos de alumnos en un PDF',
     metaTitulo: 'Ocultar datos de alumnos en un PDF antes de compartirlo',
     descripcion:
-      'Listas de notas, actas de evaluación, autorizaciones y orlas llevan datos de menores, con una protección reforzada. Qué tapar antes de compartir un PDF con las familias o subirlo a la plataforma, y cómo hacerlo sin que el dato se recupere.',
+      'Notas, actas de evaluación y autorizaciones llevan datos de menores, con protección reforzada. Qué tapar antes de compartir el PDF y cómo borrarlo bien.',
     enlaceComprobador: 'Comprueba gratis qué datos de alumnos contiene el PDF',
     cuerpo: [
       {
@@ -489,7 +492,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Qué tapar en una copia del DNI antes de enviarla',
     metaTitulo: 'Qué tapar en una copia del DNI antes de enviarla',
     descripcion:
-      'Una copia de tu DNI basta para que alguien te suplante. Antes de mandarla para un alquiler, un alta o un registro, conviene tapar lo que no haga falta y borrarlo de verdad, no con un recuadro que se quita en dos clics.',
+      'Una copia de tu DNI basta para suplantarte. Qué tapar antes de mandarla para un alquiler o un alta, y cómo borrarlo de verdad, no con un recuadro encima.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu copia del DNI, sin subirla',
     cuerpo: [
       {
@@ -550,6 +553,24 @@ const GUIAS_ES: ContenidoGuia[] = [
   {
     id: 'guia-recuperar-tachado',
     relacionadas: ['guia-rectangulo-negro', 'guia-info-oculta-pdf', 'guia-fincas'],
+    fuentes: [
+      {
+        etiqueta: 'Bland, Iyer y Levchenko: «Story Beyond the Eye: Glyph Positions Break PDF Text Redaction» (arXiv 2206.02285, en inglés)',
+        url: 'https://arxiv.org/abs/2206.02285',
+      },
+      {
+        etiqueta: 'El mismo estudio en Proceedings on Privacy Enhancing Technologies, 2023 (DOI)',
+        url: 'https://doi.org/10.56553/popets-2023-0069',
+      },
+      {
+        etiqueta: 'Expediente de Estados Unidos contra Manafort: escritos del 8 de enero de 2019 (CourtListener, en inglés)',
+        url: 'https://www.courtlistener.com/docket/6183591/united-states-v-manafort/',
+      },
+      {
+        etiqueta: 'Mother Jones, 8 de enero de 2019: el tachado fallido del escrito de Manafort (en inglés)',
+        url: 'https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/',
+      },
+    ],
     titulo:
       '¿Se puede recuperar el texto tachado de un PDF? Por qué muchos tachados se pueden deshacer',
     tituloEnlace: '¿Se puede recuperar un texto tachado de un PDF?',
@@ -577,7 +598,7 @@ const GUIAS_ES: ContenidoGuia[] = [
       {
         t: 'p',
         texto:
-          'El caso más conocido lo protagonizó la defensa de Paul Manafort. El 8 de enero de 2019 presentó ante un tribunal un escrito con varios párrafos tapados en negro; los periodistas seleccionaron el texto, lo pegaron en un procesador de textos y leyeron en minutos lo que se pretendía ocultar. El tachado era solo una capa por encima. No fue un fallo informático raro: es exactamente lo que le pasa a cualquier PDF tapado con un recuadro.',
+          'El caso más conocido lo protagonizó la defensa de Paul Manafort. El 8 de enero de 2019 presentó ante un tribunal un escrito con varios párrafos tapados en negro; los periodistas seleccionaron el texto, lo pegaron en un procesador de textos y leyeron lo que se pretendía ocultar. El tachado era solo una capa por encima. No fue un fallo informático raro: es exactamente lo que le pasa a cualquier PDF tapado con un recuadro.',
       },
       { t: 'h2', texto: 'Y si borro el texto de verdad, ¿ya está a salvo?' },
       {
@@ -588,7 +609,7 @@ const GUIAS_ES: ContenidoGuia[] = [
       {
         t: 'p',
         texto:
-          'No es una teoría nuestra. Un estudio académico publicado en 2022 —«Story Beyond the Eye: Glyph Positions Break PDF Text Redaction», arXiv 2206.02285— examinó once herramientas de tachado de uso común, Adobe Acrobat entre ellas, y consiguió recuperar el texto de cientos de documentos reales ya tachados aprovechando justo esa información de posición. Dos de las once ni siquiera llegaban a borrar el texto marcado; el resto lo borraban pero dejaban el rastro de las posiciones.',
+          'No es una teoría nuestra. Un estudio académico —«Story Beyond the Eye: Glyph Positions Break PDF Text Redaction», de Maxwell Bland, Anushya Iyer y Kirill Levchenko, difundido en arXiv en 2022 y publicado en 2023 en Proceedings on Privacy Enhancing Technologies— examinó once herramientas de tachado de PDF, Adobe Acrobat entre ellas. Dos dejaban el texto marcado dentro del archivo; las otras nueve lo eliminaban, pero conservaban rastro de su posición: como mínimo la anchura del hueco y, en varias, el desplazamiento de las letras vecinas. Con esa información, los autores acotaron los nombres ocultos en centenares de tachados reales de informes oficiales y respuestas de transparencia de Estados Unidos: no recuperaron el texto sin más, sino que descartaron candidatos de una lista, y solo en unos pocos casos quedó un único nombre posible.',
       },
       {
         t: 'nota',
@@ -675,7 +696,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: '¿Qué información oculta lleva un PDF?',
     metaTitulo: 'Información oculta en un PDF: metadatos, autor y fechas',
     descripcion:
-      'Un PDF guarda por dentro más de lo que enseña: tu nombre como autor, el programa con que se hizo, las fechas, los marcadores, los adjuntos y hasta la ubicación de las fotos que contiene. Repasamos qué lleva escondido un PDF, por qué importa al compartirlo y cómo verlo y quitarlo sin subir el archivo a ningún sitio.',
+      'Un PDF guarda más de lo que enseña: autor, programa, fechas, marcadores, adjuntos y la ubicación de sus fotos. Qué lleva escondido y cómo verlo y quitarlo.',
     enlaceComprobador: 'Comprueba gratis, sin subir el archivo, qué datos contiene tu PDF',
     cuerpo: [
       {
@@ -762,11 +783,12 @@ const GUIAS_ES: ContenidoGuia[] = [
   {
     id: 'guia-como-funciona',
     relacionadas: ['guia-sin-subir', 'guia-recuperar-tachado', 'guia-info-oculta-pdf'],
+    fuentes: [{ etiqueta: 'Código fuente de TachadoPDF en GitHub (licencia AGPL-3.0)', url: URL_REPO }],
     titulo: 'Cómo funciona TachadoPDF y por qué tus datos no salen del navegador',
     tituloEnlace: 'Cómo funciona TachadoPDF',
     metaTitulo: 'Cómo funciona TachadoPDF: tus datos no salen del navegador',
     descripcion:
-      'TachadoPDF procesa el PDF entero dentro de tu navegador: el documento no se sube a ningún servidor, no hay cuentas ni rastreo, y el borrado se comprueba antes de darte el archivo. Explicamos exactamente cómo funciona por dentro y cómo puedes verificarlo tú mismo.',
+      'TachadoPDF procesa el PDF en tu navegador: no se sube a ningún servidor, no hay cuentas ni rastreo y el borrado se comprueba. Cómo verificarlo tú mismo.',
     enlaceComprobador: 'Compruébalo tú mismo: analiza un PDF gratis, sin subirlo',
     cuerpo: [
       {
@@ -944,7 +966,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Cómo tachar un extracto bancario en PDF',
     metaTitulo: 'Cómo tachar datos de un extracto bancario en PDF',
     descripcion:
-      'Para un alquiler, un préstamo, una ayuda o el gestor te piden el extracto bancario, pero no hace falta enseñar todos tus movimientos ni el número de cuenta completo. Cómo tachar de verdad lo que sobra de un extracto en PDF, gratis y sin subir el archivo a ningún sitio.',
+      'Para un alquiler o un préstamo te piden el extracto, no todos tus movimientos ni la cuenta entera. Cómo tachar lo que sobra del PDF, gratis y sin subirlo.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu extracto, sin subir el archivo',
     cuerpo: [
       {
@@ -1022,7 +1044,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Protección de datos en una gestoría',
     metaTitulo: 'Protección de datos en una gestoría: tachar PDF de clientes',
     descripcion:
-      'Una gestoría mueve al día decenas de PDF con datos de clientes —nóminas, contratos, modelos, DNIs— que reenvía y archiva. Cómo tachar de verdad lo que no toca antes de compartirlos, en tu navegador y sin subir nada, para no responder de una cesión indebida.',
+      'Una gestoría reenvía cada día PDF con datos de clientes: nóminas, contratos, DNI. Cómo tachar de verdad lo que no toca antes de enviarlos, sin subir nada.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva un PDF de cliente antes de reenviarlo',
     cuerpo: [
       {
@@ -1179,7 +1201,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     tituloEnlace: 'Cómo tachar un informe médico en PDF',
     metaTitulo: 'Cómo tachar datos de un informe médico en PDF',
     descripcion:
-      'Un informe médico lleva mucho más de lo que casi nadie necesita ver: el diagnóstico, tu historial, el DNI. Cómo tachar de verdad lo que sobra antes de mandarlo a la empresa, a un seguro o a quien sea, en tu navegador y sin subir el archivo a ningún servidor.',
+      'Un informe médico lleva tu diagnóstico, tu historial y tu DNI. Cómo tachar de verdad lo que sobra antes de mandarlo a la empresa o al seguro, sin subirlo.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu informe antes de compartirlo',
     cuerpo: [
       {
@@ -1255,6 +1277,8 @@ const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));
 
 export const es = {
   htmlLang: 'es',
+  /** Formato de las fechas visibles (Intl): «29 de octubre de 2026». */
+  localeFecha: 'es-ES',
   ogLocale: 'es_ES',
   /** Rótulo del idioma en el selector, escrito SIEMPRE en su propio idioma (nunca banderas:
    *  una bandera es un país, no un idioma). */
@@ -1287,6 +1311,9 @@ export const es = {
   landing: {
     titular: LANDING_TITULAR,
     dolor: LANDING_DOLOR,
+    /** Tarjeta del precedente junto a `dolor`: la cifra y su fuente, del mismo caso que cita el texto. */
+    precedenteCifra: '15.000 €',
+    precedenteFuente: 'AEPD · Expediente PS/00378/2019',
     subtitulo: LANDING_SUBTITULO,
     bullets: [
       'El texto se elimina del archivo, no se tapa con un rectángulo negro.',
@@ -1309,10 +1336,21 @@ export const es = {
     legal: 'Información legal',
     idiomas: 'Idioma',
     otrasHerramientas: 'Otras herramientas gratuitas',
+    fuentes: 'Fuentes',
+    actualizada: 'Actualizada el',
   },
 
   /** Llamada a la acción al pie de cada guía generada. */
   guiaCta: 'Tacha tu PDF ahora, gratis y sin subirlo a ningún servidor',
+
+  /** Textos de /llms.txt (índice para buscadores con motor generativo). Solo hechos ya publicados. */
+  llms: {
+    resumen: `TachadoPDF borra de verdad el texto y las zonas marcadas de un PDF (no los tapa con un recuadro), limpia los metadatos y vuelve a leer el archivo entregado para comprobar que los datos buscados ya no están. Funciona entero en el navegador: el documento no se sube a ningún servidor. Gratis: ${FREE_MONTHLY_LIMIT} documentos al mes de hasta ${FREE_MAX_PAGES} páginas. Pro: ${PRECIO_PRO}, pago único. Código abierto (AGPL-3.0).`,
+    limites:
+      'Límites declarados: las páginas escaneadas (sin capa de texto) se avisan en rojo y hay que revisarlas a ojo; si se conserva la capa de texto, queda el hueco que ocupaba lo borrado.',
+    herramientas: 'Herramientas (español)',
+    guias: 'Guías (español)',
+  },
 
   pro: {
     argumento: `Pro es un pago único de ${PRECIO_PRO} y no es una suscripción: no se renueva ni genera cobros periódicos. Incluye documentos ilimitados, sin tope de páginas, procesado por lotes de varios ficheros a la vez e informe de comprobación sin marca de agua.`,
@@ -1336,6 +1374,7 @@ export const es = {
     // y Rentómetro). Va al final del pie de la portada, fuera de los textos
     // legales: no es aviso legal, términos ni privacidad.
     credito: 'Web hecha por Fachada',
+    codigoFuente: 'Código fuente en GitHub (AGPL-3.0)',
   },
 
   comprobador: {
@@ -1417,7 +1456,7 @@ export const es = {
   metadatos: {
     metaTitulo: 'Ver y borrar los metadatos ocultos de una foto (EXIF, GPS)',
     metaDescripcion:
-      'Descubre qué datos ocultos lleva una foto —ubicación GPS, modelo de cámara, fecha— y descarga una copia limpia sin metadatos. 100% en tu navegador; la imagen no se sube a ningún servidor.',
+      'Descubre qué datos ocultos lleva una foto (ubicación GPS, cámara, fecha) y descarga una copia limpia sin metadatos. En tu navegador, sin subir la imagen.',
     ogTitulo: 'Ver y borrar los metadatos ocultos de una foto · TachadoPDF',
     ogDescripcion:
       'Mira qué lleva escondido tu foto (ubicación GPS, cámara, fecha) y descárgala limpia, 100% en tu navegador.',
@@ -1479,7 +1518,7 @@ export const es = {
   metadatosPdf: {
     metaTitulo: 'Ver y borrar los metadatos ocultos de un PDF',
     metaDescripcion:
-      'Descubre qué revela tu PDF —autor, software con que se creó, fechas, marcadores, adjuntos— y descarga una copia limpia. 100% en tu navegador; el archivo no se sube a ningún servidor.',
+      'Descubre qué revela tu PDF (autor, programa con que se creó, fechas, marcadores, adjuntos) y descarga una copia limpia. En tu navegador, sin subirlo.',
     ogTitulo: 'Ver y borrar los metadatos ocultos de un PDF · TachadoPDF',
     ogDescripcion:
       'Mira qué revela tu PDF (autor, software, fechas) y descárgalo limpio, 100% en tu navegador.',
@@ -1514,6 +1553,8 @@ export const es = {
       'La copia que descargas se ha reserializado sin esos metadatos, y la herramienta la relee para confirmar que no quedan. El contenido visible del documento no se toca; lo que se va es el rastro de quién, con qué y cuándo se hizo.',
     noEsPdf: 'Eso no parece un PDF. Usa un archivo .pdf.',
     errorGenerico: 'No se pudo procesar el PDF.',
+    errorMotor:
+      'No se pudo cargar el motor de PDF (¿sin conexión?). Recarga la página con conexión y vuelve a intentarlo.',
     sufijoDescarga: '-sin-metadatos',
     faqs: [
       {

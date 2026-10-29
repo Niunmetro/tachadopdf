@@ -11,8 +11,8 @@ describe('landing /nominas/', () => {
     expect(externalResourceRefs(html)).toEqual([]);
   });
 
-  it('el CTA apunta a la herramienta con utm_campaign=nominas', () => {
-    expect(html).toContain('utm_campaign=nominas');
+  it('el CTA apunta a la herramienta, sin parámetros de campaña', () => {
+    expect(html).not.toContain('utm_');
   });
 
   it('contiene un enlace a /comprobador/', () => {

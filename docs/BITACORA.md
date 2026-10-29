@@ -4,6 +4,101 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · SEO (tanda 2) · Fechas, fuentes, descripciones, llms.txt, 404 y fuera los utm
+
+**Hecho:** segunda tanda del plan de la auditoría del mismo día (`.seo-audit/ACTION-PLAN.md`, local y
+fuera de git), publicada con el visto bueno del owner («haz todo»).
+- **Fechas reales.** `src/content/fechas.ts` lo escribe `npm run fechas` desde git (primer commit de
+  la página y último que la cambió; HOY si tiene cambios sin commitear). Alimenta el `<lastmod>` del
+  sitemap (0 de 42 lo tenían), el `datePublished`/`dateModified` del Article de las guías generadas
+  y una fecha visible bajo el H1. Las 6 guías estáticas que no tenían NINGÚN schema llevan ahora su
+  Article escrito a mano, y `/actas/` y `/nominas/` sus fechas. Guarda `fechas.test.ts`: cada página
+  tiene fechas y el sitemap, el Article generado y el escrito a mano dicen lo mismo. Flujo al
+  cambiar páginas: `npm run fechas` (genera, fecha, copia las fechas al Article de las estáticas y
+  vuelve a generar) antes de commitear. `actualizado` solo se mueve si cambia el TEXTO VISIBLE de la
+  página: la revisión vio las 42 con fecha de hoy por haber tocado metas y JSON-LD, frescura
+  inflada que hace que un buscador deje de fiarse del `lastmod`.
+- **Código fuente enlazado.** La web prometía «código abierto (AGPL-3.0)» sin enlazarlo. Pie de la
+  portada con «Código fuente en GitHub (AGPL-3.0)» (`URL_REPO` en `config.ts`), `sameAs` y `@id` en
+  la Organization, y autor de los Article apuntando a esa entidad. El perfil de GitHub no muestra
+  nombre real (comprobado).
+- **Afirmación corregida contra la fuente.** Un agente leyó entero el artículo arXiv 2206.02285
+  (informe en `.seo-audit/findings/fuentes.md`). La guía «recuperar texto tachado» decía que el
+  estudio «consiguió recuperar el texto de cientos de documentos reales»: el método DESCARTA
+  candidatos de una lista y solo en 3 de 769 tachados quedó un único nombre. Reescrito con lo que
+  dice el artículo (autores, arXiv 2022 / PoPETs 2023, dos de once herramientas dejaban el texto).
+  También fuera «en minutos» del caso Manafort en español (sin fuente; el inglés ya lo había quitado).
+- **Sección «Fuentes»** (campo opcional `fuentes` de la guía) con URLs comprobadas: estudio + DOI,
+  expediente Manafort (CourtListener da 403 a curl pero carga en navegador) + Mother Jones, ICO/PSNI
+  + su aviso de sanción. Va en recuperar, caja negra EN, tribunales EN, DSAR EN y Cómo funciona ES/EN.
+  Salvedad: el DOI redirige (302) a petsymposium.org, que desde esta máquina no resolvió; el registro
+  DOI sí está comprobado en Crossref.
+- **27 meta descripciones** de 156-316 caracteres recortadas a ≤155; guarda en `titulos-serp.test.ts`
+  sobre las 42 páginas servidas.
+- **Portada inglesa:** la tarjeta del precedente era la multa española de la AEPD (15.000 €); ahora
+  es la sanción de la ICO a la PSNI (£750,000), el mismo caso que cita su texto.
+- **`/llms.txt`** generado desde el registro y el contenido; **`/404.html`** propia (noindex,
+  `<base href="/">` para que iconos y enlaces funcionen a cualquier profundidad).
+- **Fuera los `?utm_`** de ~60 enlaces internos: sin analítica nadie los leía y cada enlace era una
+  URL duplicada. Los tests que exigían el parámetro ahora exigen su ausencia.
+- Integrada además la rama `perf/wasm-diferido` (entrada siguiente).
+
+**Revisión independiente (CORREGIR, arreglado):** `llms.txt` listaba las 6 guías estáticas con
+descripción vacía; el comprobador y `/metadatos-pdf/` culpaban al fichero si el motor no se podía
+descargar (ahora `MotorNoCargadoError` → «Recarga la página»); frescura inflada (arriba); sin aviso
+mientras baja el motor (ahora «Preparando el motor de tachado…»). Y uno que la revisión NO vio y era
+el más grave: ver la corrección de la entrada siguiente.
+**Verificado:** tsc 0 · vitest en verde · build 0 · mutaciones de las guardas nuevas en rojo · prueba
+en Chromium sobre `dist/`: con la página cargada y la red cortada, la portada ES/EN, el comprobador y
+`/metadatos-pdf/` abren y analizan un PDF; con el motor bloqueado, el comprobador pide recargar.
+**Pendiente:** pedir indexación en Search Console (el navegador lo bloqueó en esta sesión); Bing
+Webmaster y enlaces externos, del owner.
+
+---
+## 2026-10-29 · rendimiento · mupdf (wasm) ya no se baja al abrir la página
+
+**⚠ Corrección del mismo día (antes de publicar):** tal como quedó abajo, el motor solo se bajaba
+al cargar un PDF, y eso ROMPÍA una promesa pública: varias guías dicen «corta la conexión una vez
+cargada la página: la herramienta sigue tachando». Sin red, el primer PDF no podía descargar el
+motor. Ahora cada página (portada, comprobador, `/metadatos-pdf/`) lo pide EN SEGUNDO PLANO nada más
+arrancar (`precargar…` en su init): los botones siguen sin esperar por él (lo que se ganó) y, cuando
+la página ha cargado, el motor ya está en memoria (medido en Chromium: listo a ~0,3 s en local). Lo
+que se pierde es el ahorro de datos para quien no abre ningún PDF; la promesa vale más.
+
+**Hecho:** la portada (ES/EN) y el comprobador (ES/EN) bajaban y compilaban el wasm de mupdf (10,4 MB
+sin comprimir) al cargar, aunque el visitante no subiera ningún PDF. Causa medida: `mupdf` instancia
+el wasm con un `await` a nivel de módulo (`node_modules/mupdf/dist/mupdf.js`, línea 27) y
+`src/main.ts` / `src/comprobador/main.ts` importaban `./pdf/engine` y `./pdf/pipeline` de forma
+estática: el módulo de entrada ni empezaba a ejecutarse hasta que el wasm estaba bajado, así que los
+botones y el campo de licencia esperaban a esa descarga. Ahora el motor se pide con `import()` al cargar un PDF.
+- `src/pdf/errores.ts` (nuevo, sin imports): `PdfPasswordError`. `engine.ts` la reexporta (misma
+  clase, los `instanceof` y los imports existentes siguen valiendo).
+- `src/pdf/perezoso.ts` (nuevo): `cargarEngine` / `cargarPipeline` con `import()` y promesa compartida,
+  y `precargarEngine` / `precargarPipeline`, que adelantan la descarga cuando el visitante muestra
+  intención (clic en el selector de ficheros, arrastrar sobre la zona, pulsar el documento de ejemplo).
+- `main.ts`, `comprobador/main.ts`, `comprobador/analyze.ts` usan esos cargadores; `PdfDoc` entra solo
+  como `import type`. El comprobador sigue rechazando un fichero sin firma `%PDF` SIN bajar el motor.
+- Test de regresión `src/pdf/perezoso.test.ts`: recorre los imports estáticos desde cada página y
+  falla si alguna cadena llega a mupdf (directa o indirecta). Mutación comprobada: reponer el import
+  estático de engine, pipeline, mupdf o metadata en main.ts / comprobador falla; los `import type` no.
+
+**Medido (build):** ningún `dist/*.html` de portada/comprobador referencia ya el chunk de mupdf ni el
+wasm. Chunk de entrada de la portada: 455,3 kB -> 11,8 kB (el JS de carga baja de 720 a 623 kB; el wasm
+sale del todo). Comprobador: 273 -> 184 kB de JS de carga, sin wasm. En Chromium headless contra
+`vite preview`: 0 peticiones a wasm/mupdf/engine/pipeline al cargar; el wasm se pide al elegir un PDF
+(o al hacer clic en el selector). CSP sin cambios: los fragmentos son del mismo origen.
+
+**Decisiones y porqués:** si el fragmento no se puede bajar (sin conexión), el fallo sale por el camino
+visible de siempre (`errorProcesado` en la portada, `errorGenerico` en el comprobador) y NO como «no
+se pudo abrir este PDF». Medido: Chromium memoriza el `import()` fallido de una URL mientras vive el
+documento, así que reintentar sin recargar no sale a la red; el mensaje ya pide recargar.
+
+**Bloqueos / pendiente:** (1) `/metadatos-pdf/` sigue importando `pdf/metadata` (mupdf) de forma
+estática: misma causa, mismo arreglo, fuera del alcance de esta rama. (2) La portada sigue cargando
+~430 kB de pdf-lib (módulo compartido que sale de `ui/entrega` -> `report/report`) aunque solo se
+usa tras descargar: candidato a otro `import()` perezoso.
+
+---
 ## 2026-10-29 · SEO · Títulos y descripciones para el CTR (páginas en primera página con 0 clics)
 
 **Hecho:** auditoría SEO con datos reales de Search Console (3 meses: 840 impresiones, 11 clics,

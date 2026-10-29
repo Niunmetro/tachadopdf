@@ -1,0 +1,67 @@
+# TachadoPDF
+
+> TachadoPDF borra de verdad el texto y las zonas marcadas de un PDF (no los tapa con un recuadro), limpia los metadatos y vuelve a leer el archivo entregado para comprobar que los datos buscados ya no están. Funciona entero en el navegador: el documento no se sube a ningún servidor. Gratis: 5 documentos al mes de hasta 3 páginas. Pro: 59 €, pago único. Código abierto (AGPL-3.0).
+
+Límites declarados: las páginas escaneadas (sin capa de texto) se avisan en rojo y hay que revisarlas a ojo; si se conserva la capa de texto, queda el hueco que ocupaba lo borrado.
+
+TachadoPDF really deletes the marked text and image areas from a PDF (it does not cover them with a box), strips the metadata and re-reads the delivered file to check the searched-for data is gone. It runs entirely in the browser: the document is never uploaded to any server. Free: 5 documents a month, up to 3 pages each. Pro: 59 €, one-time payment. Open source (AGPL-3.0).
+
+Stated limits: scanned pages (no text layer) are flagged in red and need checking by eye; when the text layer is kept, the gap left by the deleted text remains.
+
+## Herramientas (español)
+
+- [Tachar un PDF de verdad: el rectángulo negro no borra](https://www.tachadopdf.com/)
+- [Comprueba gratis qué datos contiene tu PDF](https://www.tachadopdf.com/comprobador/)
+- [Tacha una imagen o captura de pantalla](https://www.tachadopdf.com/imagen/)
+- [Ve los metadatos ocultos de una foto](https://www.tachadopdf.com/metadatos/)
+- [Ve los metadatos ocultos de un PDF](https://www.tachadopdf.com/metadatos-pdf/)
+- [Para administradores de fincas](https://www.tachadopdf.com/actas/)
+- [Para gestorías y RRHH](https://www.tachadopdf.com/nominas/)
+
+## Guías (español)
+
+- [Cómo tachar un DNI de un PDF sin que se pueda recuperar](https://www.tachadopdf.com/guia/tachar-dni-pdf/)
+- [Por qué el rectángulo negro no borra el dato](https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/)
+- [Datos personales en actas y documentos de comunidades](https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/)
+- [Cómo tachar datos de un PDF sin subirlo a internet](https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/)
+- [Sanciones de la AEPD a comunidades de propietarios](https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/)
+- [Enviar nóminas en PDF sin exponer datos personales](https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/)
+- [Ocultar datos personales de un currículum en PDF](https://www.tachadopdf.com/guia/ocultar-datos-personales-curriculum-pdf/): Antes de mandar tu CV a una empresa o a un portal de empleo, quita el DNI, la dirección y hasta la foto. Cómo borrarlos del PDF, no taparlos, sin subirlo.
+- [Ocultar datos de terceros en la prueba documental](https://www.tachadopdf.com/guia/ocultar-datos-terceros-documentos-juicio-pdf/): Aportar un documento a un juicio no autoriza a exponer datos de terceros ajenos al asunto. Qué tachar y cómo borrarlo del PDF sin que se pueda recuperar.
+- [Censurar un PDF antes de publicarlo en internet](https://www.tachadopdf.com/guia/censurar-pdf-antes-de-publicarlo-internet/): Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere.
+- [Ocultar los datos de alumnos en un PDF](https://www.tachadopdf.com/guia/ocultar-datos-alumnos-pdf/): Notas, actas de evaluación y autorizaciones llevan datos de menores, con protección reforzada. Qué tapar antes de compartir el PDF y cómo borrarlo bien.
+- [Qué tapar en una copia del DNI antes de enviarla](https://www.tachadopdf.com/guia/tapar-datos-copia-dni-tramite/): Una copia de tu DNI basta para suplantarte. Qué tapar antes de mandarla para un alquiler o un alta, y cómo borrarlo de verdad, no con un recuadro encima.
+- [¿Se puede recuperar un texto tachado de un PDF?](https://www.tachadopdf.com/guia/recuperar-texto-tachado-pdf/): Sí, si el tachado es solo un recuadro negro: el texto sigue en el archivo y se copia en segundos. Los 6 sitios donde sobrevive un dato y cómo comprobarlo.
+- [¿Qué información oculta lleva un PDF?](https://www.tachadopdf.com/guia/informacion-oculta-pdf/): Un PDF guarda más de lo que enseña: autor, programa, fechas, marcadores, adjuntos y la ubicación de sus fotos. Qué lleva escondido y cómo verlo y quitarlo.
+- [Cómo funciona TachadoPDF](https://www.tachadopdf.com/guia/como-funciona/): TachadoPDF procesa el PDF en tu navegador: no se sube a ningún servidor, no hay cuentas ni rastreo y el borrado se comprueba. Cómo verificarlo tú mismo.
+- [Cómo comprobar si un PDF está bien tachado](https://www.tachadopdf.com/guia/comprobar-si-un-pdf-esta-bien-tachado/): Copiar y pegar, otro lector, metadatos y escaneos: 4 pruebas para saber si el tachado de un PDF borró el dato o solo lo tapó. Gratis, sin subirlo.
+- [Cómo tachar un extracto bancario en PDF](https://www.tachadopdf.com/guia/tachar-extracto-bancario-pdf/): Para un alquiler o un préstamo te piden el extracto, no todos tus movimientos ni la cuenta entera. Cómo tachar lo que sobra del PDF, gratis y sin subirlo.
+- [Protección de datos en una gestoría](https://www.tachadopdf.com/guia/proteccion-datos-gestoria-pdf-clientes/): Una gestoría reenvía cada día PDF con datos de clientes: nóminas, contratos, DNI. Cómo tachar de verdad lo que no toca antes de enviarlos, sin subir nada.
+- [Protección de datos en una inmobiliaria](https://www.tachadopdf.com/guia/proteccion-datos-inmobiliaria-inquilinos/): Una inmobiliaria recibe el DNI, las nóminas y el extracto de cada candidato. Cómo tachar lo que el propietario no necesita, sin subir nada.
+- [Cómo tachar un informe médico en PDF](https://www.tachadopdf.com/guia/tachar-informe-medico-pdf/): Un informe médico lleva tu diagnóstico, tu historial y tu DNI. Cómo tachar de verdad lo que sobra antes de mandarlo a la empresa o al seguro, sin subirlo.
+
+## Tools (English)
+
+- [Redact a PDF and verify it worked — TachadoPDF](https://www.tachadopdf.com/en/)
+- [Check for free what data your PDF contains](https://www.tachadopdf.com/en/checker/)
+- [Redact an image or screenshot](https://www.tachadopdf.com/en/redact-image/)
+- [See the hidden metadata in a photo](https://www.tachadopdf.com/en/remove-metadata/)
+- [See the hidden metadata in a PDF](https://www.tachadopdf.com/en/pdf-metadata/)
+
+## Guides (English)
+
+- [Why the black box over your PDF does not delete the text](https://www.tachadopdf.com/en/guide/black-box-pdf-not-redacted/): A black box over PDF text only covers it: the words stay in the file and copy straight out. Test it in 3 seconds, then remove the text for real.
+- [How to check whether a PDF has actually been redacted](https://www.tachadopdf.com/en/guide/check-pdf-redaction/): Check whether a PDF is really redacted before you send it: a three-second test, the four other places data hides, and what a check can never tell you.
+- [Redacting court filings: what Rule 5.2 requires](https://www.tachadopdf.com/en/guide/redact-court-filing/): Redacting a court filing under FRCP Rule 5.2: what it actually mandates, why the sealed-plus-public pair is where filings leak, and a pre-filing checklist.
+- [Redacting a subject access request response](https://www.tachadopdf.com/en/guide/redact-subject-access-request/): Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow for the one-month clock.
+- [How to redact a PDF without uploading it](https://www.tachadopdf.com/en/guide/redact-pdf-without-uploading/): Redact a PDF without uploading it: most online tools send your file to a server first. How to redact entirely in your browser, and check that yourself.
+- [Sending payslips and HR documents as PDFs](https://www.tachadopdf.com/en/guide/redact-payslips-hr-documents/): A redacted payslip has private details removed (NI or ID number, bank account, address) while pay and employer stay visible. What to hide, and how.
+- [Redact a PDF without Adobe Acrobat](https://www.tachadopdf.com/en/guide/redact-pdf-without-acrobat/): You don't need Acrobat to redact a PDF. How to remove the text for real, not hide it behind a black box, free in your browser, and check it before sending.
+- [How TachadoPDF works](https://www.tachadopdf.com/en/guide/how-it-works/): TachadoPDF processes your PDF in your browser: never uploaded, no accounts, no tracking, and the redaction is checked. How it works and how to verify it.
+- [How to redact a bank statement](https://www.tachadopdf.com/en/guide/redact-bank-statement/): A landlord or lender needs your bank statement, not every transaction or your full account number. Redact the statement PDF in your browser, no upload.
+- [How to redact a utility bill](https://www.tachadopdf.com/en/guide/redact-utility-bill/): Proof of address usually needs only your name, address and date. How to remove the account number, barcode and payment details from a utility bill PDF.
+- [How to redact a passport or ID](https://www.tachadopdf.com/en/guide/redact-passport/): Asked for a copy of your passport or ID? Hide the document number and the machine-readable lines and still prove who you are. In your browser, no upload.
+
+## Optional
+
+- [Código fuente en GitHub (AGPL-3.0)](https://github.com/Niunmetro/tachadopdf)

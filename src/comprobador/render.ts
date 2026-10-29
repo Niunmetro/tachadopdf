@@ -5,7 +5,8 @@ import type { ResumenComprobacion } from './types';
 // DOCUMENTO. Antes era '/?utm_source=comprobador': una ruta raíz-absoluta que, con la base de
 // emergencia '/tachadopdf/', apunta fuera del sitio — justo en el modo pensado para cuando el
 // dominio está caído.
-const CTA_HREF_POR_DEFECTO = '../?utm_source=comprobador';
+// Sin `?utm_`: sin analítica nadie los leía y cada enlace creaba una URL duplicada (2026-10-29).
+const CTA_HREF_POR_DEFECTO = '../';
 
 export function renderResumen(
   root: HTMLElement,

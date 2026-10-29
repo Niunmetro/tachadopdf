@@ -11,8 +11,8 @@ describe('landing /actas/ para administradores de fincas', () => {
     expect(externalResourceRefs(html)).toEqual([]);
   });
 
-  it('el CTA lleva utm_campaign=actas', () => {
-    expect(html).toContain('utm_campaign=actas');
+  it('el CTA no lleva parámetros de campaña', () => {
+    expect(html).not.toContain('utm_');
   });
 
   it('contiene un enlace a /comprobador/', () => {

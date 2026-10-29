@@ -12,7 +12,7 @@
 // Que el fichero de disco esté al día lo vigila src/content/pages-generadas.test.ts.
 
 import { CONTENIDOS } from './index';
-import { PRECIO_PRO } from '../config';
+import { PRECIO_PRO, URL_REPO } from '../config';
 import { enlacePreloadFuente, sistemaCss } from '../estilo/sistema';
 import { esc, escTexto, etiqueta, jsonLd, sangrar, texto } from './html';
 import {
@@ -31,6 +31,7 @@ import {
 } from './registro';
 import type { Contenido } from './es';
 import type { Bloque, ContenidoGuia } from './tipos';
+import { FECHAS, type FechasPagina } from './fechas';
 
 /** 'wasm-unsafe-eval' es OBLIGATORIO para instanciar mupdf-wasm; permite compilar WebAssembly
  *  pero NO eval() de JS arbitrario. connect-src limita el egress a Gumroad. */
@@ -48,6 +49,19 @@ const VERIFICACIONES_GOOGLE = [
 
 /** Web del estudio que hace el sitio: destino del crédito al final del pie de la portada. */
 export const URL_CREDITO = 'https://www.fachadaweb.es/';
+
+/** Identificador estable de la entidad: el Article de cada guía apunta a él como autor. */
+const ID_ORGANIZACION = `${SITIO}/#organization`;
+
+/** Fechas reales (del historial git) de la página. Sin entrada no se publica: no se inventa. */
+export function fechasDe(pagina: PaginaRegistro, locale: Locale): FechasPagina {
+  const fichero = ficheroDe(pagina, locale);
+  const fechas = fichero === null ? undefined : FECHAS[fichero];
+  if (fechas === undefined) {
+    throw new Error(`Sin fechas para «${pagina.id}» (${locale}): ejecuta npm run fechas`);
+  }
+  return fechas;
+}
 
 /**
  * LA TARJETA SOCIAL, POR IDIOMA. La anterior mostraba un sello VERDE mientras el resultado normal
@@ -554,8 +568,8 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
         <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
           ${texto('p', { class: 'hero__dolor', style: 'margin: 0; font-size: var(--t-400); line-height: var(--lh-texto); color: rgba(255,255,255,0.88); max-width: var(--medida);' }, c.landing.dolor)}
           <aside style="border: 1px solid rgba(255,255,255,0.28); border-radius: var(--radio); padding: var(--e-6); align-self: start;">
-            <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">15.000&nbsp;€</p>
-            <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">AEPD · Expediente PS/00378/2019</p>
+            <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">${escTexto(c.landing.precedenteCifra).replace(' ', '&nbsp;')}</p>
+            <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">${escTexto(c.landing.precedenteFuente)}</p>
           </aside>
         </div>
       </section>`);
@@ -704,6 +718,12 @@ ${sangrar(faq, 6)}
           ...legales,
           texto('p', { class: 'pie' }, c.legal.pie),
           `<p class="enlaces-sector">\n${sangrar(enlacesSector, 1)}\n</p>`,
+          // El código abierto que promete el pie, enlazado: la promesa se vuelve comprobable.
+          etiqueta(
+            'p',
+            { class: 'pie codigo-fuente' },
+            texto('a', { href: URL_REPO, target: '_blank', rel: 'noopener' }, c.legal.codigoFuente),
+          ),
           // Crédito del estudio: enlace normal (sin nofollow) en pestaña nueva. Es navegación, no
           // un recurso: no genera ninguna petición al cargar la página y la CSP no cambia.
           etiqueta(
@@ -765,8 +785,10 @@ function jsonLdHome(locale: Locale, canonical: string): string {
     jsonLd({
       '@context': 'https://schema.org',
       '@type': 'Organization',
+      '@id': ID_ORGANIZACION,
       name: c.marca,
       url: SITIO,
+      sameAs: [URL_REPO],
       logo: ogImage(locale),
       description: c.home.jsonLdDescripcion,
     }),
@@ -996,7 +1018,7 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=comprobador`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1248,7 +1270,7 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=imagen`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1543,7 +1565,7 @@ function paginaMetadatos(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=metadatos`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1812,7 +1834,7 @@ function paginaMetadatosPdf(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=metadatos-pdf`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1937,6 +1959,7 @@ const CSS_GUIA = `  main, article, footer {
   ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
   li { margin: 0 0 var(--e-2); }
   .lede { color: var(--tinta-suave); }
+  .guia-fecha { color: var(--tinta-suave); font-size: var(--t-200); margin: 0 0 var(--e-6); }
   /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
      superado, y no se gasta en un aparte de una guia. */
   .nota {
@@ -1974,12 +1997,29 @@ const CSS_RELACIONADAS = `  .relacionadas { max-width: var(--medida); margin: va
   .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
   .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }`;
 
+/** Sección «Fuentes»: mismo patrón que «Related guides», con su diana táctil de 44 px. */
+const CSS_FUENTES = `  .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+  .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+  .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }`;
+
+/** «29 de octubre de 2026» / «29 October 2026», en UTC para que el HTML no dependa de la zona. */
+function fechaLegible(iso: string, c: Contenido): string {
+  const formato = new Intl.DateTimeFormat(c.localeFecha, {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  return formato.format(new Date(`${iso}T00:00:00Z`));
+}
+
 function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia): string {
   const c = CONTENIDOS[locale];
   const canonical = urlCanonica(pagina, locale) ?? `${SITIO}/`;
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
+  const fechas = fechasDe(pagina, locale);
 
   // Datos estructurados: SIEMPRE el Article de la guía y, si la guía declara `faqs`, además un
   // FAQPage. El FAQPage y los <details> visibles de abajo salen del MISMO `guia.faqs`, así que no
@@ -2010,8 +2050,10 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       description: guia.descripcion,
       inLanguage: c.htmlLang,
       mainEntityOfPage: canonical,
-      author: { '@type': 'Organization', name: c.marca },
-      publisher: { '@type': 'Organization', name: c.marca },
+      datePublished: fechas.publicado,
+      dateModified: fechas.actualizado,
+      author: { '@type': 'Organization', '@id': ID_ORGANIZACION, name: c.marca, url: `${SITIO}/` },
+      publisher: { '@type': 'Organization', '@id': ID_ORGANIZACION, name: c.marca, url: `${SITIO}/` },
     }),
     '',
     ...faqSchema,
@@ -2019,7 +2061,7 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     // experimento (sin relacionadas) no ven cambiar ni un byte de su `<style>`.
     `<style>\n${CSS_GUIA}${
       guia.relacionadas !== undefined && guia.relacionadas.length > 0 ? `\n${CSS_RELACIONADAS}` : ''
-    }\n</style>`,
+    }${guia.fuentes !== undefined && guia.fuentes.length > 0 ? `\n${CSS_FUENTES}` : ''}\n</style>`,
   ];
 
   // Al pie: un enlace al comprobador gratuito (solo si la guía lo pide) y SIEMPRE el CTA a la
@@ -2034,14 +2076,14 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       ctas.push(
         texto(
           'a',
-          { class: 'cp-cta', href: `${navHref(ruta, rutaComprobador)}?utm_source=guia` },
+          { class: 'cp-cta', href: `${navHref(ruta, rutaComprobador)}` },
           guia.enlaceComprobador,
         ),
       );
     }
   }
   ctas.push(
-    texto('a', { class: 'cp-cta', href: `${navHref(ruta, rutaHome)}?utm_source=guia` }, c.guiaCta),
+    texto('a', { class: 'cp-cta', href: `${navHref(ruta, rutaHome)}` }, c.guiaCta),
   );
 
   // Las mismas preguntas del FAQPage, ahora VISIBLES: un motor generativo exige que la respuesta
@@ -2088,10 +2130,25 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
     }
   }
 
+  // FUENTES: enlaces a la fuente primaria de lo que la guía afirma (estudio, resolución, código).
+  // Navegación normal en la misma pestaña: no carga nada al abrir la página y la CSP no cambia.
+  const fuentesBloque: string[] = [];
+  if (guia.fuentes !== undefined && guia.fuentes.length > 0) {
+    const items = guia.fuentes.map((f) => `<li>${texto('a', { href: f.url }, f.etiqueta)}</li>`);
+    fuentesBloque.push(
+      '<section class="fuentes">',
+      sangrar([texto('h2', {}, c.secciones.fuentes), `<ul>\n${sangrar(items, 1)}\n</ul>`], 1),
+      '</section>',
+    );
+  }
+
   const cuerpo = [
     texto('h1', {}, guia.titulo),
+    // La fecha visible es la MISMA que el dateModified del Article (Google pide que coincidan).
+    `<p class="guia-fecha">${escTexto(c.secciones.actualizada)} <time datetime="${esc(fechas.actualizado)}">${escTexto(fechaLegible(fechas.actualizado, c))}</time></p>`,
     ...guia.cuerpo.map(bloque),
     ...faqVisible,
+    ...fuentesBloque,
     ...relacionadasBloque,
     '',
     ...ctas,
@@ -2142,11 +2199,12 @@ export function generarSitemap(): string {
     for (const locale of localesDe(pagina)) {
       const loc = urlCanonica(pagina, locale);
       if (loc === null) continue;
+      const lastmod = fechasDe(pagina, locale).actualizado;
       if (alternates.length === 0) {
-        lineas.push(`  <url><loc>${esc(loc)}</loc></url>`);
+        lineas.push(`  <url><loc>${esc(loc)}</loc><lastmod>${lastmod}</lastmod></url>`);
         continue;
       }
-      lineas.push(`  <url>`, `    <loc>${esc(loc)}</loc>`);
+      lineas.push(`  <url>`, `    <loc>${esc(loc)}</loc>`, `    <lastmod>${lastmod}</lastmod>`);
       for (const alt of alternates) {
         lineas.push(
           `    <xhtml:link rel="alternate" hreflang="${esc(alt.hreflang)}" href="${esc(alt.href)}" />`,
@@ -2156,6 +2214,52 @@ export function generarSitemap(): string {
     }
   }
   lineas.push('</urlset>', '');
+  return lineas.join('\n');
+}
+
+// --- llms.txt ---------------------------------------------------------------
+
+/** Herramientas que /llms.txt lista por idioma, con el rótulo del pie de la portada. */
+const HERRAMIENTAS_LLMS: { id: string; rotulo: (c: Contenido) => string }[] = [
+  { id: 'home', rotulo: (c) => c.home.metaTitulo },
+  { id: 'comprobador', rotulo: (c) => c.legal.enlaceComprobador },
+  { id: 'redactor-imagen', rotulo: (c) => c.legal.enlaceImagen },
+  { id: 'limpiador-metadatos', rotulo: (c) => c.legal.enlaceMetadatos },
+  { id: 'limpiador-metadatos-pdf', rotulo: (c) => c.legal.enlaceMetadatosPdf },
+  { id: 'actas', rotulo: (c) => c.legal.enlaceActas },
+  { id: 'nominas', rotulo: (c) => c.legal.enlaceNominas },
+];
+
+/** /llms.txt (llmstxt.org): resumen, herramientas y guías de cada idioma con su URL canónica.
+ *  Sale del MISMO registro y contenido que el HTML, así que no puede listar una página que no
+ *  exista ni olvidarse de una guía nueva. */
+export function generarLlmsTxt(): string {
+  const lineas: string[] = [`# ${CONTENIDOS[LOCALE_POR_DEFECTO].marca}`, ''];
+  for (const locale of LOCALES) {
+    const c = CONTENIDOS[locale];
+    lineas.push(locale === LOCALE_POR_DEFECTO ? `> ${c.llms.resumen}` : c.llms.resumen, '', c.llms.limites, '');
+  }
+  for (const locale of LOCALES) {
+    const c = CONTENIDOS[locale];
+    lineas.push(`## ${c.llms.herramientas}`, '');
+    for (const h of HERRAMIENTAS_LLMS) {
+      const pagina = paginaPorId(h.id);
+      const url = pagina === undefined ? null : urlCanonica(pagina, locale);
+      const rotulo = h.rotulo(c);
+      if (url !== null && rotulo.length > 0) lineas.push(`- [${rotulo}](${url})`);
+    }
+    lineas.push('', `## ${c.llms.guias}`, '');
+    for (const guia of c.guias) {
+      const pagina = paginaPorId(guia.id);
+      const url = pagina === undefined ? null : urlCanonica(pagina, locale);
+      if (url === null) continue;
+      const detalle = guia.descripcion.length > 0 ? `: ${guia.descripcion}` : '';
+      lineas.push(`- [${guia.tituloEnlace}](${url})${detalle}`);
+    }
+    lineas.push('');
+  }
+  const c = CONTENIDOS[LOCALE_POR_DEFECTO];
+  lineas.push('## Optional', '', `- [${c.legal.codigoFuente}](${URL_REPO})`, '');
   return lineas.join('\n');
 }
 
@@ -2197,6 +2301,7 @@ export function generarSitio(): FicheroGenerado[] {
     }
   }
   ficheros.push({ ruta: 'public/sitemap.xml', contenido: generarSitemap() });
+  ficheros.push({ ruta: 'public/llms.txt', contenido: generarLlmsTxt() });
   return ficheros;
 }
 

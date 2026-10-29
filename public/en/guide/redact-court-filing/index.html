@@ -201,13 +201,19 @@
       "description": "Redacting a court filing under FRCP Rule 5.2: what it actually mandates, why the sealed-plus-public pair is where filings leak, and a pre-filing checklist.",
       "inLanguage": "en",
       "mainEntityOfPage": "https://www.tachadopdf.com/en/guide/redact-court-filing/",
+      "datePublished": "2026-08-08",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "TachadoPDF"
+        "@id": "https://www.tachadopdf.com/#organization",
+        "name": "TachadoPDF",
+        "url": "https://www.tachadopdf.com/"
       }
     }
     </script>
@@ -227,6 +233,7 @@
       ul, ol { padding-left: var(--e-6); margin: 0 0 var(--e-4); }
       li { margin: 0 0 var(--e-2); }
       .lede { color: var(--tinta-suave); }
+      .guia-fecha { color: var(--tinta-suave); font-size: var(--t-200); margin: 0 0 var(--e-6); }
       /* Una nota es una SALVEDAD, no una alarma: el rojo de esta casa significa E1, tachado no
          superado, y no se gasta en un aparte de una guia. */
       .nota {
@@ -254,6 +261,9 @@
       .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
       .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
       .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+      .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+      .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
     </style>
   </head>
   <body>
@@ -268,6 +278,7 @@
     </header>
     <main>
       <h1>Redacting court filings: what Rule 5.2 requires, and how filings leak anyway</h1>
+      <p class="guia-fecha">Updated <time datetime="2026-10-29">29 October 2026</time></p>
       <p>In federal civil practice the duty to redact sits on the filer and on counsel, not on the clerk. Rule 5.2 of the Federal Rules of Civil Procedure sets the floor, and the floor is narrower than most people remember.</p>
       <h2>What Rule 5.2 requires</h2>
       <ul>
@@ -290,6 +301,13 @@
         <li>Keep a record of the check you ran, with the date and a fingerprint of the file you filed.</li>
       </ol>
       <p class="nota">This page is general information about a procedural rule, not legal advice, and no tool can decide what you were required to redact. TachadoPDF performs and verifies the removal; the judgement about what must come out remains yours.</p>
+      <section class="fuentes">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://www.courtlistener.com/docket/6183591/united-states-v-manafort/">United States v. Manafort docket: the redacted and corrected filings of 8 January 2019 (CourtListener)</a></li>
+          <li><a href="https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/">Mother Jones, 8 January 2019: Paul Manafort's lawyers tried and failed to redact a filing</a></li>
+        </ul>
+      </section>
       <nav class="relacionadas" aria-label="Guides">
         <h2>Guides</h2>
         <ul>
@@ -298,8 +316,8 @@
           <li><a href="../check-pdf-redaction/">How to check whether a PDF has actually been redacted</a></li>
         </ul>
       </nav>
-      <a class="cp-cta" href="../../checker/?utm_source=guia">Check a filing for leftover data before you file</a>
-      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+      <a class="cp-cta" href="../../checker/">Check a filing for leftover data before you file</a>
+      <a class="cp-cta" href="../../">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
 </html>

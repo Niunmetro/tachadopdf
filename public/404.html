@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://api.gumroad.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'wasm-unsafe-eval'; font-src 'self'; object-src 'none'; base-uri 'self'">
+<!--
+  Página 404 de GitHub Pages: se sirve en CUALQUIER ruta que no exista, a cualquier profundidad.
+  `<base href="/">` hace que las rutas relativas (iconos y enlaces) se resuelvan desde la raíz del
+  sitio y no desde la URL rota. noindex: no es una página del sitio y no va al sitemap.
+-->
+<base href="/" />
+<meta name="robots" content="noindex" />
+<title>Página no encontrada · TachadoPDF</title>
+<link rel="icon" href="favicon.ico" sizes="32x32" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<style>
+  :root { color-scheme: light; --tinta: #14181f; --tinta-suave: #4a5260; --acento: #1f4fd1; --papel: #ffffff; --linea: #d9dde3; }
+  body {
+    margin: 0; background: var(--papel); color: var(--tinta);
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; line-height: 1.55;
+  }
+  .cabecera { border-bottom: 1px solid var(--linea); }
+  .cabecera__marca {
+    max-width: 40rem; margin: 0 auto; padding: 1rem; display: flex; align-items: center; gap: 0.5rem;
+    font-weight: 600; font-size: 1.0625rem;
+  }
+  .cabecera__simbolo { width: 1.5rem; height: 1.5rem; }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+  h1 { font-size: 1.75rem; line-height: 1.2; margin: 0 0 1rem; }
+  p { font-size: 1.0625rem; margin: 0 0 1rem; }
+  .suave { color: var(--tinta-suave); }
+  ul { padding-left: 1.25rem; margin: 0 0 2rem; }
+  li { margin: 0 0 0.25rem; }
+  a { color: var(--acento); display: inline-flex; align-items: center; min-height: 2.75rem; }
+  hr { border: 0; border-top: 1px solid var(--linea); margin: 2rem 0; }
+</style>
+</head>
+<body>
+<header class="cabecera">
+  <p class="cabecera__marca"><svg class="cabecera__simbolo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.6h7.6L19 8v13.4H6z"/><path d="M13.4 2.6V8H19"/><line x1="8.7" y1="12.2" x2="16.3" y2="12.2"/><line x1="8.7" y1="15.2" x2="11.1" y2="15.2"/><line x1="13.6" y1="15.2" x2="16.3" y2="15.2"/><line x1="8.7" y1="18.2" x2="13.4" y2="18.2"/></svg>TachadoPDF</p>
+</header>
+<main>
+  <h1>Esta página no existe</h1>
+  <p class="suave">Puede que el enlace esté mal escrito o que la página haya cambiado de dirección.</p>
+  <ul>
+    <li><a href="./">Tachar un PDF, gratis y sin subirlo</a></li>
+    <li><a href="comprobador/">Comprobar qué datos personales lleva un PDF</a></li>
+    <li><a href="guia/recuperar-texto-tachado-pdf/">¿Se puede recuperar el texto tachado de un PDF?</a></li>
+  </ul>
+  <hr />
+  <h2 lang="en" style="font-size: 1.75rem; line-height: 1.2; margin: 0 0 1rem;">This page does not exist</h2>
+  <p class="suave" lang="en">The link may be mistyped, or the page may have moved.</p>
+  <ul lang="en">
+    <li><a href="en/">Redact a PDF, free and without uploading it</a></li>
+    <li><a href="en/checker/">Check what personal data a PDF contains</a></li>
+    <li><a href="en/guide/black-box-pdf-not-redacted/">Why the black box over your PDF does not delete the text</a></li>
+  </ul>
+</main>
+</body>
+</html>
