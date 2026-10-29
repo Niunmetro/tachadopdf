@@ -36,6 +36,11 @@ sitio, la española `guia-recuperar-tachado` (231 impresiones, posición 6,4), n
   reescribió. Pendiente menor: que `gen-pages` tolere una página sin fecha.
 - La fecha de `check-pdf-redaction` pasa a 2026-10-29: su texto visible cambió (nuevo enlace relacionado).
 
+**Promesa falsa corregida (la detectó el agente al escribir esta guía):** la FAQ «¿Cómo compruebo si mi
+tachado se puede deshacer?» de la guía española de recuperar decía que el comprobador «revisa» los
+marcadores, adjuntos, metadatos y capas ocultas. Falso: `src/comprobador/analyze.ts` solo extrae el texto
+de las páginas. Ahora dice que el comprobador lee el texto de las páginas y que la herramienta de
+metadatos de PDF enseña el autor, los marcadores y los adjuntos.
 **Verificado:** tsc 0 · vitest 86 ficheros / 2349 tests en verde (2 skipped) · `npm run build` 0 y la
 página sale en `dist/`.
 **Pendiente:** publicar (no se ha desplegado ni hecho push) y pedir indexación en Search Console. Dos

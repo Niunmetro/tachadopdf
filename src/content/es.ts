@@ -680,7 +680,7 @@ const GUIAS_ES: ContenidoGuia[] = [
       {
         pregunta: '¿Cómo compruebo si mi tachado se puede deshacer?',
         respuesta:
-          'Haz la prueba del copiar y pegar: selecciona sobre el recuadro negro y pega en un bloc de notas; si aparece el texto, no estaba borrado. Esa prueba caza el fallo más común, pero no ve los datos escondidos en marcadores, adjuntos, metadatos o capas ocultas. El comprobador de TachadoPDF los revisa en tu propio navegador, sin subir el archivo.',
+          'Haz la prueba del copiar y pegar: selecciona sobre el recuadro negro y pega en un bloc de notas; si aparece el texto, no estaba borrado. Esa prueba caza el fallo más común, pero no ve los datos escondidos en marcadores, adjuntos, metadatos o capas ocultas. El comprobador de TachadoPDF lee el texto de las páginas en tu navegador, sin subir el archivo, y la herramienta de metadatos de PDF te enseña el autor, los marcadores y los adjuntos que lleva.',
       },
       {
         pregunta: '¿Un recuadro negro sobre un documento escaneado es seguro?',
