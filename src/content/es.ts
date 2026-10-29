@@ -1271,6 +1271,176 @@ const GUIAS_ES: ContenidoGuia[] = [
       },
     ],
   },
+
+  // SEO fincas (2026-10-29, punto 15 del plan): la consulta «archivos en la administración de fincas»
+  // (~90 impresiones en Search Console) no la contestaba ninguna página. Se ancla en dos fuentes
+  // primarias leídas en el BOE y en la AEPD (guía «Protección de datos y administración de fincas» y
+  // dos FAQ de su sección de comunidades), y solo afirma lo que esas páginas dicen. Lo que no se pudo
+  // verificar (plazos de la documentación contable y fiscal, años de prescripción) se deja fuera a
+  // propósito. Funnela al comprobador y a la guía de fincas. Generada, solo ES.
+  {
+    id: 'guia-archivos-fincas',
+    relacionadas: ['guia-fincas', 'guia-sanciones', 'guia-nominas', 'guia-recuperar-tachado'],
+    fuentes: [
+      {
+        etiqueta: 'Ley 49/1960, de 21 de julio, sobre propiedad horizontal: texto consolidado en el BOE (artículos 9, 16, 19 y 20)',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-1960-10906',
+      },
+      {
+        etiqueta: 'AEPD: guía «Protección de datos y administración de fincas» (PDF, apartados 7.1 a 7.3 y preguntas frecuentes)',
+        url: 'https://www.aepd.es/guias/guia-administradores-fincas.pdf',
+      },
+      {
+        etiqueta: 'AEPD: ¿se puede exponer en el tablón de anuncios la relación de los vecinos morosos?',
+        url: 'https://www.aepd.es/preguntas-frecuentes/9-comunidades-de-propietarios/FAQ-0909-se-puede-exponer-cumpliendo-ciertos-requisitos-en-el-tablon-la-relacion-de-los-vecinos-morosos',
+      },
+      {
+        etiqueta: 'AEPD: ¿puede tener acceso un propietario a los gastos de su comunidad?',
+        url: 'https://www.aepd.es/preguntas-frecuentes/9-comunidades-de-propietarios/FAQ-0906-puede-tener-acceso-un-propietario-a-los-gastos-de-su-comunidad',
+      },
+    ],
+    titulo: 'Archivos de una administración de fincas: qué se guarda, cuánto tiempo y qué datos tachar',
+    tituloEnlace: 'Archivos de una administración de fincas: plazos y datos que tachar',
+    metaTitulo: 'Archivos en la administración de fincas: plazos y datos',
+    descripcion:
+      'Qué documentos guarda una administración de fincas, cuánto tiempo dice la ley y qué datos personales tachar antes de enviar o colgar actas y listados.',
+    enlaceComprobador: 'Comprueba gratis qué datos personales lleva un documento de la comunidad',
+    cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'Una administración de fincas acumula papel de varias comunidades a la vez: actas, convocatorias, recibos, presupuestos, facturas, contratos. Casi todo ese archivo lleva nombres, pisos, cuentas bancarias o deudas de vecinos. Esta guía reúne lo que dice la Ley de Propiedad Horizontal sobre qué se conserva y por cuánto tiempo, y lo que dice la Agencia Española de Protección de Datos (AEPD) sobre los datos personales de un documento que se envía o se cuelga. Los enlaces a las fuentes están al final.',
+      },
+      { t: 'h2', texto: 'Qué documentos nombra la ley y cuánto tiempo hay que guardarlos' },
+      {
+        t: 'p',
+        texto:
+          'La referencia es la Ley 49/1960, de Propiedad Horizontal (LPH). Su artículo 19 dice que los acuerdos de la Junta de propietarios se reflejan en un libro de actas diligenciado por el Registrador de la Propiedad. El acta se cierra con las firmas del presidente y del secretario y se remite a los propietarios por el procedimiento del artículo 9.',
+      },
+      {
+        t: 'p',
+        texto:
+          'El mismo artículo 19, en su apartado 4, reparte el archivo en dos frases. La primera: «El secretario custodiará los libros de actas de la Junta de propietarios». La segunda añade que el secretario deberá conservar durante el plazo de cinco años las convocatorias, comunicaciones, apoderamientos y demás documentos relevantes de las reuniones. El artículo 20, letra e), atribuye al administrador la función de actuar, en su caso, como secretario de la Junta y custodiar a disposición de los titulares la documentación de la comunidad.',
+      },
+      {
+        t: 'ul',
+        items: [
+          'Libro de actas: lo custodia el secretario. El apartado 4 no le pone un plazo de destrucción en ese texto.',
+          'Convocatorias, comunicaciones, apoderamientos y demás documentos relevantes de las reuniones: cinco años, según el apartado 4.',
+        ],
+      },
+      {
+        t: 'p',
+        texto:
+          'El artículo no enumera los recibos, los presupuestos, las facturas ni los contratos, y no fija plazos para ellos. Los plazos de la documentación contable y fiscal salen de otra normativa que esta guía no analiza, así que no damos cifras para ellos. Sobre los datos personales, la AEPD indica en su guía que el administrador solo puede conservar los que sean estrictamente imprescindibles durante el período de prescripción que marca la normativa fiscal, contable, social o civil, y que al terminar ese plazo los datos deben destruirse.',
+      },
+      { t: 'h2', texto: 'Qué datos personales lleva cada documento' },
+      {
+        t: 'p',
+        texto:
+          'La AEPD advierte de que la documentación de una comunidad puede incluir datos identificativos y de contacto, números de cuenta corriente, coeficientes de participación, consumos individuales, ingresos, deudas con la comunidad y el sentido del voto en los acuerdos. Aplicado a cada documento:',
+      },
+      {
+        t: 'ul',
+        items: [
+          'Actas: el artículo 19.2 exige la relación de asistentes con sus cargos y los acuerdos adoptados. La AEPD añade que en las actas figuran los datos de identificación de los propietarios y el piso en el que viven.',
+          'Convocatorias: el artículo 16.2 manda incluir una relación de los propietarios que no estén al corriente en el pago de las deudas vencidas y advertir de la privación del derecho de voto en los supuestos del artículo 15.2.',
+          'Presupuestos, facturas y contratos: honorarios de profesionales, que son datos personales cuando se trata de personas físicas.',
+          'Nóminas del personal de la comunidad: según la AEPD, junto al sueldo aparecen el domicilio fiscal, la cuenta corriente y, a veces, datos de salud o ideología y la cuota sindical.',
+        ],
+      },
+      { t: 'h2', texto: 'Listado de morosos y tablón de anuncios' },
+      {
+        t: 'p',
+        texto:
+          'La AEPD dice que, con carácter general, publicar en el tablón de avisos la identidad de los propietarios deudores o las cuotas que adeudan no está amparado por la normativa de protección de datos. La LPH sí permite dar publicidad a esa identidad a través de la convocatoria de la Junta, según el artículo 16.2, y la propia AEPD explica que esa publicidad no necesita el consentimiento de los afectados.',
+      },
+      {
+        t: 'p',
+        texto:
+          'El tablón aparece en otro lugar de la ley. El artículo 9.1.h) dice que, si no se puede practicar una citación o notificación en el domicilio que consta, se entiende hecha al colocar la comunicación en el tablón de anuncios de la comunidad, con una diligencia que recoja la fecha y los motivos, firmada por quien ejerza de secretario con el visto bueno del presidente, y que surte efectos a los tres días naturales. La AEPD añade que el tablón no debe estar en un lugar de tránsito fácilmente accesible por cualquiera.',
+      },
+      {
+        t: 'p',
+        texto:
+          'La guía de la AEPD recoge además dos matices. Enviar a cada propietario, de forma periódica, la relación de cuotas pendientes tampoco encuentra cobertura, y aunque solo se indique la vivienda sigue siendo un dato personal, porque va asociada a su titular. Y si la publicación responde a un acuerdo expreso de la Junta, en principio no vulneraría la normativa. Si la convocatoria del tablón lleva también la relación de deudores, estas fuentes no resuelven ese cruce: es una pregunta para el asesor jurídico.',
+      },
+      { t: 'h2', texto: 'Documentos que pide un propietario' },
+      {
+        t: 'p',
+        texto:
+          'La AEPD explica que el acceso de un propietario a la documentación sirve para conocer y comprobar la correcta gestión de la comunidad. El artículo 20.e) de la LPH, interpretado según la normativa de protección de datos, no permite un acceso generalizado a toda la documentación del archivo: solo a los datos pertinentes, adecuados y limitados a esa finalidad. Dos ejemplos de su guía: los directorios con domicilios o cuentas corrientes de los propietarios no cumplen el requisito de idoneidad, y mostrar las nóminas del personal es contrario al principio de proporcionalidad, sin perjuicio de informar de las retribuciones con el desglose adecuado.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Si un banco pide el libro de actas para abrir una cuenta, la AEPD señala que los datos necesarios pueden comunicarse con un documento expedido por el administrador, sin exhibir el libro entero.',
+      },
+      { t: 'h2', texto: 'Qué suele tocar tachar antes de enviar o publicar' },
+      {
+        t: 'p',
+        texto:
+          'De lo anterior sale una lista de trabajo. Es una lectura práctica de las fuentes, no una regla de la ley; cada caso depende de quién recibe el documento:',
+      },
+      {
+        t: 'ul',
+        items: [
+          'Copia de una factura o un contrato para un propietario: cuentas bancarias y domicilios de terceros, que no aportan nada al control de la gestión.',
+          'Nóminas: domicilio fiscal, cuenta de pago, datos de salud y cuota sindical, si el propietario solo necesita saber lo que cobra el personal.',
+          'Acta enviada fuera de la comunidad: los nombres y los pisos de quien no tenga que verlos.',
+          'Cualquier documento para el tablón o una web de la comunidad: lo que no sea imprescindible para el aviso.',
+        ],
+      },
+      { t: 'h2', texto: 'Cómo quitar esos datos de un PDF de verdad' },
+      {
+        t: 'p',
+        texto:
+          'Tapar un nombre con un recuadro negro no lo borra: el texto sigue dentro del archivo y se copia seleccionándolo. TachadoPDF elimina el texto del propio PDF, borra los píxeles de las zonas que marcas en un escaneo y limpia los metadatos. Detecta por patrones los formatos habituales, como DNI, NIE, IBAN, correo y teléfono. Los nombres, los pisos y los importes de deuda los marcas tú arrastrando un recuadro, porque eso lo decide quien conoce el documento. Todo ocurre en tu navegador, sin subir el archivo.',
+      },
+      {
+        t: 'ol',
+        items: [
+          'Decide a quién va el documento y para qué.',
+          'Abre el PDF en TachadoPDF y deja que detecte los datos con formato; marca a mano el resto.',
+          'Aplica el tachado y descarga el archivo nuevo, junto con el informe de comprobación.',
+          'Si el PDF es un escaneo, revisa a ojo esas páginas: no tienen texto que releer.',
+          'Abre el resultado y prueba a buscar y copiar un dato tachado. Para una revisión rápida, el comprobador gratuito lee el texto de las páginas y busca los patrones que reconoce.',
+        ],
+      },
+      {
+        t: 'nota',
+        texto:
+          'El comprobador solo lee el texto de las páginas. No mira marcadores, adjuntos ni metadatos; para esos hay una herramienta de metadatos de PDF aparte. Y el borrado deja el hueco que ocupaba el texto, un rastro que explica la guía sobre recuperar texto tachado.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Esta guía solo cita la ley y las fuentes de la AEPD. La guía de la AEPD lleva en sus páginas la marca «en revisión», así que conviene mirar su versión vigente. Para confirmar un caso concreto, como el plazo de un documento o si puede publicarse un listado, lo prudente es consultar con el asesor jurídico de la comunidad.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Cuánto tiempo hay que conservar las convocatorias y las actas de una comunidad?',
+        respuesta:
+          'El artículo 19.4 de la Ley de Propiedad Horizontal dice que el secretario custodia los libros de actas y conserva durante cinco años las convocatorias, comunicaciones, apoderamientos y demás documentos relevantes de las reuniones. Ese texto no fija plazo para recibos o facturas; dependen de otra normativa.',
+      },
+      {
+        pregunta: '¿Se puede poner la lista de morosos en el tablón de anuncios?',
+        respuesta:
+          'Según la AEPD, con carácter general no está amparado por la normativa de protección de datos. La ley permite la relación de deudores en la convocatoria (artículo 16.2) y el tablón para notificar cuando no se pudo en el domicilio, con diligencia de fecha y motivos (artículo 9.1.h). Un caso concreto, mejor con el asesor jurídico.',
+      },
+      {
+        pregunta: '¿Qué documentos puede pedir un propietario a la administración?',
+        respuesta:
+          'Los que le permitan comprobar la gestión de la comunidad, como cuentas, facturas o contratos. Según la AEPD, no hay acceso generalizado a todo el archivo: solo los datos personales pertinentes y limitados a esa finalidad.',
+      },
+      {
+        pregunta: '¿Cómo tacho datos de un PDF de la comunidad antes de enviarlo?',
+        respuesta:
+          'Con un programa que elimine el texto del archivo, no que lo tape con un recuadro. TachadoPDF lo hace en el navegador, sin subir el PDF: detecta por patrones DNI, NIE, IBAN, correo y teléfono, tú marcas nombres y pisos, y al final entrega un informe de comprobación.',
+      },
+    ],
+  },
 ];
 
 const FAQ_ES: EntradaFaq[] = FAQ.map((item) => ({ ...item }));

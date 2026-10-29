@@ -4,6 +4,30 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · SEO · Guía «Archivos de una administración de fincas» (punto 15 del plan)
+
+**Hecho:** nueva `guia-archivos-fincas` → `/guia/archivos-administracion-de-fincas-plazos/` (generada, solo
+español) para la consulta «archivos en la administración de fincas» (~90 impresiones en Search Console sin
+página que la conteste). `<title>` de 55 caracteres, descripción de 150, ~1.590 palabras con 4 FAQ (FAQPage).
+Enlaza la guía de fincas, sanciones, nóminas y recuperar tachado; lleva el enlace al comprobador y la sección
+«Fuentes».
+
+**Fuentes leídas y citadas (solo lo que dicen):** LPH en el BOE (BOE-A-1960-10906, texto consolidado a 03/10/2026):
+art. 19.1-19.4 (libro de actas; el secretario custodia los libros y conserva cinco años convocatorias,
+comunicaciones, apoderamientos y demás documentos relevantes de las reuniones), 20.e), 16.2 y 9.1.h. AEPD: guía
+«Protección de datos y administración de fincas» (PDF, apartados 7.1-7.3 y FAQ; sus páginas llevan la marca
+«en revisión») y las FAQ 0906 y 0909. Se dejaron fuera por no poder verificarlos en fuente primaria los plazos de
+la documentación contable/fiscal, los años de prescripción y las cuantías de sanción.
+
+**Honestidad del producto:** el comprobador solo lee el texto de las páginas (la guía lo dice, y remite a la
+herramienta de metadatos para marcadores/adjuntos). No hay consejo jurídico: remite al asesor jurídico de la
+comunidad. El generador no admite enlaces dentro del cuerpo, así que la landing `/actas/` (estática, no es
+guía) no se enlaza desde el texto; sí la guía de fincas vía «relacionadas».
+
+**Tests:** contadores +1 (`titulos-serp` y `cta-visible` 43→44, `estilo` 35→36, lista de `landings-keyword`).
+`npm run fechas` volvió a fallar en su primer paso con una página nueva; se añadió a mano la línea provisional a
+`fechas.ts`, igual que en la guía inglesa. Pendiente de integrar (sin merge ni despliegue).
+---
 ## 2026-10-29 · legal + ruta del dinero · correo único y «recordar la clave Pro» en producción
 
 **Decisión:** Ángel dio permiso explícito en el chat («tienes permiso para hacer lo que recomiendes»),
