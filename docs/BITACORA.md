@@ -51,8 +51,12 @@ el más grave: ver la corrección de la entrada siguiente.
 **Verificado:** tsc 0 · vitest en verde · build 0 · mutaciones de las guardas nuevas en rojo · prueba
 en Chromium sobre `dist/`: con la página cargada y la red cortada, la portada ES/EN, el comprobador y
 `/metadatos-pdf/` abren y analizan un PDF; con el motor bloqueado, el comprobador pide recargar.
-**Pendiente:** pedir indexación en Search Console (el navegador lo bloqueó en esta sesión); Bing
-Webmaster y enlaces externos, del owner.
+**Publicado y comprobado en vivo** (merge 82d7486): llms.txt 200, 404 propia, 42 `lastmod`, enlace al
+repo, tarjeta ICO, párrafo corregido con «Fuentes», 0 `utm_`. **IndexNow:** enviadas las 42 URL del
+sitemap + llms.txt a api.indexnow.org (HTTP 200; clave `public/d3e587ef….txt` servida y coincidente).
+Avisa a Bing, Yandex y Seznam sin cuenta de Bing Webmaster.
+**Pendiente:** pedir indexación en Search Console (el navegador lo bloqueó en esta sesión); alta en
+Bing Webmaster (para ver datos) y enlaces externos (`.seo-audit/BACKLINKS.md`), del owner.
 
 ---
 ## 2026-10-29 · rendimiento · mupdf (wasm) ya no se baja al abrir la página
