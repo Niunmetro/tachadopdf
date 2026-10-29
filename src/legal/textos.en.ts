@@ -14,7 +14,7 @@ export const LEGAL_NOTICE_EN = `Legal notice
 This website is operated from Spain and is subject to Spanish law, including Law 34/2002 on information society services and electronic commerce (LSSI-CE).
 
 Operator: Ángel Talón Villa, an individual trader established in Spain. There is no company.
-Contact email: ccsshaft@gmail.com
+Contact email: admin@tachadopdf.com
 
 The operator's full statutory details — Spanish tax identification number and address — are published in the Spanish version of this legal notice, at https://www.tachadopdf.com/ (section "Aviso Legal"), which is the binding version.
 
@@ -44,7 +44,7 @@ Processed entirely on your device. TachadoPDF processes documents entirely insid
 
 The only thing that leaves your browser. When you activate a Pro licence, the licence key you type is sent to Gumroad Inc. (United States) to be checked. That is the only outbound request the application makes. No other data, and no part of any document, ever leaves your browser.
 
-Stored on your device. The free-tier counter — how many documents you have processed this month — is kept in your browser's local storage (IndexedDB) on your own computer. It is never sent anywhere, and clearing your browser data erases it. It exists only to make the free allowance work.
+Stored on your device. The free-tier counter — how many documents you have processed this month — is kept in your browser's local storage (IndexedDB) on your own computer. It is never sent anywhere, and clearing your browser data erases it. It exists only to make the free allowance work. If you activate a valid Pro licence, the licence key is also remembered in your browser's local storage so you do not have to type it again; it is checked with Gumroad again when you open the application, and clearing your browser data erases it.
 
 No cookies, no analytics. This application sets no tracking cookies and uses no analytics, which is why you are not shown a consent banner.
 
