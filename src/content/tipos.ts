@@ -233,6 +233,8 @@ export interface CopiaComprobador {
   noEsPdf: string;
   passwordRequerida: string;
   errorGenerico: string;
+  /** El motor PDF no se pudo descargar (sin conexión): no es culpa del fichero. */
+  errorMotor: string;
   avisoEscaneadas: string;
   pagina: (numero: number) => string;
   cta: string;
@@ -270,6 +272,8 @@ export interface CopiaApp {
   noSePudoAbrir: (fichero: string) => string;
   passwordPrompt: string;
   errorRender: string;
+  /** Mientras baja el motor PDF al cargar un documento (normalmente ya está en memoria). */
+  cargandoMotor: string;
   errorProcesado: (detalle: string) => string;
   residuosEnLote: string;
   avisoEscaneadas: (paginas: string) => string;

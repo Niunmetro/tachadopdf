@@ -2252,7 +2252,9 @@ export function generarLlmsTxt(): string {
     for (const guia of c.guias) {
       const pagina = paginaPorId(guia.id);
       const url = pagina === undefined ? null : urlCanonica(pagina, locale);
-      if (url !== null) lineas.push(`- [${guia.tituloEnlace}](${url}): ${guia.descripcion}`);
+      if (url === null) continue;
+      const detalle = guia.descripcion.length > 0 ? `: ${guia.descripcion}` : '';
+      lineas.push(`- [${guia.tituloEnlace}](${url})${detalle}`);
     }
     lineas.push('');
   }

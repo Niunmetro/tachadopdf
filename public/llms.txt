@@ -1,10 +1,10 @@
 # TachadoPDF
 
-> TachadoPDF borra de verdad el texto y las zonas marcadas de un PDF (no los tapa con un recuadro), limpia los metadatos y vuelve a leer el archivo entregado para comprobar que no queda rastro. Funciona entero en el navegador: el documento no se sube a ningún servidor. Gratis: 5 documentos al mes de hasta 3 páginas. Pro: 59 €, pago único. Código abierto (AGPL-3.0).
+> TachadoPDF borra de verdad el texto y las zonas marcadas de un PDF (no los tapa con un recuadro), limpia los metadatos y vuelve a leer el archivo entregado para comprobar que los datos buscados ya no están. Funciona entero en el navegador: el documento no se sube a ningún servidor. Gratis: 5 documentos al mes de hasta 3 páginas. Pro: 59 €, pago único. Código abierto (AGPL-3.0).
 
 Límites declarados: las páginas escaneadas (sin capa de texto) se avisan en rojo y hay que revisarlas a ojo; si se conserva la capa de texto, queda el hueco que ocupaba lo borrado.
 
-TachadoPDF really deletes the marked text and image areas from a PDF (it does not cover them with a box), strips the metadata and re-reads the delivered file to check nothing is left. It runs entirely in the browser: the document is never uploaded to any server. Free: 5 documents a month, up to 3 pages each. Pro: 59 €, one-time payment. Open source (AGPL-3.0).
+TachadoPDF really deletes the marked text and image areas from a PDF (it does not cover them with a box), strips the metadata and re-reads the delivered file to check the searched-for data is gone. It runs entirely in the browser: the document is never uploaded to any server. Free: 5 documents a month, up to 3 pages each. Pro: 59 €, one-time payment. Open source (AGPL-3.0).
 
 Stated limits: scanned pages (no text layer) are flagged in red and need checking by eye; when the text layer is kept, the gap left by the deleted text remains.
 
@@ -20,12 +20,12 @@ Stated limits: scanned pages (no text layer) are flagged in red and need checkin
 
 ## Guías (español)
 
-- [Cómo tachar un DNI de un PDF sin que se pueda recuperar](https://www.tachadopdf.com/guia/tachar-dni-pdf/): 
-- [Por qué el rectángulo negro no borra el dato](https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/): 
-- [Datos personales en actas y documentos de comunidades](https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/): 
-- [Cómo tachar datos de un PDF sin subirlo a internet](https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/): 
-- [Sanciones de la AEPD a comunidades de propietarios](https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/): 
-- [Enviar nóminas en PDF sin exponer datos personales](https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/): 
+- [Cómo tachar un DNI de un PDF sin que se pueda recuperar](https://www.tachadopdf.com/guia/tachar-dni-pdf/)
+- [Por qué el rectángulo negro no borra el dato](https://www.tachadopdf.com/guia/rectangulo-negro-pdf-no-borra/)
+- [Datos personales en actas y documentos de comunidades](https://www.tachadopdf.com/guia/proteccion-datos-administradores-fincas/)
+- [Cómo tachar datos de un PDF sin subirlo a internet](https://www.tachadopdf.com/guia/tachar-pdf-sin-subir-internet/)
+- [Sanciones de la AEPD a comunidades de propietarios](https://www.tachadopdf.com/guia/sanciones-aepd-comunidades-propietarios/)
+- [Enviar nóminas en PDF sin exponer datos personales](https://www.tachadopdf.com/guia/enviar-nominas-pdf-datos-personales/)
 - [Ocultar datos personales de un currículum en PDF](https://www.tachadopdf.com/guia/ocultar-datos-personales-curriculum-pdf/): Antes de mandar tu CV a una empresa o a un portal de empleo, quita el DNI, la dirección y hasta la foto. Cómo borrarlos del PDF, no taparlos, sin subirlo.
 - [Ocultar datos de terceros en la prueba documental](https://www.tachadopdf.com/guia/ocultar-datos-terceros-documentos-juicio-pdf/): Aportar un documento a un juicio no autoriza a exponer datos de terceros ajenos al asunto. Qué tachar y cómo borrarlo del PDF sin que se pueda recuperar.
 - [Censurar un PDF antes de publicarlo en internet](https://www.tachadopdf.com/guia/censurar-pdf-antes-de-publicarlo-internet/): Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere.

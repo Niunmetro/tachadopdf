@@ -136,6 +136,7 @@ const APP_EN: CopiaApp = {
     `"${fichero}" couldn't be opened. Is it a valid PDF? If it's password-protected, try again and enter the password.`,
   passwordPrompt: 'PDF password',
   errorRender: 'The page could not be rendered',
+  cargandoMotor: 'Preparing the redaction engine in your browser…',
   errorProcesado: (detalle) =>
     `Something went wrong processing the document in your browser. Reload the page and try again; if it keeps happening, the file may not be supported. (Technical detail: ${detalle})`,
   residuosEnLote:
@@ -270,6 +271,8 @@ const COMPROBADOR_EN: CopiaComprobador = {
     'This PDF is password-protected. Enter the password in the password field and select the file again.',
   errorGenerico:
     "The PDF couldn't be analysed. Check that the file isn't damaged and try again.",
+  errorMotor:
+    "The PDF engine couldn't be loaded (are you offline?). Reload the page while connected and try again.",
   avisoEscaneadas:
     "This page has no extractable text (probably scanned). Automatic detection can't read it — check it visually.",
   pagina: (numero) => `Page ${numero}`,
@@ -340,7 +343,7 @@ export const en: Contenido = {
 
   /** /llms.txt texts (index for answer engines). Only facts already published on the site. */
   llms: {
-    resumen: `TachadoPDF really deletes the marked text and image areas from a PDF (it does not cover them with a box), strips the metadata and re-reads the delivered file to check nothing is left. It runs entirely in the browser: the document is never uploaded to any server. Free: ${FREE_MONTHLY_LIMIT} documents a month, up to ${FREE_MAX_PAGES} pages each. Pro: ${PRECIO_PRO}, one-time payment. Open source (AGPL-3.0).`,
+    resumen: `TachadoPDF really deletes the marked text and image areas from a PDF (it does not cover them with a box), strips the metadata and re-reads the delivered file to check the searched-for data is gone. It runs entirely in the browser: the document is never uploaded to any server. Free: ${FREE_MONTHLY_LIMIT} documents a month, up to ${FREE_MAX_PAGES} pages each. Pro: ${PRECIO_PRO}, one-time payment. Open source (AGPL-3.0).`,
     limites:
       'Stated limits: scanned pages (no text layer) are flagged in red and need checking by eye; when the text layer is kept, the gap left by the deleted text remains.',
     herramientas: 'Tools (English)',
@@ -553,6 +556,8 @@ export const en: Contenido = {
       'The copy you download has been re-serialised without those metadata, and the tool re-reads it to confirm none remain. The visible content of the document is not touched; what goes is the trail of who, with what and when it was made.',
     noEsPdf: 'That doesn’t look like a PDF. Use a .pdf file.',
     errorGenerico: 'The PDF could not be processed.',
+    errorMotor:
+      "The PDF engine couldn't be loaded (are you offline?). Reload the page while connected and try again.",
     sufijoDescarga: '-no-metadata',
     faqs: [
       {

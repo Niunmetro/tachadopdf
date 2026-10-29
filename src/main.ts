@@ -452,7 +452,9 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
       // página. Se espera antes del bucle y fuera del try interno a propósito: un fallo de red
       // (sin conexión, fragmento no disponible) sale por este mismo camino visible —`errorProcesado`—
       // y no se confunde con «no se pudo abrir este PDF», que es un problema del fichero.
+      resultStatus.textContent = copia.cargandoMotor;
       await Promise.all([cargarEngine(), cargarPipeline()]);
+      resultStatus.textContent = '';
       for (const entrada of entradas) {
         let doc: PdfDoc;
         try {
@@ -514,10 +516,10 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     }
   }
 
-  // El motor NO se baja al abrir la página sino al cargar un PDF. Mientras el visitante elige el
-  // fichero en el selector del sistema ya se va bajando, para que la espera al soltarlo sea menor.
-  // Solo adelanta la descarga: si falla, el error lo muestra la carga del PDF.
-  fileInput.addEventListener('click', precargarPipeline);
+  // El motor se baja EN SEGUNDO PLANO desde ya: la página no espera por él (los botones funcionan
+  // al momento) y, una vez cargada, tacha aunque se corte la conexión, como promete la web. Si
+  // falla, se calla aquí: el error visible lo da la carga del PDF, que vuelve a pedirlo.
+  precargarPipeline();
 
   fileInput.addEventListener('change', () => {
     void (async () => {
@@ -552,8 +554,6 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   ejemploBtn.addEventListener('click', () => {
     void (async () => {
       ejemploBtn.setAttribute('disabled', 'true');
-      // El motor se baja a la vez que el PDF de ejemplo, no uno después del otro.
-      precargarPipeline();
       try {
         // URL relativa AL DOCUMENTO, calculada por el generador y publicada en `data-ejemplo`:
         // sirve igual en el dominio propio (/), en la ruta de GitHub Pages (/tachadopdf/) y en

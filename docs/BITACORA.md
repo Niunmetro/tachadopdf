@@ -14,7 +14,10 @@ fuera de git), publicada con el visto bueno del owner («haz todo»).
   y una fecha visible bajo el H1. Las 6 guías estáticas que no tenían NINGÚN schema llevan ahora su
   Article escrito a mano, y `/actas/` y `/nominas/` sus fechas. Guarda `fechas.test.ts`: cada página
   tiene fechas y el sitemap, el Article generado y el escrito a mano dicen lo mismo. Flujo al
-  cambiar páginas: `npm run fechas && npm run gen:pages` antes de commitear.
+  cambiar páginas: `npm run fechas` (genera, fecha, copia las fechas al Article de las estáticas y
+  vuelve a generar) antes de commitear. `actualizado` solo se mueve si cambia el TEXTO VISIBLE de la
+  página: la revisión vio las 42 con fecha de hoy por haber tocado metas y JSON-LD, frescura
+  inflada que hace que un buscador deje de fiarse del `lastmod`.
 - **Código fuente enlazado.** La web prometía «código abierto (AGPL-3.0)» sin enlazarlo. Pie de la
   portada con «Código fuente en GitHub (AGPL-3.0)» (`URL_REPO` en `config.ts`), `sameAs` y `@id` en
   la Organization, y autor de los Article apuntando a esa entidad. El perfil de GitHub no muestra
@@ -28,6 +31,8 @@ fuera de git), publicada con el visto bueno del owner («haz todo»).
 - **Sección «Fuentes»** (campo opcional `fuentes` de la guía) con URLs comprobadas: estudio + DOI,
   expediente Manafort (CourtListener da 403 a curl pero carga en navegador) + Mother Jones, ICO/PSNI
   + su aviso de sanción. Va en recuperar, caja negra EN, tribunales EN, DSAR EN y Cómo funciona ES/EN.
+  Salvedad: el DOI redirige (302) a petsymposium.org, que desde esta máquina no resolvió; el registro
+  DOI sí está comprobado en Crossref.
 - **27 meta descripciones** de 156-316 caracteres recortadas a ≤155; guarda en `titulos-serp.test.ts`
   sobre las 42 páginas servidas.
 - **Portada inglesa:** la tarjeta del precedente era la multa española de la AEPD (15.000 €); ahora
@@ -38,13 +43,27 @@ fuera de git), publicada con el visto bueno del owner («haz todo»).
   URL duplicada. Los tests que exigían el parámetro ahora exigen su ausencia.
 - Integrada además la rama `perf/wasm-diferido` (entrada siguiente).
 
-**Verificado:** tsc 0 · vitest en verde · build 0 · mutaciones de las guardas nuevas en rojo.
-**Pendiente:** pedir indexación en Search Console (el navegador lo bloqueó en esta sesión);
-`/metadatos-pdf/` sigue cargando mupdf de forma estática (mismo arreglo, fuera de alcance); Bing
+**Revisión independiente (CORREGIR, arreglado):** `llms.txt` listaba las 6 guías estáticas con
+descripción vacía; el comprobador y `/metadatos-pdf/` culpaban al fichero si el motor no se podía
+descargar (ahora `MotorNoCargadoError` → «Recarga la página»); frescura inflada (arriba); sin aviso
+mientras baja el motor (ahora «Preparando el motor de tachado…»). Y uno que la revisión NO vio y era
+el más grave: ver la corrección de la entrada siguiente.
+**Verificado:** tsc 0 · vitest en verde · build 0 · mutaciones de las guardas nuevas en rojo · prueba
+en Chromium sobre `dist/`: con la página cargada y la red cortada, la portada ES/EN, el comprobador y
+`/metadatos-pdf/` abren y analizan un PDF; con el motor bloqueado, el comprobador pide recargar.
+**Pendiente:** pedir indexación en Search Console (el navegador lo bloqueó en esta sesión); Bing
 Webmaster y enlaces externos, del owner.
 
 ---
 ## 2026-10-29 · rendimiento · mupdf (wasm) ya no se baja al abrir la página
+
+**⚠ Corrección del mismo día (antes de publicar):** tal como quedó abajo, el motor solo se bajaba
+al cargar un PDF, y eso ROMPÍA una promesa pública: varias guías dicen «corta la conexión una vez
+cargada la página: la herramienta sigue tachando». Sin red, el primer PDF no podía descargar el
+motor. Ahora cada página (portada, comprobador, `/metadatos-pdf/`) lo pide EN SEGUNDO PLANO nada más
+arrancar (`precargar…` en su init): los botones siguen sin esperar por él (lo que se ganó) y, cuando
+la página ha cargado, el motor ya está en memoria (medido en Chromium: listo a ~0,3 s en local). Lo
+que se pierde es el ahorro de datos para quien no abre ningún PDF; la promesa vale más.
 
 **Hecho:** la portada (ES/EN) y el comprobador (ES/EN) bajaban y compilaban el wasm de mupdf (10,4 MB
 sin comprimir) al cargar, aunque el visitante no subiera ningún PDF. Causa medida: `mupdf` instancia

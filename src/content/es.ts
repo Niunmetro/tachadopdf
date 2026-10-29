@@ -72,6 +72,7 @@ const APP_ES: CopiaApp = {
     `No se pudo abrir "${fichero}". ¿Es un PDF válido? Si tiene contraseña, vuelve a intentarlo e introdúcela.`,
   passwordPrompt: 'Contraseña del PDF',
   errorRender: 'No se pudo renderizar la página',
+  cargandoMotor: 'Preparando el motor de tachado en tu navegador…',
   errorProcesado: (detalle) =>
     `Error al procesar el documento en tu navegador. Recarga la página y prueba de nuevo; si persiste, el archivo puede no ser compatible. (Detalle técnico: ${detalle})`,
   residuosEnLote:
@@ -215,6 +216,8 @@ const COMPROBADOR_ES: CopiaComprobador = {
     'Este PDF está protegido con contraseña. Escríbela en el campo de contraseña y vuelve a seleccionar el archivo.',
   errorGenerico:
     'No se ha podido analizar el PDF. Comprueba que el archivo no esté dañado e inténtalo de nuevo.',
+  errorMotor:
+    'No se pudo cargar el motor de PDF (¿sin conexión?). Recarga la página con conexión y vuelve a intentarlo.',
   avisoEscaneadas:
     'Esta página no contiene texto extraíble (probablemente escaneada). La detección automática no puede leerla: revísala visualmente.',
   pagina: (numero) => `Página ${numero}`,
@@ -1342,7 +1345,7 @@ export const es = {
 
   /** Textos de /llms.txt (índice para buscadores con motor generativo). Solo hechos ya publicados. */
   llms: {
-    resumen: `TachadoPDF borra de verdad el texto y las zonas marcadas de un PDF (no los tapa con un recuadro), limpia los metadatos y vuelve a leer el archivo entregado para comprobar que no queda rastro. Funciona entero en el navegador: el documento no se sube a ningún servidor. Gratis: ${FREE_MONTHLY_LIMIT} documentos al mes de hasta ${FREE_MAX_PAGES} páginas. Pro: ${PRECIO_PRO}, pago único. Código abierto (AGPL-3.0).`,
+    resumen: `TachadoPDF borra de verdad el texto y las zonas marcadas de un PDF (no los tapa con un recuadro), limpia los metadatos y vuelve a leer el archivo entregado para comprobar que los datos buscados ya no están. Funciona entero en el navegador: el documento no se sube a ningún servidor. Gratis: ${FREE_MONTHLY_LIMIT} documentos al mes de hasta ${FREE_MAX_PAGES} páginas. Pro: ${PRECIO_PRO}, pago único. Código abierto (AGPL-3.0).`,
     limites:
       'Límites declarados: las páginas escaneadas (sin capa de texto) se avisan en rojo y hay que revisarlas a ojo; si se conserva la capa de texto, queda el hueco que ocupaba lo borrado.',
     herramientas: 'Herramientas (español)',
@@ -1550,6 +1553,8 @@ export const es = {
       'La copia que descargas se ha reserializado sin esos metadatos, y la herramienta la relee para confirmar que no quedan. El contenido visible del documento no se toca; lo que se va es el rastro de quién, con qué y cuándo se hizo.',
     noEsPdf: 'Eso no parece un PDF. Usa un archivo .pdf.',
     errorGenerico: 'No se pudo procesar el PDF.',
+    errorMotor:
+      'No se pudo cargar el motor de PDF (¿sin conexión?). Recarga la página con conexión y vuelve a intentarlo.',
     sufijoDescarga: '-sin-metadatos',
     faqs: [
       {

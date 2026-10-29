@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "gen:pages": "vite-node scripts/gen-pages.ts",
-    "fechas": "vite-node scripts/fechas.ts",
+    "fechas": "vite-node scripts/gen-pages.ts && vite-node scripts/fechas.ts && vite-node scripts/gen-pages.ts",
     "build": "vite build",
     "test": "vitest run",
     "preview": "vite preview",

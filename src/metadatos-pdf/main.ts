@@ -5,7 +5,7 @@
 import { contenidoDe, localeDelDocumento } from '../content/index';
 // mupdf (wasm) NO se importa de forma estática: se pide al abrir un PDF (ver src/pdf/perezoso.ts).
 import type { AnalisisPdf } from '../pdf/metadata';
-import { cargarMetadatos } from '../pdf/perezoso';
+import { MotorNoCargadoError, cargarMetadatos, precargarMetadatos } from '../pdf/perezoso';
 
 const COPIA = contenidoDe(localeDelDocumento(document)).metadatosPdf;
 
@@ -107,8 +107,8 @@ async function analizar(f: File, el: Elementos): Promise<void> {
     pintarRevelado(el, analisis);
     el.dropzone.hidden = true;
     el.stage.hidden = false;
-  } catch {
-    el.error.textContent = COPIA.errorGenerico;
+  } catch (causa) {
+    el.error.textContent = causa instanceof MotorNoCargadoError ? COPIA.errorMotor : COPIA.errorGenerico;
   }
 }
 
@@ -133,8 +133,8 @@ async function descargar(el: Elementos): Promise<void> {
     enlace.click();
     enlace.remove();
     window.setTimeout(() => URL.revokeObjectURL(href), 1000);
-  } catch {
-    el.error.textContent = COPIA.errorGenerico;
+  } catch (causa) {
+    el.error.textContent = causa instanceof MotorNoCargadoError ? COPIA.errorMotor : COPIA.errorGenerico;
   } finally {
     el.download.disabled = false;
     el.download.textContent = etiquetaPrevia;
@@ -144,6 +144,9 @@ async function descargar(el: Elementos): Promise<void> {
 export function inicializar(): void {
   const el = localizar();
   if (el === null) return;
+  // mupdf en segundo plano desde ya (ver src/pdf/perezoso.ts): los controles no esperan por él y,
+  // una vez cargada la página, funciona aunque se corte la conexión.
+  precargarMetadatos();
   el.file.addEventListener('change', () => {
     const f = el.file.files?.[0];
     if (f) void analizar(f, el);

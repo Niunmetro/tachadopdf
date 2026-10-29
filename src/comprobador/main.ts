@@ -1,7 +1,7 @@
 import { contenidoDe, localeDelDocumento } from '../content/index';
 import type { CopiaComprobador } from '../content/tipos';
 import { PdfPasswordError } from '../pdf/errores';
-import { precargarEngine } from '../pdf/perezoso';
+import { MotorNoCargadoError, precargarEngine } from '../pdf/perezoso';
 import { FicheroNoPdfError, analizarPdf } from './analyze';
 import { renderResumen } from './render';
 
@@ -41,6 +41,7 @@ function localizarElementos(): ElementosComprobador | null {
 function mensajeDeError(causa: unknown): string {
   if (causa instanceof FicheroNoPdfError) return COPIA.noEsPdf;
   if (causa instanceof PdfPasswordError) return COPIA.passwordRequerida;
+  if (causa instanceof MotorNoCargadoError) return COPIA.errorMotor;
   return COPIA.errorGenerico;
 }
 
@@ -62,11 +63,10 @@ export function inicializarComprobador(): void {
   const elementos = localizarElementos();
   if (!elementos) return;
 
-  // mupdf NO se baja al abrir la página sino al analizar un PDF. Mientras el visitante elige el
-  // fichero (abre el selector, arrastra uno sobre la zona) ya se va bajando, para que al soltarlo
-  // la espera sea menor. Es solo adelantar la descarga: si falla, el error lo muestra el análisis.
-  elementos.fichero.addEventListener('click', precargarEngine);
-  elementos.dropzone.addEventListener('dragenter', precargarEngine);
+  // mupdf se baja EN SEGUNDO PLANO desde ya: la página no espera por él (los controles funcionan
+  // al momento) y, una vez cargada, analiza aunque se corte la conexión, como promete la web. Si
+  // falla, se calla aquí: el error visible lo da el análisis, que vuelve a pedirlo.
+  precargarEngine();
 
   elementos.fichero.addEventListener('change', () => {
     const fichero = elementos.fichero.files?.[0];
