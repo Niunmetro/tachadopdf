@@ -456,7 +456,7 @@ const GUIAS_ES: ContenidoGuia[] = [
       {
         t: 'ol',
         items: [
-          'Debajo de los recuadros negros. Un recuadro dibujado encima deja el texto dentro del archivo, y se copia en segundos; si el original es un escaneo, el parche se destapa ajustando el brillo o el contraste de la imagen.',
+          'Debajo de los recuadros negros. Un recuadro dibujado encima deja el texto dentro del archivo, y se copia en segundos; si el original es un escaneo y el recuadro se añadió encima como un objeto aparte, basta con moverlo o borrarlo en un editor para ver el dato.',
           'Los metadatos. El autor, el programa con el que se creó y las fechas de creación y modificación viajan dentro del archivo. Si lo exportó una persona concreta del ayuntamiento o de la empresa, su nombre puede estar ahí.',
           'Los marcadores y los adjuntos. El título de un marcador o un fichero incrustado pueden contener un nombre que no aparece en ninguna página.',
           'El nombre del fichero y la dirección web. Un archivo llamado «acta-expediente-garcia-lopez.pdf» ya publica un dato personal aunque el contenido esté bien tachado.',
