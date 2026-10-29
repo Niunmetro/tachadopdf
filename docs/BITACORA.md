@@ -7,25 +7,38 @@ Formato fijo. Sin secretos, sin datos de clientes.
 ## 2026-10-29 · SEO · Títulos y descripciones para el CTR (páginas en primera página con 0 clics)
 
 **Hecho:** auditoría SEO con datos reales de Search Console (3 meses: 840 impresiones, 11 clics,
-CTR 1,3 %, posición 23,2) y cuatro auditores (técnico, on-page, schema, búsqueda con IA). Siete
-páginas salían en la primera página (posición 6-10) con CERO clics y los títulos españoles medían
-63-117 caracteres: Google los cortaba antes del gancho. En esta rama: `<title>` y meta description
-nuevos (≤60 / ≤155) en recuperar-texto-tachado, comprobar-si-un-pdf, inmobiliaria, /imagen/, el
-comprobador, la portada ES (sólo la descripción; el título se queda), nóminas, actas, sanciones,
-enviar-nóminas y las guías EN payslip, black box y utility bill. Primera frase que responde a la
-consulta en comprobar, enviar-nóminas, black box y payslip (+2 FAQ «what does a redacted payslip
-mean»). Y una corrección de confianza: tres guías decían «subes el PDF» → «abres el PDF», y la
-descripción del comprobador «Sube un PDF» → «Abre un PDF» (nada se sube nunca).
+CTR 1,3 %, posición 23,2) y cuatro auditores (técnico, on-page, schema, búsqueda generativa). Siete
+páginas salían en la primera página (posición 6-10) con CERO clics y 15 títulos medían 61-117
+caracteres: Google los cortaba antes del gancho. En esta rama:
+- `<title>` ≤60 en las 42 páginas: título nuevo en recuperar-texto-tachado, comprobar-si-un-pdf,
+  inmobiliaria, /imagen/, /en/redact-image/, nóminas, actas, sanciones, enviar-nóminas,
+  administradores-fincas, rectángulo-negro, tachar-dni, sin-subir, las 10 guías ES generadas que lo
+  tenían largo y las guías EN payslip y utility bill.
+- Meta description nueva (≤155) en recuperar, comprobar, inmobiliaria, /imagen/, comprobador,
+  portada ES (sólo la descripción: el título se queda), nóminas, actas, sanciones, enviar-nóminas,
+  administradores-fincas y las guías EN payslip, black box y utility bill. Quedan 28 páginas con la
+  descripción por encima de 155: siguiente tanda.
+- Primera frase que responde a la consulta en comprobar, enviar-nóminas, black box y payslip (+2 FAQ
+  «what does a redacted payslip mean»).
+- Corrección de confianza: «subes el PDF» → «abres el PDF» en nóminas, enviar-nóminas,
+  administradores-fincas y sanciones, y «Sube un PDF» → «Abre un PDF» en el comprobador (nada se sube
+  nunca).
 
 **Decisiones y porqués:** (1) Se levanta el veto a `metaTitulo` en las guías ES: era la variable de un
-experimento cuyo veredicto llegó el 2026-09-07; `landings-keyword.test.ts` acepta ahora `metaTitulo`
-y la guarda nueva `titulos-serp.test.ts` pone el tope de 60 (mutante de 71 car. → rojo). (2) El título
-de la portada ES no se toca: rinde en línea con su posición (2,7 % a pos. 9,6). (3) Nada de precios,
-textos legales ni vocabulario prohibido; la cifra «5 documentos gratis» sale de `FREE_MONTHLY_LIMIT`.
-(4) Fuera de esta rama, aplicado en vivo por ser configuración reversible: **Enforce HTTPS** en
-GitHub Pages (`http://www.tachadopdf.com/` servía 200 sin redirigir; ahora 301 a https).
+experimento cuyo veredicto llegó el 2026-09-07; `landings-keyword.test.ts` acepta ahora `metaTitulo`.
+La guarda nueva `titulos-serp.test.ts` pone el tope de 60 a los `metaTitulo` ES y al `<title>` servido
+de las 42 páginas (derivadas del registro, también las escritas a mano; mutante de 71 car. → rojo).
+(2) El título de la portada ES no se toca: rinde en línea con su posición (2,7 % a pos. 9,6). (3) Nada
+de precios, textos legales ni vocabulario prohibido; la cifra «5 documentos gratis» sale de
+`FREE_MONTHLY_LIMIT`; «quita la ubicación GPS» de /imagen/ lo respalda la re-codificación con
+`canvas.toBlob` (los metadatos del fichero, no lo que se ve en los píxeles). (4) Fuera de esta rama,
+aplicado en vivo dentro del encargo del owner («aplica lo seguro y reversible»): **Enforce HTTPS** en
+GitHub Pages (`http://www.tachadopdf.com/` servía 200 sin redirigir; ahora 301 a https; se revierte
+con la misma llamada a la API de Pages).
 
-**Verificación:** tsc 0 · vitest 84 ficheros / 2115 tests en verde · build 0.
+**Verificación:** tsc 0 · vitest 84 ficheros / 2168 tests en verde · build 0 · mutantes de las dos
+guardas nuevas en rojo (metaTitulo de 71 car.; `<title>` de /actas/ con la marca, 70 car.). Revisión
+del auditor interno: 0 fallos de lógica; sus 5 avisos de copy y bitácora, corregidos.
 
 **Bloqueos / pendiente:** publicar espera el visto bueno del owner. Tras publicar: pedir indexación en
 Search Console de las páginas cambiadas y del comprobador (sin indexar). Lista completa de mejoras
