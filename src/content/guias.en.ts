@@ -11,6 +11,24 @@ import type { ContenidoGuia } from './tipos';
 export const GUIAS_EN: ContenidoGuia[] = [
   {
     id: 'guia-en-caja-negra',
+    fuentes: [
+      {
+        etiqueta: 'United States v. Manafort docket: the redacted and corrected filings of 8 January 2019 (CourtListener)',
+        url: 'https://www.courtlistener.com/docket/6183591/united-states-v-manafort/',
+      },
+      {
+        etiqueta: "Mother Jones, 8 January 2019: Paul Manafort's lawyers tried and failed to redact a filing",
+        url: 'https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/',
+      },
+      {
+        etiqueta: 'ICO: £750,000 monetary penalty to the Police Service of Northern Ireland (3 October 2024)',
+        url: 'https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/',
+      },
+      {
+        etiqueta: 'ICO penalty notice to the PSNI (PDF, 76 pages)',
+        url: 'https://ico.org.uk/media2/migrated/4031177/psni-penalty-notice.pdf',
+      },
+    ],
     titulo: 'Why the black box over your PDF does not delete the text',
     tituloEnlace: 'Why the black box over your PDF does not delete the text',
     descripcion:
@@ -80,7 +98,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How to check whether a PDF has actually been redacted',
     tituloEnlace: 'How to check whether a PDF has actually been redacted',
     descripcion:
-      'Check whether a PDF is really redacted before you send it: a three-second test anyone can run, the four other places data hides, and what a check can never tell you.',
+      'Check whether a PDF is really redacted before you send it: a three-second test, the four other places data hides, and what a check can never tell you.',
     metaTitulo: 'How to check if a PDF is really redacted · TachadoPDF',
     cuerpo: [
       {
@@ -140,6 +158,16 @@ export const GUIAS_EN: ContenidoGuia[] = [
   },
   {
     id: 'guia-en-tribunales',
+    fuentes: [
+      {
+        etiqueta: 'United States v. Manafort docket: the redacted and corrected filings of 8 January 2019 (CourtListener)',
+        url: 'https://www.courtlistener.com/docket/6183591/united-states-v-manafort/',
+      },
+      {
+        etiqueta: "Mother Jones, 8 January 2019: Paul Manafort's lawyers tried and failed to redact a filing",
+        url: 'https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/',
+      },
+    ],
     titulo: 'Redacting court filings: what Rule 5.2 requires, and how filings leak anyway',
     tituloEnlace: 'Redacting court filings: what Rule 5.2 requires',
     descripcion:
@@ -216,10 +244,20 @@ export const GUIAS_EN: ContenidoGuia[] = [
   },
   {
     id: 'guia-en-dsar',
+    fuentes: [
+      {
+        etiqueta: 'ICO: £750,000 monetary penalty to the Police Service of Northern Ireland (3 October 2024)',
+        url: 'https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/',
+      },
+      {
+        etiqueta: 'ICO penalty notice to the PSNI (PDF, 76 pages)',
+        url: 'https://ico.org.uk/media2/migrated/4031177/psni-penalty-notice.pdf',
+      },
+    ],
     titulo: 'Redacting a subject access request response without exposing third parties',
     tituloEnlace: 'Redacting a subject access request response',
     descripcion:
-      'Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow that fits the one-month clock.',
+      'Redacting a DSAR response without exposing third parties: where the data hides, what ICO enforcement looks like, and a workflow for the one-month clock.',
     metaTitulo: 'Redact a subject access request (DSAR) safely · TachadoPDF',
     cuerpo: [
       {
@@ -295,7 +333,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How to redact a PDF without uploading it anywhere',
     tituloEnlace: 'How to redact a PDF without uploading it',
     descripcion:
-      "Redact a PDF without uploading it: most online tools send your file to a server first. Here's how to redact entirely in your browser — and verify that claim yourself.",
+      "Redact a PDF without uploading it: most online tools send your file to a server first. How to redact entirely in your browser, and check that yourself.",
     metaTitulo: 'Redact a PDF without uploading it · TachadoPDF',
     cuerpo: [
       {
@@ -415,7 +453,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How to redact a PDF without Adobe Acrobat',
     tituloEnlace: 'Redact a PDF without Adobe Acrobat',
     descripcion:
-      "You don't need Acrobat to redact a PDF. Here is how to remove the text for real — not hide it behind a black box — in your browser, for free, and how to check the result before you send the file.",
+      "You don't need Acrobat to redact a PDF. How to remove the text for real, not hide it behind a black box, free in your browser, and check it before sending.",
     metaTitulo: 'Redact a PDF without Adobe Acrobat · TachadoPDF',
     cuerpo: [
       {
@@ -487,7 +525,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How TachadoPDF works, and why your file never leaves your browser',
     tituloEnlace: 'How TachadoPDF works',
     descripcion:
-      'TachadoPDF processes your whole PDF inside your browser: the file is never uploaded to a server, there are no accounts and no tracking, and the redaction is checked before you get the document back. Here is exactly how it works — and how to verify it yourself.',
+      'TachadoPDF processes your PDF in your browser: never uploaded, no accounts, no tracking, and the redaction is checked. How it works and how to verify it.',
     metaTitulo: 'How TachadoPDF works: nothing is uploaded · TachadoPDF',
     enlaceComprobador: 'See for yourself: check a PDF for free, without uploading it',
     relacionadas: ['guia-en-sin-subir', 'guia-en-comprobar', 'guia-en-caja-negra'],
@@ -581,7 +619,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How to redact a bank statement PDF before you share it',
     tituloEnlace: 'How to redact a bank statement',
     descripcion:
-      'A landlord, letting agent or lender asks for your bank statement, but they do not need to see every transaction, your balance or your full account number. How to remove what they do not need from a bank statement PDF — for real, in your browser, without uploading the file.',
+      'A landlord or lender needs your bank statement, not every transaction or your full account number. Redact the statement PDF in your browser, no upload.',
     metaTitulo: 'How to redact a bank statement PDF · TachadoPDF',
     enlaceComprobador: 'Check your statement for free — see what is still extractable',
     relacionadas: ['guia-en-sin-subir', 'guia-en-comprobar', 'guia-en-caja-negra'],
@@ -730,7 +768,7 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How to redact a passport or ID before you send a copy',
     tituloEnlace: 'How to redact a passport or ID',
     descripcion:
-      'When you are asked to send a copy of your passport or ID for verification, a full copy is a goldmine for identity theft. How to hide the document number and the machine-readable lines while still proving who you are — on the image or the PDF, in your browser, without uploading it.',
+      'Asked for a copy of your passport or ID? Hide the document number and the machine-readable lines and still prove who you are. In your browser, no upload.',
     metaTitulo: 'How to redact a passport or ID copy · TachadoPDF',
     enlaceComprobador: 'Check a PDF for free — see what personal data is still extractable',
     relacionadas: ['guia-en-caja-negra', 'guia-en-sin-subir', 'guia-en-comprobar'],

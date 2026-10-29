@@ -568,8 +568,8 @@ function cuerpoHome(pagina: PaginaRegistro, locale: Locale): string {
         <div style="max-width: var(--ancho); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--e-8) var(--e-12); align-items: start;">
           ${texto('p', { class: 'hero__dolor', style: 'margin: 0; font-size: var(--t-400); line-height: var(--lh-texto); color: rgba(255,255,255,0.88); max-width: var(--medida);' }, c.landing.dolor)}
           <aside style="border: 1px solid rgba(255,255,255,0.28); border-radius: var(--radio); padding: var(--e-6); align-self: start;">
-            <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">15.000&nbsp;€</p>
-            <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">AEPD · Expediente PS/00378/2019</p>
+            <p style="margin: 0; font-family: var(--fuente-dato); font-size: var(--t-700); font-weight: var(--peso-veredicto); line-height: 1; color: var(--tinta-inversa);">${escTexto(c.landing.precedenteCifra).replace(' ', '&nbsp;')}</p>
+            <p style="margin: var(--e-4) 0 0; padding-top: var(--e-3); border-top: 1px solid rgba(255,255,255,0.28); font-family: var(--fuente-dato); font-size: var(--t-100); letter-spacing: 0.04em; color: var(--acento-tenue);">${escTexto(c.landing.precedenteFuente)}</p>
           </aside>
         </div>
       </section>`);
@@ -1018,7 +1018,7 @@ function paginaComprobador(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=comprobador`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1270,7 +1270,7 @@ function paginaRedactorImagen(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=imagen`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1565,7 +1565,7 @@ function paginaMetadatos(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=metadatos`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -1834,7 +1834,7 @@ function paginaMetadatosPdf(pagina: PaginaRegistro, locale: Locale): string {
   const ruta = rutaDe(pagina, locale) ?? '';
   const home = paginaPorId('home');
   const rutaHome = home === undefined ? '' : (rutaDe(home, locale) ?? '');
-  const ctaHref = `${navHref(ruta, rutaHome)}?utm_source=metadatos-pdf`;
+  const ctaHref = `${navHref(ruta, rutaHome)}`;
 
   const extra = [
     jsonLd({
@@ -2076,14 +2076,14 @@ function paginaGuia(pagina: PaginaRegistro, locale: Locale, guia: ContenidoGuia)
       ctas.push(
         texto(
           'a',
-          { class: 'cp-cta', href: `${navHref(ruta, rutaComprobador)}?utm_source=guia` },
+          { class: 'cp-cta', href: `${navHref(ruta, rutaComprobador)}` },
           guia.enlaceComprobador,
         ),
       );
     }
   }
   ctas.push(
-    texto('a', { class: 'cp-cta', href: `${navHref(ruta, rutaHome)}?utm_source=guia` }, c.guiaCta),
+    texto('a', { class: 'cp-cta', href: `${navHref(ruta, rutaHome)}` }, c.guiaCta),
   );
 
   // Las mismas preguntas del FAQPage, ahora VISIBLES: un motor generativo exige que la respuesta
@@ -2217,6 +2217,50 @@ export function generarSitemap(): string {
   return lineas.join('\n');
 }
 
+// --- llms.txt ---------------------------------------------------------------
+
+/** Herramientas que /llms.txt lista por idioma, con el rótulo del pie de la portada. */
+const HERRAMIENTAS_LLMS: { id: string; rotulo: (c: Contenido) => string }[] = [
+  { id: 'home', rotulo: (c) => c.home.metaTitulo },
+  { id: 'comprobador', rotulo: (c) => c.legal.enlaceComprobador },
+  { id: 'redactor-imagen', rotulo: (c) => c.legal.enlaceImagen },
+  { id: 'limpiador-metadatos', rotulo: (c) => c.legal.enlaceMetadatos },
+  { id: 'limpiador-metadatos-pdf', rotulo: (c) => c.legal.enlaceMetadatosPdf },
+  { id: 'actas', rotulo: (c) => c.legal.enlaceActas },
+  { id: 'nominas', rotulo: (c) => c.legal.enlaceNominas },
+];
+
+/** /llms.txt (llmstxt.org): resumen, herramientas y guías de cada idioma con su URL canónica.
+ *  Sale del MISMO registro y contenido que el HTML, así que no puede listar una página que no
+ *  exista ni olvidarse de una guía nueva. */
+export function generarLlmsTxt(): string {
+  const lineas: string[] = [`# ${CONTENIDOS[LOCALE_POR_DEFECTO].marca}`, ''];
+  for (const locale of LOCALES) {
+    const c = CONTENIDOS[locale];
+    lineas.push(locale === LOCALE_POR_DEFECTO ? `> ${c.llms.resumen}` : c.llms.resumen, '', c.llms.limites, '');
+  }
+  for (const locale of LOCALES) {
+    const c = CONTENIDOS[locale];
+    lineas.push(`## ${c.llms.herramientas}`, '');
+    for (const h of HERRAMIENTAS_LLMS) {
+      const pagina = paginaPorId(h.id);
+      const url = pagina === undefined ? null : urlCanonica(pagina, locale);
+      const rotulo = h.rotulo(c);
+      if (url !== null && rotulo.length > 0) lineas.push(`- [${rotulo}](${url})`);
+    }
+    lineas.push('', `## ${c.llms.guias}`, '');
+    for (const guia of c.guias) {
+      const pagina = paginaPorId(guia.id);
+      const url = pagina === undefined ? null : urlCanonica(pagina, locale);
+      if (url !== null) lineas.push(`- [${guia.tituloEnlace}](${url}): ${guia.descripcion}`);
+    }
+    lineas.push('');
+  }
+  const c = CONTENIDOS[LOCALE_POR_DEFECTO];
+  lineas.push('## Optional', '', `- [${c.legal.codigoFuente}](${URL_REPO})`, '');
+  return lineas.join('\n');
+}
+
 // --- salida completa --------------------------------------------------------
 
 export function generarPagina(pagina: PaginaRegistro, locale: Locale): string {
@@ -2255,6 +2299,7 @@ export function generarSitio(): FicheroGenerado[] {
     }
   }
   ficheros.push({ ruta: 'public/sitemap.xml', contenido: generarSitemap() });
+  ficheros.push({ ruta: 'public/llms.txt', contenido: generarLlmsTxt() });
   return ficheros;
 }
 

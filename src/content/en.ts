@@ -296,7 +296,7 @@ export const en: Contenido = {
   home: {
     metaTitulo: 'Redact a PDF and verify it worked — TachadoPDF',
     metaDescripcion:
-      "A black box doesn't delete text — it stays in the PDF and copies out. TachadoPDF removes it for real, re-checks the file, and gives you an attachable verification report.",
+      "A black box doesn't delete PDF text: it copies straight out. Remove it for real in your browser, re-check the file, and get a verification report.",
     ogTitulo: 'Redact a PDF. Then prove the text is gone.',
     ogDescripcion:
       "Black boxes don't delete text. This removes it from the file, checks the finished PDF, and blocks the download if anything survived.",
@@ -312,6 +312,10 @@ export const en: Contenido = {
   landing: {
     titular: LANDING_HEADLINE_EN,
     dolor: LANDING_PAIN_EN,
+    // Same case the pain text cites (ICO penalty notice, 3 Oct 2024). It used to show the Spanish
+    // AEPD card, meaningless to a UK reader.
+    precedenteCifra: '£750,000',
+    precedenteFuente: 'ICO · Penalty to the PSNI, October 2024',
     subtitulo: LANDING_SUBHEAD_EN,
     bullets: LANDING_BULLETS_EN,
     notaDeteccion: LANDING_DETECTION_NOTE_EN,
@@ -333,6 +337,15 @@ export const en: Contenido = {
   },
 
   guiaCta: 'Redact your PDF now — free, and without uploading it to any server',
+
+  /** /llms.txt texts (index for answer engines). Only facts already published on the site. */
+  llms: {
+    resumen: `TachadoPDF really deletes the marked text and image areas from a PDF (it does not cover them with a box), strips the metadata and re-reads the delivered file to check nothing is left. It runs entirely in the browser: the document is never uploaded to any server. Free: ${FREE_MONTHLY_LIMIT} documents a month, up to ${FREE_MAX_PAGES} pages each. Pro: ${PRECIO_PRO}, one-time payment. Open source (AGPL-3.0).`,
+    limites:
+      'Stated limits: scanned pages (no text layer) are flagged in red and need checking by eye; when the text layer is kept, the gap left by the deleted text remains.',
+    herramientas: 'Tools (English)',
+    guias: 'Guides (English)',
+  },
 
   pro: {
     argumento: `Pro is a one-time payment of ${PRECIO_PRO} and is not a subscription: it does not renew and does not generate recurring charges. It adds unlimited documents, no page limit, batch processing of several files at once, and a verification report with no watermark.`,
@@ -367,7 +380,7 @@ export const en: Contenido = {
   comprobador: {
     metaTitulo: 'Check what personal data your PDF actually contains',
     metaDescripcion:
-      'Load a PDF and find out what personal data it contains before you share it. Free, entirely in your browser: the file never leaves your machine. This check does not redact anything.',
+      'Load a PDF and see what personal data it contains before you share it. Free and in your browser: the file never leaves your machine. Nothing is redacted.',
     ogTitulo: 'Check what personal data your PDF actually contains',
     ogDescripcion:
       'Find out what personal data your PDF contains before you share it. Free, entirely in your browser: the file never leaves your machine.',
@@ -387,7 +400,7 @@ export const en: Contenido = {
   imagen: {
     metaTitulo: 'Redact an image or screenshot: remove the data, not cover it',
     metaDescripcion:
-      "Redact data from a photo or screenshot: it doesn't blur — it replaces the pixels of the area with solid black, and on export it drops the metadata (including location). 100% in your browser; the image is never uploaded to any server.",
+      "Redact data from a photo or screenshot: the area turns solid black, not a blur, and the export drops the metadata and location. Free, in your browser.",
     ogTitulo: 'Redact an image or screenshot · TachadoPDF',
     ogDescripcion:
       'Remove data from an image or screenshot by replacing the pixels with solid black (not blur), and strip the metadata — 100% in your browser.',
@@ -443,7 +456,7 @@ export const en: Contenido = {
   metadatos: {
     metaTitulo: 'See and remove the hidden metadata in a photo (EXIF, GPS)',
     metaDescripcion:
-      'Find out what hidden data a photo carries — GPS location, camera model, date — and download a clean copy with no metadata. 100% in your browser; the image is never uploaded to any server.',
+      'See what hidden data a photo carries (GPS location, camera model, date) and download a clean copy with no metadata. In your browser, never uploaded.',
     ogTitulo: 'See and remove the hidden metadata in a photo · TachadoPDF',
     ogDescripcion:
       'See what your photo hides (GPS location, camera, date) and download it clean, 100% in your browser.',
@@ -505,7 +518,7 @@ export const en: Contenido = {
   metadatosPdf: {
     metaTitulo: 'See and remove the hidden metadata in a PDF',
     metaDescripcion:
-      'Find out what your PDF reveals — author, the software it was made with, dates, bookmarks, attachments — and download a clean copy. 100% in your browser; the file is never uploaded to any server.',
+      'See what your PDF reveals (author, the software it was made with, dates, bookmarks, attachments) and download a clean copy. In your browser, no upload.',
     ogTitulo: 'See and remove the hidden metadata in a PDF · TachadoPDF',
     ogDescripcion:
       'See what your PDF reveals (author, software, dates) and download it clean, 100% in your browser.',

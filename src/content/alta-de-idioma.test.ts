@@ -26,11 +26,11 @@ const MODULOS_DEL_GENERADOR = ['content/generar.ts', 'content/html.ts', 'content
 describe('la salida se DERIVA del registro', () => {
   const ficheros = generarSitio();
 
-  it('emite exactamente una página por (página generada × idioma en que existe), más el sitemap', () => {
+  it('emite exactamente una página por (página generada × idioma en que existe), más el sitemap y llms.txt', () => {
     const esperados = PAGINAS.filter((p) => p.origen === 'generado').flatMap((p) =>
       localesDe(p).map((l) => ficheroDe(p, l)),
     );
-    esperados.push('public/sitemap.xml');
+    esperados.push('public/sitemap.xml', 'public/llms.txt');
     expect(ficheros.map((f) => f.ruta).sort()).toEqual(esperados.sort());
   });
 

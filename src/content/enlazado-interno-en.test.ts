@@ -78,7 +78,7 @@ describe('las guías inglesas están enlazadas y con títulos aptos para la SERP
 
       it('enlaza a la herramienta gratuita (el comprobador /en/checker/) con su UTM', () => {
         expect(guia?.enlaceComprobador).toBeDefined();
-        expect(html).toContain('href="../../checker/?utm_source=guia"');
+        expect(html).toContain('href="../../checker/"');
       });
 
       it('lleva un bloque «Related guides» con 2-4 enlaces a OTRAS guías inglesas', () => {

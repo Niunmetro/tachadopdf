@@ -71,7 +71,7 @@ describe('renderResumen', () => {
     expect(bloque?.textContent).toMatch(/escaneada/i);
   });
 
-  it('incluye un CTA con utm_source=comprobador', () => {
+  it('incluye un CTA a la herramienta, sin parámetros de campaña', () => {
     const root = crearRoot();
     const resumen: ResumenComprobacion = {
       totalDatos: 0,
@@ -82,7 +82,7 @@ describe('renderResumen', () => {
     renderResumen(root, resumen, COPIA, SCOPE_TEXT);
     const cta = root.querySelector<HTMLAnchorElement>('.cp-cta');
     expect(cta).not.toBeNull();
-    expect(cta?.getAttribute('href')).toContain('utm_source=comprobador');
+    expect(cta?.getAttribute('href')).toBe('../');
   });
 
   it('incluye el aviso legal con el texto de alcance', () => {

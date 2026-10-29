@@ -261,6 +261,9 @@
       .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
       .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
       .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+      .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+      .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
     </style>
   </head>
   <body>
@@ -292,6 +295,15 @@
       <p>Doing that by hand with professional PDF software is possible but slow, and the step people skip is the one that matters: checking the finished file afterwards. A redaction you did not verify is a redaction you are only assuming worked.</p>
       <h2>How TachadoPDF does it</h2>
       <p>TachadoPDF removes the text from the file and clears the pixels of the areas you mark, strips the metadata, and then reopens the PDF it just produced and searches it again — including the metadata — for everything you redacted. If any of it comes back, the download is blocked and you are told which page. You also get a verification report with the SHA-256 fingerprint of the file you deliver. Everything runs in your browser; the document is never uploaded.</p>
+      <section class="fuentes">
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://www.courtlistener.com/docket/6183591/united-states-v-manafort/">United States v. Manafort docket: the redacted and corrected filings of 8 January 2019 (CourtListener)</a></li>
+          <li><a href="https://www.motherjones.com/politics/2019/01/paul-manafort-failed-redaction/">Mother Jones, 8 January 2019: Paul Manafort's lawyers tried and failed to redact a filing</a></li>
+          <li><a href="https://ico.org.uk/action-weve-taken/enforcement/2024/10/police-service-of-northern-ireland-mpn/">ICO: £750,000 monetary penalty to the Police Service of Northern Ireland (3 October 2024)</a></li>
+          <li><a href="https://ico.org.uk/media2/migrated/4031177/psni-penalty-notice.pdf">ICO penalty notice to the PSNI (PDF, 76 pages)</a></li>
+        </ul>
+      </section>
       <nav class="relacionadas" aria-label="Guides">
         <h2>Guides</h2>
         <ul>
@@ -300,8 +312,8 @@
           <li><a href="../redact-pdf-without-acrobat/">Redact a PDF without Adobe Acrobat</a></li>
         </ul>
       </nav>
-      <a class="cp-cta" href="../../checker/?utm_source=guia">Check your PDF for free — see what text is still extractable</a>
-      <a class="cp-cta" href="../../?utm_source=guia">Redact your PDF now — free, and without uploading it to any server</a>
+      <a class="cp-cta" href="../../checker/">Check your PDF for free — see what text is still extractable</a>
+      <a class="cp-cta" href="../../">Redact your PDF now — free, and without uploading it to any server</a>
     </main>
   </body>
 </html>
