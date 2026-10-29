@@ -94,8 +94,8 @@ describe('la descripción servida de cada página cabe en la SERP', () => {
 });
 
 describe('el <title> servido de cada página cabe en la SERP', () => {
-  it('el barrido ve las cuarenta y tres páginas del sitio', () => {
-    expect(PAGINAS_DEL_SITIO.length).toBe(43);
+  it('el barrido ve las cuarenta y cuatro páginas del sitio', () => {
+    expect(PAGINAS_DEL_SITIO.length).toBe(44);
   });
 
   it.each(PAGINAS_DEL_SITIO)('%s', (ruta) => {

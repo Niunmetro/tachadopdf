@@ -53,4 +53,5 @@ export const FECHAS: Record<string, FechasPagina> = {
   'public/en/guide/redact-utility-bill/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
   'public/en/guide/redact-passport/index.html': { publicado: '2026-09-12', actualizado: '2026-09-12' },
   'public/en/guide/recover-redacted-text-pdf/index.html': { publicado: '2026-10-29', actualizado: '2026-10-29' },
+  'public/guia/archivos-administracion-de-fincas-plazos/index.html': { publicado: '2026-10-29', actualizado: '2026-10-29' },
 };

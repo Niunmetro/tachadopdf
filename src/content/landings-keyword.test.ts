@@ -89,6 +89,7 @@ describe('las cinco landings de cola larga sectorial existen y están integradas
     expect(LANDINGS.map((p) => p.id).sort()).toEqual(
       [
         'guia-alumnos',
+        'guia-archivos-fincas',
         'guia-como-funciona',
         'guia-comprobar-tachado',
         'guia-copia-dni',

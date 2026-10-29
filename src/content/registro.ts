@@ -371,6 +371,16 @@ export const PAGINAS: PaginaRegistro[] = [
     destino: 'public',
     slugs: { en: 'guide/recover-redacted-text-pdf' },
   },
+  // SEO fincas (2026-10-29, punto 15 del plan): «archivos en la administración de fincas» (~90 impr. en
+  // Search Console) sin página que la conteste. Guía generada, solo español, anclada en la LPH (BOE) y en
+  // la guía y FAQ de la AEPD; funnela al comprobador y enlaza la guía de fincas.
+  {
+    id: 'guia-archivos-fincas',
+    tipo: 'guia',
+    origen: 'generado',
+    destino: 'public',
+    slugs: { es: 'guia/archivos-administracion-de-fincas-plazos' },
+  },
 ];
 
 export function paginaPorId(id: string): PaginaRegistro | undefined {
