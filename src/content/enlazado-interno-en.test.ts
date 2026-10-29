@@ -35,7 +35,7 @@ const IDS_EN = new Set(GUIAS_EN.map((p) => p.id));
 const TOPE_TITULO = 60;
 
 describe('las guías inglesas están enlazadas y con títulos aptos para la SERP', () => {
-  it('el barrido ve las once guías inglesas (derivadas del registro)', () => {
+  it('el barrido ve las doce guías inglesas (derivadas del registro)', () => {
     expect(GUIAS_EN.map((p) => p.id).sort()).toEqual(
       [
         'guia-en-bank-statement',
@@ -46,6 +46,7 @@ describe('las guías inglesas están enlazadas y con títulos aptos para la SERP
         'guia-en-dsar',
         'guia-en-how-it-works',
         'guia-en-nominas',
+        'guia-en-recuperar',
         'guia-en-sin-acrobat',
         'guia-en-sin-subir',
         'guia-en-tribunales',
