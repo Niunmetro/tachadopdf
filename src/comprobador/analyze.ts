@@ -1,7 +1,7 @@
 import type { CopiaComprobador } from '../content/tipos';
 import type { Hit } from '../types';
 import type { ResumenComprobacion } from './types';
-import { loadPdf } from '../pdf/engine';
+import { cargarEngine } from '../pdf/perezoso';
 import { detect } from '../detect/patterns';
 import { construirResumen } from './summary';
 
@@ -23,6 +23,8 @@ export async function analizarPdf(
     throw new FicheroNoPdfError('El fichero no es un PDF válido: falta la firma %PDF');
   }
 
+  // mupdf se baja AQUÍ, tras comprobar la firma: un fichero que no es PDF se rechaza sin cargarlo.
+  const { loadPdf } = await cargarEngine();
   const doc = await loadPdf(bytes, password);
   try {
     const hits: Hit[] = [];

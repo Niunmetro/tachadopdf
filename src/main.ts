@@ -12,8 +12,13 @@ import { PRO_URL } from './config';
 import { contenidoDe, localeDelDocumento, type Contenido } from './content/index';
 import { FREE_MAX_PAGES, getQuota, recordUse } from './freemium/quota';
 import { verifyLicense } from './license/gumroad';
-import { PdfPasswordError, loadPdf, type PdfDoc } from './pdf/engine';
-import { detectAutomaticBoxes, processDocument } from './pdf/pipeline';
+// El motor PDF (mupdf: ~10 MB de wasm, con `await` a nivel de módulo) NO se importa de forma
+// estática: se pide con `import()` al cargar un PDF (ver src/pdf/perezoso.ts). Un `import` estático
+// de `./pdf/engine`, `./pdf/pipeline` o `mupdf` aquí bloquearía el cableado de la página hasta bajar
+// el wasm. Lo vigila src/pdf/perezoso.test.ts. Solo se importan TIPOS y la clase de error ligera.
+import type { PdfDoc } from './pdf/engine';
+import { PdfPasswordError } from './pdf/errores';
+import { cargarEngine, cargarPipeline, precargarPipeline } from './pdf/perezoso';
 import type { BoxRect, PageMark, ReportData, VerifyResult } from './types';
 import { type SelectionState, type Viewport } from './ui/boxes';
 import { panelDeEntrega } from './ui/entrega';
@@ -106,6 +111,7 @@ function loadPng(bytes: Uint8Array): Promise<HTMLImageElement> {
 }
 
 async function loadWithPassword(bytes: Uint8Array, promptPassword: () => string | null): Promise<PdfDoc> {
+  const { loadPdf } = await cargarEngine();
   try {
     return await loadPdf(bytes);
   } catch (err) {
@@ -131,6 +137,7 @@ async function renderFileVisor(
   fileWork: FileWork,
   copia: Contenido['app'],
 ): Promise<void> {
+  const { detectAutomaticBoxes } = await cargarPipeline();
   const visualReviewPages = doc.pagesNeedingVisualReview();
   const automaticBoxes = detectAutomaticBoxes(doc, visualReviewPages);
   // POR DEFECTO, NADA MARCADO (decisión del dueño). Pre-marcar obligaba a desmarcar uno a uno lo
@@ -441,6 +448,11 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     // (visor vacío, botón deshabilitado) sin decir nada — el usuario cree que "no funciona"
     // y no sabe por qué. Un fallo del procesado DEBE verse (doctrina 49: el silencio no vale).
     try {
+      // El motor (mupdf, ~10 MB de wasm) se baja AQUÍ, al cargar el primer PDF, y no al abrir la
+      // página. Se espera antes del bucle y fuera del try interno a propósito: un fallo de red
+      // (sin conexión, fragmento no disponible) sale por este mismo camino visible —`errorProcesado`—
+      // y no se confunde con «no se pudo abrir este PDF», que es un problema del fichero.
+      await Promise.all([cargarEngine(), cargarPipeline()]);
       for (const entrada of entradas) {
         let doc: PdfDoc;
         try {
@@ -502,6 +514,11 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     }
   }
 
+  // El motor NO se baja al abrir la página sino al cargar un PDF. Mientras el visitante elige el
+  // fichero en el selector del sistema ya se va bajando, para que la espera al soltarlo sea menor.
+  // Solo adelanta la descarga: si falla, el error lo muestra la carga del PDF.
+  fileInput.addEventListener('click', precargarPipeline);
+
   fileInput.addEventListener('change', () => {
     void (async () => {
       const files = fileInput.files ? Array.from(fileInput.files) : [];
@@ -535,6 +552,8 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
   ejemploBtn.addEventListener('click', () => {
     void (async () => {
       ejemploBtn.setAttribute('disabled', 'true');
+      // El motor se baja a la vez que el PDF de ejemplo, no uno después del otro.
+      precargarPipeline();
       try {
         // URL relativa AL DOCUMENTO, calculada por el generador y publicada en `data-ejemplo`:
         // sirve igual en el dominio propio (/), en la ruta de GitHub Pages (/tachadopdf/) y en
@@ -556,6 +575,8 @@ export function initApp(root: HTMLElement, contenido: Contenido): void {
     void (async () => {
       if (fileWorks.length === 0 || !state.checkboxConfirmed) return;
 
+      // Ya está en memoria: hay documentos cargados, y cargarlos esperó a este mismo módulo.
+      const { processDocument } = await cargarPipeline();
       const processedFiles: ProcessedFile[] = [];
       let scannedUnion: number[] = [];
       for (const fw of fileWorks) {

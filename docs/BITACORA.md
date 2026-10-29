@@ -4,6 +4,42 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · rendimiento · mupdf (wasm) ya no se baja al abrir la página
+
+**Hecho:** la portada (ES/EN) y el comprobador (ES/EN) bajaban y compilaban el wasm de mupdf (10,4 MB
+sin comprimir) al cargar, aunque el visitante no subiera ningún PDF. Causa medida: `mupdf` instancia
+el wasm con un `await` a nivel de módulo (`node_modules/mupdf/dist/mupdf.js`, línea 27) y
+`src/main.ts` / `src/comprobador/main.ts` importaban `./pdf/engine` y `./pdf/pipeline` de forma
+estática: el módulo de entrada ni empezaba a ejecutarse hasta que el wasm estaba bajado, así que los
+botones y el campo de licencia esperaban a esa descarga. Ahora el motor se pide con `import()` al cargar un PDF.
+- `src/pdf/errores.ts` (nuevo, sin imports): `PdfPasswordError`. `engine.ts` la reexporta (misma
+  clase, los `instanceof` y los imports existentes siguen valiendo).
+- `src/pdf/perezoso.ts` (nuevo): `cargarEngine` / `cargarPipeline` con `import()` y promesa compartida,
+  y `precargarEngine` / `precargarPipeline`, que adelantan la descarga cuando el visitante muestra
+  intención (clic en el selector de ficheros, arrastrar sobre la zona, pulsar el documento de ejemplo).
+- `main.ts`, `comprobador/main.ts`, `comprobador/analyze.ts` usan esos cargadores; `PdfDoc` entra solo
+  como `import type`. El comprobador sigue rechazando un fichero sin firma `%PDF` SIN bajar el motor.
+- Test de regresión `src/pdf/perezoso.test.ts`: recorre los imports estáticos desde cada página y
+  falla si alguna cadena llega a mupdf (directa o indirecta). Mutación comprobada: reponer el import
+  estático de engine, pipeline, mupdf o metadata en main.ts / comprobador falla; los `import type` no.
+
+**Medido (build):** ningún `dist/*.html` de portada/comprobador referencia ya el chunk de mupdf ni el
+wasm. Chunk de entrada de la portada: 455,3 kB -> 11,8 kB (el JS de carga baja de 720 a 623 kB; el wasm
+sale del todo). Comprobador: 273 -> 184 kB de JS de carga, sin wasm. En Chromium headless contra
+`vite preview`: 0 peticiones a wasm/mupdf/engine/pipeline al cargar; el wasm se pide al elegir un PDF
+(o al hacer clic en el selector). CSP sin cambios: los fragmentos son del mismo origen.
+
+**Decisiones y porqués:** si el fragmento no se puede bajar (sin conexión), el fallo sale por el camino
+visible de siempre (`errorProcesado` en la portada, `errorGenerico` en el comprobador) y NO como «no
+se pudo abrir este PDF». Medido: Chromium memoriza el `import()` fallido de una URL mientras vive el
+documento, así que reintentar sin recargar no sale a la red; el mensaje ya pide recargar.
+
+**Bloqueos / pendiente:** (1) `/metadatos-pdf/` sigue importando `pdf/metadata` (mupdf) de forma
+estática: misma causa, mismo arreglo, fuera del alcance de esta rama. (2) La portada sigue cargando
+~430 kB de pdf-lib (módulo compartido que sale de `ui/entrega` -> `report/report`) aunque solo se
+usa tras descargar: candidato a otro `import()` perezoso.
+
+---
 ## 2026-10-29 · SEO · Títulos y descripciones para el CTR (páginas en primera página con 0 clics)
 
 **Hecho:** auditoría SEO con datos reales de Search Console (3 meses: 840 impresiones, 11 clics,
