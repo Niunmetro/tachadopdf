@@ -549,7 +549,8 @@ const GUIAS_ES: ContenidoGuia[] = [
       '¿Se puede recuperar el texto tachado de un PDF? Por qué muchos tachados se pueden deshacer',
     tituloEnlace: '¿Se puede recuperar un texto tachado de un PDF?',
     descripcion:
-      'Sí, en muchos casos: si el tachado solo tapa el dato con un recuadro, el texto sigue dentro del archivo y se copia en segundos. Repasamos, con casos reales y un banco de pruebas propio, los tipos de tachado que se pueden deshacer, cuáles aguantan y cómo comprobar el tuyo.',
+      'Sí, si el tachado es solo un recuadro negro: el texto sigue en el archivo y se copia en segundos. Los 6 sitios donde sobrevive un dato y cómo comprobarlo.',
+    metaTitulo: '¿Se puede recuperar el texto tachado de un PDF? A menudo, sí',
     enlaceComprobador: 'Comprueba gratis, sin subir el archivo, si tu tachado deja rastro',
     cuerpo: [
       {
@@ -855,13 +856,14 @@ const GUIAS_ES: ContenidoGuia[] = [
     titulo: 'Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí',
     tituloEnlace: 'Cómo comprobar si un PDF está bien tachado',
     descripcion:
-      'Te han enviado, o vas a enviar, un PDF con datos tachados y quieres asegurarte de que están de verdad borrados y no solo tapados. Cuatro comprobaciones rápidas para saber si un tachado aguanta —y cómo verlo gratis, sin subir el archivo a ningún sitio.',
+      'Copiar y pegar, otro lector, metadatos y escaneos: 4 pruebas para saber si el tachado de un PDF borró el dato o solo lo tapó. Gratis, sin subirlo.',
+    metaTitulo: 'Cómo comprobar si un PDF está bien tachado (4 pruebas)',
     enlaceComprobador: 'Comprueba tu PDF gratis, sin subirlo: te dice qué datos siguen siendo extraíbles',
     cuerpo: [
       {
         t: 'p',
         texto:
-          'El aspecto de un tachado no dice nada: una barra negra puede haber borrado el dato de verdad o solo taparlo, y a simple vista se ven igual. Si te han enviado un documento con partes tachadas —o estás a punto de enviar uno— conviene no fiarte de cómo se ve, sino ponerlo a prueba. Aquí tienes cuatro comprobaciones, de la más rápida a la más completa.',
+          'Para saber si un PDF está bien tachado, selecciona la zona tachada, cópiala y pégala en un bloc de notas: si aparece el texto, el tachado solo lo tapaba. El aspecto de un tachado no dice nada: una barra negra puede haber borrado el dato de verdad o solo taparlo, y a simple vista se ven igual. Si te han enviado un documento con partes tachadas —o estás a punto de enviar uno— conviene no fiarte de cómo se ve, sino ponerlo a prueba. Aquí tienes cuatro comprobaciones, de la más rápida a la más completa.',
       },
       { t: 'h2', texto: '1. La prueba de copiar y pegar' },
       {
@@ -1087,6 +1089,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-extracto-bancario', 'guia-nominas', 'guia-gestoria'],
     titulo: 'Protección de datos en una inmobiliaria: los expedientes de solvencia de inquilinos',
     tituloEnlace: 'Protección de datos en una inmobiliaria',
+    metaTitulo: 'Protección de datos en inmobiliarias: expedientes en PDF',
     descripcion:
       'Una inmobiliaria recibe de cada candidato a un alquiler su DNI, sus nóminas y su extracto bancario. Cómo tachar de verdad lo que no toca antes de pasar un expediente al propietario —y qué hacer con los datos de quien no se queda el piso—, en tu navegador y sin subir nada.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva un expediente antes de pasarlo al propietario',
@@ -1258,8 +1261,7 @@ export const es = {
   // esta frase pasa de «sancionado» a «multado», el caso del listado deja de sostenerla.
   home: {
     metaTitulo: 'Tachar un PDF de verdad: el rectángulo negro no borra',
-    metaDescripcion:
-      'El DNI que tapas con un rectángulo negro sigue dentro del PDF y se copia en dos clics — la AEPD ya ha sancionado actas y listados con datos expuestos. TachadoPDF elimina el dato del archivo, 100% en tu navegador, con informe de comprobación. Para gestorías, administradores de fincas y RRHH.',
+    metaDescripcion: `Tacha DNI, IBAN y otros datos de un PDF borrándolos del archivo, no tapándolos. En tu navegador, sin subir nada. ${FREE_MONTHLY_LIMIT} documentos gratis al mes, con informe.`,
     ogTitulo: 'TachadoPDF · El rectángulo negro no borra: tacha de verdad',
     ogDescripcion:
       'El dato tapado con un recuadro sigue en el PDF y se copia en dos clics; la AEPD ya ha sancionado actas con datos expuestos. Elimínalo de verdad, en tu navegador.',
@@ -1329,7 +1331,7 @@ export const es = {
   comprobador: {
     metaTitulo: 'Comprobador: qué datos personales contiene tu PDF',
     metaDescripcion:
-      'Sube un PDF y descubre qué datos personales contiene (DNI, IBAN, teléfonos, direcciones...) antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo. Esta comprobación no tacha nada.',
+      'Abre un PDF y mira qué datos personales lleva (DNI, IBAN, teléfonos...) antes de compartirlo. Gratis y en tu navegador. Esta comprobación no tacha nada.',
     ogTitulo: 'Comprobador: qué datos personales contiene tu PDF',
     ogDescripcion:
       'Descubre qué datos personales contiene tu PDF antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo.',
@@ -1347,9 +1349,9 @@ export const es = {
   },
 
   imagen: {
-    metaTitulo: 'Tachar una imagen o captura: borra los datos, no los tapa',
+    metaTitulo: 'Tachar datos de una foto o captura: gratis y sin subirla',
     metaDescripcion:
-      'Tacha datos de una foto o captura de pantalla: no la difumina, sustituye los píxeles de la zona por negro sólido, y al exportar elimina los metadatos (incluida la ubicación). 100% en tu navegador; la imagen no se sube a ningún servidor.',
+      'Tacha datos de una foto o captura con negro sólido, no con un difuminado que a veces se revierte, y quita la ubicación. Gratis y sin subirla.',
     ogTitulo: 'Tachar una imagen o captura de pantalla · TachadoPDF',
     ogDescripcion:
       'Borra datos de una imagen o captura sustituyendo los píxeles por negro sólido (no difuminado) y quita los metadatos, 100% en tu navegador.',

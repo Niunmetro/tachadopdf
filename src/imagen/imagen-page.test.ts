@@ -63,7 +63,7 @@ describe('página /imagen/ (redactor de imágenes)', () => {
   });
 
   it('tiene el <title> exacto orientado a búsqueda', () => {
-    expect(html).toContain('<title>Tachar una imagen o captura: borra los datos, no los tapa</title>');
+    expect(html).toContain('<title>Tachar datos de una foto o captura: gratis y sin subirla</title>');
   });
 
   // El aviso de verificación es el corazón del diferencial: negro sólido, sin capa oculta.

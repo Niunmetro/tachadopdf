@@ -41,9 +41,10 @@ export interface ContenidoGuia {
    * incluida, para que el resultado invite a hacer clic sin que Google lo recorte. Es el MISMO
    * patrón que ya usan la home y el comprobador (`metaTitulo` aparte de `ogTitulo`/H1). Cuando
    * está presente se usa VERBATIM como `<title>` (la marca va dentro si se quiere).
-   * ⚠ NO se declara en las guías generadas en español (las cinco landings del experimento y la
-   * pieza de autoridad): su `<title>` está fijado a `${titulo} · TachadoPDF` por su guarda de
-   * dedup, y su copia es la variable de un experimento con veredicto en curso.
+   * Las guías generadas en español lo tuvieron vetado mientras su copia era la variable de un
+   * experimento; el veredicto llegó el 2026-09-07 y desde el 2026-10-29 pueden declararlo (los
+   * títulos de 63-117 caracteres se cortaban en la SERP). Si se declara, ≤60 caracteres: lo
+   * vigilan `landings-keyword.test.ts` y `enlazado-interno-en.test.ts`.
    */
   metaTitulo?: string;
   cuerpo: Bloque[];

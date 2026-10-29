@@ -4,6 +4,34 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · SEO · Títulos y descripciones para el CTR (páginas en primera página con 0 clics)
+
+**Hecho:** auditoría SEO con datos reales de Search Console (3 meses: 840 impresiones, 11 clics,
+CTR 1,3 %, posición 23,2) y cuatro auditores (técnico, on-page, schema, búsqueda con IA). Siete
+páginas salían en la primera página (posición 6-10) con CERO clics y los títulos españoles medían
+63-117 caracteres: Google los cortaba antes del gancho. En esta rama: `<title>` y meta description
+nuevos (≤60 / ≤155) en recuperar-texto-tachado, comprobar-si-un-pdf, inmobiliaria, /imagen/, el
+comprobador, la portada ES (sólo la descripción; el título se queda), nóminas, actas, sanciones,
+enviar-nóminas y las guías EN payslip, black box y utility bill. Primera frase que responde a la
+consulta en comprobar, enviar-nóminas, black box y payslip (+2 FAQ «what does a redacted payslip
+mean»). Y una corrección de confianza: tres guías decían «subes el PDF» → «abres el PDF», y la
+descripción del comprobador «Sube un PDF» → «Abre un PDF» (nada se sube nunca).
+
+**Decisiones y porqués:** (1) Se levanta el veto a `metaTitulo` en las guías ES: era la variable de un
+experimento cuyo veredicto llegó el 2026-09-07; `landings-keyword.test.ts` acepta ahora `metaTitulo`
+y la guarda nueva `titulos-serp.test.ts` pone el tope de 60 (mutante de 71 car. → rojo). (2) El título
+de la portada ES no se toca: rinde en línea con su posición (2,7 % a pos. 9,6). (3) Nada de precios,
+textos legales ni vocabulario prohibido; la cifra «5 documentos gratis» sale de `FREE_MONTHLY_LIMIT`.
+(4) Fuera de esta rama, aplicado en vivo por ser configuración reversible: **Enforce HTTPS** en
+GitHub Pages (`http://www.tachadopdf.com/` servía 200 sin redirigir; ahora 301 a https).
+
+**Verificación:** tsc 0 · vitest 84 ficheros / 2115 tests en verde · build 0.
+
+**Bloqueos / pendiente:** publicar espera el visto bueno del owner. Tras publicar: pedir indexación en
+Search Console de las páginas cambiadas y del comprobador (sin indexar). Lista completa de mejoras
+priorizadas en la auditoría local (no versionada).
+
+---
 ## 2026-10-04 · ingeniero · Crédito «Web hecha por Fachada» en el pie de la portada
 
 **Hecho:** al final del pie legal de la portada ES y EN, un enlace discreto al estudio que hace la web:

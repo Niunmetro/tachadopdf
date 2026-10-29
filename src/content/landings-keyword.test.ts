@@ -136,7 +136,7 @@ describe('las cinco landings de cola larga sectorial existen y están integradas
 
       it('lleva su H1, su título y un cuerpo indexable de sobra sin ejecutar JavaScript', () => {
         expect(html).toContain(`<h1>${esc(guia?.titulo ?? '')}</h1>`);
-        expect(html).toContain(`<title>${esc(guia?.titulo ?? '')} · TachadoPDF</title>`);
+        expect(html).toContain(`<title>${esc(guia?.metaTitulo ?? `${guia?.titulo ?? ''} · TachadoPDF`)}</title>`);
         expect(palabras(html).length).toBeGreaterThan(300);
       });
 
