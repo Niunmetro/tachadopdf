@@ -380,7 +380,7 @@ export const en: Contenido = {
   },
 
   imagen: {
-    metaTitulo: 'Redact an image or screenshot — remove the data, not cover it',
+    metaTitulo: 'Redact an image or screenshot: remove the data, not cover it',
     metaDescripcion:
       "Redact data from a photo or screenshot: it doesn't blur — it replaces the pixels of the area with solid black, and on export it drops the metadata (including location). 100% in your browser; the image is never uploaded to any server.",
     ogTitulo: 'Redact an image or screenshot · TachadoPDF',

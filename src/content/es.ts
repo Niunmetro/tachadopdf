@@ -280,6 +280,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-tachar-dni', 'guia-copia-dni', 'guia-recuperar-tachado'],
     titulo: 'Cómo ocultar los datos personales de un currículum en PDF antes de enviarlo',
     tituloEnlace: 'Ocultar datos personales de un currículum en PDF',
+    metaTitulo: 'Cómo ocultar datos personales de un currículum en PDF',
     descripcion:
       'Antes de subir tu CV a un portal de empleo o mandárselo a una empresa, conviene dejar fuera el DNI, la dirección y hasta la foto. Por qué el recuadro negro no basta y cómo quitar esos datos del archivo, en tu navegador y sin subirlo.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu currículum, sin subirlo',
@@ -335,6 +336,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-recuperar-tachado', 'guia-rectangulo-negro', 'guia-tachar-dni'],
     titulo: 'Cómo ocultar los datos de terceros al aportar documentos como prueba en un PDF',
     tituloEnlace: 'Ocultar datos de terceros en la prueba documental',
+    metaTitulo: 'Ocultar datos de terceros en documentos PDF para un juicio',
     descripcion:
       'Aportar un documento a un procedimiento no autoriza a exponer de paso los datos de terceros ajenos al asunto. Qué conviene tachar, por qué el recuadro negro falla en un documento escaneado y cómo borrarlo sin que se pueda recuperar.',
     enlaceComprobador: 'Comprueba gratis qué datos personales contiene el documento',
@@ -384,6 +386,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-recuperar-tachado', 'guia-info-oculta-pdf', 'guia-rectangulo-negro'],
     titulo: 'Cómo censurar un PDF antes de publicarlo en internet sin exponer datos de terceros',
     tituloEnlace: 'Censurar un PDF antes de publicarlo en internet',
+    metaTitulo: 'Cómo censurar un PDF antes de publicarlo en internet',
     descripcion:
       'Publicar un documento en una web, un tablón digital o un boletín lo deja expuesto a todo internet y a los buscadores, y de forma indefinida. Qué borrar antes de colgar un PDF y cómo hacerlo para que el dato no se pueda recuperar ni copiar.',
     enlaceComprobador: 'Comprueba gratis qué datos quedarían expuestos al publicarlo',
@@ -433,6 +436,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-tachar-dni', 'guia-sanciones', 'guia-rectangulo-negro'],
     titulo: 'Cómo ocultar los datos de alumnos en un PDF antes de compartirlo',
     tituloEnlace: 'Ocultar los datos de alumnos en un PDF',
+    metaTitulo: 'Ocultar datos de alumnos en un PDF antes de compartirlo',
     descripcion:
       'Listas de notas, actas de evaluación, autorizaciones y orlas llevan datos de menores, con una protección reforzada. Qué tapar antes de compartir un PDF con las familias o subirlo a la plataforma, y cómo hacerlo sin que el dato se recupere.',
     enlaceComprobador: 'Comprueba gratis qué datos de alumnos contiene el PDF',
@@ -483,6 +487,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-tachar-dni', 'guia-curriculum', 'guia-rectangulo-negro'],
     titulo: 'Qué tapar en una copia del DNI antes de enviarla para un trámite',
     tituloEnlace: 'Qué tapar en una copia del DNI antes de enviarla',
+    metaTitulo: 'Qué tapar en una copia del DNI antes de enviarla',
     descripcion:
       'Una copia de tu DNI basta para que alguien te suplante. Antes de mandarla para un alquiler, un alta o un registro, conviene tapar lo que no haga falta y borrarlo de verdad, no con un recuadro que se quita en dos clics.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu copia del DNI, sin subirla',
@@ -549,7 +554,8 @@ const GUIAS_ES: ContenidoGuia[] = [
       '¿Se puede recuperar el texto tachado de un PDF? Por qué muchos tachados se pueden deshacer',
     tituloEnlace: '¿Se puede recuperar un texto tachado de un PDF?',
     descripcion:
-      'Sí, en muchos casos: si el tachado solo tapa el dato con un recuadro, el texto sigue dentro del archivo y se copia en segundos. Repasamos, con casos reales y un banco de pruebas propio, los tipos de tachado que se pueden deshacer, cuáles aguantan y cómo comprobar el tuyo.',
+      'Sí, si el tachado es solo un recuadro negro: el texto sigue en el archivo y se copia en segundos. Los 6 sitios donde sobrevive un dato y cómo comprobarlo.',
+    metaTitulo: '¿Se puede recuperar el texto tachado de un PDF? A menudo, sí',
     enlaceComprobador: 'Comprueba gratis, sin subir el archivo, si tu tachado deja rastro',
     cuerpo: [
       {
@@ -667,6 +673,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-recuperar-tachado', 'guia-fincas', 'guia-rectangulo-negro'],
     titulo: '¿Qué información oculta lleva un PDF? Metadatos, autor y fechas',
     tituloEnlace: '¿Qué información oculta lleva un PDF?',
+    metaTitulo: 'Información oculta en un PDF: metadatos, autor y fechas',
     descripcion:
       'Un PDF guarda por dentro más de lo que enseña: tu nombre como autor, el programa con que se hizo, las fechas, los marcadores, los adjuntos y hasta la ubicación de las fotos que contiene. Repasamos qué lleva escondido un PDF, por qué importa al compartirlo y cómo verlo y quitarlo sin subir el archivo a ningún sitio.',
     enlaceComprobador: 'Comprueba gratis, sin subir el archivo, qué datos contiene tu PDF',
@@ -757,6 +764,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-sin-subir', 'guia-recuperar-tachado', 'guia-info-oculta-pdf'],
     titulo: 'Cómo funciona TachadoPDF y por qué tus datos no salen del navegador',
     tituloEnlace: 'Cómo funciona TachadoPDF',
+    metaTitulo: 'Cómo funciona TachadoPDF: tus datos no salen del navegador',
     descripcion:
       'TachadoPDF procesa el PDF entero dentro de tu navegador: el documento no se sube a ningún servidor, no hay cuentas ni rastreo, y el borrado se comprueba antes de darte el archivo. Explicamos exactamente cómo funciona por dentro y cómo puedes verificarlo tú mismo.',
     enlaceComprobador: 'Compruébalo tú mismo: analiza un PDF gratis, sin subirlo',
@@ -855,13 +863,14 @@ const GUIAS_ES: ContenidoGuia[] = [
     titulo: 'Cómo comprobar si un PDF está bien tachado y si tus datos siguen ahí',
     tituloEnlace: 'Cómo comprobar si un PDF está bien tachado',
     descripcion:
-      'Te han enviado, o vas a enviar, un PDF con datos tachados y quieres asegurarte de que están de verdad borrados y no solo tapados. Cuatro comprobaciones rápidas para saber si un tachado aguanta —y cómo verlo gratis, sin subir el archivo a ningún sitio.',
+      'Copiar y pegar, otro lector, metadatos y escaneos: 4 pruebas para saber si el tachado de un PDF borró el dato o solo lo tapó. Gratis, sin subirlo.',
+    metaTitulo: 'Cómo comprobar si un PDF está bien tachado (4 pruebas)',
     enlaceComprobador: 'Comprueba tu PDF gratis, sin subirlo: te dice qué datos siguen siendo extraíbles',
     cuerpo: [
       {
         t: 'p',
         texto:
-          'El aspecto de un tachado no dice nada: una barra negra puede haber borrado el dato de verdad o solo taparlo, y a simple vista se ven igual. Si te han enviado un documento con partes tachadas —o estás a punto de enviar uno— conviene no fiarte de cómo se ve, sino ponerlo a prueba. Aquí tienes cuatro comprobaciones, de la más rápida a la más completa.',
+          'Para saber si un PDF está bien tachado, selecciona la zona tachada, cópiala y pégala en un bloc de notas: si aparece el texto, el tachado solo lo tapaba. El aspecto de un tachado no dice nada: una barra negra puede haber borrado el dato de verdad o solo taparlo, y a simple vista se ven igual. Si te han enviado un documento con partes tachadas —o estás a punto de enviar uno— conviene no fiarte de cómo se ve, sino ponerlo a prueba. Aquí tienes cuatro comprobaciones, de la más rápida a la más completa.',
       },
       { t: 'h2', texto: '1. La prueba de copiar y pegar' },
       {
@@ -933,6 +942,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-nominas', 'guia-comprobar-tachado', 'guia-como-funciona'],
     titulo: 'Cómo tachar los datos de un extracto bancario en PDF antes de enviarlo',
     tituloEnlace: 'Cómo tachar un extracto bancario en PDF',
+    metaTitulo: 'Cómo tachar datos de un extracto bancario en PDF',
     descripcion:
       'Para un alquiler, un préstamo, una ayuda o el gestor te piden el extracto bancario, pero no hace falta enseñar todos tus movimientos ni el número de cuenta completo. Cómo tachar de verdad lo que sobra de un extracto en PDF, gratis y sin subir el archivo a ningún sitio.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu extracto, sin subir el archivo',
@@ -1010,6 +1020,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-nominas', 'guia-fincas', 'guia-sanciones'],
     titulo: 'Protección de datos en una gestoría: cómo tachar los PDF de tus clientes',
     tituloEnlace: 'Protección de datos en una gestoría',
+    metaTitulo: 'Protección de datos en una gestoría: tachar PDF de clientes',
     descripcion:
       'Una gestoría mueve al día decenas de PDF con datos de clientes —nóminas, contratos, modelos, DNIs— que reenvía y archiva. Cómo tachar de verdad lo que no toca antes de compartirlos, en tu navegador y sin subir nada, para no responder de una cesión indebida.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva un PDF de cliente antes de reenviarlo',
@@ -1087,8 +1098,9 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-extracto-bancario', 'guia-nominas', 'guia-gestoria'],
     titulo: 'Protección de datos en una inmobiliaria: los expedientes de solvencia de inquilinos',
     tituloEnlace: 'Protección de datos en una inmobiliaria',
+    metaTitulo: 'Protección de datos en inmobiliarias: expedientes en PDF',
     descripcion:
-      'Una inmobiliaria recibe de cada candidato a un alquiler su DNI, sus nóminas y su extracto bancario. Cómo tachar de verdad lo que no toca antes de pasar un expediente al propietario —y qué hacer con los datos de quien no se queda el piso—, en tu navegador y sin subir nada.',
+      'Una inmobiliaria recibe el DNI, las nóminas y el extracto de cada candidato. Cómo tachar lo que el propietario no necesita, sin subir nada.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva un expediente antes de pasarlo al propietario',
     cuerpo: [
       {
@@ -1165,6 +1177,7 @@ const GUIAS_ES: ContenidoGuia[] = [
     relacionadas: ['guia-como-funciona', 'guia-comprobar-tachado', 'guia-recuperar-tachado'],
     titulo: 'Cómo tachar los datos de un informe médico en PDF antes de compartirlo',
     tituloEnlace: 'Cómo tachar un informe médico en PDF',
+    metaTitulo: 'Cómo tachar datos de un informe médico en PDF',
     descripcion:
       'Un informe médico lleva mucho más de lo que casi nadie necesita ver: el diagnóstico, tu historial, el DNI. Cómo tachar de verdad lo que sobra antes de mandarlo a la empresa, a un seguro o a quien sea, en tu navegador y sin subir el archivo a ningún servidor.',
     enlaceComprobador: 'Comprueba gratis qué datos lleva tu informe antes de compartirlo',
@@ -1258,8 +1271,7 @@ export const es = {
   // esta frase pasa de «sancionado» a «multado», el caso del listado deja de sostenerla.
   home: {
     metaTitulo: 'Tachar un PDF de verdad: el rectángulo negro no borra',
-    metaDescripcion:
-      'El DNI que tapas con un rectángulo negro sigue dentro del PDF y se copia en dos clics — la AEPD ya ha sancionado actas y listados con datos expuestos. TachadoPDF elimina el dato del archivo, 100% en tu navegador, con informe de comprobación. Para gestorías, administradores de fincas y RRHH.',
+    metaDescripcion: `Tacha DNI, IBAN y otros datos de un PDF borrándolos del archivo, no tapándolos. En tu navegador, sin subir nada. ${FREE_MONTHLY_LIMIT} documentos gratis al mes, con informe.`,
     ogTitulo: 'TachadoPDF · El rectángulo negro no borra: tacha de verdad',
     ogDescripcion:
       'El dato tapado con un recuadro sigue en el PDF y se copia en dos clics; la AEPD ya ha sancionado actas con datos expuestos. Elimínalo de verdad, en tu navegador.',
@@ -1329,7 +1341,7 @@ export const es = {
   comprobador: {
     metaTitulo: 'Comprobador: qué datos personales contiene tu PDF',
     metaDescripcion:
-      'Sube un PDF y descubre qué datos personales contiene (DNI, IBAN, teléfonos, direcciones...) antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo. Esta comprobación no tacha nada.',
+      'Abre un PDF y mira qué datos personales lleva (DNI, IBAN, teléfonos...) antes de compartirlo. Gratis y en tu navegador. Esta comprobación no tacha nada.',
     ogTitulo: 'Comprobador: qué datos personales contiene tu PDF',
     ogDescripcion:
       'Descubre qué datos personales contiene tu PDF antes de compartirlo. Gratis, 100% en tu navegador: el archivo nunca sale de tu equipo.',
@@ -1347,9 +1359,9 @@ export const es = {
   },
 
   imagen: {
-    metaTitulo: 'Tachar una imagen o captura: borra los datos, no los tapa',
+    metaTitulo: 'Tachar datos de una foto o captura: gratis y sin subirla',
     metaDescripcion:
-      'Tacha datos de una foto o captura de pantalla: no la difumina, sustituye los píxeles de la zona por negro sólido, y al exportar elimina los metadatos (incluida la ubicación). 100% en tu navegador; la imagen no se sube a ningún servidor.',
+      'Tacha datos de una foto o captura con negro sólido, no con un difuminado que a veces se revierte, y quita la ubicación GPS. Gratis y sin subirla.',
     ogTitulo: 'Tachar una imagen o captura de pantalla · TachadoPDF',
     ogDescripcion:
       'Borra datos de una imagen o captura sustituyendo los píxeles por negro sólido (no difuminado) y quita los metadatos, 100% en tu navegador.',

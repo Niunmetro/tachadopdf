@@ -13,13 +13,13 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'Why the black box over your PDF does not delete the text',
     tituloEnlace: 'Why the black box over your PDF does not delete the text',
     descripcion:
-      'A black rectangle only covers the text: the words stay in the file and copy straight back out. How to check it in three seconds, and how to remove the text for real.',
+      'A black box over PDF text only covers it: the words stay in the file and copy straight out. Test it in 3 seconds, then remove the text for real.',
     metaTitulo: "Black box on a PDF doesn't delete the text · TachadoPDF",
     cuerpo: [
       {
         t: 'p',
         texto:
-          'It is the most common mistake made when preparing a document for release: covering the confidential part with a black rectangle. The data is still there, and whoever receives the file can recover it with no technical knowledge at all.',
+          'A black box over text in a PDF is not redaction: it is a shape drawn on top, and the text underneath can usually still be selected, copied and searched. To check, select across the box and paste into a text editor. It is the most common mistake made when preparing a document for release: covering the confidential part with a black rectangle. The data is still there, and whoever receives the file can recover it with no technical knowledge at all.',
       },
       { t: 'h2', texto: 'Why the rectangle does nothing' },
       {
@@ -342,9 +342,14 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'Sending payslips and HR documents as PDFs without exposing personal data',
     tituloEnlace: 'Sending payslips and HR documents as PDFs',
     descripcion:
-      "Redact payslips and HR PDFs before sharing: they carry bank details, national IDs and home addresses. What to remove, and how to confirm it's really gone.",
-    metaTitulo: 'Redact payslips and HR PDFs before sharing · TachadoPDF',
+      'A redacted payslip has private details removed (NI or ID number, bank account, address) while pay and employer stay visible. What to hide, and how.',
+    metaTitulo: 'Redacted payslip: what it means and how to make one',
     cuerpo: [
+      {
+        t: 'p',
+        texto:
+          'A redacted payslip is a payslip with some details permanently removed — usually the NI or national ID number, the bank account and the home address — so that what the other person needs (employer, pay period, gross and net pay) stays readable. Redacted means removed from the file, not just covered with a black box, which anyone can copy back out.',
+      },
       {
         t: 'p',
         texto:
@@ -391,6 +396,18 @@ export const GUIAS_EN: ContenidoGuia[] = [
     ],
     enlaceComprobador: 'Check a payslip for leftover data — free',
     relacionadas: ['guia-en-sin-subir', 'guia-en-dsar', 'guia-en-comprobar'],
+    faqs: [
+      {
+        pregunta: 'What does a redacted payslip mean?',
+        respuesta:
+          'It is a payslip with sensitive details, such as the NI or national ID number, the bank account and the home address, removed before it is shared, while the figures the other person needs stay visible.',
+      },
+      {
+        pregunta: 'What can I redact on a payslip?',
+        respuesta:
+          'Anything the recipient did not ask for and does not need: typically the NI or national ID number, bank account details, the home address and details of other employees. Keep what the purpose needs, usually the employer, the pay period and the pay figures; if unsure, ask the person requesting it what they need.',
+      },
+    ],
   },
   {
     id: 'guia-en-sin-acrobat',
@@ -634,8 +651,8 @@ export const GUIAS_EN: ContenidoGuia[] = [
     titulo: 'How to redact a utility bill before you send it for verification',
     tituloEnlace: 'How to redact a utility bill',
     descripcion:
-      'You are asked for a utility bill as proof of address — for a bank, a crypto exchange, a landlord or an ID check — but it shows your account number and more than the check needs. How to remove what they do not need from a utility bill PDF, in your browser, without uploading the file.',
-    metaTitulo: 'How to redact a utility bill PDF · TachadoPDF',
+      'Proof of address usually needs only your name, address and date. How to remove the account number, barcode and payment details from a utility bill PDF.',
+    metaTitulo: 'How to redact a utility bill for proof of address',
     enlaceComprobador: 'Check your bill for free — see what is still extractable',
     relacionadas: ['guia-en-bank-statement', 'guia-en-sin-subir', 'guia-en-comprobar'],
     cuerpo: [
