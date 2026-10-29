@@ -4,6 +4,23 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · SEO · Tres guías finas ampliadas (punto 14 del plan, rama `seo/ampliar-guias-finas`)
+
+**Por qué:** Search Console las daba como «descubierta, sin indexar». Medido: 366 / 440 / 420 palabras y
+parecido de 3-gramas con las hermanas ≤0,08, así que finas más que duplicadas. El solape es de intención:
+el rectángulo negro con `recuperar-texto-tachado-pdf` y con la portada.
+
+**Hecho (sin borrar ni redirigir nada):**
+- `rectangulo-negro-pdf-no-borra` (estática): 366 → ~1.195 palabras. Ángulo propio, la acción: tipos de recuadro,
+  cinco pruebas y qué hacer si el PDF ya salió (RGPD arts. 4.12, 33, 34). FAQ con FAQPage, Fuentes, 5 enlaces.
+- `censurar-pdf-antes-de-publicarlo-internet` (es.ts): 440 → ~1.376. Ángulo: publicar en web (DA 7.ª y art. 93
+  LOPDGDD, RGPD 5.1.c, retirada en Google), 3 FAQ, Fuentes.
+- `ocultar-datos-alumnos-pdf` (es.ts): 420 → ~1.317. Ángulo: documento por documento con la guía de la AEPD para
+  centros educativos, LOPDGDD arts. 7 y 92, RGPD cons. 38 y art. 9; 3 FAQ, Fuentes.
+- Parecido máximo tras ampliar 0,056. tsc 0, 87 ficheros / 2357 tests, build 0.
+
+**Límite declarado:** la guía de la AEPD de centros educativos figura como «en revisión» en su PDF; se cita así.
+---
 ## 2026-10-29 · legal + ruta del dinero · correo único y «recordar la clave Pro» en producción
 
 **Decisión:** Ángel dio permiso explícito en el chat («tienes permiso para hacer lo que recomiendes»),

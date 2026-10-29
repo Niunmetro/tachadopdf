@@ -184,12 +184,12 @@
     }
     </style>
     <title>Cómo censurar un PDF antes de publicarlo en internet</title>
-    <meta name="description" content="Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere." />
+    <meta name="description" content="Qué quitar de un PDF antes de colgarlo en una web, cómo identificar a las personas según la LOPDGDD y qué hacer si ya está publicado y en Google." />
     <link rel="canonical" href="https://www.tachadopdf.com/guia/censurar-pdf-antes-de-publicarlo-internet/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="TachadoPDF" />
     <meta property="og:title" content="Cómo censurar un PDF antes de publicarlo en internet sin exponer datos de terceros" />
-    <meta property="og:description" content="Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere." />
+    <meta property="og:description" content="Qué quitar de un PDF antes de colgarlo en una web, cómo identificar a las personas según la LOPDGDD y qué hacer si ya está publicado y en Google." />
     <meta property="og:image" content="https://www.tachadopdf.com/og-image.png" />
     <meta property="og:url" content="https://www.tachadopdf.com/guia/censurar-pdf-antes-de-publicarlo-internet/" />
     <meta property="og:locale" content="es_ES" />
@@ -198,11 +198,11 @@
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Cómo censurar un PDF antes de publicarlo en internet sin exponer datos de terceros",
-      "description": "Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere.",
+      "description": "Qué quitar de un PDF antes de colgarlo en una web, cómo identificar a las personas según la LOPDGDD y qué hacer si ya está publicado y en Google.",
       "inLanguage": "es",
       "mainEntityOfPage": "https://www.tachadopdf.com/guia/censurar-pdf-antes-de-publicarlo-internet/",
       "datePublished": "2026-08-10",
-      "dateModified": "2026-09-08",
+      "dateModified": "2026-10-29",
       "author": {
         "@type": "Organization",
         "@id": "https://www.tachadopdf.com/#organization",
@@ -215,6 +215,38 @@
         "name": "TachadoPDF",
         "url": "https://www.tachadopdf.com/"
       }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Basta con quitar el PDF de la web para que desaparezca de Google?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Retirar o actualizar el contenido es, según Google, la forma más segura de que deje de estar disponible. Para ocultar la dirección de los resultados con rapidez existe la herramienta de retirada de Search Console, que actúa en el plazo de un día y dura unos seis meses. Las copias que otras personas hayan descargado no se pueden recuperar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Hay que tachar el DNI completo en un acto administrativo que se publica?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Para los actos administrativos, la disposición adicional séptima de la LOPDGDD indica que se identifica a la persona con su nombre y apellidos más cuatro cifras aleatorias del documento, alternadas si hay varios afectados. En las notificaciones por anuncios se usa solo el número completo, y nunca el nombre junto al número completo. Para tu caso concreto, consulta con el delegado de protección de datos o con un abogado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Los metadatos de un PDF se publican junto con el documento?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. El autor, el programa con el que se creó, las fechas y los marcadores o adjuntos forman parte del archivo y se descargan con él. La herramienta gratuita de metadatos de PDF de TachadoPDF los muestra antes de publicar, y el tachado de TachadoPDF también limpia los metadatos."
+          }
+        }
+      ]
     }
     </script>
     <style>
@@ -261,6 +293,9 @@
       .relacionadas { max-width: var(--medida); margin: var(--e-12) 0 0; }
       .relacionadas ul { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: grid; gap: var(--e-2); }
       .relacionadas a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: var(--peso-fuerte); }
+      .fuentes { max-width: var(--medida); margin: var(--e-12) 0 0; }
+      .fuentes ul { padding-left: var(--e-6); margin: var(--e-4) 0 0; }
+      .fuentes a { display: inline-flex; align-items: center; min-height: 2.75rem; }
     </style>
   </head>
   <body>
@@ -275,28 +310,74 @@
     </header>
     <main>
       <h1>Cómo censurar un PDF antes de publicarlo en internet sin exponer datos de terceros</h1>
-      <p class="guia-fecha">Actualizada el <time datetime="2026-09-08">8 de septiembre de 2026</time></p>
-      <p>Ayuntamientos, universidades, asociaciones, clubes deportivos, comunidades y empresas publican documentos en PDF a diario: actas, listados de admitidos, resoluciones de subvenciones, resultados de un sorteo, adjudicaciones. Colgar un documento en la web no es lo mismo que repartirlo en mano: queda a la vista de cualquiera y no de un único destinatario.</p>
-      <p>Y no se deshace con un clic. Los buscadores rastrean e indexan lo que se publica y guardan copias en su caché, así que un dato personal expuesto puede seguir apareciendo en los resultados aunque después retires el PDF. Por eso, en lo que se va a publicar, el criterio tiene que ser más estricto que en lo que se envía a una sola persona.</p>
+      <p class="guia-fecha">Actualizada el <time datetime="2026-10-29">29 de octubre de 2026</time></p>
+      <p>Ayuntamientos, universidades, asociaciones, clubes deportivos, comunidades de propietarios y empresas publican PDF a diario: actas, listados de admitidos, resoluciones de subvenciones, resultados de un sorteo, adjudicaciones. Un documento colgado en una web no se entrega a un destinatario concreto: queda al alcance de cualquiera que conozca la dirección y de los buscadores que la rastreen.</p>
+      <p>Esta guía se centra en lo que cambia cuando el PDF se publica. Repasa qué datos conviene dejar fuera, qué dice la ley sobre cómo identificar a las personas, en qué rincones del archivo se queda información aunque la página se vea limpia y qué hacer si el documento ya está en internet.</p>
+      <h2>Lo que cambia al publicar</h2>
+      <p>Un envío por correo llega a una persona identificada, a la que puedes pedir que borre el archivo. Una publicación web no tiene destinatario: cualquiera descarga el PDF, lo guarda o lo enlaza, y las copias que ya se hicieron no se pueden recuperar. Por eso el criterio de partida es publicar lo mínimo. El RGPD lo recoge como principio de minimización: los datos personales han de ser «adecuados, pertinentes y limitados a lo necesario» para los fines con los que se tratan (artículo 5.1.c).</p>
+      <h2>Cómo identificar a las personas en lo que se publica</h2>
+      <p>Cuando una administración pública publica un acto administrativo con datos de los afectados, la disposición adicional séptima de la LOPDGDD fija cómo se les identifica. Con carácter general se usa el nombre y apellidos junto con cuatro cifras numéricas aleatorias del DNI, del NIE, del pasaporte o del documento equivalente, y si la publicación se refiere a varias personas esas cifras deben alternarse. En las notificaciones por medio de anuncios, el afectado se identifica únicamente con el número completo de su documento. En ningún caso se publican a la vez el nombre y apellidos y el número completo.</p>
+      <p>Esa disposición está escrita para actos administrativos. Si publicas como club, asociación, empresa o comunidad, consulta tu caso con el delegado de protección de datos o con un abogado; el principio de publicar solo lo necesario sigue siendo el mismo, y la fórmula de la disposición sirve como referencia de cuánto número hace falta para distinguir a dos personas.</p>
       <h2>Qué dejar fuera antes de publicar</h2>
       <ul>
-        <li>El DNI o el NIE completos: cuando la norma de transparencia obliga a publicar, suele bastar con una parte de los dígitos, no el número entero.</li>
+        <li>El DNI o el NIE completos, y menos aún junto al nombre y apellidos.</li>
         <li>Domicilios, teléfonos y correos personales.</li>
-        <li>Datos de salud o datos de menores.</li>
+        <li>Datos de salud y datos de menores.</li>
         <li>Firmas manuscritas escaneadas.</li>
-        <li>Importes y datos económicos que la norma no exija hacer públicos.</li>
+        <li>Importes y datos económicos que ninguna norma obligue a hacer públicos.</li>
+        <li>Nombres de personas que aparecen de pasada: firmantes de un acta, asistentes, vecinos o alumnos citados en un punto del orden del día.</li>
       </ul>
-      <h2>Por qué el recuadro negro es aún peor aquí</h2>
-      <p>Un PDF colgado con recuadros negros lo descarga cualquiera, y extraer el texto de debajo es cuestión de segundos; si es un escaneo con un parche negro encima, se destapa ajustando la imagen. La diferencia con un envío privado es el alcance: aquí el fallo no lo ve un destinatario, lo ve —y lo puede guardar— todo el mundo, incluidos los buscadores.</p>
-      <p class="nota">Haz la prueba con el propio PDF ya publicado: descárgalo, selecciona sobre la zona tapada y pega en un editor de texto. Si sale el dato, hay que retirarlo y volver a subir el documento bien tachado.</p>
-      <h2>Cómo prepararlo para publicar</h2>
-      <p>TachadoPDF elimina el texto del archivo y borra los píxeles de las zonas que marcas, y además limpia los metadatos —autor, programa, fechas— que también viajan dentro del archivo que se publica. Detecta de forma automática por patrones los identificadores y los datos de contacto, tú marcas los nombres y lo que quede, y al terminar te da un informe de comprobación con la huella del fichero para tu expediente. Se ejecuta entero en tu navegador: el documento no se sube a ningún servidor intermedio antes de publicarlo.</p>
+      <h2>Dónde se queda el dato aunque la página se vea limpia</h2>
+      <p>Lo que se publica es el archivo entero, no solo lo que se ve al abrirlo. Antes de colgarlo conviene mirar cuatro sitios.</p>
+      <ol>
+        <li>Debajo de los recuadros negros. Un recuadro dibujado encima deja el texto dentro del archivo, y se copia en segundos; si el original es un escaneo, el parche se destapa ajustando el brillo o el contraste de la imagen.</li>
+        <li>Los metadatos. El autor, el programa con el que se creó y las fechas de creación y modificación viajan dentro del archivo. Si lo exportó una persona concreta del ayuntamiento o de la empresa, su nombre puede estar ahí.</li>
+        <li>Los marcadores y los adjuntos. El título de un marcador o un fichero incrustado pueden contener un nombre que no aparece en ninguna página.</li>
+        <li>El nombre del fichero y la dirección web. Un archivo llamado «acta-expediente-garcia-lopez.pdf» ya publica un dato personal aunque el contenido esté bien tachado.</li>
+      </ol>
+      <h2>Lista de comprobación antes de subirlo</h2>
+      <ol>
+        <li>Decide qué mínimo hay que publicar y quién lo necesita. Si una parte del documento no hace falta, no la incluyas en lugar de taparla.</li>
+        <li>Elimina del archivo los datos sobrantes. Si están en un escaneo, borra los píxeles de esa zona.</li>
+        <li>Pasa el comprobador gratuito: lee el texto de las páginas y te dice si queda algún DNI, NIE, IBAN, número de la Seguridad Social, teléfono, referencia catastral o correo. No reconoce nombres ni lee el contenido de las imágenes, así que la revisión de nombres y de fotos es cosa tuya.</li>
+        <li>Mira el autor, los marcadores y los adjuntos con la herramienta de metadatos de PDF y limpia lo que sobre.</li>
+        <li>Dale al fichero un nombre neutro, sin personas ni expedientes identificables.</li>
+        <li>Una vez subido, descarga el PDF desde su dirección pública y repite la prueba de seleccionar sobre las zonas tapadas y pegar en un editor de texto.</li>
+      </ol>
+      <p class="nota">Si el dato aparece en un PDF que ya está publicado, retíralo antes de seguir investigando y vuelve a subir una versión bien tachada.</p>
+      <h2>Si el PDF ya está publicado</h2>
+      <p>Lo primero es retirar el archivo de la web o sustituirlo por la versión corregida. Google indica que quitar o actualizar el contenido es la forma más segura de que deje de estar disponible. Si necesitas que la dirección desaparezca cuanto antes de los resultados, la herramienta de retirada de Search Console puede ocultarla en el plazo de un día, con dos precauciones: dura unos seis meses y hay que proteger o retirar todas las variantes de la dirección.</p>
+      <p>Las personas afectadas tienen además una vía propia. El artículo 93 de la LOPDGDD reconoce el derecho a que los buscadores eliminen de los resultados de una búsqueda hecha por su nombre los enlaces a información inadecuada, inexacta, no pertinente, no actualizada o excesiva. Lo que otras personas ya descargaron queda fuera de tu alcance, y por eso compensa acertar antes de publicar. Si el documento exponía datos personales por error, además, puede tratarse de una violación de la seguridad de los datos con sus propios plazos: la guía sobre el recuadro negro los explica.</p>
+      <h2>Cómo prepararlo con TachadoPDF</h2>
+      <p>TachadoPDF elimina el texto del archivo, borra los píxeles de las zonas que marcas y limpia los metadatos del documento. Detecta de forma automática por patrones los identificadores y los datos de contacto; los nombres y lo que quede los marcas tú. Al terminar relee el archivo resultante y te entrega un informe de comprobación con la huella del fichero para tu expediente. Todo ocurre en tu navegador: el documento no se sube a ningún servidor.</p>
+      <h2>Preguntas frecuentes</h2>
+      <details class="faq__item">
+        <summary>¿Basta con quitar el PDF de la web para que desaparezca de Google?</summary>
+        <p>Retirar o actualizar el contenido es, según Google, la forma más segura de que deje de estar disponible. Para ocultar la dirección de los resultados con rapidez existe la herramienta de retirada de Search Console, que actúa en el plazo de un día y dura unos seis meses. Las copias que otras personas hayan descargado no se pueden recuperar.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Hay que tachar el DNI completo en un acto administrativo que se publica?</summary>
+        <p>Para los actos administrativos, la disposición adicional séptima de la LOPDGDD indica que se identifica a la persona con su nombre y apellidos más cuatro cifras aleatorias del documento, alternadas si hay varios afectados. En las notificaciones por anuncios se usa solo el número completo, y nunca el nombre junto al número completo. Para tu caso concreto, consulta con el delegado de protección de datos o con un abogado.</p>
+      </details>
+      <details class="faq__item">
+        <summary>¿Los metadatos de un PDF se publican junto con el documento?</summary>
+        <p>Sí. El autor, el programa con el que se creó, las fechas y los marcadores o adjuntos forman parte del archivo y se descargan con él. La herramienta gratuita de metadatos de PDF de TachadoPDF los muestra antes de publicar, y el tachado de TachadoPDF también limpia los metadatos.</p>
+      </details>
+      <section class="fuentes">
+        <h2>Fuentes</h2>
+        <ul>
+          <li><a href="https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673">Ley Orgánica 3/2018 (LOPDGDD), texto consolidado en el BOE: disposición adicional séptima y artículo 93</a></li>
+          <li><a href="https://www.boe.es/doue/2016/119/L00001-00088.pdf">Reglamento (UE) 2016/679 (RGPD), texto del Diario Oficial de la UE publicado en el BOE: artículo 5.1.c</a></li>
+          <li><a href="https://developers.google.com/search/docs/crawling-indexing/remove-information?hl=es">Google Search Central: retirar información de los resultados de búsqueda</a></li>
+        </ul>
+      </section>
       <nav class="relacionadas" aria-label="Guías">
         <h2>Guías</h2>
         <ul>
           <li><a href="../recuperar-texto-tachado-pdf/">¿Se puede recuperar un texto tachado de un PDF?</a></li>
           <li><a href="../informacion-oculta-pdf/">¿Qué información oculta lleva un PDF?</a></li>
           <li><a href="../rectangulo-negro-pdf-no-borra/">Por qué el rectángulo negro no borra el dato</a></li>
+          <li><a href="../comprobar-si-un-pdf-esta-bien-tachado/">Cómo comprobar si un PDF está bien tachado</a></li>
         </ul>
       </nav>
       <a class="cp-cta" href="../../comprobador/">Comprueba gratis qué datos quedarían expuestos al publicarlo</a>
