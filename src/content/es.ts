@@ -386,102 +386,231 @@ const GUIAS_ES: ContenidoGuia[] = [
   },
   {
     id: 'guia-publicar-internet',
-    relacionadas: ['guia-recuperar-tachado', 'guia-info-oculta-pdf', 'guia-rectangulo-negro'],
+    relacionadas: ['guia-recuperar-tachado', 'guia-info-oculta-pdf', 'guia-rectangulo-negro', 'guia-comprobar-tachado'],
+    fuentes: [
+      {
+        etiqueta: 'Ley Orgánica 3/2018 (LOPDGDD), texto consolidado en el BOE: disposición adicional séptima y artículo 93',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673',
+      },
+      {
+        etiqueta: 'Reglamento (UE) 2016/679 (RGPD), texto del Diario Oficial de la UE publicado en el BOE: artículo 5.1.c',
+        url: 'https://www.boe.es/doue/2016/119/L00001-00088.pdf',
+      },
+      {
+        etiqueta: 'Google Search Central: retirar información de los resultados de búsqueda',
+        url: 'https://developers.google.com/search/docs/crawling-indexing/remove-information?hl=es',
+      },
+    ],
     titulo: 'Cómo censurar un PDF antes de publicarlo en internet sin exponer datos de terceros',
     tituloEnlace: 'Censurar un PDF antes de publicarlo en internet',
     metaTitulo: 'Cómo censurar un PDF antes de publicarlo en internet',
     descripcion:
-      'Un PDF publicado en una web o un boletín queda expuesto a internet y a los buscadores. Qué borrar antes de colgarlo y cómo hacerlo para que no se recupere.',
+      'Qué quitar de un PDF antes de colgarlo en una web, cómo identificar a las personas según la LOPDGDD y qué hacer si ya está publicado y en Google.',
     enlaceComprobador: 'Comprueba gratis qué datos quedarían expuestos al publicarlo',
     cuerpo: [
       {
         t: 'p',
         texto:
-          'Ayuntamientos, universidades, asociaciones, clubes deportivos, comunidades y empresas publican documentos en PDF a diario: actas, listados de admitidos, resoluciones de subvenciones, resultados de un sorteo, adjudicaciones. Colgar un documento en la web no es lo mismo que repartirlo en mano: queda a la vista de cualquiera y no de un único destinatario.',
+          'Ayuntamientos, universidades, asociaciones, clubes deportivos, comunidades de propietarios y empresas publican PDF a diario: actas, listados de admitidos, resoluciones de subvenciones, resultados de un sorteo, adjudicaciones. Un documento colgado en una web no se entrega a un destinatario concreto: queda al alcance de cualquiera que conozca la dirección y de los buscadores que la rastreen.',
       },
       {
         t: 'p',
         texto:
-          'Y no se deshace con un clic. Los buscadores rastrean e indexan lo que se publica y guardan copias en su caché, así que un dato personal expuesto puede seguir apareciendo en los resultados aunque después retires el PDF. Por eso, en lo que se va a publicar, el criterio tiene que ser más estricto que en lo que se envía a una sola persona.',
+          'Esta guía se centra en lo que cambia cuando el PDF se publica. Repasa qué datos conviene dejar fuera, qué dice la ley sobre cómo identificar a las personas, en qué rincones del archivo se queda información aunque la página se vea limpia y qué hacer si el documento ya está en internet.',
+      },
+      { t: 'h2', texto: 'Lo que cambia al publicar' },
+      {
+        t: 'p',
+        texto:
+          'Un envío por correo llega a una persona identificada, a la que puedes pedir que borre el archivo. Una publicación web no tiene destinatario: cualquiera descarga el PDF, lo guarda o lo enlaza, y las copias que ya se hicieron no se pueden recuperar. Por eso el criterio de partida es publicar lo mínimo. El RGPD lo recoge como principio de minimización: los datos personales han de ser «adecuados, pertinentes y limitados a lo necesario» para los fines con los que se tratan (artículo 5.1.c).',
+      },
+      { t: 'h2', texto: 'Cómo identificar a las personas en lo que se publica' },
+      {
+        t: 'p',
+        texto:
+          'Cuando una administración pública publica un acto administrativo con datos de los afectados, la disposición adicional séptima de la LOPDGDD fija cómo se les identifica. Con carácter general se usa el nombre y apellidos junto con cuatro cifras numéricas aleatorias del DNI, del NIE, del pasaporte o del documento equivalente, y si la publicación se refiere a varias personas esas cifras deben alternarse. En las notificaciones por medio de anuncios, el afectado se identifica únicamente con el número completo de su documento. En ningún caso se publican a la vez el nombre y apellidos y el número completo.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Esa disposición está escrita para actos administrativos. Si publicas como club, asociación, empresa o comunidad, consulta tu caso con el delegado de protección de datos o con un abogado; el principio de publicar solo lo necesario sigue siendo el mismo, y la fórmula de la disposición sirve como referencia de cuánto número hace falta para distinguir a dos personas.',
       },
       { t: 'h2', texto: 'Qué dejar fuera antes de publicar' },
       {
         t: 'ul',
         items: [
-          'El DNI o el NIE completos: cuando la norma de transparencia obliga a publicar, suele bastar con una parte de los dígitos, no el número entero.',
+          'El DNI o el NIE completos, y menos aún junto al nombre y apellidos.',
           'Domicilios, teléfonos y correos personales.',
-          'Datos de salud o datos de menores.',
+          'Datos de salud y datos de menores.',
           'Firmas manuscritas escaneadas.',
-          'Importes y datos económicos que la norma no exija hacer públicos.',
+          'Importes y datos económicos que ninguna norma obligue a hacer públicos.',
+          'Nombres de personas que aparecen de pasada: firmantes de un acta, asistentes, vecinos o alumnos citados en un punto del orden del día.',
         ],
       },
-      { t: 'h2', texto: 'Por qué el recuadro negro es aún peor aquí' },
+      { t: 'h2', texto: 'Dónde se queda el dato aunque la página se vea limpia' },
       {
         t: 'p',
         texto:
-          'Un PDF colgado con recuadros negros lo descarga cualquiera, y extraer el texto de debajo es cuestión de segundos; si es un escaneo con un parche negro encima, se destapa ajustando la imagen. La diferencia con un envío privado es el alcance: aquí el fallo no lo ve un destinatario, lo ve —y lo puede guardar— todo el mundo, incluidos los buscadores.',
+          'Lo que se publica es el archivo entero, no solo lo que se ve al abrirlo. Antes de colgarlo conviene mirar cuatro sitios.',
+      },
+      {
+        t: 'ol',
+        items: [
+          'Debajo de los recuadros negros. Un recuadro dibujado encima deja el texto dentro del archivo, y se copia en segundos; si el original es un escaneo y el recuadro se añadió encima como un objeto aparte, basta con moverlo o borrarlo en un editor para ver el dato.',
+          'Los metadatos. El autor, el programa con el que se creó y las fechas de creación y modificación viajan dentro del archivo. Si lo exportó una persona concreta del ayuntamiento o de la empresa, su nombre puede estar ahí.',
+          'Los marcadores y los adjuntos. El título de un marcador o un fichero incrustado pueden contener un nombre que no aparece en ninguna página.',
+          'El nombre del fichero y la dirección web. Un archivo llamado «acta-expediente-garcia-lopez.pdf» ya publica un dato personal aunque el contenido esté bien tachado.',
+        ],
+      },
+      { t: 'h2', texto: 'Lista de comprobación antes de subirlo' },
+      {
+        t: 'ol',
+        items: [
+          'Decide qué mínimo hay que publicar y quién lo necesita. Si una parte del documento no hace falta, no la incluyas en lugar de taparla.',
+          'Elimina del archivo los datos sobrantes. Si están en un escaneo, borra los píxeles de esa zona.',
+          'Pasa el comprobador gratuito: lee el texto de las páginas y te dice si queda algún DNI, NIE, IBAN, número de la Seguridad Social, teléfono, referencia catastral o correo. No reconoce nombres ni lee el contenido de las imágenes, así que la revisión de nombres y de fotos es cosa tuya.',
+          'Mira el autor, los marcadores y los adjuntos con la herramienta de metadatos de PDF y limpia lo que sobre.',
+          'Dale al fichero un nombre neutro, sin personas ni expedientes identificables.',
+          'Una vez subido, descarga el PDF desde su dirección pública y repite la prueba de seleccionar sobre las zonas tapadas y pegar en un editor de texto.',
+        ],
       },
       {
         t: 'nota',
         texto:
-          'Haz la prueba con el propio PDF ya publicado: descárgalo, selecciona sobre la zona tapada y pega en un editor de texto. Si sale el dato, hay que retirarlo y volver a subir el documento bien tachado.',
+          'Si el dato aparece en un PDF que ya está publicado, retíralo antes de seguir investigando y vuelve a subir una versión bien tachada.',
       },
-      { t: 'h2', texto: 'Cómo prepararlo para publicar' },
+      { t: 'h2', texto: 'Si el PDF ya está publicado' },
       {
         t: 'p',
         texto:
-          'TachadoPDF elimina el texto del archivo y borra los píxeles de las zonas que marcas, y además limpia los metadatos —autor, programa, fechas— que también viajan dentro del archivo que se publica. Detecta de forma automática por patrones los identificadores y los datos de contacto, tú marcas los nombres y lo que quede, y al terminar te da un informe de comprobación con la huella del fichero para tu expediente. Se ejecuta entero en tu navegador: el documento no se sube a ningún servidor intermedio antes de publicarlo.',
+          'Lo primero es retirar el archivo de la web o sustituirlo por la versión corregida. Google indica que quitar o actualizar el contenido es la forma más segura de que deje de estar disponible. Si necesitas que la dirección desaparezca cuanto antes de los resultados, la herramienta de retirada de Search Console puede ocultarla en el plazo de un día, con dos precauciones: dura unos seis meses y hay que proteger o retirar todas las variantes de la dirección.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Las personas afectadas tienen además una vía propia. El artículo 93 de la LOPDGDD reconoce el derecho a que los buscadores eliminen de los resultados de una búsqueda hecha por su nombre los enlaces a información inadecuada, inexacta, no pertinente, no actualizada o excesiva. Lo que otras personas ya descargaron queda fuera de tu alcance, y por eso compensa acertar antes de publicar. Si el documento exponía datos personales por error, además, puede tratarse de una violación de la seguridad de los datos con sus propios plazos: la guía sobre el recuadro negro los explica.',
+      },
+      { t: 'h2', texto: 'Cómo prepararlo con TachadoPDF' },
+      {
+        t: 'p',
+        texto:
+          'TachadoPDF elimina el texto del archivo, borra los píxeles de las zonas que marcas y limpia los metadatos del documento. Detecta de forma automática por patrones los identificadores y los datos de contacto; los nombres y lo que quede los marcas tú. Al terminar relee el archivo resultante y te entrega un informe de comprobación con la huella del fichero para tu expediente. Todo ocurre en tu navegador: el documento no se sube a ningún servidor.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Basta con quitar el PDF de la web para que desaparezca de Google?',
+        respuesta:
+          'Retirar o actualizar el contenido es, según Google, la forma más segura de que deje de estar disponible. Para ocultar la dirección de los resultados con rapidez existe la herramienta de retirada de Search Console, que actúa en el plazo de un día y dura unos seis meses. Las copias que otras personas hayan descargado no se pueden recuperar.',
+      },
+      {
+        pregunta: '¿Hay que tachar el DNI completo en un acto administrativo que se publica?',
+        respuesta:
+          'Para los actos administrativos, la disposición adicional séptima de la LOPDGDD indica que se identifica a la persona con su nombre y apellidos más cuatro cifras aleatorias del documento, alternadas si hay varios afectados. En las notificaciones por anuncios se usa solo el número completo, y nunca el nombre junto al número completo. Para tu caso concreto, consulta con el delegado de protección de datos o con un abogado.',
+      },
+      {
+        pregunta: '¿Los metadatos de un PDF se publican junto con el documento?',
+        respuesta:
+          'Sí. El autor, el programa con el que se creó, las fechas y los marcadores o adjuntos forman parte del archivo y se descargan con él. La herramienta gratuita de metadatos de PDF de TachadoPDF los muestra antes de publicar, y el tachado de TachadoPDF también limpia los metadatos.',
       },
     ],
   },
   {
     id: 'guia-alumnos',
-    relacionadas: ['guia-tachar-dni', 'guia-sanciones', 'guia-rectangulo-negro'],
+    relacionadas: ['guia-tachar-dni', 'guia-informe-medico', 'guia-rectangulo-negro', 'guia-info-oculta-pdf'],
+    fuentes: [
+      {
+        etiqueta: 'AEPD: Guía para centros educativos (versión publicada, marcada «en revisión»)',
+        url: 'https://www.aepd.es/guias/guia-centros-educativos.pdf',
+      },
+      {
+        etiqueta: 'Ley Orgánica 3/2018 (LOPDGDD), texto consolidado en el BOE: artículos 7 y 92',
+        url: 'https://www.boe.es/buscar/act.php?id=BOE-A-2018-16673',
+      },
+      {
+        etiqueta: 'Reglamento (UE) 2016/679 (RGPD), texto del Diario Oficial de la UE publicado en el BOE: considerando 38 y artículo 9',
+        url: 'https://www.boe.es/doue/2016/119/L00001-00088.pdf',
+      },
+    ],
     titulo: 'Cómo ocultar los datos de alumnos en un PDF antes de compartirlo',
     tituloEnlace: 'Ocultar los datos de alumnos en un PDF',
     metaTitulo: 'Ocultar datos de alumnos en un PDF antes de compartirlo',
     descripcion:
-      'Notas, actas de evaluación y autorizaciones llevan datos de menores, con protección reforzada. Qué tapar antes de compartir el PDF y cómo borrarlo bien.',
+      'Listas, boletines, actas y autorizaciones: qué sobra en cada PDF de un centro educativo antes de enviarlo, con los criterios de la guía de la AEPD.',
     enlaceComprobador: 'Comprueba gratis qué datos de alumnos contiene el PDF',
     cuerpo: [
       {
         t: 'p',
         texto:
-          'Un centro educativo maneja cada día documentos llenos de datos de menores: listas de clase, calificaciones, actas de evaluación, partes de incidencias, autorizaciones de salidas, orlas. Los datos de menores tienen una protección reforzada, así que conviene compartir solo lo imprescindible y para quien de verdad lo necesita.',
+          'Un centro educativo maneja a diario documentos con datos de menores: listas de clase, calificaciones, actas de evaluación, partes de incidencias, autorizaciones de salida, informes del departamento de orientación, orlas. El RGPD afirma que los niños merecen una protección específica de sus datos personales, porque pueden ser menos conscientes de los riesgos, las consecuencias y los derechos (considerando 38). En la práctica toca mirar cada PDF antes de enviarlo y preguntarse quién lo va a recibir y qué parte le corresponde.',
       },
       {
         t: 'p',
         texto:
-          'Los descuidos típicos son conocidos: enviar a una familia una lista con las notas de toda la clase, publicar unas calificaciones donde puedan verlas otras familias, subir a la plataforma un PDF con más datos de los necesarios, o pasar a otro docente un acta con datos que no le corresponden.',
+          'Esta guía va documento por documento. Para cada uno indica qué suele llevar de más y qué criterio ha publicado la AEPD en su guía para centros educativos, y al final explica cuándo conviene tachar el archivo y cuándo es mejor generar otro desde cero.',
       },
-      { t: 'h2', texto: 'Qué conviene dejar fuera' },
+      { t: 'h2', texto: 'Quién debe ver las notas' },
+      {
+        t: 'p',
+        texto:
+          'La guía de la AEPD para centros educativos dice que las calificaciones se han de facilitar a los propios alumnos y a sus padres. Si se comunican a través de una plataforma educativa, esta solo debe ser accesible para ellos y para los tutores, sin que otras personas puedan verlas. La misma guía considera posible que el alumno vea su calificación frente a la media de sus compañeros. De ahí sale una regla de trabajo: el PDF que llega a una familia lleva los datos de ese alumno y, si acaso, la media de la clase, sin los nombres ni las notas de los demás.',
+      },
+      { t: 'h2', texto: 'Qué suele sobrar en cada documento' },
       {
         t: 'ul',
         items: [
-          'El DNI del alumno o de sus padres.',
-          'Las notas asociadas a un nombre cuando el documento va a llegar a más de una familia.',
-          'Datos de salud: alergias, informes, adaptaciones curriculares.',
-          'Domicilios y teléfonos.',
-          'Los datos de otros alumnos en un documento que es de uno solo.',
-          'Las fotografías de menores.',
+          'Lista de clase: el nombre y los apellidos bastan para que cada familia sepa en qué grupo está su hijo. Sobran los teléfonos, los correos de los padres, las fechas de nacimiento y cualquier columna de apoyo educativo que figure en la misma hoja. La AEPD admite colocar las relaciones de alumnos por clases en el tablón o en las puertas de las aulas durante un tiempo razonable, y recomienda que con una plataforma de gestión cada familia acceda con usuario y contraseña.',
+          'Boletín de calificaciones: un alumno, un documento. Si el boletín sale de una hoja con toda la clase, las filas de los demás alumnos no deben quedar en el archivo, ni siquiera tapadas.',
+          'Acta de evaluación: recoge a todo el grupo. Lo que se entrega a una familia o a un docente que no necesita el acta completa debería reducirse a lo que le corresponde.',
+          'Autorización de salida escaneada: suele llevar el DNI del padre o de la madre, un teléfono, la firma y a veces alergias o medicación. Quien organiza la salida rara vez necesita el DNI; revisa qué hace falta de verdad.',
+          'Informes del departamento de orientación: si mencionan diagnósticos, son datos de salud, una categoría especial que el RGPD prohíbe tratar salvo en los supuestos de su artículo 9. Un informe así no debe viajar en el mismo PDF que otros alumnos ni llegar a quien no tenga que conocerlo.',
+          'Menús del comedor: según la AEPD pueden publicarse los distintos menús, porque hay alumnos con necesidades alimentarias especiales, sin que haga falta una lista con el nombre y apellidos de cada alumno y el menú que le corresponde.',
+          'Listas de admitidos: la guía indica que la publicación debe recoger solo el resultado final del baremo, no resultados parciales.',
         ],
       },
       { t: 'h2', texto: 'La foto de un menor es una imagen: el recuadro no la borra' },
       {
         t: 'p',
         texto:
-          'En una orla o en una autorización escaneada, el rostro del menor y el DNI son píxeles de una imagen; un recuadro negro por encima es otra capa que se quita o se hace transparente con cualquier editor. Y en una lista de notas con texto real, tapar la calificación con una barra negra no borra el número que sigue guardado debajo. En los dos casos el dato sigue en el archivo.',
+          'En una orla o en una autorización escaneada, el rostro del menor y el DNI son píxeles de una imagen. Un recuadro negro añadido por encima es otro objeto que se quita o se vuelve transparente con cualquier editor. Y en una lista de notas con texto real, tapar la calificación con una barra negra no borra el número, que sigue guardado debajo. En los dos casos el dato sigue en el archivo.',
+      },
+      {
+        t: 'p',
+        texto:
+          'Si lo que quieres es publicar o difundir fotografías de alumnos, el artículo 92 de la LOPDGDD obliga a los centros educativos a garantizar el interés superior del menor y su derecho a la protección de datos cuando se difunden por servicios de la sociedad de la información. Cuando la difusión es en redes sociales o servicios equivalentes, hace falta el consentimiento del menor o de sus representantes legales según el artículo 7: el menor puede consentir por sí mismo a partir de los catorce años, salvo los casos en que la ley exija el consentimiento de quienes ejercen la patria potestad o la tutela, y por debajo de esa edad solo es lícito si consta el de quien la ejerza.',
       },
       {
         t: 'nota',
         texto:
-          'Antes de compartir, abre el PDF, selecciona sobre lo tapado y pega; y en las imágenes, prueba a subir el brillo. Si el dato asoma, todavía está dentro.',
+          'Antes de compartir, abre el PDF, selecciona sobre lo tapado y pega en un editor de texto. En las imágenes, sube el brillo y el contraste de la zona. Si el dato asoma, todavía está dentro.',
       },
-      { t: 'h2', texto: 'Cómo hacerlo bien' },
+      { t: 'h2', texto: '¿Tachar el PDF o generar otro?' },
       {
         t: 'p',
         texto:
-          'TachadoPDF borra de verdad el texto del archivo y los píxeles de la zona marcada —la cara de una orla, el DNI de un escaneo—, detecta de forma automática por patrones el DNI, el NIE, los teléfonos y los correos, y tú marcas los nombres y las notas. Al terminar comprueba que no queda rastro y entrega un informe. Y como el documento no se sube a ningún servidor, los datos de los menores no salen del equipo del centro.',
+          'Si el programa de gestión del centro puede producir el boletín o la lista de un solo alumno, esa es la vía más limpia: el archivo nunca contuvo los datos de los demás. Tachar sirve cuando el documento ya existe y tiene que salir con una parte menos: un acta que hay que enviar recortada, un escaneo con datos de varios alumnos, un informe que debe compartirse con otro centro.',
+      },
+      {
+        t: 'p',
+        texto:
+          'TachadoPDF borra el texto del archivo y los píxeles de la zona marcada, por ejemplo la cara de una orla o el DNI de un escaneo, y limpia los metadatos. Detecta de forma automática por patrones el DNI, el NIE, los teléfonos y los correos; los nombres y las notas los marcas tú. Su comprobador lee el texto de las páginas y no reconoce caras, firmas ni el contenido de una imagen, así que en una orla o en una autorización escaneada la revisión visual es cosa tuya. Como el documento se procesa en tu navegador y no se sube a ningún servidor, los datos de los menores no salen del equipo del centro.',
+      },
+    ],
+    faqs: [
+      {
+        pregunta: '¿Puede una familia ver las notas de otros alumnos?',
+        respuesta:
+          'Según la guía de la AEPD para centros educativos, las calificaciones se facilitan a los propios alumnos y a sus padres, y una plataforma educativa solo debe ser accesible para ellos y para los tutores. Sí es posible mostrar al alumno su nota frente a la media de la clase. Por eso el PDF que se envía a una familia no debería incluir los nombres ni las notas de los demás.',
+      },
+      {
+        pregunta: '¿Se puede colocar la lista de clase en la puerta del aula?',
+        respuesta:
+          'La AEPD admite colocar la relación de alumnos por clases en los tablones o en las entradas de las aulas durante un tiempo razonable, y recomienda que, si el centro usa una plataforma de gestión, cada familia acceda con usuario y contraseña. Conviene que la lista lleve solo el nombre y los apellidos, sin teléfonos ni otros datos.',
+      },
+      {
+        pregunta: '¿A qué edad puede un menor dar su consentimiento sobre sus datos?',
+        respuesta:
+          'El artículo 7 de la LOPDGDD permite fundar el tratamiento en el consentimiento del propio menor cuando es mayor de catorce años, salvo los casos en que la ley exige el de quienes ejercen la patria potestad o la tutela. Por debajo de esa edad, el tratamiento basado en consentimiento solo es lícito si consta el del titular de la patria potestad o tutela.',
       },
     ],
   },
