@@ -4,6 +4,46 @@ Memoria compartida del proyecto. Cada sesión de trabajo añade su entrada AL PR
 Formato fijo. Sin secretos, sin datos de clientes.
 
 ---
+## 2026-10-29 · SEO (tanda 2) · Fechas, fuentes, descripciones, llms.txt, 404 y fuera los utm
+
+**Hecho:** segunda tanda del plan de la auditoría del mismo día (`.seo-audit/ACTION-PLAN.md`, local y
+fuera de git), publicada con el visto bueno del owner («haz todo»).
+- **Fechas reales.** `src/content/fechas.ts` lo escribe `npm run fechas` desde git (primer commit de
+  la página y último que la cambió; HOY si tiene cambios sin commitear). Alimenta el `<lastmod>` del
+  sitemap (0 de 42 lo tenían), el `datePublished`/`dateModified` del Article de las guías generadas
+  y una fecha visible bajo el H1. Las 6 guías estáticas que no tenían NINGÚN schema llevan ahora su
+  Article escrito a mano, y `/actas/` y `/nominas/` sus fechas. Guarda `fechas.test.ts`: cada página
+  tiene fechas y el sitemap, el Article generado y el escrito a mano dicen lo mismo. Flujo al
+  cambiar páginas: `npm run fechas && npm run gen:pages` antes de commitear.
+- **Código fuente enlazado.** La web prometía «código abierto (AGPL-3.0)» sin enlazarlo. Pie de la
+  portada con «Código fuente en GitHub (AGPL-3.0)» (`URL_REPO` en `config.ts`), `sameAs` y `@id` en
+  la Organization, y autor de los Article apuntando a esa entidad. El perfil de GitHub no muestra
+  nombre real (comprobado).
+- **Afirmación corregida contra la fuente.** Un agente leyó entero el artículo arXiv 2206.02285
+  (informe en `.seo-audit/findings/fuentes.md`). La guía «recuperar texto tachado» decía que el
+  estudio «consiguió recuperar el texto de cientos de documentos reales»: el método DESCARTA
+  candidatos de una lista y solo en 3 de 769 tachados quedó un único nombre. Reescrito con lo que
+  dice el artículo (autores, arXiv 2022 / PoPETs 2023, dos de once herramientas dejaban el texto).
+  También fuera «en minutos» del caso Manafort en español (sin fuente; el inglés ya lo había quitado).
+- **Sección «Fuentes»** (campo opcional `fuentes` de la guía) con URLs comprobadas: estudio + DOI,
+  expediente Manafort (CourtListener da 403 a curl pero carga en navegador) + Mother Jones, ICO/PSNI
+  + su aviso de sanción. Va en recuperar, caja negra EN, tribunales EN, DSAR EN y Cómo funciona ES/EN.
+- **27 meta descripciones** de 156-316 caracteres recortadas a ≤155; guarda en `titulos-serp.test.ts`
+  sobre las 42 páginas servidas.
+- **Portada inglesa:** la tarjeta del precedente era la multa española de la AEPD (15.000 €); ahora
+  es la sanción de la ICO a la PSNI (£750,000), el mismo caso que cita su texto.
+- **`/llms.txt`** generado desde el registro y el contenido; **`/404.html`** propia (noindex,
+  `<base href="/">` para que iconos y enlaces funcionen a cualquier profundidad).
+- **Fuera los `?utm_`** de ~60 enlaces internos: sin analítica nadie los leía y cada enlace era una
+  URL duplicada. Los tests que exigían el parámetro ahora exigen su ausencia.
+- Integrada además la rama `perf/wasm-diferido` (entrada siguiente).
+
+**Verificado:** tsc 0 · vitest en verde · build 0 · mutaciones de las guardas nuevas en rojo.
+**Pendiente:** pedir indexación en Search Console (el navegador lo bloqueó en esta sesión);
+`/metadatos-pdf/` sigue cargando mupdf de forma estática (mismo arreglo, fuera de alcance); Bing
+Webmaster y enlaces externos, del owner.
+
+---
 ## 2026-10-29 · rendimiento · mupdf (wasm) ya no se baja al abrir la página
 
 **Hecho:** la portada (ES/EN) y el comprobador (ES/EN) bajaban y compilaban el wasm de mupdf (10,4 MB
